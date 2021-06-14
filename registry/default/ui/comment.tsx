@@ -248,3 +248,4 @@ export const ChatBottom = ({ comments }: { comments: CommentType[] }) => {
     </div>
   )
 }
+//
