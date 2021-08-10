@@ -434,6 +434,7 @@ export const KanbanColumnRowTemplate: React.FC<KanbanColumnRowComponentArgs> = (
 //NOTE: you have to fix the parsing for the code block
 //NOTE: some style with the moeji and code block
 //FIX: rerenders
+//NOTE: HI FIRST DAY IN GITHUB
 
 export interface CommentsLayoutProps {
     comments: CommentType[]
