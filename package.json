@@ -1,9 +1,9 @@
 {
     "name": "duck-ui",
     "private": true,
-    "version": "0.0.0",
+    "version": "0.0.1",
     "main": "index.js",
-    "module": "dist/index.mjs",
+    "module": "dist/index.cjs",
     "types": "dist/index.d.ts",
     "repository": {
         "type": "git",
@@ -103,14 +103,7 @@
         "vaul": "^0.9.1",
         "vite": "^5.4.0",
         "vitest": "^2.0.5",
-        "zod": "^3.23.8"
-    },
-    "eslintConfig": {
-        "extends": [
-            "plugin:storybook/recommended"
-        ]
-    },
-    "dependencies": {
+        "zod": "^3.23.8",
         "vite-plugin-dts": "^4.0.2"
     }
 }
