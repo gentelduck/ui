@@ -2,20 +2,23 @@ name: CI
 on:
   push:
     branches:
-      - "**"
+      - '**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - uses: pnpm/action-setup@v2
         with:
           version: 8
+
       - uses: actions/setup-node@v3
         with:
-          node-version: 16.x
-          cache: "pnpm"
+          node-version: '16.x'
+          cache: 'pnpm'
 
-      - run: pnpm install --no-frozen-lockfile
-      - run: pnpm run lint && pnpm run build
+      - run: pnpm install
+      - run: pnpm run lint
+      - run: pnpm run build
