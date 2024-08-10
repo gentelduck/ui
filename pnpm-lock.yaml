@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      vite-plugin-dts:
-        specifier: ^4.0.2
-        version: 4.0.2(@types/node@22.2.0)(rollup@4.20.0)(typescript@5.5.4)(vite@5.4.0(@types/node@22.2.0))
     devDependencies:
       '@changesets/cli':
         specifier: ^2.27.7
@@ -19,7 +15,7 @@ importers:
         specifier: ^1.6.1
         version: 1.6.1(react@18.3.1)
       '@eslint/js':
-        specifier: ^9.8.0
+        specifier: ^9.9.0
         version: 9.9.0
       '@hookform/resolvers':
         specifier: ^3.9.0
@@ -133,7 +129,7 @@ importers:
         specifier: ^8.20.1
         version: 8.20.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/node':
-        specifier: ^22.1.0
+        specifier: ^22.2.0
         version: 22.2.0
       '@types/react':
         specifier: ^18.3.3
@@ -142,7 +138,7 @@ importers:
         specifier: ^18.3.0
         version: 18.3.0
       '@vitejs/plugin-react-swc':
-        specifier: ^3.5.0
+        specifier: ^3.7.0
         version: 3.7.0(vite@5.4.0(@types/node@22.2.0))
       autoprefixer:
         specifier: ^10.4.20
@@ -163,10 +159,10 @@ importers:
         specifier: ^8.1.8
         version: 8.1.8(react@18.3.1)
       eslint:
-        specifier: ^9.8.0
+        specifier: ^9.9.0
         version: 9.9.0(jiti@1.21.6)
       eslint-plugin-react-hooks:
-        specifier: ^5.1.0-rc.0
+        specifier: 5.1.0-rc-fb9a90fa48-20240614
         version: 5.1.0-rc-fb9a90fa48-20240614(eslint@9.9.0(jiti@1.21.6))
       eslint-plugin-react-refresh:
         specifier: ^0.4.9
@@ -229,7 +225,7 @@ importers:
         specifier: ^5.5.4
         version: 5.5.4
       typescript-eslint:
-        specifier: ^8.0.0
+        specifier: ^8.0.1
         version: 8.0.1(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4)
       vaul:
         specifier: ^0.9.1
@@ -237,6 +233,9 @@ importers:
       vite:
         specifier: ^5.4.0
         version: 5.4.0(@types/node@22.2.0)
+      vite-plugin-dts:
+        specifier: ^4.0.2
+        version: 4.0.2(@types/node@22.2.0)(rollup@4.20.0)(typescript@5.5.4)(vite@5.4.0(@types/node@22.2.0))
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.2.0)
