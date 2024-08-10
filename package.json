@@ -24,7 +24,8 @@
     "ci": "pnpm run lint && pnpm run build",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "release": "pnpm run ci && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.7",
