@@ -1,50 +1,112 @@
-# React + TypeScript + Vite
+# Duck UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+  <img src="./public/logo.png" alt="Duck UI Logo" width="200"/>
+</p>
 
-Currently, two official plugins are available:
+Welcome to **Duck UI**, a modern UI component library designed for flexibility and ease of use. This library provides a set of high-quality React components, styled with a clean and responsive design, perfect for building user interfaces in web applications.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- **Modern Design**: Elegant and customizable components that adhere to modern UI/UX principles.
+- **Flexible**: Easily integrate and customize components to fit your design needs.
+- **Themed Styling**: Built with a palette that includes black and white, and customizable color options for various themes.
+- **Well-documented**: Comprehensive documentation to help you get started and make the most of Duck UI.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 📦 Installation
 
-- Configure the top-level `parserOptions` property like this:
+To get started with Duck UI, install it via npm or yarn:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install @ahmedayob/duck-ui
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+or
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+yarn add @ahmedayob/duck-ui
 ```
+
+## 📘 Usage
+
+Here's a basic example of how to use Duck UI components in your React application:
+
+```jsx
+import React from 'react'
+import { Button, Card } from '@ahmedayob/duck-ui'
+
+const App = () => {
+  return (
+    <div>
+      <Card>
+        <h1>Welcome to Duck UI</h1>
+        <Button>Click Me!</Button>
+      </Card>
+    </div>
+  )
+}
+
+export default App
+```
+
+## 🛠️ Development
+
+To develop and build the library locally, follow these steps:
+
+1. **Clone the Repository**
+
+   ```bash
+   git clone https://github.com/your-org/duck-ui.git
+   cd duck-ui
+   ```
+
+2. **Install Dependencies**
+
+   ```bash
+   pnpm install
+   ```
+
+3. **Run Development Server**
+
+   ```bash
+   pnpm dev
+   ```
+
+4. **Build the Library**
+
+   ```bash
+   pnpm build
+   ```
+
+## 🔧 Configuration
+
+Duck UI is configured with Vite for a fast development experience and optimized builds. To customize the configuration, modify the `vite.config.ts` file.
+
+## 🧪 Testing
+
+Duck UI uses Vitest for testing. To run the tests, use:
+
+```bash
+pnpm test
+```
+
+## 📄 Contributing
+
+We welcome contributions to Duck UI! To contribute, please follow these guidelines:
+
+1. Fork the repository.
+2. Create a new branch for your changes.
+3. Make your changes and commit them with clear messages.
+4. Open a pull request with a description of your changes.
+
+## 📝 License
+
+Duck UI is licensed under the [MIT License](LICENSE).
+
+## 📧 Contact
+
+For any questions or support, please contact us at [support@ahmedayob.com](mailto:support@ahmedayob.com).
+
+---
+
+Thank you for using Duck UI! We hope it helps you build beautiful and functional user interfaces.
