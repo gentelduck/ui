@@ -21,7 +21,7 @@
         "devtest": "vitest",
         "test": "vitest run",
         "lint": "tsc",
-        "ci": "npm run lint && npm run build",
+        "ci": "pnpm run lint && pnpm run build",
         "preview": "vite preview",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build"
