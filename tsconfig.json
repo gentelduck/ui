@@ -30,5 +30,15 @@
     },
     "include": [
         "lib"
-    ]
+    ],
+    "exclude": [
+        "**/*.stories.ts",
+        "**/*.stories.tsx"
+    ],
+    "build": {
+        "assetsInclude": [
+            "**/*.ts",
+            "**/*.tsx"
+        ]
+    }
 }

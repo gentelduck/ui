@@ -1,5 +1,5 @@
 import { ButtonProps } from '@/ui'
-import { IconType } from '../index.type'
+import { IconType } from '../index.d'
 
 export type DuckButtonProps = {
   button: TooltipButton

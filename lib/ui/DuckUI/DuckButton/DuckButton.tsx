@@ -1,6 +1,6 @@
 import React, { ForwardedRef } from 'react'
 import { Button, CommandShortcut, Tooltip, TooltipContent, TooltipTrigger } from '@/ui'
-import { DuckButtonProps } from './DuckButton.types'
+import { DuckButtonProps } from './DuckButton.d'
 import { cn, filteredObject } from '@/utils'
 
 export const DuckButton = React.forwardRef(

@@ -1,2 +1,2 @@
 export * from './DuckNavGroup'
-export * from './DuckNavGroup.types'
+export * from './DuckNavGroup.d'

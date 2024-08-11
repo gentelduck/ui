@@ -1,2 +1,2 @@
 export * from './DuckButton'
-export * from './DuckButton.types'
+export * from './DuckButton.d'

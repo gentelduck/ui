@@ -1,10 +1,10 @@
 import ReactDOM from 'react-dom/client'
 import './global.css'
-import { TooltipProvider } from '@/ui'
+import { TooltipProvider } from '../lib/ui'
 import './global.css'
 import React from 'react'
-import { Icon } from '@/assets'
-import { DuckNavGroup } from './ui/DuckUI/DuckNavGroup'
+import { Icon } from '../lib/assets'
+import { DuckNavGroup } from '../lib/ui/DuckUI/DuckNavGroup'
 
 export const App = () => {
   const [open, setOpen] = React.useState(true)

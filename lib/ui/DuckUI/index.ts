@@ -1,2 +1,2 @@
 export * from './DuckButton'
-export * from './index.type'
+export * from './index.d'

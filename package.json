@@ -1,8 +1,36 @@
 {
-    "name": "duck-ui",
-    "private": true,
-    "version": "0.0.0",
+    "name": "@ahmedayob/duck-ui",
+    "private": false,
+    "version": "0.0.3",
     "type": "module",
+    "author": "Ahmed Ayob",
+    "contributors": [
+        "ahmedayob <ahmedayobbusiness@gmail.com>"
+    ],
+    "homepage": "https://github.com/TheDuckUI/ui",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TheDuckUI/ui"
+    },
+    "bugs": {
+        "url": "https://github.com/TheDuckUI/ui/issues"
+    },
+    "license": "MIT",
+    "keywords": [
+        "duck-ui"
+    ],
+    "main": "dist/duck-ui.js",
+    "module": "dist/duck-ui.cjs.js",
+    "types": "dist/duck-ui.d.ts",
+    "files": [
+        "dist"
+    ],
+    "exports": {
+        ".": {
+            "import": "./dist/duck-ui.esm.js",
+            "require": "./dist/duck-ui.js"
+        }
+    },
     "scripts": {
         "dev": "vite",
         "build": "tsc -b && vite build",
@@ -11,11 +39,33 @@
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build"
     },
+    "peerDependencies": {
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "@hookform/resolvers": "^3.9.0",
+        "@tanstack/react-router": "^1.47.1",
+        "@tanstack/react-table": "^8.20.1",
+        "@tanstack/router-plugin": "^1.47.0",
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.1.1",
+        "cmdk": "1.0.0",
+        "date-fns": "^3.6.0",
+        "embla-carousel-react": "^8.1.8",
+        "input-otp": "^1.2.4",
+        "lucide-react": "^0.427.0",
+        "next-themes": "^0.3.0",
+        "react-day-picker": "8.10.1",
+        "react-hook-form": "^7.52.2",
+        "react-resizable-panels": "^2.0.23",
+        "recharts": "^2.12.7",
+        "sonner": "^1.5.0",
+        "vaul": "^0.9.1",
+        "zod": "^3.23.8"
+    },
     "devDependencies": {
         "@changesets/cli": "^2.27.7",
         "@chromatic-com/storybook": "^1.6.1",
         "@eslint/js": "^9.8.0",
-        "@hookform/resolvers": "^3.9.0",
         "@radix-ui/react-accordion": "^1.2.0",
         "@radix-ui/react-alert-dialog": "^1.1.1",
         "@radix-ui/react-avatar": "^1.1.0",
@@ -50,35 +100,18 @@
         "@storybook/react": "^8.2.8",
         "@storybook/react-vite": "^8.2.8",
         "@storybook/test": "^8.2.8",
-        "@tanstack/react-router": "^1.47.1",
-        "@tanstack/react-table": "^8.20.1",
         "@tanstack/router-devtools": "^1.47.1",
         "@types/node": "^22.2.0",
         "@types/react": "^18.3.3",
         "@types/react-dom": "^18.3.0",
         "@vitejs/plugin-react-swc": "^3.5.0",
         "autoprefixer": "^10.4.20",
-        "class-variance-authority": "^0.7.0",
-        "clsx": "^2.1.1",
-        "cmdk": "1.0.0",
-        "date-fns": "^3.6.0",
-        "embla-carousel-react": "^8.1.8",
         "eslint": "^9.8.0",
         "eslint-plugin-react-hooks": "^5.1.0-rc.0",
         "eslint-plugin-react-refresh": "^0.4.9",
         "eslint-plugin-storybook": "^0.8.0",
         "globals": "^15.9.0",
-        "input-otp": "^1.2.4",
-        "lucide-react": "^0.427.0",
-        "next-themes": "^0.3.0",
         "postcss": "^8.4.41",
-        "react": "^18.3.1",
-        "react-day-picker": "8.10.1",
-        "react-dom": "^18.3.1",
-        "react-hook-form": "^7.52.2",
-        "react-resizable-panels": "^2.0.23",
-        "recharts": "^2.12.7",
-        "sonner": "^1.5.0",
         "storybook": "^8.2.8",
         "tailwind-merge": "^2.4.0",
         "tailwindcss": "^3.4.9",
@@ -86,18 +119,13 @@
         "tsup": "^8.2.4",
         "typescript": "^5.5.3",
         "typescript-eslint": "^8.0.0",
-        "vaul": "^0.9.1",
         "vite": "^5.4.0",
         "vite-plugin-dts": "^4.0.2",
-        "vitest": "^2.0.5",
-        "zod": "^3.23.8"
+        "vitest": "^2.0.5"
     },
     "eslintConfig": {
         "extends": [
             "plugin:storybook/recommended"
         ]
-    },
-    "dependencies": {
-        "@tanstack/router-plugin": "^1.47.0"
     }
 }

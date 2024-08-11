@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 
 import path from 'path'
-import { devDependencies } from './package.json'
+import { devDependencies, peerDependencies } from './package.json'
 import dts from 'vite-plugin-dts'
 
 export default defineConfig({
@@ -20,10 +20,15 @@ export default defineConfig({
       formats: ['cjs', 'es'],
     },
     rollupOptions: {
-      external: [...Object.keys(devDependencies)],
+      external: [
+        ...Object.keys(devDependencies),
+        ...Object.keys(peerDependencies),
+        './lib/**/*.stories.tsx',
+        './public/**',
+      ],
     },
-    sourcemap: true,
-    emptyOutDir: true,
+    sourcemap: false,
+    emptyOutDir: false,
   },
   test: {
     globals: true,

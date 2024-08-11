@@ -1,6 +1,6 @@
 import { DuckButton, DuckButtonProps } from '../DuckButton'
 import { cn, filteredObject } from '@/utils'
-import { DuckNavGroupProps, NavCollabsedType } from './DuckNavGroup.types'
+import { DuckNavGroupProps, NavCollabsedType } from './DuckNavGroup.d'
 import { Separator } from '@/ui/ShadcnUI'
 import React from 'react'
 
