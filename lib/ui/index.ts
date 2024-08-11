@@ -1,2 +1,2 @@
-export * from "./ShadcnUI";
-export * from "./Duck-UI";
+export * from './ShadcnUI'
+export * from './DuckUI'
