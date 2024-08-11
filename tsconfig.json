@@ -26,14 +26,26 @@
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true
+        "noFallthroughCasesInSwitch": true,
+        "allowJs": false,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
+        "strictNullChecks": true,
+        "resolveJsonModule": true,
+        "incremental": true
     },
     "include": [
         "lib"
     ],
     "exclude": [
+        "node_modules",
+        "dist",
+        "**/*.stories.tsx",
         "**/*.stories.ts",
-        "**/*.stories.tsx"
+        "**/*.mdx"
     ],
     "build": {
         "assetsInclude": [
