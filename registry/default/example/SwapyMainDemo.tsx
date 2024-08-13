@@ -431,6 +431,7 @@ export const KanbanColumnRowTemplate: React.FC<KanbanColumnRowComponentArgs> = (
     )
 }
 //NOTE: YOU have to fix the mention
+//NOTE: you have to fix the parsing for the code block
 
 export interface CommentsLayoutProps {
     comments: CommentType[]
