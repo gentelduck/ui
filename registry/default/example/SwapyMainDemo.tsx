@@ -430,6 +430,7 @@ export const KanbanColumnRowTemplate: React.FC<KanbanColumnRowComponentArgs> = (
     </div>
   )
 }
+//
 
 export interface CommentsLayoutProps {
   comments: CommentType[]
