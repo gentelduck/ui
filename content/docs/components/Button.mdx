@@ -1,0 +1,170 @@
+---
+title: Button
+description: The Button component is a highly customizable and versatile button component that can be integrated into various parts of your React application. It supports icons, labels, commands, and various styling options, making it adaptable to different use cases.
+
+featured: true
+component: true
+---
+
+<ComponentPreview
+  name="ButtonMainDemo"
+  description="A button"
+/>
+
+## Features
+
+- **Customizable**: Easily adjust the button's variant, size, and appearance.
+- **Keyboard Shortcuts**: Assign keyboard shortcuts for enhanced user interactions.
+- **Tooltip Integration**: Display tooltips with custom delay and content.
+- **Icon Support**: Include icons alongside text or as standalone elements.
+- **Collapsible**: Optionally collapse the button to save space.
+- **Loading State**: Display a loading spinner or icon while actions are in progress, hiding other content.
+
+## Installation
+
+<Tabs defaultValue="cli">
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx duck-ui@latest add button
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install @radix-ui/react-slot
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ComponentSource name="Button" />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</Tabs>
+
+## Usage
+
+```tsx
+import React from 'react'
+import { Button } from '@/components/ui'
+import { Inbox } from 'lucide-react'
+```
+
+```tsx
+<Button
+  icon={Inbox}
+  title={'Inbox'}
+  label={'4'}
+/>
+```
+
+## Link
+
+You can use the `buttonVariants` helper to create a any element like a link that looks like a button.
+
+```tsx
+import { buttonVariants } from '@/components/ui'
+```
+
+```tsx
+<Link className={buttonVariants({ variant: 'outline' })}>Click me</Link>
+```
+
+Alternatively, you can set the `asChild` parameter and nest the link component.
+
+```tsx
+<Button asChild>
+  <Link href="/login">Login</Link>
+</Button>
+```
+
+## Examples
+
+### Simple
+
+<ComponentPreview
+  name="ButtonSimpleDemo"
+  description="Simple button"
+/>
+
+### Advanced
+
+<ComponentPreview
+  name="ButtonAdvancedDemo"
+  description="Advanced button"
+/>
+
+## ButtonProps
+
+The `ButtonProps` interface defines the properties that can be passed to the `Button` component.
+
+Here's the updated parameters table with the **`loading`** parameter added:
+
+### Parameters
+
+| Parameter       | Type                                                       | Description                                                                                   |
+| --------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `asChild`       | `boolean` (optional)                                       | Renders the button as a child element, useful for custom wrappers.                            |
+| `isCollapsed`   | `boolean` (optional)                                       | Indicates if the button is in a collapsed state, affecting its visibility or content.         |
+| `icon`          | `LucideIcon` (optional)                                    | Icon to display within the button.                                                            |
+| `label`         | [`LabelType`](#labeltype) (optional)                       | Label text or tooltip content to display with the button.                                     |
+| `command`       | [`CommandType`](#commandtype) (optional)                   | Configuration for keyboard shortcuts, including key, label, and action.                       |
+| `delayDuration` | `number` (optional)                                        | Delay in milliseconds before showing the tooltip.                                             |
+| `loading`       | `boolean` (optional)                                       | Indicates whether to display a loading spinner instead of the button content.                 |
+| `variant`       | [`Variant`](#variant) (optional)                           | Defines the visual style of the button (e.g., `default`, `destructive`, `outline`, etc.).     |
+| `size`          | [`Size`](#size) (optional)                                 | Defines the size of the button (e.g., `default`, `sm`, `lg`, `icon`).                         |
+| `className`     | `string` (optional)                                        | Additional classes to apply to the button.                                                    |
+| `...props`      | `React.ButtonHTMLAttributes<HTMLButtonElement>`            | Additional HTML attributes to apply to the button element.                                    |
+
+### Variants
+
+| Variant         | Description                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| `default`       | The primary style of the button, with a background color defined by the primary theme.            |
+| `destructive`   | A style intended for actions that might have irreversible effects, using the destructive color scheme. |
+| `outline`       | A minimal style with just an outline and no background color.                                     |
+| `secondary`     | A secondary style using the secondary color scheme.                                               |
+| `ghost`         | A subtle style with no background, only changing on hover.                                        |
+| `link`          | A style that looks like a hyperlink, often used for inline actions.                               |
+
+### Sizes
+
+| Size            | Description                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| `default`       | The default button size, balanced for most use cases.                                             |
+| `sm`            | A smaller button with reduced padding and font size.                                              |
+| `lg`            | A larger button with increased padding and font size, for emphasis.                               |
+| `icon`          | A button designed to only contain an icon, with equal height and width.                           |
+
+### LabelType
+
+| Property        | Type                                                       | Description                                                                                   |
+| --------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `children`      | `React.ReactNode` (optional)                               | The content to display inside the tooltip.                                                    |
+| `className`     | `string` (optional)                                        | Additional classes to apply to the tooltip content.                                           |
+
+### CommandType
+
+| Property        | Type                                                       | Description                                                                                   |
+| --------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `label`         | `string`                                                   | The label of the command to display.                                                          |
+| `key`           | `string`                                                   | The key combination that triggers the command.                                                |
+| `state`         | `unknown` (optional)                                       | Optional state information to pass along when the command is triggered.                       |
+| `action`        | `<T>(arg?: T) => void`                                     | The action to execute when the command is triggered.                                          |
+

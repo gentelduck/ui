@@ -1,0 +1,108 @@
+---
+title: Badge
+description: The Badge component is a customizable badge that supports different variants and sizes, making it versatile for various use cases.
+component: true
+---
+
+<ComponentPreview name="BadgeMainDemo" description="A badge" />
+
+
+
+## Features
+
+- **Customizable Variants**: Easily switch between different visual styles such as `default`, `info`, `warning`, `success`, and `outline`.
+- **Resizable**: Adjust the badge size with options like `sm`, `md`, and `lg`.
+- **Interactive**: Includes built-in hover effects and focus states for better user interaction.
+- **Transition Effects**: Smooth transition effects for hover states.
+
+## Installation
+
+<Tabs defaultValue="cli">
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx duck-ui@latest add badge
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ComponentSource name="Badge" />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</Tabs>
+
+## Usage
+
+```tsx
+import { Badge } from "@/components/ui"
+```
+
+```tsx
+<Badge variant="outline"> Badge</Badge>
+```
+
+### Link
+
+You can use the `badgeVariants` helper to create a link that looks like a badge.
+
+```tsx
+import { badgeVariants } from "@/components/ui"
+```
+
+```tsx
+<Link className={badgeVariants({ variant: "outline" })}> Badge</Link>
+```
+
+### Parameters
+
+| Parameter   | Type                                   | Description                                                                                       |
+| ----------- | -------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `variant`   | [`Variant`](#variant) (optional)       | Defines the visual style of the badge (e.g., `default`, `info`, `warning`, `success`, `outline`). |
+| `size`      | [`Size`](#size) (optional)             | Defines the size of the badge (e.g., `sm`, `md`, `lg`).                                           |
+| `className` | `string` (optional)                    | Additional classes to apply to the badge.                                                         |
+| `label`     | [`LabelType`](#labeltype) (optional)   | Label text or tooltip content to display with the Badge.                                          |
+| `...props`  | `React.HTMLAttributes<HTMLDivElement>` | Additional HTML attributes to apply to the badge container.                                       |
+
+### LabelType
+
+| Property        | Type                                                       | Description                                                                                   |
+| --------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `children`      | `React.ReactNode` (optional)                               | The content to display inside the tooltip.                                                    |
+| `className`     | `string` (optional)                                        | Additional classes to apply to the tooltip content.                                           |
+
+
+
+### Variants
+
+| Variant    | Description                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------- |
+| `default`  | The primary style of the badge, with a background color defined by the `duck-primary` class.       |
+| `info`     | A style intended for informational badges, using the `duck-info` color scheme.                    |
+| `warning`  | A style designed for warning messages, using the `duck-warning` color scheme.                     |
+| `success`  | A style for success messages, using the `duck-success` color scheme.                              |
+| `outline`  | A minimal style with just an outline and no background color, suitable for subtle indicators.      |
+
+### Sizes
+
+| Size   | Description                                                                     |
+| ------ | ------------------------------------------------------------------------------- |
+| `default`  | The default button size.                                                    |
+| `sm`   | A small badge with reduced padding and font size.                               |
+| `md`   | The default medium size badge, balanced for most use cases.                     |
+| `lg`   | A large badge with increased padding and font size, for emphasis.               |
