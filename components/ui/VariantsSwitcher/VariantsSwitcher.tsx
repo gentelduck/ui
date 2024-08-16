@@ -19,6 +19,7 @@ import { useAtom } from 'jotai'
 import {
   sizes,
   typesAllowedForCollapse,
+  typesAllowedForDuration,
   typesAllowedForLabel,
   typesAllowedForLoading,
   typesAllowedForTitle,
@@ -110,12 +111,26 @@ export function VariantsSwitcher({ type }: { type: string }) {
           />
         ) : null}
 
+        {typesAllowedForDuration.includes(type) && type ? (
+          <Input
+            placeholder="Enter label"
+            value={varieties.default.variety?.duration}
+            className="w-[175px] h-7 text-sm placeholder:text-[.8rem]"
+            type="number"
+            min={0}
+            onChange={({ currentTarget }) =>
+              setVarieties({ default: { variety: { ...varieties.default.variety, duration: +currentTarget.value } } })
+            }
+          />
+        ) : null}
+
         {typesAllowedForLabel.includes(type) && type ? (
           <Input
             placeholder="Enter label"
             value={varieties.default.variety?.label}
             className="w-[175px] h-7 text-sm placeholder:text-[.8rem]"
             type="number"
+            min={0}
             onChange={({ currentTarget }) =>
               setVarieties({ default: { variety: { ...varieties.default.variety, label: currentTarget.value } } })
             }

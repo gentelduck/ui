@@ -5,3 +5,4 @@ export const typesAllowedForTitle = ['ButtonMainDemo', 'BadgeMainDemo', 'ButtonS
 export const typesAllowedForLabel = ['ButtonMainDemo', 'ButtonSimpleDemo', 'ButtonAdvancedDemo']
 export const typesAllowedForLoading = ['ButtonMainDemo', 'ButtonSimpleDemo', 'ButtonAdvancedDemo']
 export const typesAllowedForCollapse = ['ButtonMainDemo', 'ButtonSimpleDemo', 'ButtonAdvancedDemo']
+export const typesAllowedForDuration = ['TooltipMainDemo', 'TooltipInstantlyDemo', 'TooltipGlobalDemo']

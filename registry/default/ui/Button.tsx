@@ -91,7 +91,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         document.addEventListener('keydown', handleKeyDown)
         return () => document.removeEventListener('keydown', handleKeyDown)
       }
-    }, [command])
+    }, [command?.state])
 
     const CommandComponent = () => (
       <CommandShortcut className="text-[.8rem]">

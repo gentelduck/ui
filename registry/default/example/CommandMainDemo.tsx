@@ -9,9 +9,9 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from '@/registry/default/ui/'
+} from '../ui'
 
-export default function CommandDemo() {
+export default function CommandMaiDemo() {
   return (
     <Command className="rounded-lg border shadow-md">
       <CommandInput placeholder="Type a command or search..." />

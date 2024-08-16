@@ -104,13 +104,35 @@ export const Index: Record<string, any> = {
       subcategory: "undefined",
       chunks: []
     },
+    "CommandDialogDemo": {
+      name: "CommandDialogDemo",
+      type: "components:example",
+      registryDependencies: ["Command"],
+      component: React.lazy(() => import("@/registry/default/example/CommandDialogDemo")),
+      source: "",
+      files: ["registry/default/example/CommandDialogDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
     "TooltipMainDemo": {
       name: "TooltipMainDemo",
       type: "components:example",
-      registryDependencies: ["Command"],
+      registryDependencies: ["Tooltip"],
       component: React.lazy(() => import("@/registry/default/example/TooltipMainDemo")),
       source: "",
       files: ["registry/default/example/TooltipMainDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "TooltipGlobalDemo": {
+      name: "TooltipGlobalDemo",
+      type: "components:example",
+      registryDependencies: ["Tooltip"],
+      component: React.lazy(() => import("@/registry/default/example/TooltipGlobalDemo")),
+      source: "",
+      files: ["registry/default/example/TooltipGlobalDemo.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []

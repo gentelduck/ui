@@ -47,7 +47,7 @@ export function CopyButton({ value, className, src, variant = 'ghost', event, ..
                   code: value,
                 },
               }
-            : undefined,
+            : undefined
         )
         setHasCopied(true)
       }}

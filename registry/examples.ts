@@ -32,15 +32,21 @@ export const examples: Registry = [
     files: ['example/CommandMainDemo.tsx'],
   },
   {
-    name: 'TooltipMainDemo',
+    name: 'CommandDialogDemo',
     type: 'components:example',
     registryDependencies: ['Command'],
+    files: ['example/CommandDialogDemo.tsx'],
+  },
+  {
+    name: 'TooltipMainDemo',
+    type: 'components:example',
+    registryDependencies: ['Tooltip'],
     files: ['example/TooltipMainDemo.tsx'],
   },
   {
-    name: 'CommandInstantlyDemo',
+    name: 'TooltipGlobalDemo',
     type: 'components:example',
-    registryDependencies: ['Command'],
-    files: ['example/CommandInstantlyDemo.tsx'],
+    registryDependencies: ['Tooltip'],
+    files: ['example/TooltipGlobalDemo.tsx'],
   },
 ]

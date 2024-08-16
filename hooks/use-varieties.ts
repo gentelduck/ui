@@ -13,6 +13,7 @@ export type Varieties = {
     command?: string
     loading?: boolean
     open?: boolean
+    duration?: number
   }
 }
 
@@ -27,6 +28,7 @@ export const buttonVarieties = atom<ButtonVarietiesType>({
       loading: false,
       command: 'c',
       open: true,
+      duration: 0,
     },
   },
 })

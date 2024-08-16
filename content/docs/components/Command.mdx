@@ -95,7 +95,7 @@ import {
 
 ### Dialog
 
-<ComponentPreview name="command-dialog" />
+<ComponentPreview name="CommandDialogDemo" description="A component dialog." />
 
 To show the command menu in a dialog, use the `<CommandDialog />` component.
 
@@ -132,7 +132,22 @@ export function CommandMenu() {
   )
 }
 ```
+## Type Definitions
 
-### Combobox
+Here are the type definitions used in the `<CustomCommand />` component:
+
+| Name                      | Type             | Description                                           |
+| ------------------------- | ---------------- | ----------------------------------------------------- |
+| `CustomCommand`           | `React.FC`       | Main wrapper component for the custom command menu.   |
+| `CustomCommandDialog`     | `React.FC<{ open: boolean; onOpenChange: (open: boolean) => void; }>` | Dialog component for showing the command menu. |
+| `CustomCommandEmpty`      | `React.FC`       | Component displayed when there are no search results. |
+| `CustomCommandGroup`      | `React.FC<{ heading: string; }>` | Groups related command items together.                 |
+| `CustomCommandInput`      | `React.FC<{ placeholder: string; }>` | Input field for searching commands or items.        |
+| `CustomCommandItem`       | `React.FC<{ children: React.ReactNode; }>` | Represents an individual item in the list.     |
+| `CustomCommandList`       | `React.FC`       | Container for the list of command items.              |
+| `CustomCommandSeparator`  | `React.FC`       | Separates different groups of command items.          |
+| `CustomCommandShortcut`   | `React.FC<{ keys: string[]; }>` | Displays keyboard shortcuts for command items.         |
+
+## Combobox
 
 You can use the `<Command />` component as a combobox. See the [Combobox](/docs/components/combobox) page for more information.
