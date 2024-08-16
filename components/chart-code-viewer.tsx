@@ -3,8 +3,7 @@ import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useThemesConfig } from '@/hooks/use-themes-config'
-import { BlockCopyButton } from '@/components/block-copy-button'
-import { V0Button } from '@/components/v0-button'
+import { V0Button, BlockCopyButton } from '@/components/ui'
 import { Button } from '@/registry/default/ui/'
 import { Drawer, DrawerContent, DrawerTrigger } from '@/registry/default/ui/'
 import { Sheet, SheetContent, SheetTrigger } from '@/registry/default/ui/'
@@ -159,7 +158,7 @@ ${Object.entries(themesConfig?.activeTheme.cssVars.dark || {})
         side="right"
         className={cn(
           'flex flex-col gap-0 border-l-0 p-0 dark:border-l sm:max-w-sm md:w-[700px] md:max-w-[700px]',
-          className,
+          className
         )}
       >
         {content}

@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { BlockCopyButton } from '@/components/block-copy-button'
+import { BlockCopyButton } from '@/components/ui'
 import { ChartCodeViewer } from '@/components/chart-code-viewer'
 import { Separator } from '@/registry/default/ui'
 import { Block } from '@/registry/schema'
