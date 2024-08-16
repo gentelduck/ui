@@ -43,6 +43,16 @@ export const docsConfig: DocsConfig = {
           href: '/docs/components/Badge',
           items: [],
         },
+        {
+          title: 'Command',
+          href: '/docs/components/Command',
+          items: [],
+        },
+        {
+          title: 'Tooltip',
+          href: '/docs/components/Tooltip',
+          items: [],
+        },
       ],
     },
   ],

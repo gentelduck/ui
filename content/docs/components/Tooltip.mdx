@@ -1,0 +1,201 @@
+---
+title: Tooltip
+description: A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.
+component: true
+links:
+  doc: https://www.radix-ui.com/docs/primitives/components/tooltip
+  api: https://www.radix-ui.com/docs/primitives/components/tooltip#api-reference
+---
+
+<ComponentPreview name="TooltipMainDemo" description="A tooltip component." />
+
+## Installation
+
+<Tabs defaultValue="cli">
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx duck-ui@latest add tooltip
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install @radix-ui/react-tooltip
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ComponentSource name="tooltip" />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</Tabs>
+
+## Usage
+
+```tsx
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+```
+
+```tsx
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger>Hover</TooltipTrigger>
+    <TooltipContent>
+      <p>Add to library</p>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
+
+## API Reference
+
+### TooltipProvider
+
+Wraps your app to provide global functionality to your tooltips.
+
+| Prop                | Type    | Default | Description                            |
+| ------------------- | ------- | ------- | -------------------------------------- |
+| `delayDuration`     | number  | `700`   | Delay before tooltip appears.          |
+| `skipDelayDuration` | number  | `300`   | Skip delay duration when hiding.       |
+| `disableHoverableContent` | boolean | `false` | Disable hoverable content.        |
+
+### TooltipRoot
+
+Contains all the parts of a tooltip.
+
+| Prop                | Type    | Default | Description                            |
+| ------------------- | ------- | ------- | -------------------------------------- |
+| `defaultOpen`       | boolean | `false` | Whether the tooltip is open by default.|
+| `open`              | boolean | `false` | Control the open state programmatically.|
+| `onOpenChange`      | function | `-`     | Callback for when the open state changes.|
+| `delayDuration`     | number  | `700`   | Delay before tooltip appears.          |
+| `disableHoverableContent` | boolean | `false` | Disable hoverable content.        |
+
+### TooltipTrigger
+
+The button that toggles the tooltip.
+
+| Prop         | Type    | Default | Description                            |
+| ------------ | ------- | ------- | -------------------------------------- |
+| `asChild`    | boolean | `false` | Passes the trigger to a child component.|
+
+### TooltipPortal
+
+Portals the content part into the body.
+
+| Prop         | Type    | Default | Description                            |
+| ------------ | ------- | ------- | -------------------------------------- |
+| `forceMount` | boolean | `false` | Always render the portal even when closed.|
+| `container`  | HTMLElement | `document.body` | Container for the portal.|
+
+### TooltipContent
+
+The component that pops out when the tooltip is open.
+
+| Prop         | Type    | Default | Description                            |
+| ------------ | ------- | ------- | -------------------------------------- |
+| `asChild`    | boolean | `false` | Passes the content to a child component.|
+| `aria-label` | string  | `-`     | ARIA label for accessibility.          |
+| `onEscapeKeyDown` | function | `-` | Callback when escape key is pressed.  |
+| `onPointerDownOutside` | function | `-` | Callback when pointer is clicked outside.|
+| `forceMount` | boolean | `false` | Always render the content even when closed.|
+| `side`       | enum    | `"top"` | Side to position the tooltip.          |
+| `sideOffset` | number  | `0`     | Offset from the side.                  |
+| `align`      | enum    | `"center"` | Alignment relative to the trigger.  |
+| `alignOffset`| number  | `0`     | Offset for alignment.                  |
+| `avoidCollisions` | boolean | `true` | Avoid collisions with the viewport.   |
+| `collisionBoundary` | Boundary | `[]` | Boundary to avoid collisions with.     |
+| `collisionPadding` | number \| Padding | `0` | Padding for collisions.               |
+| `arrowPadding` | number | `0`     | Padding for the arrow.                 |
+| `sticky`     | enum    | `"partial"` | Sticky behavior for the tooltip.      |
+| `hideWhenDetached` | boolean | `false` | Hide tooltip when trigger is detached. |
+
+### TooltipArrow
+
+An optional arrow element to render alongside the tooltip.
+
+| Prop         | Type    | Default | Description                            |
+| ------------ | ------- | ------- | -------------------------------------- |
+| `asChild`    | boolean | `false` | Passes the arrow to a child component. |
+| `width`      | number  | `10`    | Width of the arrow.                    |
+| `height`     | number  | `5`     | Height of the arrow.                   |
+
+## Examples
+
+### Configure Globally
+
+
+<ComponentPreview name="TooltipMainDemo" description="A tooltip component." />
+
+
+### Show Instantly
+
+```tsx
+import { Tooltip, TooltipTrigger, TooltipContent } from '@radix-ui/react-tooltip';
+
+export default function App() {
+  return (
+    <Tooltip delayDuration={0}>
+      <TooltipTrigger>Hover me</TooltipTrigger>
+      <TooltipContent>Instant Tooltip Content</TooltipContent>
+    </Tooltip>
+  );
+}
+```
+
+### Origin-Aware Animations
+
+```tsx
+import { Tooltip, TooltipTrigger, TooltipContent } from '@radix-ui/react-tooltip';
+import './styles.css';
+
+export default function App() {
+  return (
+    <Tooltip>
+      <TooltipTrigger>Hover me</TooltipTrigger>
+      <TooltipContent className="TooltipContent">Tooltip with animation</TooltipContent>
+    </Tooltip>
+  );
+}
+```
+
+```css
+/* styles.css */
+.TooltipContent {
+  transform-origin: var(--radix-tooltip-content-transform-origin);
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+```

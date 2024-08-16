@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "contentlayer2 build && pnpm build:registry && next dev -p 3003",
+    "dev": "contentlayer2 build && pnpm build:registry && next dev -p 3002",
     "build": "contentlayer2 build && pnpm build:registry && next build",
     "build:registry": "tsx --tsconfig ./tsconfig.json ./scripts/build-registry.mts && prettier --log-level silent --write \"registry/**/*.{ts,tsx,mdx}\" --cache",
     "build:docs": "contentlayer2 build",
@@ -89,7 +89,7 @@
     "lucide-react": "0.359.0",
     "markdown-wasm": "^1.2.0",
     "mini-svg-data-uri": "^1.4.4",
-    "next": "^14.2.5",
+    "next": "14.3.0-canary.43",
     "next-contentlayer2": "^0.4.6",
     "next-themes": "^0.2.1",
     "postcss": "^8.4.41",

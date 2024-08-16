@@ -25,4 +25,22 @@ export const examples: Registry = [
     registryDependencies: ['Badge'],
     files: ['example/BadgeMainDemo.tsx'],
   },
+  {
+    name: 'CommandMainDemo',
+    type: 'components:example',
+    registryDependencies: ['Command'],
+    files: ['example/CommandMainDemo.tsx'],
+  },
+  {
+    name: 'TooltipMainDemo',
+    type: 'components:example',
+    registryDependencies: ['Command'],
+    files: ['example/TooltipMainDemo.tsx'],
+  },
+  {
+    name: 'CommandInstantlyDemo',
+    type: 'components:example',
+    registryDependencies: ['Command'],
+    files: ['example/CommandInstantlyDemo.tsx'],
+  },
 ]
