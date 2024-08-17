@@ -227,7 +227,7 @@ Add the following to your styles/globals.css file. You can learn more about usin
 
 ### Add a cn helper
 
-I use a `cn` helper to make it easier to conditionally add Tailwind CSS classes. Here's how I define it in `lib/utils.ts`:
+I use a `cn` and  `groupDataByNumbers` helper to make it easier to conditionally add Tailwind CSS classes. Here's how I define it in `lib/utils.ts`:
 
 ```ts title="lib/utils.ts"
 import { clsx, type ClassValue } from 'clsx'
@@ -235,6 +235,19 @@ import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function groupDataByNumbers<T>(strings: T[], groupSizes: number[]): T[][] {
+  const result: T[][] = []
+  let index = 0
+
+  for (const size of groupSizes) {
+    const group = strings.slice(index, index + size)
+    result.push(group)
+    index += size
+  }
+
+  return result
 }
 ```
 

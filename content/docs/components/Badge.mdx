@@ -39,6 +39,10 @@ npx duck-ui@latest add badge
 
 <ComponentSource name="Badge" />
 
+<Step>You also will need to install the [`Button`](/docs/components/Command) and
+    [`Tooltip`](/docs/components/Tooltip) components because some dependencies
+    are inherited from them.</Step>
+
 <Step>Update the import paths to match your project setup.</Step>
 
 </Steps>
@@ -69,40 +73,130 @@ import { badgeVariants } from "@/components/ui"
 <Link className={badgeVariants({ variant: "outline" })}> Badge</Link>
 ```
 
-### Parameters
+Certainly! Here's a detailed breakdown of the `Badge` component's types and parameters in a table format, similar to the one provided for the `ButtonProps`.
 
-| Parameter   | Type                                   | Description                                                                                       |
-| ----------- | -------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `variant`   | [`Variant`](#variant) (optional)       | Defines the visual style of the badge (e.g., `default`, `info`, `warning`, `success`, `outline`). |
-| `size`      | [`Size`](#size) (optional)             | Defines the size of the badge (e.g., `sm`, `md`, `lg`).                                           |
-| `className` | `string` (optional)                    | Additional classes to apply to the badge.                                                         |
-| `label`     | [`LabelType`](#labeltype) (optional)   | Label text or tooltip content to display with the Badge.                                          |
-| `...props`  | `React.HTMLAttributes<HTMLDivElement>` | Additional HTML attributes to apply to the badge container.                                       |
+### BadgeProps
 
-### LabelType
+The `BadgeProps` interface defines the properties that can be passed to the `Badge` component.
+
+#### Parameters
+
+| Parameter       | Type                                                       | Description                                                                                   |
+| --------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `className`     | `string` (optional)                                        | Additional classes to apply to the badge.                                                    |
+| `variant`       | [`Variant`](#variant) (optional)                           | Defines the visual style of the badge (e.g., `default`, `secondary`, `destructive`, `outline`). |
+| `size`          | [`Size`](#size) (optional)                                 | Defines the size of the badge (e.g., `default`, `sm`, `lg`, `icon`).                         |
+| `label`         | [`LabelType`](#labeltype) (optional)                       | Label text or tooltip content to display with the badge.                                     |
+| `...props`      | `React.HTMLAttributes<HTMLDivElement>`                      | Additional HTML attributes to apply to the badge element.                                    |
+
+#### Variants
+
+| Variant         | Description                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| `default`       | The primary style of the badge, with a background color defined by the primary theme.            |
+| `secondary`     | A secondary style using the secondary color scheme.                                               |
+| `destructive`   | A style intended for actions that might have irreversible effects, using the destructive color scheme. |
+| `outline`       | A minimal style with just an outline and no background color.                                     |
+
+#### Sizes
+
+| Size            | Description                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| `default`       | The default badge size, balanced for most use cases.                                             |
+| `sm`            | A smaller badge with reduced padding and font size.                                              |
+| `lg`            | A larger badge with increased padding and font size, for emphasis.                               |
+| `icon`          | A badge designed to only contain an icon, with equal height and width.                           |
+
+#### LabelType
 
 | Property        | Type                                                       | Description                                                                                   |
 | --------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | `children`      | `React.ReactNode` (optional)                               | The content to display inside the tooltip.                                                    |
 | `className`     | `string` (optional)                                        | Additional classes to apply to the tooltip content.                                           |
 
+#### Variant
 
+The `variant` property determines the visual style of the badge.
 
-### Variants
+| Value           | Description                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| `default`       | The primary style of the badge, with a background color defined by the primary theme.            |
+| `secondary`     | A secondary style using the secondary color scheme.                                               |
+| `destructive`   | A style intended for actions that might have irreversible effects, using the destructive color scheme. |
+| `outline`       | A minimal style with just an outline and no background color.                                     |
 
-| Variant    | Description                                                                                       |
-| ---------- | ------------------------------------------------------------------------------------------------- |
-| `default`  | The primary style of the badge, with a background color defined by the `duck-primary` class.       |
-| `info`     | A style intended for informational badges, using the `duck-info` color scheme.                    |
-| `warning`  | A style designed for warning messages, using the `duck-warning` color scheme.                     |
-| `success`  | A style for success messages, using the `duck-success` color scheme.                              |
-| `outline`  | A minimal style with just an outline and no background color, suitable for subtle indicators.      |
+#### Size
 
-### Sizes
+The `size` property determines the size of the badge.
 
-| Size   | Description                                                                     |
-| ------ | ------------------------------------------------------------------------------- |
-| `default`  | The default button size.                                                    |
-| `sm`   | A small badge with reduced padding and font size.                               |
-| `md`   | The default medium size badge, balanced for most use cases.                     |
-| `lg`   | A large badge with increased padding and font size, for emphasis.               |
+| Value           | Description                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| `default`       | The default badge size, balanced for most use cases.                                             |
+| `sm`            | A smaller badge with reduced padding and font size.                                              |
+| `lg`            | A larger badge with increased padding and font size, for emphasis.                               |
+| `icon`          | A badge designed to only contain an icon, with equal height and width.                           |
+
+This should give you a comprehensive view of the `Badge` component's properties, variants, sizes, and label types. Let me know if you need more details or further adjustments!Certainly! Here's a detailed breakdown of the `Badge` component's types and parameters in a table format, similar to the one provided for the `ButtonProps`.
+
+### BadgeProps
+
+The `BadgeProps` interface defines the properties that can be passed to the `Badge` component.
+
+#### Parameters
+
+| Parameter       | Type                                                       | Description                                                                                   |
+| --------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `className`     | `string` (optional)                                        | Additional classes to apply to the badge.                                                    |
+| `variant`       | [`Variant`](#variant) (optional)                           | Defines the visual style of the badge (e.g., `default`, `secondary`, `destructive`, `outline`). |
+| `size`          | [`Size`](#size) (optional)                                 | Defines the size of the badge (e.g., `default`, `sm`, `lg`, `icon`).                         |
+| `label`         | [`LabelType`](#labeltype) (optional)                       | Label text or tooltip content to display with the badge.                                     |
+| `...props`      | `React.HTMLAttributes<HTMLDivElement>`                      | Additional HTML attributes to apply to the badge element.                                    |
+
+#### Variants
+
+| Variant         | Description                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| `default`       | The primary style of the badge, with a background color defined by the primary theme.            |
+| `secondary`     | A secondary style using the secondary color scheme.                                               |
+| `destructive`   | A style intended for actions that might have irreversible effects, using the destructive color scheme. |
+| `outline`       | A minimal style with just an outline and no background color.                                     |
+
+#### Sizes
+
+| Size            | Description                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| `default`       | The default badge size, balanced for most use cases.                                             |
+| `sm`            | A smaller badge with reduced padding and font size.                                              |
+| `lg`            | A larger badge with increased padding and font size, for emphasis.                               |
+| `icon`          | A badge designed to only contain an icon, with equal height and width.                           |
+
+#### LabelType
+
+| Property        | Type                                                       | Description                                                                                   |
+| --------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `children`      | `React.ReactNode` (optional)                               | The content to display inside the tooltip.                                                    |
+| `className`     | `string` (optional)                                        | Additional classes to apply to the tooltip content.                                           |
+
+#### Variant
+
+The `variant` property determines the visual style of the badge.
+
+| Value           | Description                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| `default`       | The primary style of the badge, with a background color defined by the primary theme.            |
+| `secondary`     | A secondary style using the secondary color scheme.                                               |
+| `destructive`   | A style intended for actions that might have irreversible effects, using the destructive color scheme. |
+| `outline`       | A minimal style with just an outline and no background color.                                     |
+
+#### Size
+
+The `size` property determines the size of the badge.
+
+| Value           | Description                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| `default`       | The default badge size, balanced for most use cases.                                             |
+| `sm`            | A smaller badge with reduced padding and font size.                                              |
+| `lg`            | A larger badge with increased padding and font size, for emphasis.                               |
+| `icon`          | A badge designed to only contain an icon, with equal height and width.                           |
+
+This should give you a comprehensive view of the `Badge` component's properties, variants, sizes, and label types. Let me know if you need more details or further adjustments!

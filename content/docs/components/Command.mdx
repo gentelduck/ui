@@ -41,12 +41,15 @@ npx shadcn-ui@latest add command
 <Step>Install the following dependencies:</Step>
 
 ```bash
-npm install cmdk
+npm install cmdk 
 ```
 
 <Step>Copy and paste the following code into your project.</Step>
 
-<ComponentSource name="command" />
+<ComponentSource name="Command" />
+
+<Step>You also will need to install the [`Button`](/docs/components/Command),
+    [`Tooltip`](/docs/components/Tooltip), [`Dialog`](/docs/components/Tooltip) and [`ScrollArea`](/docs/components/Tooltip) components because some dependencies are inherited from them.</Step>
 
 <Step>Update the import paths to match your project setup.</Step>
 
@@ -137,43 +140,106 @@ export function CommandMenu() {
   )
 }
 ```
-## Type Definitions
+Certainly! Here’s a detailed breakdown of the `Command` component and its related types in a table format:
 
-Here are the type definitions used in the `<CustomCommand />` component:
+### Command Component Types
 
-| Name                      | Type                                                                                 | Description                                                        |
-| ------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| `Command`                 | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive>>`                   | Main wrapper component for the command menu.                       |
-| `CommandDialog`           | `React.FC<DialogProps>`                                                             | Dialog component for showing the command menu.                     |
-| `CommandEmpty`            | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive.Empty>>`             | Component displayed when there are no search results.              |
-| `CommandGroup`            | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive.Group>>`             | Groups related command items together.                             |
-| `CommandInput`            | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive.Input>>`             | Input field for searching commands or items.                       |
-| `CommandItem`             | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive.Item>>`              | Represents an individual item in the list.                         |
-| `CommandList`             | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive.List>>`              | Container for the list of command items.                           |
-| `CommandSeparator`        | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive.Separator>>`         | Separates different groups of command items.                       |
-| `CommandShortcut`         | `React.FC<React.` `HTMLAttributes<HTMLSpanElement>>`                                     | Displays keyboard shortcuts for command items.                     |
-| `CommandListGroup`        | `React.FC<CommandListGroupType>`                                                      | Custom component to render grouped command items with options.     |
+#### CommandDialogProps
 
-### CommandListGroupDataType
+The `CommandDialogProps` interface extends `DialogProps` from `@radix-ui/react-dialog`.
 
-| Property  | Type                        | Description                                                      |
-| --------- | --------------------------- | ---------------------------------------------------------------- |
-| `label`   | `string`                    | The label or name of the item, used as the display text.         |
-| `element` | `React.ReactElement | string` | The content that will be rendered, can be a React element or a string. |
-| `onSelect`| `<T>(arg?: T) => void`      | An optional callback function triggered when the item is selected. |
+| Parameter   | Type                       | Description                                                 |
+| ----------- | -------------------------- | ----------------------------------------------------------- |
+| `...props`  | `DialogProps`              | All properties from `DialogProps` are supported.           |
 
+#### CommandInput Props
 
-### CommandListGroupType
+The `CommandInput` component uses `CommandPrimitive.Input`.
 
-| Property       | Type                                 | Description                                                                                  |
-| -------------- | ------------------------------------ | -------------------------------------------------------------------------------------------- |
-| `data`         | `CommandListGroupDataType[]`         | An array of items (`label`, `element`, `onSelect`) to be displayed within the group.         |
-| `group`        | `number[]`                           | An optional array of numbers that define how many items should be in each group.             |
-| `groupheading` | `string[]`                           | An optional array of headings for each group.                                                |
-| `onSelect`     | `<T extends string>(arg?: T) => void`| An optional callback function triggered when an item is selected.                            |
-| `selected`     | `string[]`                           | An array of strings representing the labels of selected items.                               |
-| `className`    | `string`                             | An optional string for custom CSS classes.                                                   |
-| `checkabble`   | `boolean`                            | An optional boolean to show a checkbox next to each item if set to `true`.                   |
+| Parameter   | Type                                             | Description                                                   |
+| ----------- | ------------------------------------------------ | ------------------------------------------------------------- |
+| `className` | `string` (optional)                            | Additional classes to apply to the input element.            |
+| `...props`  | `React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>` | All properties from `CommandPrimitive.Input` are supported.  |
+
+#### CommandList Props
+
+The `CommandList` component uses `CommandPrimitive.List`.
+
+| Parameter   | Type                                             | Description                                                   |
+| ----------- | ------------------------------------------------ | ------------------------------------------------------------- |
+| `className` | `string` (optional)                            | Additional classes to apply to the list element.             |
+| `...props`  | `React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>` | All properties from `CommandPrimitive.List` are supported.   |
+
+#### CommandEmpty Props
+
+The `CommandEmpty` component uses `CommandPrimitive.Empty`.
+
+| Parameter   | Type                                             | Description                                                   |
+| ----------- | ------------------------------------------------ | ------------------------------------------------------------- |
+| `className` | `string` (optional)                            | Additional classes to apply to the empty state element.      |
+| `...props`  | `React.ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>` | All properties from `CommandPrimitive.Empty` are supported.  |
+
+#### CommandGroup Props
+
+The `CommandGroup` component uses `CommandPrimitive.Group`.
+
+| Parameter   | Type                                             | Description                                                   |
+| ----------- | ------------------------------------------------ | ------------------------------------------------------------- |
+| `className` | `string` (optional)                            | Additional classes to apply to the group element.            |
+| `...props`  | `React.ComponentPropsWithoutRef<typeof CommandPrimitive.Group>` | All properties from `CommandPrimitive.Group` are supported.  |
+
+#### CommandSeparator Props
+
+The `CommandSeparator` component uses `CommandPrimitive.Separator`.
+
+| Parameter   | Type                                             | Description                                                   |
+| ----------- | ------------------------------------------------ | ------------------------------------------------------------- |
+| `className` | `string` (optional)                            | Additional classes to apply to the separator element.        |
+| `...props`  | `React.ComponentPropsWithoutRef<typeof CommandPrimitive.Separator>` | All properties from `CommandPrimitive.Separator` are supported. |
+
+#### CommandItem Props
+
+The `CommandItem` component uses `CommandPrimitive.Item`.
+
+| Parameter   | Type                                             | Description                                                   |
+| ----------- | ------------------------------------------------ | ------------------------------------------------------------- |
+| `className` | `string` (optional)                            | Additional classes to apply to the item element.             |
+| `...props`  | `React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>` | All properties from `CommandPrimitive.Item` are supported.  |
+
+#### CommandShortcut Props
+
+The `CommandShortcut` component is a simple wrapper.
+
+| Parameter   | Type                         | Description                                             |
+| ----------- | ---------------------------- | ------------------------------------------------------- |
+| `className` | `string` (optional)          | Additional classes to apply to the shortcut element.  |
+| `...props`  | `React.HTMLAttributes<HTMLSpanElement>` | Additional HTML attributes to apply to the span element. |
+
+#### CommandListGroupDataType
+
+Defines the data structure for items in the command list.
+
+| Property     | Type                                               | Description                                                |
+| ------------ | -------------------------------------------------- | ---------------------------------------------------------- |
+| `label`      | `string`                                           | The label for the item.                                   |
+| `element`    | `React.ReactElement | string`                        | The content to display in the item.                       |
+| `onSelect`   | `<T>(arg?: T) => void` (optional)                  | Callback function to handle item selection.               |
+
+#### CommandListGroupType
+
+Defines the properties for the `CommandListGroup` component.
+
+| Property        | Type                                                  | Description                                                                                         |
+| --------------- | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `data`          | `CommandListGroupDataType[]`                         | Array of data items to display in the command list.                                                |
+| `group`         | `number[]` (optional)                                | Array of group indices for grouping the data items.                                                 |
+| `groupheading`  | `string[]` (optional)                                | Array of headings for each group.                                                                    |
+| `onSelect`      | `<T extends string>(arg?: T) => void` (optional)     | Callback function to handle item selection.                                                         |
+| `selected`      | `string[]`                                           | Array of selected item labels.                                                                      |
+| `className`     | `string` (optional)                                 | Additional classes to apply to the command list group element.                                      |
+| `checkabble`    | `boolean` (optional)                                | Whether the items in the list should have checkboxes.                                               |
+
+This breakdown provides a clear view of each component’s properties and types. If you have more specific questions or need additional details, feel free to ask!                 |
 
 ## Combobox
 

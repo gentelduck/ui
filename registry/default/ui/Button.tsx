@@ -1,12 +1,12 @@
 import React from 'react'
 
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+import { Slot } from '@radix-ui/react-slot'
 import { Tooltip, TooltipContent, TooltipTrigger } from './Tooltip'
 import { Badge } from './Badge'
 import { CommandShortcut } from './Command'
 
 import { cn } from '@/lib'
-import { Slot } from '@radix-ui/react-slot'
 import { cva } from 'class-variance-authority'
 import { VariantProps } from 'class-variance-authority'
 import { Loader } from 'lucide-react'

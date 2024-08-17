@@ -1,12 +1,13 @@
 'use client'
 
 import * as React from 'react'
+
 import { type DialogProps } from '@radix-ui/react-dialog'
 import { Command as CommandPrimitive } from 'cmdk'
-import { Check, Search } from 'lucide-react'
-
-import { cn, groupDataByNumbers } from '@/lib/utils'
 import { ScrollArea, Dialog, DialogContent } from '@/registry/default/ui/'
+
+import { Check, Search } from 'lucide-react'
+import { cn, groupDataByNumbers } from '@/lib/utils'
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,

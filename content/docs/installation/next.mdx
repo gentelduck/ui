@@ -102,8 +102,8 @@ Here's how I structure my Next.js apps. You can use this as a reference:
 │   │   │   └── index.ts
 │   │   └── index.ts
 │   ├── Ui
-│   │   ├── DuckButton
-│   │   │   ├── DuckHeader.tsx
+│   │   ├── Button
+│   │   │   ├── Header.tsx
 │   │   │   └── index.ts
 │   │   ├── index.ts
 │   │   └── ...
@@ -143,20 +143,16 @@ You can now start adding components to your project.
 npx duck-ui@latest add button
 ```
 
-The command above will add the `DuckButton` component to your project. You can then import it like this:
+The command above will add the `Button` component to your project. You can then import it like this:
 
-```tsx {1,7-11} showLineNumbers
-import { DuckButton } from '@/components/ui'
+```tsx {1,7} showLineNumbers
+import { Button } from '@/components/ui'
 import { Inbox } from 'lucide-react'
 
 export default function Home() {
   return (
     <div>
-      <DuckButton
-        icon={Inbox}
-        title={'Inbox'}
-        label={'4'}
-      />
+        <Button>Button<Button/>
     </div>
   )
 }

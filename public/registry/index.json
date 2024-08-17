@@ -3,9 +3,8 @@
     "name": "Button",
     "dependencies": [
       "@radix-ui/react-slot",
-      "@radix-ui/react-tooltip",
-      "@radix-ui/react-dialog",
-      "cmdk@1.0.0"
+      "Command",
+      "Tooltip"
     ],
     "registryDependencies": [
       "dialog"
@@ -25,7 +24,10 @@
   },
   {
     "name": "Command",
-    "dependencies": [],
+    "dependencies": [
+      "cmdk@1.0.0",
+      "@radix-ui/react-dialog"
+    ],
     "files": [
       "ui/Command.tsx"
     ],
