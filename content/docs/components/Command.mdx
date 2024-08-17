@@ -11,6 +11,7 @@ links:
   align="start"
   className="[&_.preview>div]:max-w-[450px]"
   description="A command menu"
+  showSettings={false}
 />
 
 ## About
@@ -68,7 +69,7 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from '@/components/ui/command'
+} from '@/components/ui'
 ```
 
 ```tsx
@@ -77,15 +78,15 @@ import {
   <CommandList>
     <CommandEmpty>No results found.</CommandEmpty>
     <CommandGroup heading="Suggestions">
-      <CommandItem>Calendar</CommandItem>
-      <CommandItem>Search Emoji</CommandItem>
-      <CommandItem>Calculator</CommandItem>
+      <CommandItem>Search GitHub</CommandItem>
+      <CommandItem>Search Twitter</CommandItem>
+      <CommandItem>Search Discord</CommandItem>
     </CommandGroup>
     <CommandSeparator />
     <CommandGroup heading="Settings">
+      <CommandItem>General</CommandItem>
       <CommandItem>Profile</CommandItem>
-      <CommandItem>Billing</CommandItem>
-      <CommandItem>Settings</CommandItem>
+      <CommandItem>Notifications</CommandItem>
     </CommandGroup>
   </CommandList>
 </Command>
@@ -93,11 +94,15 @@ import {
 
 ## Examples
 
+### List Group 
+
+<ComponentPreview name="CommandGroupDemo" description="A component dialog." showSettings={false} />
+
 ### Dialog
 
-<ComponentPreview name="CommandDialogDemo" description="A component dialog." />
+<ComponentPreview name="CommandDialogDemo" description="A component dialog." showSettings={false} />
 
-To show the command menu in a dialog, use the `<CommandDialog />` component.
+To show the command menu in a dialog, use the `<CommandDialog />` component, or use the `<Button/>` component with the `command` variant.
 
 ```tsx
 export function CommandMenu() {
@@ -123,9 +128,9 @@ export function CommandMenu() {
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Suggestions">
-          <CommandItem>Calendar</CommandItem>
-          <CommandItem>Search Emoji</CommandItem>
-          <CommandItem>Calculator</CommandItem>
+          <CommandItem>Settings</CommandItem>
+          <CommandItem>Messages</CommandItem>
+          <CommandItem>Search</CommandItem>
         </CommandGroup>
       </CommandList>
     </CommandDialog>
@@ -136,17 +141,39 @@ export function CommandMenu() {
 
 Here are the type definitions used in the `<CustomCommand />` component:
 
-| Name                      | Type             | Description                                           |
-| ------------------------- | ---------------- | ----------------------------------------------------- |
-| `CustomCommand`           | `React.FC`       | Main wrapper component for the custom command menu.   |
-| `CustomCommandDialog`     | `React.FC<{ open: boolean; onOpenChange: (open: boolean) => void; }>` | Dialog component for showing the command menu. |
-| `CustomCommandEmpty`      | `React.FC`       | Component displayed when there are no search results. |
-| `CustomCommandGroup`      | `React.FC<{ heading: string; }>` | Groups related command items together.                 |
-| `CustomCommandInput`      | `React.FC<{ placeholder: string; }>` | Input field for searching commands or items.        |
-| `CustomCommandItem`       | `React.FC<{ children: React.ReactNode; }>` | Represents an individual item in the list.     |
-| `CustomCommandList`       | `React.FC`       | Container for the list of command items.              |
-| `CustomCommandSeparator`  | `React.FC`       | Separates different groups of command items.          |
-| `CustomCommandShortcut`   | `React.FC<{ keys: string[]; }>` | Displays keyboard shortcuts for command items.         |
+| Name                      | Type                                                                                 | Description                                                        |
+| ------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| `Command`                 | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive>>`                   | Main wrapper component for the command menu.                       |
+| `CommandDialog`           | `React.FC<DialogProps>`                                                             | Dialog component for showing the command menu.                     |
+| `CommandEmpty`            | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive.Empty>>`             | Component displayed when there are no search results.              |
+| `CommandGroup`            | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive.Group>>`             | Groups related command items together.                             |
+| `CommandInput`            | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive.Input>>`             | Input field for searching commands or items.                       |
+| `CommandItem`             | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive.Item>>`              | Represents an individual item in the list.                         |
+| `CommandList`             | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive.List>>`              | Container for the list of command items.                           |
+| `CommandSeparator`        | `React.FC<React.` `ComponentPropsWithoutRef<typeof` `CommandPrimitive.Separator>>`         | Separates different groups of command items.                       |
+| `CommandShortcut`         | `React.FC<React.` `HTMLAttributes<HTMLSpanElement>>`                                     | Displays keyboard shortcuts for command items.                     |
+| `CommandListGroup`        | `React.FC<CommandListGroupType>`                                                      | Custom component to render grouped command items with options.     |
+
+### CommandListGroupDataType
+
+| Property  | Type                        | Description                                                      |
+| --------- | --------------------------- | ---------------------------------------------------------------- |
+| `label`   | `string`                    | The label or name of the item, used as the display text.         |
+| `element` | `React.ReactElement | string` | The content that will be rendered, can be a React element or a string. |
+| `onSelect`| `<T>(arg?: T) => void`      | An optional callback function triggered when the item is selected. |
+
+
+### CommandListGroupType
+
+| Property       | Type                                 | Description                                                                                  |
+| -------------- | ------------------------------------ | -------------------------------------------------------------------------------------------- |
+| `data`         | `CommandListGroupDataType[]`         | An array of items (`label`, `element`, `onSelect`) to be displayed within the group.         |
+| `group`        | `number[]`                           | An optional array of numbers that define how many items should be in each group.             |
+| `groupheading` | `string[]`                           | An optional array of headings for each group.                                                |
+| `onSelect`     | `<T extends string>(arg?: T) => void`| An optional callback function triggered when an item is selected.                            |
+| `selected`     | `string[]`                           | An array of strings representing the labels of selected items.                               |
+| `className`    | `string`                             | An optional string for custom CSS classes.                                                   |
+| `checkabble`   | `boolean`                            | An optional boolean to show a checkbox next to each item if set to `true`.                   |
 
 ## Combobox
 

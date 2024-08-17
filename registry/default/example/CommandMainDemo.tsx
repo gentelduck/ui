@@ -1,5 +1,3 @@
-import { Calculator, Calendar, CreditCard, Settings, Smile, User } from 'lucide-react'
-
 import {
   Command,
   CommandEmpty,
@@ -11,6 +9,8 @@ import {
   CommandShortcut,
 } from '../ui'
 
+import { Archive, CalendarMinus2, Handshake, MessageCircleMore, Settings, Trash2 } from 'lucide-react'
+
 export default function CommandMaiDemo() {
   return (
     <Command className="rounded-lg border shadow-md">
@@ -19,29 +19,29 @@ export default function CommandMaiDemo() {
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Suggestions">
           <CommandItem>
-            <Calendar className="mr-2 h-4 w-4" />
-            <span>Calendar</span>
+            <Archive className="mr-2 h-4 w-4" />
+            <span>Archive</span>
           </CommandItem>
           <CommandItem>
-            <Smile className="mr-2 h-4 w-4" />
-            <span>Search Emoji</span>
+            <CalendarMinus2 className="mr-2 h-4 w-4" />
+            <span>Schaduling</span>
           </CommandItem>
           <CommandItem disabled>
-            <Calculator className="mr-2 h-4 w-4" />
-            <span>Calculator</span>
+            <Handshake className="mr-2 h-4 w-4" />
+            <span>Deals</span>
           </CommandItem>
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Settings">
           <CommandItem>
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
-            <CommandShortcut>⌘P</CommandShortcut>
+            <MessageCircleMore className="mr-2 h-4 w-4" />
+            <span>Messages</span>
+            <CommandShortcut>⌘M</CommandShortcut>
           </CommandItem>
           <CommandItem>
-            <CreditCard className="mr-2 h-4 w-4" />
-            <span>Billing</span>
-            <CommandShortcut>⌘B</CommandShortcut>
+            <Trash2 className="mr-2 h-4 w-4" />
+            <span>Trash</span>
+            <CommandShortcut>⌘T</CommandShortcut>
           </CommandItem>
           <CommandItem>
             <Settings className="mr-2 h-4 w-4" />

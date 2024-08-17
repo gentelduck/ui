@@ -1,19 +1,108 @@
 'use client'
 
 import * as React from 'react'
-import { Calculator, Calendar, CreditCard, Settings, Smile, User } from 'lucide-react'
+import {
+  Archive,
+  CalendarMinus2,
+  CreditCard,
+  Handshake,
+  MessageCircleMore,
+  Settings,
+  Smile,
+  Trash2,
+} from 'lucide-react'
 
 import {
   Button,
   CommandDialog,
-  CommandEmpty,
-  CommandGroup,
   CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
+  CommandListGroup,
+  CommandListGroupDataType,
   CommandShortcut,
 } from '@/registry/default/ui/'
+
+const data: CommandListGroupDataType[] = [
+  {
+    label: 'Archive',
+    element: (
+      <>
+        <Archive className="mr-2 h-4 w-4" />
+        <span>Settings</span>
+        <CommandShortcut>⌘T</CommandShortcut>
+      </>
+    ),
+  },
+  {
+    label: 'Trash',
+    element: (
+      <>
+        <Trash2 className="mr-2 h-4 w-4" />
+        <span>Trash</span>
+        <CommandShortcut>⌘T</CommandShortcut>
+      </>
+    ),
+  },
+  {
+    label: 'Settings',
+    element: (
+      <>
+        <Settings className="mr-2 h-4 w-4" />
+        <span>Settings</span>
+        <CommandShortcut>⌘S</CommandShortcut>
+      </>
+    ),
+  },
+  {
+    label: 'Messages',
+    element: (
+      <>
+        <MessageCircleMore className="mr-2 h-4 w-4" />
+        <span>Messages</span>
+        <CommandShortcut>⌘M</CommandShortcut>
+      </>
+    ),
+  },
+  {
+    label: 'Deals',
+    element: (
+      <>
+        <Handshake className="mr-2 h-4 w-4" />
+        <span>Deals</span>
+        <CommandShortcut>⌘D</CommandShortcut>
+      </>
+    ),
+  },
+  {
+    label: 'Schaduling',
+    element: (
+      <>
+        <CalendarMinus2 className="mr-2 h-4 w-4" />
+        <span>Schaduling</span>
+        <CommandShortcut>⌘S</CommandShortcut>
+      </>
+    ),
+  },
+  {
+    label: 'Credit Card',
+    element: (
+      <>
+        <CreditCard className="mr-2 h-4 w-4" />
+        <span>Credit Card</span>
+        <CommandShortcut>⌘C</CommandShortcut>
+      </>
+    ),
+  },
+  {
+    label: 'Smile',
+    element: (
+      <>
+        <Smile className="mr-2 h-4 w-4" />
+        <span>Smile</span>
+        <CommandShortcut>⌘S</CommandShortcut>
+      </>
+    ),
+  },
+]
 
 export default function CommandDialogDemo() {
   const [open, setOpen] = React.useState(false)
@@ -36,41 +125,13 @@ export default function CommandDialogDemo() {
         onOpenChange={setOpen}
       >
         <CommandInput placeholder="Type a command or search..." />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
-            <CommandItem>
-              <Calendar className="mr-2 h-4 w-4" />
-              <span>Calendar</span>
-            </CommandItem>
-            <CommandItem>
-              <Smile className="mr-2 h-4 w-4" />
-              <span>Search Emoji</span>
-            </CommandItem>
-            <CommandItem>
-              <Calculator className="mr-2 h-4 w-4" />
-              <span>Calculator</span>
-            </CommandItem>
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="Settings">
-            <CommandItem>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
-              <CommandShortcut>⌘P</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <CreditCard className="mr-2 h-4 w-4" />
-              <span>Billing</span>
-              <CommandShortcut>⌘B</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
-              <CommandShortcut>⌘S</CommandShortcut>
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
+        <CommandListGroup
+          data={data}
+          group={[3, 3, 2]}
+          className="h-[300px]"
+          groupheading={['Suggestions', 'Settings']}
+          selected={['']}
+        />
       </CommandDialog>
     </>
   )

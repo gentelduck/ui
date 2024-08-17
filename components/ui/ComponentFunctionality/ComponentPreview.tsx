@@ -19,6 +19,7 @@ interface ComponentPreviewProps extends React.HTMLAttributes<HTMLDivElement> {
   align?: 'center' | 'start' | 'end'
   description?: string
   hideCode?: boolean
+  showSettings?: boolean
 }
 
 export function ComponentPreview({
@@ -30,6 +31,7 @@ export function ComponentPreview({
   align = 'center',
   description,
   hideCode = false,
+  showSettings = true,
   ...props
 }: ComponentPreviewProps) {
   const [config] = useConfig()
@@ -93,7 +95,10 @@ export function ComponentPreview({
           className="relative rounded-md border"
         >
           <div className="flex items-center justify-between p-4">
-            <VariantsSwitcher type={name} />
+            <VariantsSwitcher
+              type={name}
+              showSettrings={showSettings}
+            />
             <div className="flex items-center gap-2">
               <CopyButton
                 value={codeString}

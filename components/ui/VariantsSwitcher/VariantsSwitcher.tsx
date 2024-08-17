@@ -27,10 +27,10 @@ import {
   variants,
 } from './Variants.local'
 
-export function VariantsSwitcher({ type }: { type: string }) {
+export function VariantsSwitcher({ type, showSettrings }: { type: string; showSettrings: boolean }) {
   const [varieties, setVarieties] = useAtom(buttonVarieties)
 
-  return (
+  return showSettrings ? (
     <Popover onOpenChange={() => {}}>
       <PopoverTrigger asChild>
         <Button
@@ -172,7 +172,9 @@ export function VariantsSwitcher({ type }: { type: string }) {
               checked={varieties.default.variety?.loading}
               onCheckedChange={() => {
                 setVarieties({
-                  default: { variety: { ...varieties.default.variety, loading: !varieties.default.variety?.loading } },
+                  default: {
+                    variety: { ...varieties.default.variety, loading: !varieties.default.variety?.loading },
+                  },
                 })
               }}
             />
@@ -180,5 +182,7 @@ export function VariantsSwitcher({ type }: { type: string }) {
         ) : null}
       </PopoverContent>
     </Popover>
+  ) : (
+    <div> </div>
   )
 }

@@ -1,31 +1,35 @@
 import React from 'react'
+
+import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from './Tooltip'
+import { Badge } from './Badge'
+import { CommandShortcut } from './Command'
+
 import { cn } from '@/lib'
 import { Slot } from '@radix-ui/react-slot'
 import { cva } from 'class-variance-authority'
 import { VariantProps } from 'class-variance-authority'
-import { Loader, LucideIcon } from 'lucide-react'
-import { TooltipContent, TooltipTrigger } from './Tooltip'
-import { Badge } from './Badge'
-import { CommandShortcut } from './Command'
-import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+import { Loader } from 'lucide-react'
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   isCollapsed?: boolean
-  icon?: LucideIcon
+  icon?: React.ReactElement
+  secondIcon?: React.ReactElement
   label?: LabelType
   command?: CommandType
   delayDuration?: number
   loading?: boolean
 }
 
-const Tooltip = TooltipPrimitive.Root
-export interface LabelType extends Partial<React.ElementRef<typeof TooltipPrimitive.Content>> {}
+export interface LabelType extends Partial<React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>> {
+  showLabel?: boolean
+}
 
 export type CommandType = {
-  label: string
+  label?: string
   key: string
   state?: unknown
   action?: <T>(arg?: T) => void
@@ -69,6 +73,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       label,
       children,
       icon: Icon,
+      secondIcon: SecondIcon,
       delayDuration = 0,
       loading = false,
       command,
@@ -93,6 +98,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       }
     }, [command?.state])
 
+    // Handle keyboard shortcut Badge
     const CommandComponent = () => (
       <CommandShortcut className="text-[.8rem]">
         <Badge
@@ -121,26 +127,28 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             {...props}
           >
             {!loading ? (
-              <>{!!Icon && !loading && <Icon className="w-[1.15rem] h-[1.15rem]" />}</>
+              <>{!!Icon && !loading && Icon} </>
             ) : (
               <Loader className="w-[1.15rem] h-[1.15rem] animate-spin" />
             )}
             {!isCollapsed && (children || title)}
-            {!isCollapsed && command && <CommandComponent />}
-            {!isCollapsed && label && (
+            {!isCollapsed && command?.label && <CommandComponent />}
+            {!isCollapsed && label && !label?.showLabel && (
               <span className="ml-2 text-[.9rem]">{label.children as unknown as React.ReactNode}</span>
             )}
+            {!isCollapsed && !loading && SecondIcon}
           </Component>
         </TooltipTrigger>
-        {isCollapsed && (title || label) && (
+        {(isCollapsed || label?.showLabel) && (title || label) && (
           <TooltipContent
-            side="right"
-            className="flex items-center gap-4 z-50 justify-start"
+            {...label}
+            className={cn('flex items-center gap-4 z-50 justify-start', label?.className)}
+            side={label?.side || 'right'}
           >
-            {title}
-            {command && <CommandComponent />}
+            {title && (title as unknown as React.ReactNode)}
+            {command?.label && <CommandComponent />}
             {label && (
-              <span className="ml-auto text-muted-foreground text-[.9rem]">
+              <span className={cn('ml-auto text-[.9rem]', !label.showLabel && 'text-muted-foreground')}>
                 {label.children as unknown as React.ReactNode}
               </span>
             )}

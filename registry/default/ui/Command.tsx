@@ -3,10 +3,10 @@
 import * as React from 'react'
 import { type DialogProps } from '@radix-ui/react-dialog'
 import { Command as CommandPrimitive } from 'cmdk'
-import { Search } from 'lucide-react'
+import { Check, Search } from 'lucide-react'
 
-import { cn } from '@/lib/utils'
-import { Dialog, DialogContent } from '@/registry/default/ui/'
+import { cn, groupDataByNumbers } from '@/lib/utils'
+import { ScrollArea, Dialog, DialogContent } from '@/registry/default/ui/'
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -139,6 +139,71 @@ const CommandShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanE
 }
 CommandShortcut.displayName = 'CommandShortcut'
 
+export interface CommandListGroupDataType {
+  label: string
+  element: React.ReactElement | string
+  onSelect?: <T>(arg?: T) => void
+}
+
+export interface CommandListGroupType {
+  data: CommandListGroupDataType[]
+  group?: number[]
+  groupheading?: string[]
+  onSelect?: <T extends string>(arg?: T) => void
+  selected: string[]
+  className?: string
+  checkabble?: boolean
+}
+
+const CommandListGroup = React.forwardRef(
+  (
+    { data, onSelect, selected, group, groupheading, className, checkabble = false }: CommandListGroupType,
+    ref: React.Ref<HTMLDivElement>
+  ) => {
+    const groupedData = groupDataByNumbers(data, group || [data.length])
+
+    return (
+      <ScrollArea className={cn(className)}>
+        <CommandList
+          className={cn('overflow-hidden max-h-full')}
+          ref={ref}
+        >
+          <CommandEmpty>No framework found.</CommandEmpty>
+          {groupedData.map((group, idx) => {
+            return (
+              <CommandGroup
+                heading={groupheading?.[idx]}
+                key={idx}
+              >
+                {group.map((el, idx) => (
+                  <CommandItem
+                    key={idx}
+                    value={el.label}
+                    className={cn(
+                      'data-[disabled=true]:opacity-50',
+                      selected.includes(el.label) ? 'bg-accent text-accent-foreground' : ''
+                    )}
+                    onSelect={onSelect}
+                  >
+                    {checkabble && (
+                      <Check
+                        className={cn('mr-2 h-4 w-4', selected.includes(el.label) ? 'opacity-100' : 'opacity-0')}
+                      />
+                    )}
+                    {el.element}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )
+          })}
+        </CommandList>
+      </ScrollArea>
+    )
+  }
+)
+
+CommandListGroup.displayName = 'CommandListGroup'
+
 export {
   Command,
   CommandDialog,
@@ -149,4 +214,5 @@ export {
   CommandItem,
   CommandShortcut,
   CommandSeparator,
+  CommandListGroup,
 }

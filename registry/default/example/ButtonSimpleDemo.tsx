@@ -14,7 +14,7 @@ export default function ButtonSimpleDemo() {
     <>
       <Button
         isCollapsed={open}
-        icon={Inbox}
+        icon={<Inbox />}
         title={title}
         variant={variant}
         size={size}

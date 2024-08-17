@@ -45,7 +45,7 @@ npm install @radix-ui/react-tooltip
 
 <Step>Copy the following component code into your project.</Step>
 
-<ComponentSource name="tooltip" />
+<ComponentSource name="Tooltip" />
 
 <Step>Ensure the import paths align with your project's structure.</Step>
 
@@ -65,7 +65,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui"
 ```
 
 Here's a basic example of using the Tooltip component:
@@ -91,7 +91,8 @@ This example demonstrates how to configure tooltips globally using the `TooltipP
 
 ### Origin-Aware Animations
 
-Enhance your tooltips with smooth animations that consider the origin of the tooltip:
+Enhance your tooltips with smooth animations that consider the origin of the tooltip, you can write
+this animation in any place in your app ( tailwindcss, css, scss, ..stc ).:
 
 ```tsx
 import { Tooltip, TooltipTrigger, TooltipContent } from '@radix-ui/react-tooltip';
