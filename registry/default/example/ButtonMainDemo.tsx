@@ -14,13 +14,13 @@ export default function ButtonMainDemo() {
     <>
       <Button
         isCollapsed={open}
-        icon={Inbox}
+        icon={<Inbox />}
         title={title}
         variant={variant}
         size={size}
         loading={loading}
         label={{
-          children: label as unknown as HTMLCollection,
+          children: label,
         }}
       />
     </>

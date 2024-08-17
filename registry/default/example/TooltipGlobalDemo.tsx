@@ -14,7 +14,7 @@ export default function TooltipGlobalDemo() {
       skipDelayDuration={duration! - 500}
     >
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <Button variant="outline">Hover</Button>
         </TooltipTrigger>
         <TooltipContent>Tooltip Content</TooltipContent>

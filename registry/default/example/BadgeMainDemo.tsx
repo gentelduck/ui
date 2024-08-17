@@ -14,7 +14,7 @@ export default function BadgeMainDemo() {
       variant={variant as Exclude<typeof variant, 'default' | 'link' | 'ghost'>}
       size={size}
       label={{
-        children: title as unknown as HTMLCollection,
+        children: title,
       }}
     >
       {size == 'icon' ? <CircleAlert /> : title}

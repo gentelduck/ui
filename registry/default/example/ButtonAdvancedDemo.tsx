@@ -15,7 +15,7 @@ export default function ButtonAdvancedDemo() {
     <>
       <Button
         isCollapsed={open}
-        icon={Inbox}
+        icon={<Inbox />}
         title={title}
         variant={variant}
         size={size}
@@ -27,7 +27,7 @@ export default function ButtonAdvancedDemo() {
         tabIndex={0}
         loading={loading}
         label={{
-          children: label as unknown as HTMLCollection,
+          children: label,
         }}
         command={{
           label: commandLabel as string,

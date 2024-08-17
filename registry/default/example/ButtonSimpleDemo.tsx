@@ -20,7 +20,7 @@ export default function ButtonSimpleDemo() {
         size={size}
         loading={loading}
         label={{
-          children: label as unknown as HTMLCollection,
+          children: label,
         }}
       />
     </>

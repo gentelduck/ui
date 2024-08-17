@@ -38,12 +38,6 @@ export const examples: Registry = [
     files: ['example/CommandDialogDemo.tsx'],
   },
   {
-    name: 'CommandGroupDemo',
-    type: 'components:example',
-    registryDependencies: ['Tooltip'],
-    files: ['example/CommandGroupDemo.tsx'],
-  },
-  {
     name: 'TooltipMainDemo',
     type: 'components:example',
     registryDependencies: ['Tooltip'],

@@ -12,9 +12,11 @@ export default function ButtonSimpleDemo() {
     <>
       <Button
         isCollapsed={open}
-        icon={Inbox}
+        icon={<Inbox />}
         title={title}
-        label={label}
+        label={{
+          children: label,
+        }}
         variant={variant}
         size={size}
       />
