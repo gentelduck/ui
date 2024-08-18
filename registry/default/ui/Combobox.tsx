@@ -56,7 +56,7 @@ const Combobox: React.FC<ComboboxType> = ({ data, className, title, command, lab
               label={{ children: 'sdf', showLabel: true, side: 'top', ...label }}
               command={{ ...command, action: () => setOpen(!open) } as CommandType}
             >
-              {value ? value : 'Select one...'}
+              <span className="truncate">{value ? value : 'Select one...'}</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent

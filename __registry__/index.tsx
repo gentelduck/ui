@@ -49,6 +49,17 @@ export const Index: Record<string, any> = {
       subcategory: "undefined",
       chunks: []
     },
+    "Combobox": {
+      name: "Combobox",
+      type: "components:ui",
+      registryDependencies: undefined,
+      component: React.lazy(() => import("@/registry/default/ui/Combobox")),
+      source: "",
+      files: ["registry/default/ui/Combobox.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
     "ButtonMainDemo": {
       name: "ButtonMainDemo",
       type: "components:example",
@@ -144,6 +155,39 @@ export const Index: Record<string, any> = {
       component: React.lazy(() => import("@/registry/default/example/TooltipGlobalDemo")),
       source: "",
       files: ["registry/default/example/TooltipGlobalDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "ComboboxMainDemo": {
+      name: "ComboboxMainDemo",
+      type: "components:example",
+      registryDependencies: ["Combobox"],
+      component: React.lazy(() => import("@/registry/default/example/ComboboxMainDemo")),
+      source: "",
+      files: ["registry/default/example/ComboboxMainDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "ComboboxDropdownDemo": {
+      name: "ComboboxDropdownDemo",
+      type: "components:example",
+      registryDependencies: ["Combobox"],
+      component: React.lazy(() => import("@/registry/default/example/ComboboxDropdownDemo")),
+      source: "",
+      files: ["registry/default/example/ComboboxDropdownDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "ComboboxResponsiveDemo": {
+      name: "ComboboxResponsiveDemo",
+      type: "components:example",
+      registryDependencies: ["Combobox"],
+      component: React.lazy(() => import("@/registry/default/example/ComboboxResponsiveDemo")),
+      source: "",
+      files: ["registry/default/example/ComboboxResponsiveDemo.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []

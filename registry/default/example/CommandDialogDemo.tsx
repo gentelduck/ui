@@ -24,83 +24,99 @@ import {
 const data: CommandListGroupDataType[] = [
   {
     label: 'Archive',
-    element: (
-      <>
-        <Archive className="mr-2 h-4 w-4" />
-        <span>Settings</span>
-        <CommandShortcut>⌘T</CommandShortcut>
-      </>
-    ),
+    element: {
+      children: (
+        <>
+          <Archive className="mr-2 h-4 w-4" />
+          <span>Settings</span>
+          <CommandShortcut>⌘T</CommandShortcut>
+        </>
+      ),
+    },
   },
   {
     label: 'Trash',
-    element: (
-      <>
-        <Trash2 className="mr-2 h-4 w-4" />
-        <span>Trash</span>
-        <CommandShortcut>⌘T</CommandShortcut>
-      </>
-    ),
+    element: {
+      children: (
+        <>
+          <Trash2 className="mr-2 h-4 w-4" />
+          <span>Trash</span>
+          <CommandShortcut>⌘T</CommandShortcut>
+        </>
+      ),
+    },
   },
   {
     label: 'Settings',
-    element: (
-      <>
-        <Settings className="mr-2 h-4 w-4" />
-        <span>Settings</span>
-        <CommandShortcut>⌘S</CommandShortcut>
-      </>
-    ),
+    element: {
+      children: (
+        <>
+          <Settings className="mr-2 h-4 w-4" />
+          <span>Settings</span>
+          <CommandShortcut>⌘S</CommandShortcut>
+        </>
+      ),
+    },
   },
   {
     label: 'Messages',
-    element: (
-      <>
-        <MessageCircleMore className="mr-2 h-4 w-4" />
-        <span>Messages</span>
-        <CommandShortcut>⌘M</CommandShortcut>
-      </>
-    ),
+    element: {
+      children: (
+        <>
+          <MessageCircleMore className="mr-2 h-4 w-4" />
+          <span>Messages</span>
+          <CommandShortcut>⌘M</CommandShortcut>
+        </>
+      ),
+    },
   },
   {
     label: 'Deals',
-    element: (
-      <>
-        <Handshake className="mr-2 h-4 w-4" />
-        <span>Deals</span>
-        <CommandShortcut>⌘D</CommandShortcut>
-      </>
-    ),
+    element: {
+      children: (
+        <>
+          <Handshake className="mr-2 h-4 w-4" />
+          <span>Deals</span>
+          <CommandShortcut>⌘D</CommandShortcut>
+        </>
+      ),
+    },
   },
   {
     label: 'Schaduling',
-    element: (
-      <>
-        <CalendarMinus2 className="mr-2 h-4 w-4" />
-        <span>Schaduling</span>
-        <CommandShortcut>⌘S</CommandShortcut>
-      </>
-    ),
+    element: {
+      children: (
+        <>
+          <CalendarMinus2 className="mr-2 h-4 w-4" />
+          <span>Schaduling</span>
+          <CommandShortcut>⌘S</CommandShortcut>
+        </>
+      ),
+    },
   },
   {
     label: 'Credit Card',
-    element: (
-      <>
-        <CreditCard className="mr-2 h-4 w-4" />
-        <span>Credit Card</span>
-        <CommandShortcut>⌘C</CommandShortcut>
-      </>
-    ),
+    element: {
+      children: (
+        <>
+          <CreditCard className="mr-2 h-4 w-4" />
+          <span>Credit Card</span>
+          <CommandShortcut>⌘C</CommandShortcut>
+        </>
+      ),
+    },
   },
   {
     label: 'Smile',
-    element: (
-      <>
-        <Smile className="mr-2 h-4 w-4" />
-        <span>Smile</span>
-        <CommandShortcut>⌘S</CommandShortcut>
-      </>
-    ),
+    element: {
+      children: (
+        <>
+          <Smile className="mr-2 h-4 w-4" />
+          <span>Smile</span>
+          <CommandShortcut>⌘S</CommandShortcut>
+        </>
+      ),
+    },
   },
 ]
 

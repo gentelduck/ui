@@ -42,5 +42,13 @@
       "ui/Tooltip.tsx"
     ],
     "type": "components:ui"
+  },
+  {
+    "name": "Combobox",
+    "dependencies": [],
+    "files": [
+      "ui/Combobox.tsx"
+    ],
+    "type": "components:ui"
   }
 ]

@@ -4,43 +4,43 @@ import { Combobox } from '../ui/Combobox'
 const linuxDistros: CommandListGroupDataType[] = [
   {
     label: 'Ubuntu',
-    element: 'Ubuntu',
+    element: { children: 'Ubuntu' },
   },
   {
     label: 'Debian',
-    element: 'Debian',
+    element: { children: 'Debian' },
   },
   {
     label: 'Fedora',
-    element: 'Fedora',
+    element: { children: 'Fedora' },
   },
   {
     label: 'Arch Linux',
-    element: 'Arch Linux',
+    element: { children: 'Arch Linux' },
   },
   {
     label: 'CentOS',
-    element: 'CentOS',
+    element: { children: 'CentOS' },
   },
   {
     label: 'Red Hat Enterprise Linux (RHEL)',
-    element: 'Red Hat Enterprise Linux (RHEL)',
+    element: { children: 'Red Hat Enterprise Linux (RHEL)' },
   },
   {
     label: 'openSUSE',
-    element: 'openSUSE',
+    element: { children: 'openSUSE' },
   },
   {
     label: 'Manjaro',
-    element: 'Manjaro',
+    element: { children: 'Manjaro' },
   },
   {
     label: 'Kali Linux',
-    element: 'Kali Linux',
+    element: { children: 'Kali Linux' },
   },
   {
     label: 'Linux Mint',
-    element: 'Linux Mint',
+    element: { children: 'Linux Mint' },
   },
 ]
 

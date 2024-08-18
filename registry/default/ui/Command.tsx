@@ -8,6 +8,7 @@ import { ScrollArea, Dialog, DialogContent } from '@/registry/default/ui/'
 
 import { Check, Search } from 'lucide-react'
 import { cn, groupDataByNumbers } from '@/lib/utils'
+import { extendTailwindMerge } from 'tailwind-merge'
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -142,9 +143,11 @@ CommandShortcut.displayName = 'CommandShortcut'
 
 export interface CommandListGroupDataType {
   label: string
-  element: React.ReactElement | string
+  element: ListItemElementType
   onSelect?: <T>(arg?: T) => void
 }
+
+export interface ListItemElementType extends Partial<React.ComponentPropsWithoutRef<typeof CommandItem>> {}
 
 export interface CommandListGroupType {
   data: CommandListGroupDataType[]
@@ -176,24 +179,29 @@ const CommandListGroup = React.forwardRef(
                 heading={groupheading?.[idx]}
                 key={idx}
               >
-                {group.map((el, idx) => (
-                  <CommandItem
-                    key={idx}
-                    value={el.label}
-                    className={cn(
-                      'data-[disabled=true]:opacity-50',
-                      selected.includes(el.label) ? 'bg-accent text-accent-foreground' : ''
-                    )}
-                    onSelect={onSelect}
-                  >
-                    {checkabble && (
-                      <Check
-                        className={cn('mr-2 h-4 w-4', selected.includes(el.label) ? 'opacity-100' : 'opacity-0')}
-                      />
-                    )}
-                    {el.element}
-                  </CommandItem>
-                ))}
+                {group.map((el, idx) => {
+                  const { children, className, ...props } = el.element
+                  return (
+                    <CommandItem
+                      key={idx}
+                      value={el.label}
+                      className={cn(
+                        'data-[disabled=true]:opacity-50',
+                        selected.includes(el.label) && 'bg-accent text-accent-foreground',
+                        className
+                      )}
+                      onSelect={onSelect}
+                      {...props}
+                    >
+                      {checkabble && (
+                        <Check
+                          className={cn('mr-2 h-4 w-4', selected.includes(el.label) ? 'opacity-100' : 'opacity-0')}
+                        />
+                      )}
+                      {children}
+                    </CommandItem>
+                  )
+                })}
               </CommandGroup>
             )
           })}

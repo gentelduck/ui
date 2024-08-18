@@ -26,4 +26,10 @@ export const ui: Registry = [
     dependencies: ['@radix-ui/react-tooltip'],
     files: ['ui/Tooltip.tsx'],
   },
+  {
+    name: 'Combobox',
+    type: 'components:ui',
+    dependencies: [],
+    files: ['ui/Combobox.tsx'],
+  },
 ]
