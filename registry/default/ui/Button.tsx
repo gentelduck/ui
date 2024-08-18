@@ -120,7 +120,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             className={cn(
               buttonVariants({
                 variant: variant || 'ghost',
-                size: size ? size : isCollapsed ? 'icon' : 'default',
+                size: size ? (isCollapsed ? 'icon' : size) : isCollapsed ? 'icon' : 'default',
                 className: cn(!isCollapsed && 'flex items-center gap-2', 'justify-center', className),
               })
             )}
@@ -134,8 +134,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 <Loader className="size-[1.18rem] animate-spin" />
               )}
               {!isCollapsed && (children || title)}
-              {!isCollapsed && command?.label && <CommandComponent />}
             </div>
+            {!isCollapsed && command?.label && <CommandComponent />}
 
             {!isCollapsed && label && !label?.showLabel && (
               <span className="ml-2 text-[.9rem]">{label.children as unknown as React.ReactNode}</span>

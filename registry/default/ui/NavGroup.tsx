@@ -43,37 +43,35 @@ const NavGroup = <T extends boolean>({ navigationKeys, nav }: NavGroupProps<T>) 
         <div className={variants.default}>
           {grouped.map((keyGroup, idx) => (
             <React.Fragment key={idx}>
-              <ul className={cn(variants.default, 'px-2 py-1')}>
+              <ul className={cn(variants.default, 'px-2 py-1', navIsCollabsed ? 'w-fit' : 'w-full')}>
                 {keyGroup.map((key, idx) => {
                   const { className, isCollapsed, onClick, variant, children, icon, ...props } = key
                   return (
-                    <>
-                      <li
+                    <li
+                      key={idx}
+                      className="w-full"
+                    >
+                      <Button
                         key={idx}
-                        className="w-full"
+                        icon={key.icon}
+                        variant={variant || 'ghost'}
+                        isCollapsed={navIsCollabsed ? navIsCollabsed : false}
+                        className={cn(
+                          !navIsCollabsed && 'w-full justify-between',
+                          nav.pathname === key.route &&
+                            'bg-primary text-white hover:bg-primary/90 hover:text-white h-10',
+                          key.className
+                        )}
+                        onClick={() => console.log('hi')}
+                        {...props}
                       >
-                        <Button
-                          key={idx}
-                          icon={key.icon}
-                          variant={variant || 'ghost'}
-                          isCollapsed={navIsCollabsed ? navIsCollabsed : false}
-                          className={cn(
-                            'w-full justify-between',
-                            nav.pathname === key.route &&
-                              'bg-primary text-white hover:bg-primary/90 hover:text-white h-10',
-                            key.className
-                          )}
-                          onClick={() => console.log('hi')}
-                          {...props}
-                        >
-                          {children}
-                        </Button>
-                      </li>
-                    </>
+                        {children}
+                      </Button>
+                    </li>
                   )
                 })}
-                {idx !== grouped.length - 1 && <Separator className="my-1" />}
               </ul>
+              {idx !== grouped.length - 1 && <Separator className="my-1" />}
             </React.Fragment>
           ))}
         </div>

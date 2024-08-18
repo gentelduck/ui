@@ -3,7 +3,6 @@
 import React from 'react'
 
 import {
-  ButtonProps,
   Separator,
   AccountType,
   DuckSwitcher,
@@ -13,7 +12,6 @@ import {
   NavType,
 } from '@/registry/default/ui'
 
-import { Home } from 'lucide-react'
 import { cn, filteredObject } from '@/lib/utils'
 
 type HeaderProps<T extends boolean> = {

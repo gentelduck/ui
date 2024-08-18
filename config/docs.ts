@@ -34,14 +34,20 @@ export const docsConfig: DocsConfig = {
       title: 'Components',
       items: [
         {
+          title: 'Badge',
+          href: '/docs/components/Badge',
+          items: [],
+        },
+        {
           title: 'Button',
           href: '/docs/components/Button',
           items: [],
         },
         {
-          title: 'Badge',
-          href: '/docs/components/Badge',
+          title: 'Combobox',
+          href: '/docs/components/Combobox',
           items: [],
+          label: 'new',
         },
         {
           title: 'Command',
@@ -49,23 +55,20 @@ export const docsConfig: DocsConfig = {
           items: [],
         },
         {
-          title: 'Combobox',
-          href: '/docs/components/Combobox',
+          title: 'Header',
+          href: '/docs/components/Header',
           items: [],
-        },
-        {
-          title: 'Tooltip',
-          href: '/docs/components/Tooltip',
-          items: [],
+          label: 'new',
         },
         {
           title: 'NavGroup',
           href: '/docs/components/NavGroup',
           items: [],
+          label: 'new',
         },
         {
-          title: 'Header',
-          href: '/docs/components/Header',
+          title: 'Tooltip',
+          href: '/docs/components/Tooltip',
           items: [],
         },
       ],

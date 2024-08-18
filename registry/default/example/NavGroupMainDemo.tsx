@@ -57,7 +57,6 @@ export default function NavGroupMainDemo() {
             router: {},
             pathname: '',
             isCollabsed: open,
-            className: 'w-[200px]',
           }}
           navigationKeys={data}
         />

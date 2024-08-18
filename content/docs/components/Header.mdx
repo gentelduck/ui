@@ -1,5 +1,5 @@
 ---
-title: NavGroup 
+title: Header 
 description: A fast, composable, and unstyled command menu for React, offering flexibility and customization for building command interfaces with optimal performance. 
 component: true
 ---
@@ -9,3 +9,162 @@ component: true
   description="A Header"
   showSettings={true}
 />
+
+### Features
+
+- **Customizable Navigation:** Easily manage and group navigation items with collapsible support, providing a tailored user experience.
+- **Account Switching:** Includes an account switcher component for managing multiple accounts within the application.
+- **Collapsible Header:** The header supports a collapsible state, allowing for a more compact layout when needed.
+- **Integrated Footer:** Optional footer with customizable buttons, seamlessly integrated into the header layout.
+- **Modular Design:** Each component is independently configurable, enabling flexible and reusable UI patterns.
+- **Responsive Layout:** Designed to adapt to different screen sizes, ensuring a consistent experience across devices.
+
+## Installation
+
+<Tabs defaultValue="cli">
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx duck-ui@latest add header 
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ComponentSource name="Header" />
+
+<Step>The Combobox is built using a composition of the `<NavGroup/>` component.</Step>
+
+<Step>You also will need to install the [`NavGroup`](/docs/components/NavGroup#installation) components because some dependencies
+    are inherited from them.</Step>
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</Tabs>
+
+## Usage
+
+```tsx
+import { Header, Button, TooltipProvider } from "@/components/ui"
+import { ArrowRightFromLine, Home, Calendar } from 'lucide-react'
+```
+
+```tsx
+const data = [
+  {
+    title: 'Home',
+    route: '/home',
+    children: 'Home',
+    icon: <Home />,
+    label: {
+      children: '21',
+    },
+  },
+  {
+    title: 'Calendar',
+    route: '/calendar',
+    children: 'Calendar',
+    icon: <Calendar />,
+    label: {
+      children: '20',
+    },
+  },
+]
+
+const emails = [
+  { email: 'wildduck@duck.org', icon: Mail, label: 'mail' },
+  { email: 'mona@gmail.com', icon: Cloudy, label: 'cloud' },
+  { email: 'hannan@duck.du', icon: ServerCog, label: 'server' },
+]
+
+export default function HeaderMainDemo() {
+  const open = true 
+
+  return (
+    <div>
+      <TooltipProvider>
+        <Header<typeof open>
+          header={{
+            isCollabsed: open,
+            className: 'border-r-border border-r-solid border-r h-[300px] justify-center',
+          }}
+          switcher={{
+            accounts: emails,
+          }}
+          nav={{
+            navigationKeys: data,
+            nav: {
+              group: [1, 1],
+              router: {},// use your router instance
+              pathname: '',
+            },
+          }}
+          footer={{
+            buttons: [
+              <Button
+                isCollapsed={open}
+                icon={<ArrowRightFromLine />}
+                className={cn('my-1 mx-2 justify-between', !open && 'w-[250px]', open && 'justify-center')}
+                title={'Collapse'}
+                variant={'secondary'}
+                size={open ? 'icon' : 'default'}
+                onClick={() =>
+                  setVariety({
+                    ...variety,
+                    default: { ...variety.default, variety: { ...variety.default.variety, open: !open } },
+                  })
+                }
+              />,
+            ],
+          }}
+        />
+      </TooltipProvider>
+    </div>
+  )
+}
+```
+
+
+### HeaderProps
+
+| Parameter  | Type                                         | Description                                                                                   |
+|------------|----------------------------------------------|-----------------------------------------------------------------------------------------------|
+| `header`   | [`HeaderType`](#headertype)                  | Properties related to the header component, including any HTML attributes.                    |
+| `nav`      | [`NavGroupProps<T>`](#navgroupprops)         | Navigation group properties, controlling the behavior and structure of the navigation menu.   |
+| `switcher` | [`SwitcherType`](#switchertype) (optional)   | Configuration for the account switcher component, including accounts and collapse state.      |
+| `footer`   | [`FooterType`](#footertype) (optional)       | Footer buttons to be displayed in the header.                                                 |
+
+### HeaderType
+
+| Parameter    | Type                                         | Description                                                                                   |
+|--------------|----------------------------------------------|-----------------------------------------------------------------------------------------------|
+| `isCollabsed`| `boolean` (optional)                         | Determines if the header or related components are collapsed.                                 |
+| `...props`   | `React.HtmlHTMLAttributes<HTMLDivElement>`   | Additional HTML attributes for the header.                                                    |
+
+### SwitcherType
+
+| Parameter   | Type                  | Description                                                                                   |
+|-------------|-----------------------|-----------------------------------------------------------------------------------------------|
+| `accounts`  | [`AccountType[]`](/docs/components/Command#command-component-types)        | An array of accounts available for switching.                                                 |
+
+### FooterType
+
+| Parameter   | Type                       | Description                                                                                   |
+|-------------|----------------------------|-----------------------------------------------------------------------------------------------|
+| `buttons`   | `React.ReactNode[]`         | An array of React nodes representing footer buttons.                                          |
+
+This table provides a concise overview of the types used in the `Header` component, including their parameters and descriptions.
