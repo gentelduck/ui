@@ -56,11 +56,14 @@ npx duck-ui@latest add badge
 ## Usage
 
 ```tsx
-import { Badge } from "@/components/ui"
+import { Badge, TooltipProvider } from "@/components/ui"
 ```
 
 ```tsx
-<Badge variant="outline"> Badge</Badge>
+<TooltipProvider>
+  <Badge variant="outline"> Badge</Badge>
+</TooltipProvider>
+
 ```
 
 ### Link

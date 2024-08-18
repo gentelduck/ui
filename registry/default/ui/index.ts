@@ -4,6 +4,7 @@ export * from './Button'
 export * from './Badge'
 export * from './Command'
 export * from './Combobox'
+export * from './NavGroup'
 
 export * from './ShadcnUI'
 export * from './DuckUI'

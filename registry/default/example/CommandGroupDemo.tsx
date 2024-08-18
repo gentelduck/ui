@@ -1,4 +1,11 @@
-import { Command, CommandInput, CommandListGroup, CommandListGroupDataType, CommandShortcut } from '../ui'
+import {
+  Command,
+  CommandInput,
+  CommandListGroup,
+  CommandListGroupDataType,
+  CommandShortcut,
+  TooltipProvider,
+} from '@/registry/default/ui'
 
 import { Archive, CalendarMinus2, Handshake, MessageCircleMore, Settings } from 'lucide-react'
 
@@ -76,14 +83,16 @@ const data: CommandListGroupDataType[] = [
 
 export default function CommandGroupDemo() {
   return (
-    <Command className="rounded-lg border shadow-md w-96">
-      <CommandInput placeholder="Type a command or search..." />
-      <CommandListGroup
-        data={data}
-        group={[3, 3]}
-        groupheading={['Suggestions', 'Settings']}
-        selected={['']}
-      />
-    </Command>
+    <TooltipProvider>
+      <Command className="rounded-lg border shadow-md w-96">
+        <CommandInput placeholder="Type a command or search..." />
+        <CommandListGroup
+          data={data}
+          group={[2, 4]}
+          groupheading={['Suggestions', 'Settings']}
+          selected={['']}
+        />
+      </Command>
+    </TooltipProvider>
   )
 }

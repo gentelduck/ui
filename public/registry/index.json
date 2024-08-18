@@ -45,9 +45,34 @@
   },
   {
     "name": "Combobox",
-    "dependencies": [],
+    "dependencies": [
+      "Command",
+      "Tooltip",
+      "Button"
+    ],
     "files": [
       "ui/Combobox.tsx"
+    ],
+    "type": "components:ui"
+  },
+  {
+    "name": "NavGroup",
+    "dependencies": [
+      "Button",
+      "Badge"
+    ],
+    "files": [
+      "ui/NavGroup.tsx"
+    ],
+    "type": "components:ui"
+  },
+  {
+    "name": "Header",
+    "dependencies": [
+      "NavGroup"
+    ],
+    "files": [
+      "ui/Header.tsx"
     ],
     "type": "components:ui"
   }

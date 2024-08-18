@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from '@/registry/default/ui'
+import { Button, TooltipProvider } from '@/registry/default/ui'
 import { Inbox } from 'lucide-react'
 import { useAtom } from 'jotai'
 import { buttonVarieties } from '@/hooks/use-varieties'
@@ -12,17 +12,19 @@ export default function ButtonSimpleDemo() {
 
   return (
     <>
-      <Button
-        isCollapsed={open}
-        icon={<Inbox />}
-        title={title}
-        variant={variant}
-        size={size}
-        loading={loading}
-        label={{
-          children: label,
-        }}
-      />
+      <TooltipProvider>
+        <Button
+          isCollapsed={open}
+          icon={<Inbox />}
+          title={title}
+          variant={variant}
+          size={size}
+          loading={loading}
+          label={{
+            children: label,
+          }}
+        />
+      </TooltipProvider>
     </>
   )
 }

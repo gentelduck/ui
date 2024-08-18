@@ -1,12 +1,32 @@
 // 'use client'
-// import { cn, filteredObject } from '@/lib'
-// import { DuckNavGroup, NavCollabsedType, NavType } from '../DuckNavGroup'
-// import { DuckHeaderProps } from './DuckHeader.types'
-// import { DuckSwitcher } from '../DuckSwitcher/DuckSwitcher'
-// import { Separator } from '@/registry/default/ui'
-// import React from 'react'
 //
-// export const DuckHeader = <T extends boolean>({ nav, header, switcher, footer }: DuckHeaderProps<T>) => {
+// export type HeaderProps<T extends boolean> = {
+//   header: HeaderType
+//   nav: NavGroupProps<T>
+//   switcher?: SwitcherType
+//   footer?: FooterType
+// }
+//
+// export interface HeaderType extends React.HtmlHTMLAttributes<HTMLDivElement> {
+//   isCollabsed?: boolean
+// }
+//
+// export type NavType = {
+//   isCollabsed?: boolean
+//   router: UseNavigateResult<string>
+//   location: ParsedLocation<{}>
+//   navigationKeys: DuckButtonProps[]
+// }
+//
+// export type SwitcherType = {
+//   accounts: AccountType[]
+// }
+//
+// export type FooterType = {
+//   buttons: React.ReactNode[]
+// }
+//
+// export const DuckHeader = <T extends boolean>({ nav, header, switcher, footer }: HeaderProps<T>) => {
 //   const navIsCollabsed = (header as NavCollabsedType).isCollabsed || false
 //   const filteredKeys = filteredObject(['isCollabsed'], header)
 //

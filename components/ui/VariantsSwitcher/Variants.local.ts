@@ -4,5 +4,12 @@ export const typesAllowedForVariant = ['ButtonMainDemo', 'BadgeMainDemo', 'Butto
 export const typesAllowedForTitle = ['ButtonMainDemo', 'BadgeMainDemo', 'ButtonSimpleDemo', 'ButtonAdvancedDemo']
 export const typesAllowedForLabel = ['ButtonMainDemo', 'ButtonSimpleDemo', 'ButtonAdvancedDemo']
 export const typesAllowedForLoading = ['ButtonMainDemo', 'ButtonSimpleDemo', 'ButtonAdvancedDemo']
-export const typesAllowedForCollapse = ['ButtonMainDemo', 'ButtonSimpleDemo', 'ButtonAdvancedDemo']
+export const typesAllowedForCollapse = [
+  'ButtonMainDemo',
+  'ButtonSimpleDemo',
+  'ButtonAdvancedDemo',
+  'NavGroupMainDemo',
+  'HeaderMainDemo',
+]
 export const typesAllowedForDuration = ['TooltipMainDemo', 'TooltipInstantlyDemo', 'TooltipGlobalDemo']
+export const typesAllowedForGroup = ['NavGroupMainDemo']

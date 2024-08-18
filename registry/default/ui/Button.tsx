@@ -19,6 +19,7 @@ export interface ButtonProps
   icon?: React.ReactElement
   secondIcon?: React.ReactElement
   label?: LabelType
+  route?: string
   command?: CommandType
   delayDuration?: number
   loading?: boolean
@@ -126,13 +127,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             disabled={loading}
             {...props}
           >
-            {!loading ? (
-              <>{!!Icon && !loading && Icon} </>
-            ) : (
-              <Loader className="w-[1.15rem] h-[1.15rem] animate-spin" />
-            )}
-            {!isCollapsed && (children || title)}
-            {!isCollapsed && command?.label && <CommandComponent />}
+            <div className="flex items-center gap-2">
+              {!loading ? (
+                Icon && <span className="[&_svg]:size-[1.18rem]">{!!Icon && !loading && Icon} </span>
+              ) : (
+                <Loader className="size-[1.18rem] animate-spin" />
+              )}
+              {!isCollapsed && (children || title)}
+              {!isCollapsed && command?.label && <CommandComponent />}
+            </div>
+
             {!isCollapsed && label && !label?.showLabel && (
               <span className="ml-2 text-[.9rem]">{label.children as unknown as React.ReactNode}</span>
             )}

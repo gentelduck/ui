@@ -1,6 +1,10 @@
 {
   "name": "Combobox",
-  "dependencies": [],
+  "dependencies": [
+    "Command",
+    "Tooltip",
+    "Button"
+  ],
   "files": [
     {
       "name": "Combobox.tsx",

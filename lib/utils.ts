@@ -35,3 +35,16 @@ export function groupDataByNumbers<T>(strings: T[], groupSizes: number[]): T[][]
 
   return result
 }
+
+export function generateHeaderArrays<T>(numbers: number[], headers: T[]): T[][] {
+  const result: T[][] = []
+  let index = 0
+
+  for (const num of numbers) {
+    const headerGroup = headers.slice(index, index + num)
+    result.push(headerGroup)
+    index += num
+  }
+
+  return result
+}

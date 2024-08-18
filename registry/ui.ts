@@ -29,7 +29,13 @@ export const ui: Registry = [
   {
     name: 'Combobox',
     type: 'components:ui',
-    dependencies: [],
+    dependencies: ['Command', 'Tooltip', 'Button'],
     files: ['ui/Combobox.tsx'],
+  },
+  {
+    name: 'NavGroup',
+    type: 'components:ui',
+    dependencies: ['Button', 'Badge'],
+    files: ['ui/NavGroup.tsx'],
   },
 ]

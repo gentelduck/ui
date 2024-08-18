@@ -60,6 +60,28 @@ export const Index: Record<string, any> = {
       subcategory: "undefined",
       chunks: []
     },
+    "NavGroup": {
+      name: "NavGroup",
+      type: "components:ui",
+      registryDependencies: undefined,
+      component: React.lazy(() => import("@/registry/default/ui/NavGroup")),
+      source: "",
+      files: ["registry/default/ui/NavGroup.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "Header": {
+      name: "Header",
+      type: "components:ui",
+      registryDependencies: undefined,
+      component: React.lazy(() => import("@/registry/default/ui/Header")),
+      source: "",
+      files: ["registry/default/ui/Header.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
     "ButtonMainDemo": {
       name: "ButtonMainDemo",
       type: "components:example",
@@ -188,6 +210,28 @@ export const Index: Record<string, any> = {
       component: React.lazy(() => import("@/registry/default/example/ComboboxResponsiveDemo")),
       source: "",
       files: ["registry/default/example/ComboboxResponsiveDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "NavGroupMainDemo": {
+      name: "NavGroupMainDemo",
+      type: "components:example",
+      registryDependencies: ["NavGroup"],
+      component: React.lazy(() => import("@/registry/default/example/NavGroupMainDemo")),
+      source: "",
+      files: ["registry/default/example/NavGroupMainDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "HeaderMainDemo": {
+      name: "HeaderMainDemo",
+      type: "components:example",
+      registryDependencies: ["Header"],
+      component: React.lazy(() => import("@/registry/default/example/HeaderMainDemo")),
+      source: "",
+      files: ["registry/default/example/HeaderMainDemo.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []

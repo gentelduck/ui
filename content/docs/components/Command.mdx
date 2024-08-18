@@ -83,27 +83,30 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
+  TooltipProvider
 } from '@/components/ui'
 ```
 
 ```tsx
-<Command>
-  <CommandInput placeholder="Type a command or search..." />
-  <CommandList>
-    <CommandEmpty>No results found.</CommandEmpty>
-    <CommandGroup heading="Suggestions">
-      <CommandItem>Search GitHub</CommandItem>
-      <CommandItem>Search Twitter</CommandItem>
-      <CommandItem>Search Discord</CommandItem>
-    </CommandGroup>
-    <CommandSeparator />
-    <CommandGroup heading="Settings">
-      <CommandItem>General</CommandItem>
-      <CommandItem>Profile</CommandItem>
-      <CommandItem>Notifications</CommandItem>
-    </CommandGroup>
-  </CommandList>
-</Command>
+<TooltipProvider>
+  <Command>
+    <CommandInput placeholder="Type a command or search..." />
+    <CommandList>
+      <CommandEmpty>No results found.</CommandEmpty>
+      <CommandGroup heading="Suggestions">
+        <CommandItem>Search GitHub</CommandItem>
+        <CommandItem>Search Twitter</CommandItem>
+        <CommandItem>Search Discord</CommandItem>
+      </CommandGroup>
+      <CommandSeparator />
+      <CommandGroup heading="Settings">
+        <CommandItem>General</CommandItem>
+        <CommandItem>Profile</CommandItem>
+        <CommandItem>Notifications</CommandItem>
+      </CommandGroup>
+    </CommandList>
+  </Command>
+</TooltipProvider>
 ```
 
 ## Examples

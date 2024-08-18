@@ -14,6 +14,7 @@ export type Varieties = {
     loading?: boolean
     open?: boolean
     duration?: number
+    group?: [number, number]
   }
 }
 
@@ -29,6 +30,7 @@ export const buttonVarieties = atom<ButtonVarietiesType>({
       command: 'c',
       open: true,
       duration: 0,
+      group: [2, 2],
     },
   },
 })

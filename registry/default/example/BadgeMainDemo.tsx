@@ -1,5 +1,5 @@
 import { buttonVarieties } from '@/hooks/use-varieties'
-import { Badge } from '@/registry/default/ui'
+import { Badge, TooltipProvider } from '@/registry/default/ui'
 import { useAtom } from 'jotai'
 import { CircleAlert } from 'lucide-react'
 
@@ -10,14 +10,16 @@ export default function BadgeMainDemo() {
   const { variant, size, title } = variety.default.variety!
 
   return (
-    <Badge
-      variant={variant as Exclude<typeof variant, 'default' | 'link' | 'ghost'>}
-      size={size}
-      label={{
-        children: title,
-      }}
-    >
-      {size == 'icon' ? <CircleAlert /> : title}
-    </Badge>
+    <TooltipProvider>
+      <Badge
+        variant={variant as Exclude<typeof variant, 'default' | 'link' | 'ghost'>}
+        size={size}
+        label={{
+          children: title,
+        }}
+      >
+        {size == 'icon' ? <CircleAlert /> : title}
+      </Badge>
+    </TooltipProvider>
   )
 }

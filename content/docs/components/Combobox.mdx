@@ -39,12 +39,11 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+  TooltipProvider
+} from "@/components/ui"
 
 const frameworks = [
   {
@@ -74,49 +73,51 @@ export function ComboboxDemo() {
   const [value, setValue] = React.useState("")
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-[200px] justify-between"
-        >
-          {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select framework..."}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Search framework..." />
-          <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
-            <CommandGroup>
-              {frameworks.map((framework) => (
-                <CommandItem
-                  key={framework.value}
-                  value={framework.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setOpen(false)
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === framework.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {framework.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <TooltipProvider>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-[200px] justify-between"
+          >
+            {value
+              ? frameworks.find((framework) => framework.value === value)?.label
+              : "Select framework..."}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[200px] p-0">
+          <Command>
+            <CommandInput placeholder="Search framework..." />
+            <CommandList>
+              <CommandEmpty>No framework found.</CommandEmpty>
+              <CommandGroup>
+                {frameworks.map((framework) => (
+                  <CommandItem
+                    key={framework.value}
+                    value={framework.value}
+                    onSelect={(currentValue) => {
+                      setValue(currentValue === value ? "" : currentValue)
+                      setOpen(false)
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === framework.value ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {framework.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    </TooltipProvider>
   )
 }
 ```
@@ -147,10 +148,10 @@ Here’s the breakdown of the specific types and interfaces you provided:
 | **Property**   | **Type**                    | **Description**                                                                                 |
 |----------------|-----------------------------|-------------------------------------------------------------------------------------------------|
 | `title`        | `string?`                   | Optional. The title or label for the combobox.                                                  |
-| `className`    | `ClassNameType?`            | Optional. Object containing custom class names for styling various elements of the combobox.    |
-| `data`         | `CommandListGroupDataType[]`| Required. Array of data objects used to populate the `CommandListGroup`.                        |
-| `command`      | `CommandType?`              | Optional. Represents the command object used for actions in the combobox.                      |
-| `label`        | `LabelType?`                | Optional. Object containing properties for configuring the label component.                    |
+| `className`    | [`ClassNameType?`](Combobox#command-component-types)            | Optional. Object containing custom class names for styling various elements of the combobox.    |
+| `data`         | [`CommandListGroupDataType[]`](/docs/components/Command#command-component-types)| Required. Array of data objects used to populate the `CommandListGroup`.                        |
+| `command`      | [`CommandType?`](/docs/components/Button#commandtype)              | Optional. Represents the command object used for actions in the combobox.                      |
+| `label`        | [`LabelType?`](/docs/components/Button#labeltype)                | Optional. Object containing properties for configuring the label component.                    |
 
 #### ClassNameType
 

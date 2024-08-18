@@ -73,4 +73,10 @@ export const examples: Registry = [
     registryDependencies: ['Combobox'],
     files: ['example/ComboboxResponsiveDemo.tsx'],
   },
+  {
+    name: 'NavGroupMainDemo',
+    type: 'components:example',
+    registryDependencies: ['Tooltip'],
+    files: ['example/NavGroupMainDemo.tsx'],
+  },
 ]

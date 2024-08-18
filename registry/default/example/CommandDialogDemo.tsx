@@ -19,6 +19,7 @@ import {
   CommandListGroup,
   CommandListGroupDataType,
   CommandShortcut,
+  TooltipProvider,
 } from '@/registry/default/ui/'
 
 const data: CommandListGroupDataType[] = [
@@ -125,30 +126,32 @@ export default function CommandDialogDemo() {
 
   return (
     <>
-      <Button
-        variant="outline"
-        title="Command"
-        onClick={() => setOpen(true)}
-        command={{
-          label: '⌘+J',
-          key: 'j',
-          action: () => setOpen(true),
-          state: { open },
-        }}
-      />
-      <CommandDialog
-        open={open}
-        onOpenChange={setOpen}
-      >
-        <CommandInput placeholder="Type a command or search..." />
-        <CommandListGroup
-          data={data}
-          group={[3, 3, 2]}
-          className="h-[300px]"
-          groupheading={['Suggestions', 'Settings']}
-          selected={['']}
+      <TooltipProvider>
+        <Button
+          variant="outline"
+          title="Command"
+          onClick={() => setOpen(true)}
+          command={{
+            label: '⌘+J',
+            key: 'j',
+            action: () => setOpen(true),
+            state: { open },
+          }}
         />
-      </CommandDialog>
+        <CommandDialog
+          open={open}
+          onOpenChange={setOpen}
+        >
+          <CommandInput placeholder="Type a command or search..." />
+          <CommandListGroup
+            data={data}
+            group={[3, 3, 2]}
+            className="h-[300px]"
+            groupheading={['Suggestions', 'Settings']}
+            selected={['']}
+          />
+        </CommandDialog>
+      </TooltipProvider>
     </>
   )
 }

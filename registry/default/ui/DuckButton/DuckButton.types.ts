@@ -7,7 +7,7 @@ export interface DuckButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   isCollapsed?: boolean
-  icon?: LucideIcon
+  icon?: React.ReactElement
   label?: string
   route?: string
   command?: CommandType

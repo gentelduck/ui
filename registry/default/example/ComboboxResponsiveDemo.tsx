@@ -18,6 +18,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  TooltipProvider,
 } from '@/registry/default/ui/'
 
 const data: CommandListGroupDataType[] = [
@@ -46,47 +47,51 @@ export default function ComboBoxResponsive() {
 
   if (isDesktop) {
     return (
-      <Popover
-        open={open}
-        onOpenChange={setOpen}
-      >
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className="w-[150px] justify-start"
-          >
-            {selectedStatus ? <>{selectedStatus}</> : <>+ Set status</>}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-[200px] p-0"
-          align="start"
+      <TooltipProvider>
+        <Popover
+          open={open}
+          onOpenChange={setOpen}
         >
-          <StatusList setSelectedStatus={setSelectedStatus} />
-        </PopoverContent>
-      </Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-[150px] justify-start"
+            >
+              {selectedStatus ? <>{selectedStatus}</> : <>+ Set status</>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-[200px] p-0"
+            align="start"
+          >
+            <StatusList setSelectedStatus={setSelectedStatus} />
+          </PopoverContent>
+        </Popover>
+      </TooltipProvider>
     )
   }
 
   return (
-    <Drawer
-      open={open}
-      onOpenChange={setOpen}
-    >
-      <DrawerTrigger asChild>
-        <Button
-          variant="outline"
-          className="w-[150px] justify-start"
-        >
-          {selectedStatus ? <>{selectedStatus}</> : <>+ Set Distro</>}
-        </Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <div className="mt-4 border-t">
-          <StatusList setSelectedStatus={setSelectedStatus} />
-        </div>
-      </DrawerContent>
-    </Drawer>
+    <TooltipProvider>
+      <Drawer
+        open={open}
+        onOpenChange={setOpen}
+      >
+        <DrawerTrigger asChild>
+          <Button
+            variant="outline"
+            className="w-[150px] justify-start"
+          >
+            {selectedStatus ? <>{selectedStatus}</> : <>+ Set Distro</>}
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <div className="mt-4 border-t">
+            <StatusList setSelectedStatus={setSelectedStatus} />
+          </div>
+        </DrawerContent>
+      </Drawer>
+    </TooltipProvider>
   )
 }
 

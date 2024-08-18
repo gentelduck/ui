@@ -1,5 +1,4 @@
-import { CommandListGroupDataType } from '../ui'
-import { Combobox } from '../ui/Combobox'
+import { Combobox, CommandListGroupDataType, TooltipProvider } from '@/registry/default/ui'
 
 const linuxDistros: CommandListGroupDataType[] = [
   {
@@ -46,14 +45,16 @@ const linuxDistros: CommandListGroupDataType[] = [
 
 export default function ComboboxMainDemo() {
   return (
-    <Combobox
-      data={linuxDistros}
-      title="Selectt a User"
-      className={{ trigger: 'w-[200px]' }}
-      command={{
-        label: '⌘+m',
-        key: 'm',
-      }}
-    />
+    <TooltipProvider>
+      <Combobox
+        data={linuxDistros}
+        title="Selectt a User"
+        className={{ trigger: 'w-[200px]' }}
+        command={{
+          label: '⌘+m',
+          key: 'm',
+        }}
+      />
+    </TooltipProvider>
   )
 }

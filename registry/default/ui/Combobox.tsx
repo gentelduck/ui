@@ -18,7 +18,7 @@ import {
 import { cn } from '@/lib'
 import { ChevronsUpDown } from 'lucide-react'
 
-export type ComboboxType = {
+type ComboboxType = {
   title?: string
   className?: ClassNameType
   data: CommandListGroupDataType[]
@@ -26,7 +26,7 @@ export type ComboboxType = {
   label?: LabelType
 }
 
-export interface ClassNameType {
+interface ClassNameType {
   wrapper?: string
   trigger?: string
   content?: string
@@ -87,4 +87,4 @@ const Combobox: React.FC<ComboboxType> = ({ data, className, title, command, lab
 
 Combobox.displayName = 'Combobox'
 
-export { Combobox }
+export { Combobox, type ComboboxType, type ClassNameType }

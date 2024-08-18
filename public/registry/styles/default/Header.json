@@ -1,0 +1,13 @@
+{
+  "name": "Header",
+  "dependencies": [
+    "NavGroup"
+  ],
+  "files": [
+    {
+      "name": "Header.tsx",
+      "content": "// 'use client'\n//\n// export type HeaderProps<T extends boolean> = {\n//   header: HeaderType\n//   nav: NavGroupProps<T>\n//   switcher?: SwitcherType\n//   footer?: FooterType\n// }\n//\n// export interface HeaderType extends React.HtmlHTMLAttributes<HTMLDivElement> {\n//   isCollabsed?: boolean\n// }\n//\n// export type NavType = {\n//   isCollabsed?: boolean\n//   router: UseNavigateResult<string>\n//   location: ParsedLocation<{}>\n//   navigationKeys: DuckButtonProps[]\n// }\n//\n// export type SwitcherType = {\n//   accounts: AccountType[]\n// }\n//\n// export type FooterType = {\n//   buttons: React.ReactNode[]\n// }\n//\n// export const DuckHeader = <T extends boolean>({ nav, header, switcher, footer }: HeaderProps<T>) => {\n//   const navIsCollabsed = (header as NavCollabsedType).isCollabsed || false\n//   const filteredKeys = filteredObject(['isCollabsed'], header)\n//\n//   return (\n//     <header\n//       {...filteredKeys}\n//       className={cn('py-2 flex flex-col h-full', header.className)}\n//     >\n//       {switcher && (\n//         <DuckSwitcher\n//           isCollapsed={navIsCollabsed}\n//           accounts={switcher.accounts}\n//           className=\"mx-2 mb-2\"\n//         />\n//       )}\n//       <Separator className=\"my-1\" />\n//       <DuckNavGroup<T>\n//         nav={{ ...nav.nav, isCollabsed: navIsCollabsed } as NavType<T | true>}\n//         navigationKeys={nav.navigationKeys}\n//       />\n//       <div>{footer && footer.buttons.map((button, idx) => <React.Fragment key={idx}>{button}</React.Fragment>)} </div>\n//     </header>\n//   )\n// }\n"
+    }
+  ],
+  "type": "components:ui"
+}

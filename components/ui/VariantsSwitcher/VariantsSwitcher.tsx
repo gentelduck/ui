@@ -20,6 +20,7 @@ import {
   sizes,
   typesAllowedForCollapse,
   typesAllowedForDuration,
+  typesAllowedForGroup,
   typesAllowedForLabel,
   typesAllowedForLoading,
   typesAllowedForTitle,
@@ -29,7 +30,15 @@ import {
 
 export function VariantsSwitcher({ type, showSettrings }: { type: string; showSettrings: boolean }) {
   const [varieties, setVarieties] = useAtom(buttonVarieties)
-
+  const types = [
+    ...typesAllowedForVariant,
+    ...typesAllowedForTitle,
+    ...typesAllowedForLabel,
+    ...typesAllowedForLoading,
+    ...typesAllowedForCollapse,
+    ...typesAllowedForDuration,
+  ]
+  //types.includes(type) && showSettrings
   return showSettrings ? (
     <Popover onOpenChange={() => {}}>
       <PopoverTrigger asChild>
@@ -37,9 +46,6 @@ export function VariantsSwitcher({ type, showSettrings }: { type: string; showSe
           isCollapsed={true}
           icon={<Settings />}
           title="Settings"
-          label={{
-            children: 'Settings',
-          }}
           className="[&_svg]:h-4 [&_svg]:w-4 w-7 h-7"
           variant="outline"
           size="icon"
@@ -60,8 +66,8 @@ export function VariantsSwitcher({ type, showSettrings }: { type: string; showSe
             <SelectContent>
               {variants.map(
                 variant =>
-                  type === 'BadgeMainDemo' &&
-                  !['link', 'ghost'].includes(variant) && (
+                  (type === 'BadgeMainDemo' && !['link', 'ghost'].includes(variant)) ||
+                  (type === 'ButtonMainDemo' && (
                     <SelectItem
                       key={variant}
                       value={variant}
@@ -69,7 +75,7 @@ export function VariantsSwitcher({ type, showSettrings }: { type: string; showSe
                     >
                       {variant}
                     </SelectItem>
-                  )
+                  ))
               )}
             </SelectContent>
           </Select>
@@ -139,8 +145,35 @@ export function VariantsSwitcher({ type, showSettrings }: { type: string; showSe
           />
         ) : null}
 
+        {typesAllowedForGroup.includes(type) && type ? (
+          <div className="flex items-center justify-between px-2 min-w-[200px]">
+            <Label
+              htmlFor="is-collapsed"
+              className="text-xs"
+            >
+              Group Nav
+            </Label>
+            <Input
+              placeholder="Enter group separated by comma"
+              value={varieties.default.variety?.group?.join(',')}
+              className="w-[105px] h-7 text-sm placeholder:text-[.8rem]"
+              min={0}
+              onChange={({ currentTarget }) =>
+                setVarieties({
+                  default: {
+                    variety: {
+                      ...varieties.default.variety,
+                      group: currentTarget.value.split(',').map(a => +a) as [number, number],
+                    },
+                  },
+                })
+              }
+            />
+          </div>
+        ) : null}
+
         {typesAllowedForCollapse.includes(type) && type ? (
-          <div className="flex items-center justify-between px-2">
+          <div className="flex items-center justify-between px-2 min-w-[200px]">
             <Label
               htmlFor="is-collapsed"
               className="text-xs"

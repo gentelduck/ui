@@ -1,6 +1,6 @@
 import React from 'react'
 import { Inbox } from 'lucide-react'
-import { Button } from '@/registry/default/ui'
+import { Button, TooltipProvider } from '@/registry/default/ui'
 import { toast } from 'sonner'
 import { useAtom } from 'jotai'
 import { buttonVarieties } from '@/hooks/use-varieties'
@@ -13,32 +13,34 @@ export default function ButtonAdvancedDemo() {
 
   return (
     <>
-      <Button
-        isCollapsed={open}
-        icon={<Inbox />}
-        title={title}
-        variant={variant}
-        size={size}
-        role="button"
-        aria-label={title || 'Inbox'}
-        aria-disabled={false}
-        aria-expanded={open}
-        aria-pressed={open}
-        tabIndex={0}
-        loading={loading}
-        label={{
-          children: label,
-        }}
-        command={{
-          label: commandLabel as string,
-          key: command as string,
-          action: () =>
-            toast('Your inbox has been updated', {
-              description: `Your inbox has ${label} messages`,
-            }),
-        }}
-        delayDuration={0}
-      />
+      <TooltipProvider>
+        <Button
+          isCollapsed={open}
+          icon={<Inbox />}
+          title={title}
+          variant={variant}
+          size={size}
+          role="button"
+          aria-label={title || 'Inbox'}
+          aria-disabled={false}
+          aria-expanded={open}
+          aria-pressed={open}
+          tabIndex={0}
+          loading={loading}
+          label={{
+            children: label,
+          }}
+          command={{
+            label: commandLabel as string,
+            key: command as string,
+            action: () =>
+              toast('Your inbox has been updated', {
+                description: `Your inbox has ${label} messages`,
+              }),
+          }}
+          delayDuration={0}
+        />
+      </TooltipProvider>
     </>
   )
 }
