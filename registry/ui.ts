@@ -38,4 +38,10 @@ export const ui: Registry = [
     dependencies: ['Button', 'Badge'],
     files: ['ui/NavGroup.tsx'],
   },
+  {
+    name: 'Header',
+    type: 'components:ui',
+    dependencies: ['NavGroup'],
+    files: ['ui/Header.tsx'],
+  },
 ]

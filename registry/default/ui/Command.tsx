@@ -8,7 +8,6 @@ import { ScrollArea, Dialog, DialogContent } from '@/registry/default/ui/'
 
 import { Check, Search } from 'lucide-react'
 import { cn, groupDataByNumbers } from '@/lib/utils'
-import { extendTailwindMerge } from 'tailwind-merge'
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -141,15 +140,15 @@ const CommandShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanE
 }
 CommandShortcut.displayName = 'CommandShortcut'
 
-export interface CommandListGroupDataType {
+interface CommandListGroupDataType {
   label: string
   element: ListItemElementType
   onSelect?: <T>(arg?: T) => void
 }
 
-export interface ListItemElementType extends Partial<React.ComponentPropsWithoutRef<typeof CommandItem>> {}
+interface ListItemElementType extends Partial<React.ComponentPropsWithoutRef<typeof CommandItem>> {}
 
-export interface CommandListGroupType {
+interface CommandListGroupType {
   data: CommandListGroupDataType[]
   group?: number[]
   groupheading?: string[]
@@ -224,4 +223,8 @@ export {
   CommandShortcut,
   CommandSeparator,
   CommandListGroup,
+  type CommandDialogProps,
+  type CommandListGroupDataType,
+  type ListItemElementType,
+  type CommandListGroupType,
 }

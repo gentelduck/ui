@@ -76,7 +76,13 @@ export const examples: Registry = [
   {
     name: 'NavGroupMainDemo',
     type: 'components:example',
-    registryDependencies: ['Tooltip'],
+    registryDependencies: ['NavGroup'],
     files: ['example/NavGroupMainDemo.tsx'],
+  },
+  {
+    name: 'HeaderMainDemo',
+    type: 'components:example',
+    registryDependencies: ['Header'],
+    files: ['example/HeaderMainDemo.tsx'],
   },
 ]

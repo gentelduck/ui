@@ -5,26 +5,27 @@ import { Button, ButtonProps } from './Button'
 import { filteredObject, generateHeaderArrays } from '@/lib/utils'
 import { Separator } from './ShadcnUI'
 
-export type NavGroupProps<T extends boolean> = {
+type NavGroupProps<T extends boolean> = {
   navigationKeys: ButtonProps[]
   nav: NavType<T>
 }
 
-export type NavType<T extends boolean> = NavCollabsableType<T> & {
+type NavType<T extends boolean> = NavCollabsableType<T> & {
   group: number[]
   router: any //AppRouterInstance
   pathname: string
   className?: string
 }
 
-export type NavCollabsableType<K> = K extends true ? NavCollabsedType : NavNotCollabsedType
+type NavCollabsableType<K> = K extends true ? NavCollabsedType : NavNotCollabsedType
 
-export interface NavCollabsedType {
+interface NavCollabsedType {
   isCollabsed?: boolean
 }
-export interface NavNotCollabsedType {}
 
-export const NavGroup = <T extends boolean>({ navigationKeys, nav }: NavGroupProps<T>) => {
+interface NavNotCollabsedType {}
+
+const NavGroup = <T extends boolean>({ navigationKeys, nav }: NavGroupProps<T>) => {
   const grouped = generateHeaderArrays<ButtonProps>(nav.group, navigationKeys)
   const navIsCollabsed = (nav as NavCollabsedType).isCollabsed
   const filteredKeys = filteredObject(['group', 'router', 'location', 'isCollabsed'], nav)
@@ -35,7 +36,7 @@ export const NavGroup = <T extends boolean>({ navigationKeys, nav }: NavGroupPro
 
   return (
     <div
-      className={cn('w-fit h-full', nav.className)}
+      className={cn('h-full', nav.className)}
       {...filteredKeys}
     >
       {
@@ -71,7 +72,7 @@ export const NavGroup = <T extends boolean>({ navigationKeys, nav }: NavGroupPro
                     </>
                   )
                 })}
-                {idx !== keyGroup.length - 1 && <Separator className="my-1" />}
+                {idx !== grouped.length - 1 && <Separator className="my-1" />}
               </ul>
             </React.Fragment>
           ))}
@@ -79,4 +80,15 @@ export const NavGroup = <T extends boolean>({ navigationKeys, nav }: NavGroupPro
       }
     </div>
   )
+}
+
+NavGroup.displayName = 'NavGroup'
+
+export {
+  NavGroup,
+  type NavGroupProps,
+  type NavType,
+  type NavCollabsableType,
+  type NavCollabsedType,
+  type NavNotCollabsedType,
 }
