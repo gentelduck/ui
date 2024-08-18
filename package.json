@@ -140,6 +140,7 @@
     "remark-gfm": "^4.0.0",
     "rimraf": "^4.4.1",
     "shiki": "^1.12.1",
+    "tsup": "^8.2.4",
     "tsx": "^4.17.0",
     "typescript": "^5.5.4",
     "unist-builder": "3.0.0",

@@ -60,7 +60,6 @@ const DuckButton = React.forwardRef<HTMLButtonElement, DuckButtonProps>(
             )}
             {...props}
           >
-            {!!Icon && <Icon className="w-[1.15rem] h-[1.15rem]" />}
             {!isCollapsed && (children || title) && <span className="text-[.9rem]">{children || title}</span>}
             {!isCollapsed && command && <CommandShortcut className="text-[.8rem]">{command.label}</CommandShortcut>}
             {!isCollapsed && label && <span className="ml-auto text-[.9rem]">{label}</span>}
