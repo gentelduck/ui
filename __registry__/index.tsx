@@ -236,5 +236,16 @@ export const Index: Record<string, any> = {
       subcategory: "undefined",
       chunks: []
     },
+    "HeaderTopDemo": {
+      name: "HeaderTopDemo",
+      type: "components:example",
+      registryDependencies: ["NavGroup"],
+      component: React.lazy(() => import("@/registry/default/example/HeaderTopDemo")),
+      source: "",
+      files: ["registry/default/example/HeaderTopDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
   },
 }

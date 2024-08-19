@@ -1,9 +1,9 @@
 import { Calendar, HandshakeIcon, Home, Settings } from 'lucide-react'
-import { NavGroup, TooltipProvider } from '@/registry/default/ui'
+import { ButtonProps, NavGroup, TooltipProvider } from '@/registry/default/ui'
 import { useAtom } from 'jotai'
 import { buttonVarieties } from '@/hooks/use-varieties'
 
-const data = [
+const data: ButtonProps[] = [
   {
     title: 'Home',
     route: '/home',
@@ -52,6 +52,7 @@ export default function NavGroupMainDemo() {
     <>
       <TooltipProvider>
         <NavGroup<true>
+          position="side"
           nav={{
             group: group as number[],
             router: {},

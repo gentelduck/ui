@@ -85,4 +85,10 @@ export const examples: Registry = [
     registryDependencies: ['Header'],
     files: ['example/HeaderMainDemo.tsx'],
   },
+  {
+    name: 'HeaderTopDemo',
+    type: 'components:example',
+    registryDependencies: ['NavGroup'],
+    files: ['example/HeaderTopDemo.tsx'],
+  },
 ]

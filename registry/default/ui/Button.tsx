@@ -27,6 +27,7 @@ export interface ButtonProps
 
 export interface LabelType extends Partial<React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>> {
   showLabel?: boolean
+  type?: 'notification' | 'default'
 }
 
 export type CommandType = {
@@ -82,6 +83,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }: ButtonProps,
     ref: React.ForwardedRef<HTMLButtonElement> | undefined
   ) => {
+    const { className: labelClassName, type = 'default', showLabel, ...labelProps } = label || {}
     const Component = asChild ? Slot : 'button'
 
     // Handle keyboard shortcuts
@@ -121,7 +123,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               buttonVariants({
                 variant: variant || 'ghost',
                 size: size ? (isCollapsed ? 'icon' : size) : isCollapsed ? 'icon' : 'default',
-                className: cn(!isCollapsed && 'flex items-center gap-2', 'justify-center', className),
+                className: cn(!isCollapsed && 'flex items-center gap-2', 'relative justify-center', className),
               })
             )}
             disabled={loading}
@@ -137,9 +139,26 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             </div>
             {!isCollapsed && command?.label && <CommandComponent />}
 
-            {!isCollapsed && label && !label?.showLabel && (
-              <span className="ml-2 text-[.9rem]">{label.children as unknown as React.ReactNode}</span>
-            )}
+            {!isCollapsed &&
+              label &&
+              !label?.showLabel &&
+              (type == 'default' ? (
+                <span
+                  className={cn('ml-2 text-[.9rem]', labelClassName)}
+                  {...labelProps}
+                >
+                  {label.children as unknown as React.ReactNode}
+                </span>
+              ) : (
+                <Badge
+                  variant={'outline'}
+                  size={'icon'}
+                  className={cn('size-5 text-[.6rem] absolute top-0 right-0', labelClassName)}
+                  {...labelProps}
+                >
+                  {label?.children}
+                </Badge>
+              ))}
             {!isCollapsed && !loading && SecondIcon}
           </Component>
         </TooltipTrigger>

@@ -10,14 +10,21 @@ component: true
   showSettings={true}
 />
 
-### Features
+## Features
 
-- **Customizable Navigation:** Easily manage and group navigation items with collapsible support, providing a tailored user experience.
-- **Account Switching:** Includes an account switcher component for managing multiple accounts within the application.
-- **Collapsible Header:** The header supports a collapsible state, allowing for a more compact layout when needed.
-- **Integrated Footer:** Optional footer with customizable buttons, seamlessly integrated into the header layout.
-- **Modular Design:** Each component is independently configurable, enabling flexible and reusable UI patterns.
-- **Responsive Layout:** Designed to adapt to different screen sizes, ensuring a consistent experience across devices.
+- **Header Component**: Provides a flexible header layout that can be customized with navigation, logos, and footer elements.
+  
+- **Collapsible Navigation**: Supports both collapsible and non-collapsible navigation sections, adaptable to different layouts like side or top positions.
+
+- **Customizable Positioning**: Allows the header to be positioned at the top or side of the page, with appropriate layout adjustments.
+
+- **Dynamic Footer Integration**: Includes an optional footer section where custom buttons or elements can be added.
+
+- **Logo Placement**: Supports the inclusion of a logo, which can be placed dynamically based on the header's position.
+
+- **Seamless Integration**: Designed to work seamlessly with other UI components, such as `NavGroup`, `Separator`, and custom utilities like `cn` and `filteredObject`. 
+
+- **TypeScript Support**: Strongly typed with TypeScript, ensuring type safety and autocompletion benefits during development.
 
 ## Installation
 
@@ -138,14 +145,23 @@ export default function HeaderMainDemo() {
 }
 ```
 
+## Examples
+
+### Top Header  
+
+<ComponentPreview
+  name="HeaderTopDemo"
+  description="A Header"
+  showSettings={true}
+/>
 
 ### HeaderProps
 
 | Parameter  | Type                                         | Description                                                                                   |
 |------------|----------------------------------------------|-----------------------------------------------------------------------------------------------|
 | `header`   | [`HeaderType`](#headertype)                  | Properties related to the header component, including any HTML attributes.                    |
-| `nav`      | [`NavGroupProps<T>`](#navgroupprops)         | Navigation group properties, controlling the behavior and structure of the navigation menu.   |
-| `switcher` | [`SwitcherType`](#switchertype) (optional)   | Configuration for the account switcher component, including accounts and collapse state.      |
+| `nav`      | [`NavGroupProps<T>`](/docs/components/NavGroup#navgroupprops)         | Navigation group properties, controlling the behavior and structure of the navigation menu.   |
+| `logo` | `React.ReactElement` (optional)   | An optional React element to display as the logo in the header.      |
 | `footer`   | [`FooterType`](#footertype) (optional)       | Footer buttons to be displayed in the header.                                                 |
 
 ### HeaderType
@@ -153,13 +169,8 @@ export default function HeaderMainDemo() {
 | Parameter    | Type                                         | Description                                                                                   |
 |--------------|----------------------------------------------|-----------------------------------------------------------------------------------------------|
 | `isCollabsed`| `boolean` (optional)                         | Determines if the header or related components are collapsed.                                 |
+| `position`      | `side` or `top`              | The position of the navigation group.                          |
 | `...props`   | `React.HtmlHTMLAttributes<HTMLDivElement>`   | Additional HTML attributes for the header.                                                    |
-
-### SwitcherType
-
-| Parameter   | Type                  | Description                                                                                   |
-|-------------|-----------------------|-----------------------------------------------------------------------------------------------|
-| `accounts`  | [`AccountType[]`](/docs/components/Command#command-component-types)        | An array of accounts available for switching.                                                 |
 
 ### FooterType
 

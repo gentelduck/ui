@@ -12,10 +12,12 @@ component: true
 
 ## Features
 
-- **Dynamic Navigation Grouping:** Organize navigation buttons into customizable groups based on specified configurations.
-- **Collapsible Navigation:** Supports collapsible sections for a more compact and user-friendly navigation experience.
-- **Customizable Buttons:** Easily modify button properties such as variant, icon, and click behavior for tailored interactions.
-- **Filtered Props Handling:** Automatically filters out unnecessary props for cleaner and more efficient component rendering.
+- **Dynamic Navigation Rendering:** Renders navigation items based on the `navigationKeys` array, allowing flexible navigation structures.
+- **Collapsible Navigation:** Supports a collapsible mode with the `isCollabsed` prop, ideal for sidebars or top navigation.
+- **Flexible Positioning:** Can be positioned on the side or top using the `position` prop for versatile layout options.
+- **Custom Button Styling:** Utilizes the `Button` component with custom styling based on the `variant`, current route, or collapse state.
+- **Grouping Navigation Items:** Groups navigation items into arrays using the `group` prop, simplifying management of complex structures.
+- **Automatic Route Matching:** Automatically applies styles based on the current route to highlight active navigation items.
 
 ## Installation
 
@@ -102,8 +104,6 @@ export default function App() {
 }
 ```
 
-Sure! Here’s how you can structure the documentation for your `NavGroup` component in a similar format:
-
 ### NavGroupProps
 
 The `NavGroupProps` interface defines the properties that can be passed to the `NavGroup` component.
@@ -114,7 +114,7 @@ The `NavGroupProps` interface defines the properties that can be passed to the `
 | --------------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | `navigationKeys`| [`ButtonProps[]`](/docs/components/Button#buttonprops)                                     | An array of button configurations for rendering the navigation buttons.                       |
 | `nav`           | [`NavType<T>`](#navtype)                            | An object containing navigation configuration, including groupings, router, pathname, and more.|
-| `...props`      | `React.HTMLAttributes<HTMLDivElement>`              | Additional HTML attributes to apply to the navigation group element.                          |
+| `position`      | `side` or `top`              | The position of the navigation group.                          |
 
 ### NavType
 

@@ -1,5 +1,5 @@
 import { ArrowRightFromLine, Calendar, Cloudy, Home, Mail, ServerCog } from 'lucide-react'
-import { Button, Header, TooltipProvider } from '@/registry/default/ui'
+import { Button, DuckSwitcher, Header, TooltipProvider } from '@/registry/default/ui'
 import { useAtom } from 'jotai'
 import { buttonVarieties } from '@/hooks/use-varieties'
 import { cn } from '@/lib'
@@ -38,18 +38,23 @@ export default function HeaderMainDemo() {
   const { open } = variety.default.variety!
   const O = open!
   console.log(open)
-
+  //h-[300px]
   return (
     <div>
       <TooltipProvider>
         <Header<typeof O>
           header={{
-            isCollabsed: open,
-            className: 'border-r-border border-r-solid border-r h-[300px] justify-center',
+            isCollabsed: O,
+            position: 'side',
+            className: 'border-r-border border-r-solid border-r justify-center',
           }}
-          switcher={{
-            accounts: emails,
-          }}
+          logo={
+            <DuckSwitcher
+              isCollapsed={O}
+              accounts={emails}
+              className={cn('mx-2 mb-2', 0 && 'mx-auto')}
+            />
+          }
           nav={{
             navigationKeys: data,
             nav: {
@@ -61,7 +66,7 @@ export default function HeaderMainDemo() {
           footer={{
             buttons: [
               <Button
-                isCollapsed={open}
+                isCollapsed={O}
                 icon={<ArrowRightFromLine />}
                 className={cn('my-1 mx-2 justify-between', !O && 'w-[250px]', O && 'justify-center')}
                 title={'Collapse'}
@@ -70,7 +75,7 @@ export default function HeaderMainDemo() {
                 onClick={() =>
                   setVariety({
                     ...variety,
-                    default: { ...variety.default, variety: { ...variety.default.variety, open: !open } },
+                    default: { ...variety.default, variety: { ...variety.default.variety, open: !O } },
                   })
                 }
               />,

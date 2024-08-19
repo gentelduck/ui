@@ -8,6 +8,7 @@ import { Separator } from './ShadcnUI'
 type NavGroupProps<T extends boolean> = {
   navigationKeys: ButtonProps[]
   nav: NavType<T>
+  position?: 'side' | 'top'
 }
 
 type NavType<T extends boolean> = NavCollabsableType<T> & {
@@ -25,13 +26,13 @@ interface NavCollabsedType {
 
 interface NavNotCollabsedType {}
 
-const NavGroup = <T extends boolean>({ navigationKeys, nav }: NavGroupProps<T>) => {
+const NavGroup = <T extends boolean>({ navigationKeys, nav, position }: NavGroupProps<T>) => {
   const grouped = generateHeaderArrays<ButtonProps>(nav.group, navigationKeys)
   const navIsCollabsed = (nav as NavCollabsedType).isCollabsed
   const filteredKeys = filteredObject(['group', 'router', 'location', 'isCollabsed'], nav)
 
   const variants = {
-    default: 'grid items-center',
+    default: position == 'side' ? 'grid items-center' : 'flex',
   }
 
   return (
@@ -54,12 +55,13 @@ const NavGroup = <T extends boolean>({ navigationKeys, nav }: NavGroupProps<T>) 
                       <Button
                         key={idx}
                         icon={key.icon}
-                        variant={variant || 'ghost'}
+                        variant={
+                          nav.pathname === key.route ? 'secondary' : position === 'top' ? 'ghost' : variant || 'ghost'
+                        }
                         isCollapsed={navIsCollabsed ? navIsCollabsed : false}
                         className={cn(
                           !navIsCollabsed && 'w-full justify-between',
-                          nav.pathname === key.route &&
-                            'bg-primary text-white hover:bg-primary/90 hover:text-white h-10',
+                          position === 'top' && 'rounded-full',
                           key.className
                         )}
                         onClick={() => console.log('hi')}
@@ -71,7 +73,7 @@ const NavGroup = <T extends boolean>({ navigationKeys, nav }: NavGroupProps<T>) 
                   )
                 })}
               </ul>
-              {idx !== grouped.length - 1 && <Separator className="my-1" />}
+              {idx !== grouped.length - 1 && position === 'side' && <Separator className="my-1" />}
             </React.Fragment>
           ))}
         </div>
