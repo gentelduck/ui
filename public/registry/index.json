@@ -75,5 +75,25 @@
       "ui/Header.tsx"
     ],
     "type": "components:ui"
+  },
+  {
+    "name": "AlertDialog",
+    "dependencies": [
+      "@radix-ui/react-alert-dialog"
+    ],
+    "files": [
+      "ui/AlertDialog.tsx"
+    ],
+    "type": "components:ui"
+  },
+  {
+    "name": "Drawer",
+    "dependencies": [
+      "@radix-ui/react-drawer"
+    ],
+    "files": [
+      "ui/Drawer.tsx"
+    ],
+    "type": "components:ui"
   }
 ]

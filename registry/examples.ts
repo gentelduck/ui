@@ -91,4 +91,16 @@ export const examples: Registry = [
     registryDependencies: ['NavGroup'],
     files: ['example/HeaderTopDemo.tsx'],
   },
+  {
+    name: 'AlertDialogMainDemo',
+    type: 'components:example',
+    registryDependencies: ['AlertDialog', 'Button'],
+    files: ['example/AlertDialogMainDemo.tsx'],
+  },
+  {
+    name: 'AlertDialogDrawerDemo',
+    type: 'components:example',
+    registryDependencies: ['AlertDialog', 'Button', 'Drawer'],
+    files: ['example/AlertDialogDrawerDemo.tsx'],
+  },
 ]

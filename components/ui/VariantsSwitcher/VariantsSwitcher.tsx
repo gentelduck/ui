@@ -38,8 +38,8 @@ export function VariantsSwitcher({ type, showSettrings }: { type: string; showSe
     ...typesAllowedForCollapse,
     ...typesAllowedForDuration,
   ]
-  //types.includes(type) && showSettrings
-  return showSettrings ? (
+  // && showSettrings
+  return types.includes(type) && showSettrings ? (
     <Popover onOpenChange={() => {}}>
       <PopoverTrigger asChild>
         <Button

@@ -1,0 +1,211 @@
+---
+title: Alert Dialog
+description: A modal dialog temporarily interrupts the user's workflow with important content, requiring immediate attention and a response before allowing further interaction.
+featured: true
+component: true
+links:
+  doc: https://www.radix-ui.com/docs/primitives/components/alert-dialog
+  api: https://www.radix-ui.com/docs/primitives/components/alert-dialog#api-reference
+---
+
+<ComponentPreview
+  name="AlertDialogMainDemo"
+  description="An alert dialog with cancel and continue buttons."
+/>
+
+## Features
+
+- Customizable and animated overlay with fading and sliding transitions (`AlertDialogOverlay`).
+- Main dialog container with smooth fade and zoom animations (`AlertDialogContent`).
+- Trigger element to open the alert dialog (`AlertDialogTrigger`).
+- Support for rendering dialog in a React portal (`AlertDialogPortal`).
+- Flexible header section for titles and descriptions (`AlertDialogHeader`).
+- Responsive footer for action buttons with customizable layout (`AlertDialogFooter`).
+- Title component with customizable font and alignment (`AlertDialogTitle`).
+- Description component with muted text styling (`AlertDialogDescription`).
+- Action button with default styling for primary actions (`AlertDialogAction`).
+- Cancel button with outline variant and responsive margin (`AlertDialogCancel`).
+
+## Installation
+
+<Tabs defaultValue="cli">
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx duck-ui@latest add alert-dialog
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install @radix-ui/react-alert-dialog
+```
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ComponentSource name="AlertDialog" />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</Tabs>
+
+## Usage
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+  Button
+} from "@/components/ui"
+```
+
+```tsx
+<AlertDialog>
+  <AlertDialogTrigger asChild>
+    <Button variant="outline">Open</Button>
+  </AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+      <AlertDialogDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction>Continue</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+## Examples
+
+### Drawer 
+
+<ComponentPreview
+  name="AlertDialogDrawerDemo"
+  description="An alert dialog with cancel and continue buttons."
+/>
+
+
+## AlertDialogProps
+
+The `AlertDialogProps` interface defines the properties that can be passed to the `AlertDialog` component.
+
+### Parameters
+
+| **Parameter**    | **Type**                                                | **Description**                                                                                     |
+| ---------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `defaultOpen`    | `boolean` (optional)                                   | Determines if the dialog should be open by default.                                                |
+| `open`           | `boolean` (optional)                                   | Controls the visibility of the dialog.                                                              |
+| `onOpenChange`   | `function` (optional)                                  | Callback function triggered when the dialog opens or closes.                                       |
+
+#### `AlertDialogTrigger`
+
+A button that opens the dialog.
+
+| **Parameter**    | **Type**              | **Default** | **Description**                                        |
+| ---------------- | --------------------- | ----------- | ------------------------------------------------------ |
+| `asChild`        | `boolean`             | `false`     | If `true`, the trigger will be rendered as a child element. |
+
+| **Data Attribute** | **Values**             | **Description**                         |
+| ------------------ | ----------------------- | --------------------------------------- |
+| `data-state`       | `"open" | "closed"`     | Indicates the current state of the dialog. |
+
+#### `AlertDialogPortal`
+
+When used, it portals your overlay and content parts into the body.
+
+| **Parameter**    | **Type**           | **Default**    | **Description**                        |
+| ---------------- | ------------------ | -------------- | -------------------------------------- |
+| `forceMount`     | `boolean`          | No default     | If `true`, forces the component to mount. |
+| `container`      | `HTMLElement`      | `document.body`| The container element for the portal.   |
+
+#### `AlertDialogOverlay`
+
+A layer that covers the inert portion of the view when the dialog is open.
+
+| **Parameter**    | **Type**            | **Default**    | **Description**                         |
+| ---------------- | ------------------- | -------------- | --------------------------------------- |
+| `asChild`        | `boolean`           | `false`        | If `true`, the overlay will be rendered as a child element. |
+| `forceMount`     | `boolean`           | No default     | If `true`, forces the overlay to mount.  |
+
+| **Data Attribute** | **Values**             | **Description**                        |
+| ------------------ | ----------------------- | -------------------------------------- |
+| `data-state`       | `"open" | "closed"`     | Indicates the current state of the overlay. |
+
+#### `AlertDialogContent`
+
+Contains content to be rendered when the dialog is open.
+
+| **Parameter**    | **Type**                | **Default**    | **Description**                           |
+| ---------------- | ----------------------- | -------------- | ----------------------------------------- |
+| `asChild`        | `boolean`               | `false`        | If `true`, the content will be rendered as a child element. |
+| `forceMount`     | `boolean`               | No default     | If `true`, forces the content to mount.   |
+| `onOpenAutoFocus`| `function`              | No default     | Callback for managing focus when the dialog opens. |
+| `onCloseAutoFocus`| `function`             | No default     | Callback for managing focus when the dialog closes. |
+| `onEscapeKeyDown`| `function`              | No default     | Callback for handling the Escape key press. |
+
+| **Data Attribute** | **Values**             | **Description**                        |
+| ------------------ | ----------------------- | -------------------------------------- |
+| `data-state`       | `"open" | "closed"`     | Indicates the current state of the content. |
+
+#### `AlertDialogCancel`
+
+A button that closes the dialog. This button should be visually distinguished from `AlertDialog.Action` buttons.
+
+| **Parameter**    | **Type**      | **Default** | **Description**                             |
+| ---------------- | ------------- | ----------- | ------------------------------------------- |
+| `asChild`        | `boolean`     | `false`     | If `true`, the cancel button will be rendered as a child element. |
+
+#### `AlertDialogAction`
+
+A button that performs an action and closes the dialog. These buttons should be visually distinguished from `AlertDialog.Cancel` buttons.
+
+| **Parameter**    | **Type**      | **Default** | **Description**                             |
+| ---------------- | ------------- | ----------- | ------------------------------------------- |
+| `asChild`        | `boolean`     | `false`     | If `true`, the action button will be rendered as a child element. |
+
+#### `AlertDialogTitle`
+
+An accessible name to be announced when the dialog is opened. Alternatively, you can provide `aria-label` or `aria-labelledby` to `AlertDialog.Content` and exclude this component.
+
+| **Parameter**    | **Type**      | **Default** | **Description**                             |
+| ---------------- | ------------- | ----------- | ------------------------------------------- |
+| `asChild`        | `boolean`     | `false`     | If `true`, the title will be rendered as a child element. |
+
+#### `AlertDialogDescription`
+
+An accessible description to be announced when the dialog is opened. Alternatively, you can provide `aria-describedby` to `AlertDialog.Content` and exclude this component.
+
+| **Parameter**    | **Type**      | **Default** | **Description**                             |
+| ---------------- | ------------- | ----------- | ------------------------------------------- |
+| `asChild`        | `boolean`     | `false`     | If `true`, the description will be rendered as a child element. |
+
+---
+
+This structured format provides a clear overview of the `AlertDialog` component's properties, including their types, default values, and descriptions.

@@ -4,7 +4,14 @@ import * as React from 'react'
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog'
 
 import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/registry/default/ui/'
+import {
+  buttonVariants,
+  DialogDescription,
+  DialogTitle,
+  Drawer,
+  DrawerContent,
+  DrawerTrigger,
+} from '@/registry/default/ui/'
 
 const AlertDialog = AlertDialogPrimitive.Root
 
@@ -109,6 +116,57 @@ const AlertDialogCancel = React.forwardRef<
 ))
 AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName
 
+interface AlertDialogDrawer {
+  trigger: React.ReactNode
+  threads: React.ReactNode
+}
+
+const AlertDialogDrawer = ({ trigger, threads }: AlertDialogDrawer) => {
+  return (
+    <>
+      <AlertDialog
+      // open={false}
+      >
+        <Drawer
+        // open={false}
+        // onOpenChange={handleDrawerOpenChange}
+        >
+          <DrawerTrigger asChild>{trigger}</DrawerTrigger>
+          <DrawerContent>
+            <div className="w-full h-[400px]">
+              <DialogTitle />
+              <DialogDescription />
+            </div>
+          </DrawerContent>
+        </Drawer>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action will consider these replies as Drafts, you can delete, adjust and send from Drafts section on
+              the side header.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+            // onClick={handleAlertCancel}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+            // onClick={handleAlertContinue}
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  )
+}
+
+AlertDialogDrawer.displayName = 'AlertDialogDrawer'
+
 export {
   AlertDialog,
   AlertDialogPortal,
@@ -121,4 +179,5 @@ export {
   AlertDialogDescription,
   AlertDialogAction,
   AlertDialogCancel,
+  AlertDialogDrawer,
 }

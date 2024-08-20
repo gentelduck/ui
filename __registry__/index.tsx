@@ -82,6 +82,28 @@ export const Index: Record<string, any> = {
       subcategory: "undefined",
       chunks: []
     },
+    "AlertDialog": {
+      name: "AlertDialog",
+      type: "components:ui",
+      registryDependencies: undefined,
+      component: React.lazy(() => import("@/registry/default/ui/AlertDialog")),
+      source: "",
+      files: ["registry/default/ui/AlertDialog.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "Drawer": {
+      name: "Drawer",
+      type: "components:ui",
+      registryDependencies: undefined,
+      component: React.lazy(() => import("@/registry/default/ui/Drawer")),
+      source: "",
+      files: ["registry/default/ui/Drawer.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
     "ButtonMainDemo": {
       name: "ButtonMainDemo",
       type: "components:example",
@@ -243,6 +265,28 @@ export const Index: Record<string, any> = {
       component: React.lazy(() => import("@/registry/default/example/HeaderTopDemo")),
       source: "",
       files: ["registry/default/example/HeaderTopDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "AlertDialogMainDemo": {
+      name: "AlertDialogMainDemo",
+      type: "components:example",
+      registryDependencies: ["AlertDialog","Button"],
+      component: React.lazy(() => import("@/registry/default/example/AlertDialogMainDemo")),
+      source: "",
+      files: ["registry/default/example/AlertDialogMainDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "AlertDialogDrawerDemo": {
+      name: "AlertDialogDrawerDemo",
+      type: "components:example",
+      registryDependencies: ["AlertDialog","Button","Drawer"],
+      component: React.lazy(() => import("@/registry/default/example/AlertDialogDrawerDemo")),
+      source: "",
+      files: ["registry/default/example/AlertDialogDrawerDemo.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []

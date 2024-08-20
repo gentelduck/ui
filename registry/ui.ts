@@ -44,4 +44,16 @@ export const ui: Registry = [
     dependencies: ['NavGroup'],
     files: ['ui/Header.tsx'],
   },
+  {
+    name: 'AlertDialog',
+    type: 'components:ui',
+    dependencies: ['@radix-ui/react-alert-dialog'],
+    files: ['ui/AlertDialog.tsx'],
+  },
+  {
+    name: 'Drawer',
+    type: 'components:ui',
+    dependencies: ['@radix-ui/react-drawer'],
+    files: ['ui/Drawer.tsx'],
+  },
 ]

@@ -9,7 +9,7 @@ import { ThemeProvider } from '@/components/providers'
 // import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { ThemeSwitcher } from '@/components/theme-switcher'
 // import { Toaster as DefaultToaster } from '@/registry/default/ui/'
-import { Toaster as DefaultSonner } from '@/registry/default/ui/'
+import { Toaster as DefaultSonner, ScrollArea } from '@/registry/default/ui/'
 // import { Toaster as NewYorkToaster } from '@/registry/default/ui/'
 
 export const metadata: Metadata = {
@@ -85,7 +85,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
             disableTransitionOnChange
           >
             <div vaul-drawer-wrapper="">
-              <div className="relative flex min-h-screen flex-col bg-background">{children}</div>
+              <ScrollArea className="h-[100vh]">
+                <div className="relative flex min-h-screen flex-col bg-background">{children}</div>
+              </ScrollArea>
             </div>
             <ThemeSwitcher />
             <Analytics />
