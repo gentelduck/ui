@@ -1,6 +1,6 @@
 import { cn } from '@/lib/cn'
-import { Button } from '@/registry/default/ui'
 import {
+  Button,
   Input,
   Label,
   Popover,
