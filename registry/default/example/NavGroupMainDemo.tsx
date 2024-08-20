@@ -5,7 +5,7 @@ import { buttonVarieties } from '@/hooks/use-varieties'
 
 const data: ButtonProps[] = [
   {
-    title: 'Home',
+    heading: 'Home',
     route: '/home',
     children: 'Home',
     icon: <Home />,
@@ -14,7 +14,7 @@ const data: ButtonProps[] = [
     },
   },
   {
-    title: 'Calendar',
+    heading: 'Calendar',
     route: '/calendar',
     children: 'Calendar',
     icon: <Calendar />,
@@ -23,7 +23,7 @@ const data: ButtonProps[] = [
     },
   },
   {
-    title: 'Deals',
+    heading: 'Deals',
     route: '/deals',
     children: 'Deals',
     icon: <HandshakeIcon />,
@@ -32,7 +32,7 @@ const data: ButtonProps[] = [
     },
   },
   {
-    title: 'Settings',
+    heading: 'Settings',
     route: '/settings',
     children: 'Settings',
     icon: <Settings />,

@@ -13,7 +13,7 @@ export default function ButtonSimpleDemo() {
       <Button
         isCollapsed={open}
         icon={<Inbox />}
-        title={title}
+        heading={title}
         label={{
           children: label,
         }}

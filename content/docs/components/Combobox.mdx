@@ -17,10 +17,43 @@ component: true
 
 ## Installation
 
-<Step>The Combobox is built using a composition of the `<Popover />` and the `<Command />` components.</Step>
+<Tabs defaultValue="cli">
 
-See installation instructions for the [Popover](/docs/components/Popover#installation) and the
-[Command](/docs/components/Command#installation) components.
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+
+<TabsContent value="cli">
+
+```bash
+npx duck-ui@latest add combobox 
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Copy the following component code into your project.</Step>
+
+<ComponentSource name="combobox" />
+
+<Step>The Combobox is built using a composition of the `<Popover />`, `Label`, `Button` and the `<Command />` component.</Step>
+
+<Step>You also will need to install the [`Button`](/docs/components/Button#installation),
+    [`Popover`](/docs/components/Popover#installation),
+    [`Command`](/docs/components/Command#installation) and [`Label`](/docs/components/Label#installation) components because some dependencies
+    are inherited from them.</Step>
+
+<Step>Ensure the import paths align with your project's structure.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</Tabs>
 
 ## Usage
 
@@ -30,9 +63,8 @@ See installation instructions for the [Popover](/docs/components/Popover#install
 import * as React from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import {
+  Button,
   Command,
   CommandEmpty,
   CommandGroup,
@@ -44,6 +76,8 @@ import {
   PopoverTrigger,
   TooltipProvider
 } from "@/components/ui"
+
+import { cn } from "@/lib/utils"
 
 const frameworks = [
   {

@@ -45,7 +45,7 @@ export function VariantsSwitcher({ type, showSettrings }: { type: string; showSe
         <Button
           isCollapsed={true}
           icon={<Settings />}
-          title="Settings"
+          heading="Settings"
           className="[&_svg]:h-4 [&_svg]:w-4 w-7 h-7"
           variant="outline"
           size="icon"

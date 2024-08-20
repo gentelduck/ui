@@ -1,18 +1,10 @@
 import * as React from 'react'
 
-import {
-  Select,
-  SelectContent,
-  SelectItemLeftCheck,
-  SelectTrigger,
-  SelectValue,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/registry/default/ui'
+import { Select, SelectContent, SelectItemLeftCheck, SelectTrigger, SelectValue } from './ShadcnUI/select'
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
+
 import { cn } from '@/lib'
-import { Mail } from 'lucide-react'
-import { Inbox } from 'lucide-react'
+import { Inbox, Mail } from 'lucide-react'
 
 export interface DuckSwitcherProps {
   isCollapsed: boolean

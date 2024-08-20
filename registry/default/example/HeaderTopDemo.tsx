@@ -4,12 +4,12 @@ import { cn } from '@/lib'
 
 const data: ButtonProps[] = [
   {
-    title: 'Home',
+    heading: 'Home',
     route: '/home',
     children: 'Home',
   },
   {
-    title: 'Calendar',
+    heading: 'Calendar',
     route: '/calendar',
     children: 'Calendar',
   },
@@ -42,7 +42,7 @@ export default function HeaderMainDemo() {
           buttons: [
             <Button
               className={cn('my-1 mx-2 justify-between rounded-full')}
-              title={'Get started'}
+              heading={'Get started'}
               variant={'default'}
               size={'sm'}
             />,

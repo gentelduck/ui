@@ -2,9 +2,9 @@ import React from 'react'
 
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 import { Slot } from '@radix-ui/react-slot'
-import { Tooltip, TooltipContent, TooltipTrigger } from './Tooltip'
-import { Badge } from './Badge'
-import { CommandShortcut } from './Command'
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
+import { Badge } from './badge'
+import { CommandShortcut } from './command'
 
 import { cn } from '@/lib'
 import { cva } from 'class-variance-authority'
@@ -70,7 +70,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       isCollapsed = false,
       size = 'default',
       variant = 'default',
-      title,
+      heading: title,
       className,
       label,
       children,

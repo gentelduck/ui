@@ -56,7 +56,7 @@ export default function AlertDialogDrawerDemo() {
 
   return (
     <AlertDialogCustom<string, typeof goal>
-      type="drawer"
+      type="sheet"
       drawerData={{
         data,
         setData,
@@ -66,14 +66,15 @@ export default function AlertDialogDrawerDemo() {
         description: 'Set your daily calorie goal',
       }}
       footer={{
-        className: 'grid w-full max-w-[400px] place-self-center',
+        className: 'flex w-full justify-between items-end',
         submit: <Button variant="default">Submit</Button>,
         cancel: <Button variant="outline">Cancel</Button>,
       }}
       state={goal}
       trigger={{ children: <Button variant="outline">Open</Button> }}
       content={{
-        className: '[&>div]:flex [&>div]:flex-col [&>div]:place-content-center [&>div]:w-fit [&>div]:place-self-center',
+        className:
+          '[&>div]:flex [&>div]:flex-col [&>div]:place-content-center [&>div]:w-fit [&>div]:place-self-center sm:max-w-[450px]',
         children: (
           <ContentComponent
             goal={goal}
@@ -87,7 +88,7 @@ export default function AlertDialogDrawerDemo() {
 
 export const ContentComponent = ({ goal, onClick }: { goal: number; onClick: (adjustment: number) => void }) => {
   return (
-    <div className="w-full h-[250px] flex items-start justify-center pt-4 pb-2">
+    <div className="w-full h-[84vh] flex items-start justify-center pt-4 pb-2">
       <div className="p-4 pb-0">
         <div className="flex items-center justify-center space-x-2">
           <Button

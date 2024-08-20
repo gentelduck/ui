@@ -4,7 +4,8 @@ import * as React from 'react'
 
 import { type DialogProps } from '@radix-ui/react-dialog'
 import { Command as CommandPrimitive } from 'cmdk'
-import { ScrollArea, Dialog, DialogContent } from '@/registry/default/ui/'
+import { Dialog, DialogContent } from './ShadcnUI/dialog'
+import { ScrollArea } from './ShadcnUI/scroll-area'
 
 import { Check, Search } from 'lucide-react'
 import { cn, groupDataByNumbers } from '@/lib/utils'

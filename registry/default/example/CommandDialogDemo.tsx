@@ -129,7 +129,7 @@ export default function CommandDialogDemo() {
       <TooltipProvider>
         <Button
           variant="outline"
-          title="Command"
+          heading="Command"
           onClick={() => setOpen(true)}
           command={{
             label: '⌘+J',

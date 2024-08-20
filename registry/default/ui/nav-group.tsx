@@ -1,7 +1,7 @@
 'use client'
 import * as React from 'react'
 import { cn } from '@/lib'
-import { Button, ButtonProps } from './Button'
+import { Button, ButtonProps } from './button'
 import { filteredObject, generateHeaderArrays } from '@/lib/utils'
 import { Separator } from './ShadcnUI'
 

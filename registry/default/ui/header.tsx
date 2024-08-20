@@ -2,7 +2,8 @@
 
 import React from 'react'
 
-import { Separator, NavCollabsedType, NavGroup, NavGroupProps, NavType } from '@/registry/default/ui'
+import { NavCollabsedType, NavGroup, NavGroupProps, NavType } from './nav-group'
+import { Separator } from './ShadcnUI/separator'
 
 import { cn, filteredObject } from '@/lib/utils'
 

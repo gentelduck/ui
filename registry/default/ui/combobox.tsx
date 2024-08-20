@@ -1,19 +1,10 @@
 'use client'
 import React from 'react'
 
-import {
-  Button,
-  Command,
-  CommandInput,
-  CommandListGroup,
-  CommandListGroupDataType,
-  CommandType,
-  Label,
-  LabelType,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/registry/default/ui'
+import { Button, LabelType, CommandType } from './button'
+import { Label } from './ShadcnUI/label'
+import { Popover, PopoverContent, PopoverTrigger } from './ShadcnUI/popover'
+import { Command, CommandInput, CommandListGroup, CommandListGroupDataType } from './command'
 
 import { cn } from '@/lib'
 import { ChevronsUpDown } from 'lucide-react'

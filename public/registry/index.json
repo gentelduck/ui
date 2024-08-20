@@ -1,6 +1,6 @@
 [
   {
-    "name": "Button",
+    "name": "button",
     "dependencies": [
       "@radix-ui/react-slot",
       "Command",
@@ -10,89 +10,89 @@
       "dialog"
     ],
     "files": [
-      "ui/Button.tsx"
+      "ui/button.tsx"
     ],
     "type": "components:ui"
   },
   {
-    "name": "Badge",
+    "name": "badge",
     "dependencies": [],
     "files": [
-      "ui/Badge.tsx"
+      "ui/badge.tsx"
     ],
     "type": "components:ui"
   },
   {
-    "name": "Command",
+    "name": "command",
     "dependencies": [
       "cmdk@1.0.0",
       "@radix-ui/react-dialog"
     ],
     "files": [
-      "ui/Command.tsx"
+      "ui/command.tsx"
     ],
     "type": "components:ui"
   },
   {
-    "name": "Tooltip",
+    "name": "tooltip",
     "dependencies": [
       "@radix-ui/react-tooltip"
     ],
     "files": [
-      "ui/Tooltip.tsx"
+      "ui/tooltip.tsx"
     ],
     "type": "components:ui"
   },
   {
-    "name": "Combobox",
+    "name": "combobox",
     "dependencies": [
-      "Command",
-      "Tooltip",
-      "Button"
+      "command",
+      "tooltip",
+      "button"
     ],
     "files": [
-      "ui/Combobox.tsx"
+      "ui/combobox.tsx"
     ],
     "type": "components:ui"
   },
   {
-    "name": "NavGroup",
+    "name": "nav-group",
     "dependencies": [
-      "Button",
-      "Badge"
+      "button",
+      "badge"
     ],
     "files": [
-      "ui/NavGroup.tsx"
+      "ui/nav-group.tsx"
     ],
     "type": "components:ui"
   },
   {
-    "name": "Header",
+    "name": "header",
     "dependencies": [
-      "NavGroup"
+      "nav-group"
     ],
     "files": [
-      "ui/Header.tsx"
+      "ui/header.tsx"
     ],
     "type": "components:ui"
   },
   {
-    "name": "AlertDialog",
+    "name": "alert-dialog",
     "dependencies": [
       "@radix-ui/react-alert-dialog"
     ],
     "files": [
-      "ui/AlertDialog.tsx"
+      "ui/alert-dialog.tsx"
     ],
     "type": "components:ui"
   },
   {
-    "name": "Drawer",
+    "name": "drawer",
     "dependencies": [
       "@radix-ui/react-drawer"
     ],
     "files": [
-      "ui/Drawer.tsx"
+      "ui/drawer.tsx"
     ],
     "type": "components:ui"
   }

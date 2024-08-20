@@ -2,8 +2,8 @@ import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
-import { Tooltip, TooltipContent, TooltipTrigger } from './Tooltip'
-import { LabelType } from './Button'
+import { LabelType } from './button'
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
 
 const badgeVariants = cva(
   'inline-flex items-center rounded-full border text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',

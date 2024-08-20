@@ -5,101 +5,101 @@ import * as React from "react"
 
 export const Index: Record<string, any> = {
   "default": {
-    "Button": {
-      name: "Button",
+    "button": {
+      name: "button",
       type: "components:ui",
       registryDependencies: ["dialog"],
-      component: React.lazy(() => import("@/registry/default/ui/Button")),
+      component: React.lazy(() => import("@/registry/default/ui/button")),
       source: "",
-      files: ["registry/default/ui/Button.tsx"],
+      files: ["registry/default/ui/button.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []
     },
-    "Badge": {
-      name: "Badge",
+    "badge": {
+      name: "badge",
       type: "components:ui",
       registryDependencies: undefined,
-      component: React.lazy(() => import("@/registry/default/ui/Badge")),
+      component: React.lazy(() => import("@/registry/default/ui/badge")),
       source: "",
-      files: ["registry/default/ui/Badge.tsx"],
+      files: ["registry/default/ui/badge.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []
     },
-    "Command": {
-      name: "Command",
+    "command": {
+      name: "command",
       type: "components:ui",
       registryDependencies: undefined,
-      component: React.lazy(() => import("@/registry/default/ui/Command")),
+      component: React.lazy(() => import("@/registry/default/ui/command")),
       source: "",
-      files: ["registry/default/ui/Command.tsx"],
+      files: ["registry/default/ui/command.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []
     },
-    "Tooltip": {
-      name: "Tooltip",
+    "tooltip": {
+      name: "tooltip",
       type: "components:ui",
       registryDependencies: undefined,
-      component: React.lazy(() => import("@/registry/default/ui/Tooltip")),
+      component: React.lazy(() => import("@/registry/default/ui/tooltip")),
       source: "",
-      files: ["registry/default/ui/Tooltip.tsx"],
+      files: ["registry/default/ui/tooltip.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []
     },
-    "Combobox": {
-      name: "Combobox",
+    "combobox": {
+      name: "combobox",
       type: "components:ui",
       registryDependencies: undefined,
-      component: React.lazy(() => import("@/registry/default/ui/Combobox")),
+      component: React.lazy(() => import("@/registry/default/ui/combobox")),
       source: "",
-      files: ["registry/default/ui/Combobox.tsx"],
+      files: ["registry/default/ui/combobox.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []
     },
-    "NavGroup": {
-      name: "NavGroup",
+    "nav-group": {
+      name: "nav-group",
       type: "components:ui",
       registryDependencies: undefined,
-      component: React.lazy(() => import("@/registry/default/ui/NavGroup")),
+      component: React.lazy(() => import("@/registry/default/ui/nav-group")),
       source: "",
-      files: ["registry/default/ui/NavGroup.tsx"],
+      files: ["registry/default/ui/nav-group.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []
     },
-    "Header": {
-      name: "Header",
+    "header": {
+      name: "header",
       type: "components:ui",
       registryDependencies: undefined,
-      component: React.lazy(() => import("@/registry/default/ui/Header")),
+      component: React.lazy(() => import("@/registry/default/ui/header")),
       source: "",
-      files: ["registry/default/ui/Header.tsx"],
+      files: ["registry/default/ui/header.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []
     },
-    "AlertDialog": {
-      name: "AlertDialog",
+    "alert-dialog": {
+      name: "alert-dialog",
       type: "components:ui",
       registryDependencies: undefined,
-      component: React.lazy(() => import("@/registry/default/ui/AlertDialog")),
+      component: React.lazy(() => import("@/registry/default/ui/alert-dialog")),
       source: "",
-      files: ["registry/default/ui/AlertDialog.tsx"],
+      files: ["registry/default/ui/alert-dialog.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []
     },
-    "Drawer": {
-      name: "Drawer",
+    "drawer": {
+      name: "drawer",
       type: "components:ui",
       registryDependencies: undefined,
-      component: React.lazy(() => import("@/registry/default/ui/Drawer")),
+      component: React.lazy(() => import("@/registry/default/ui/drawer")),
       source: "",
-      files: ["registry/default/ui/Drawer.tsx"],
+      files: ["registry/default/ui/drawer.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []
@@ -107,7 +107,7 @@ export const Index: Record<string, any> = {
     "ButtonMainDemo": {
       name: "ButtonMainDemo",
       type: "components:example",
-      registryDependencies: ["Button"],
+      registryDependencies: ["button"],
       component: React.lazy(() => import("@/registry/default/example/ButtonMainDemo")),
       source: "",
       files: ["registry/default/example/ButtonMainDemo.tsx"],
@@ -118,7 +118,7 @@ export const Index: Record<string, any> = {
     "ButtonSimpleDemo": {
       name: "ButtonSimpleDemo",
       type: "components:example",
-      registryDependencies: ["Button"],
+      registryDependencies: ["button"],
       component: React.lazy(() => import("@/registry/default/example/ButtonSimpleDemo")),
       source: "",
       files: ["registry/default/example/ButtonSimpleDemo.tsx"],
@@ -129,7 +129,7 @@ export const Index: Record<string, any> = {
     "ButtonAdvancedDemo": {
       name: "ButtonAdvancedDemo",
       type: "components:example",
-      registryDependencies: ["Button"],
+      registryDependencies: ["button"],
       component: React.lazy(() => import("@/registry/default/example/ButtonAdvancedDemo")),
       source: "",
       files: ["registry/default/example/ButtonAdvancedDemo.tsx"],
@@ -140,7 +140,7 @@ export const Index: Record<string, any> = {
     "BadgeMainDemo": {
       name: "BadgeMainDemo",
       type: "components:example",
-      registryDependencies: ["Badge"],
+      registryDependencies: ["badge"],
       component: React.lazy(() => import("@/registry/default/example/BadgeMainDemo")),
       source: "",
       files: ["registry/default/example/BadgeMainDemo.tsx"],
@@ -151,7 +151,7 @@ export const Index: Record<string, any> = {
     "CommandMainDemo": {
       name: "CommandMainDemo",
       type: "components:example",
-      registryDependencies: ["Command"],
+      registryDependencies: ["command"],
       component: React.lazy(() => import("@/registry/default/example/CommandMainDemo")),
       source: "",
       files: ["registry/default/example/CommandMainDemo.tsx"],
@@ -162,7 +162,7 @@ export const Index: Record<string, any> = {
     "CommandDialogDemo": {
       name: "CommandDialogDemo",
       type: "components:example",
-      registryDependencies: ["Command"],
+      registryDependencies: ["command"],
       component: React.lazy(() => import("@/registry/default/example/CommandDialogDemo")),
       source: "",
       files: ["registry/default/example/CommandDialogDemo.tsx"],
@@ -173,7 +173,7 @@ export const Index: Record<string, any> = {
     "CommandGroupDemo": {
       name: "CommandGroupDemo",
       type: "components:example",
-      registryDependencies: ["Tooltip"],
+      registryDependencies: ["tooltip"],
       component: React.lazy(() => import("@/registry/default/example/CommandGroupDemo")),
       source: "",
       files: ["registry/default/example/CommandGroupDemo.tsx"],
@@ -184,7 +184,7 @@ export const Index: Record<string, any> = {
     "TooltipMainDemo": {
       name: "TooltipMainDemo",
       type: "components:example",
-      registryDependencies: ["Tooltip"],
+      registryDependencies: ["tooltip"],
       component: React.lazy(() => import("@/registry/default/example/TooltipMainDemo")),
       source: "",
       files: ["registry/default/example/TooltipMainDemo.tsx"],
@@ -195,7 +195,7 @@ export const Index: Record<string, any> = {
     "TooltipGlobalDemo": {
       name: "TooltipGlobalDemo",
       type: "components:example",
-      registryDependencies: ["Tooltip"],
+      registryDependencies: ["tooltip"],
       component: React.lazy(() => import("@/registry/default/example/TooltipGlobalDemo")),
       source: "",
       files: ["registry/default/example/TooltipGlobalDemo.tsx"],
@@ -206,7 +206,7 @@ export const Index: Record<string, any> = {
     "ComboboxMainDemo": {
       name: "ComboboxMainDemo",
       type: "components:example",
-      registryDependencies: ["Combobox"],
+      registryDependencies: ["combobox"],
       component: React.lazy(() => import("@/registry/default/example/ComboboxMainDemo")),
       source: "",
       files: ["registry/default/example/ComboboxMainDemo.tsx"],
@@ -217,7 +217,7 @@ export const Index: Record<string, any> = {
     "ComboboxDropdownDemo": {
       name: "ComboboxDropdownDemo",
       type: "components:example",
-      registryDependencies: ["Combobox"],
+      registryDependencies: ["combobox"],
       component: React.lazy(() => import("@/registry/default/example/ComboboxDropdownDemo")),
       source: "",
       files: ["registry/default/example/ComboboxDropdownDemo.tsx"],
@@ -228,7 +228,7 @@ export const Index: Record<string, any> = {
     "ComboboxResponsiveDemo": {
       name: "ComboboxResponsiveDemo",
       type: "components:example",
-      registryDependencies: ["Combobox"],
+      registryDependencies: ["combobox"],
       component: React.lazy(() => import("@/registry/default/example/ComboboxResponsiveDemo")),
       source: "",
       files: ["registry/default/example/ComboboxResponsiveDemo.tsx"],
@@ -239,7 +239,7 @@ export const Index: Record<string, any> = {
     "NavGroupMainDemo": {
       name: "NavGroupMainDemo",
       type: "components:example",
-      registryDependencies: ["NavGroup"],
+      registryDependencies: ["nav-group"],
       component: React.lazy(() => import("@/registry/default/example/NavGroupMainDemo")),
       source: "",
       files: ["registry/default/example/NavGroupMainDemo.tsx"],
@@ -250,7 +250,7 @@ export const Index: Record<string, any> = {
     "HeaderMainDemo": {
       name: "HeaderMainDemo",
       type: "components:example",
-      registryDependencies: ["Header"],
+      registryDependencies: ["header"],
       component: React.lazy(() => import("@/registry/default/example/HeaderMainDemo")),
       source: "",
       files: ["registry/default/example/HeaderMainDemo.tsx"],
@@ -261,7 +261,7 @@ export const Index: Record<string, any> = {
     "HeaderTopDemo": {
       name: "HeaderTopDemo",
       type: "components:example",
-      registryDependencies: ["NavGroup"],
+      registryDependencies: ["header"],
       component: React.lazy(() => import("@/registry/default/example/HeaderTopDemo")),
       source: "",
       files: ["registry/default/example/HeaderTopDemo.tsx"],
@@ -272,7 +272,7 @@ export const Index: Record<string, any> = {
     "AlertDialogMainDemo": {
       name: "AlertDialogMainDemo",
       type: "components:example",
-      registryDependencies: ["AlertDialog","Button"],
+      registryDependencies: ["alert-dialog","button"],
       component: React.lazy(() => import("@/registry/default/example/AlertDialogMainDemo")),
       source: "",
       files: ["registry/default/example/AlertDialogMainDemo.tsx"],
@@ -283,10 +283,32 @@ export const Index: Record<string, any> = {
     "AlertDialogDrawerDemo": {
       name: "AlertDialogDrawerDemo",
       type: "components:example",
-      registryDependencies: ["AlertDialog","Button","Drawer"],
+      registryDependencies: ["alert-dialog","button","drawer","dialog","sheet"],
       component: React.lazy(() => import("@/registry/default/example/AlertDialogDrawerDemo")),
       source: "",
       files: ["registry/default/example/AlertDialogDrawerDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "AlertDialogSheetDemo": {
+      name: "AlertDialogSheetDemo",
+      type: "components:example",
+      registryDependencies: ["alert-dialog","button","drawer","dialog","sheet"],
+      component: React.lazy(() => import("@/registry/default/example/AlertDialogSheetDemo")),
+      source: "",
+      files: ["registry/default/example/AlertDialogSheetDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "AlertDialogDialogDemo": {
+      name: "AlertDialogDialogDemo",
+      type: "components:example",
+      registryDependencies: ["alert-dialog","button","drawer","dialog","sheet"],
+      component: React.lazy(() => import("@/registry/default/example/AlertDialogDialogDemo")),
+      source: "",
+      files: ["registry/default/example/AlertDialogDialogDemo.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []
