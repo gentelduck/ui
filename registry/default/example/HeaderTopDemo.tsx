@@ -4,12 +4,12 @@ import { cn } from '@/lib'
 
 const data: ButtonProps[] = [
   {
-    heading: 'Home',
+    title: 'Home',
     route: '/home',
     children: 'Home',
   },
   {
-    heading: 'Calendar',
+    title: 'Calendar',
     route: '/calendar',
     children: 'Calendar',
   },
