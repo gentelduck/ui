@@ -129,11 +129,7 @@ export default function HeaderMainDemo() {
                 title={'Collapse'}
                 variant={'secondary'}
                 size={open ? 'icon' : 'default'}
-                onClick={() =>
-                  setVariety({
-                    ...variety,
-                    default: { ...variety.default, variety: { ...variety.default.variety, open: !open } },
-                  })
+                  //some actions
                 }
               />,
             ],

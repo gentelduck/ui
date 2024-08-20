@@ -21,7 +21,7 @@ export default function HeaderMainDemo() {
       <Header<false>
         header={{
           position: 'top',
-          className: 'justify-between w-full max-w-[80%] place-self-center',
+          className: 'justify-between w-full max-w-[90%] place-self-center',
         }}
         logo={
           <Logo
