@@ -17,6 +17,7 @@ export interface ButtonProps
   asChild?: boolean
   isCollapsed?: boolean
   icon?: React.ReactElement
+  title?: string
   secondIcon?: React.ReactElement
   label?: LabelType
   route?: string
@@ -70,7 +71,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       isCollapsed = false,
       size = 'default',
       variant = 'default',
-      heading: title,
+      title,
       className,
       label,
       children,

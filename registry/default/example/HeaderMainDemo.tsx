@@ -69,7 +69,7 @@ export default function HeaderMainDemo() {
                 isCollapsed={O}
                 icon={<ArrowRightFromLine />}
                 className={cn('my-1 mx-2 justify-between', !O && 'w-[250px]', O && 'justify-center')}
-                heading={'Collapse'}
+                title={'Collapse'}
                 variant={'secondary'}
                 size={O ? 'icon' : 'default'}
                 onClick={() =>
