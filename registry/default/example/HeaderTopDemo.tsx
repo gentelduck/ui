@@ -42,7 +42,7 @@ export default function HeaderMainDemo() {
           buttons: [
             <Button
               className={cn('my-1 mx-2 justify-between rounded-full')}
-              heading={'Get started'}
+              title={'Get started'}
               variant={'default'}
               size={'sm'}
             />,
