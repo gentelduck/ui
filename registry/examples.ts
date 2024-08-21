@@ -115,4 +115,22 @@ export const examples: Registry = [
     registryDependencies: ['alert-dialog', 'button', 'drawer', 'dialog', 'sheet'],
     files: ['example/AlertDialogDialogDemo.tsx'],
   },
+  {
+    name: 'DrawerMainDemo',
+    type: 'components:example',
+    registryDependencies: ['drawer', 'dialog'],
+    files: ['example/DrawerMainDemo.tsx'],
+  },
+  {
+    name: 'DrawerResponsiveDemo',
+    type: 'components:example',
+    registryDependencies: ['drawer', 'dialog'],
+    files: ['example/DrawerResponsiveDemo.tsx'],
+  },
+  {
+    name: 'TableMainDemo',
+    type: 'components:example',
+    registryDependencies: ['table'],
+    files: ['example/TableMainDemo.tsx'],
+  },
 ]

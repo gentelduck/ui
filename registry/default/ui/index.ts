@@ -8,5 +8,7 @@ export * from './header'
 export * from './drawer'
 export * from './select-switcher'
 export * from './alert-dialog'
+export * from './table'
+export * from './checkbox'
 
 export * from './ShadcnUI'

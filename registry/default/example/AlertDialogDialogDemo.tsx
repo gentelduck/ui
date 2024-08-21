@@ -55,12 +55,9 @@ export default function AlertDialogDrawerDemo() {
   }
 
   return (
-    <AlertDialogCustom<string, typeof goal>
+    <AlertDialogCustom<typeof goal>
       type="dialog"
-      drawerData={{
-        data,
-        setData,
-      }}
+      drawerData={data.length > 0}
       header={{
         head: 'Goal',
         description: 'Set your daily calorie goal',

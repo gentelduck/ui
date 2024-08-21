@@ -8,13 +8,22 @@ import { Command, CommandInput, CommandListGroup, CommandListGroupDataType } fro
 
 import { cn } from '@/lib'
 import { ChevronsUpDown } from 'lucide-react'
+import { init } from 'next/dist/compiled/webpack/webpack'
 
-type ComboboxType = {
+interface OnSelectType<T> {
+  value: T
+  setValue: React.Dispatch<React.SetStateAction<T>>
+}
+
+type ComboboxType<T> = {
   title?: string
+  onSelect: OnSelectType<T>
   className?: ClassNameType
   data: CommandListGroupDataType[]
   command?: CommandType
   label?: LabelType
+  commandInput?: boolean
+  groupheading?: string[]
 }
 
 interface ClassNameType {
@@ -23,9 +32,17 @@ interface ClassNameType {
   content?: string
 }
 
-const Combobox: React.FC<ComboboxType> = ({ data, className, title, command, label }) => {
+const Combobox = <T,>({
+  data,
+  className,
+  title,
+  command,
+  label,
+  groupheading,
+  commandInput = true,
+  onSelect,
+}: ComboboxType<T>) => {
   //NOTE: you can use state management lib instead of this local states to use it globally
-  const [value, setValue] = React.useState<string>('')
   const [open, setOpen] = React.useState(false)
 
   return (
@@ -44,28 +61,30 @@ const Combobox: React.FC<ComboboxType> = ({ data, className, title, command, lab
               secondIcon={<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />}
               aria-expanded={open}
               className={cn(`w-[200px] justify-between capitalize`, className?.trigger)}
-              label={{ children: 'sdf', showLabel: true, side: 'top', ...label }}
+              label={{ showLabel: true, side: 'top', ...label }}
               command={{ ...command, action: () => setOpen(!open) } as CommandType}
             >
-              <span className="truncate">{value ? value : 'Select one...'}</span>
+              <span className="truncate">{onSelect.value as string}</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent
-            className={cn('w-[200px] p-0 h-[245px]', className?.content)}
+            className={cn('w-[200px] p-0 h-[245px]', className?.content ?? 'Select one...')}
             id={title}
           >
             <Command>
-              <CommandInput
-                placeholder="Search one..."
-                required
-              />
+              {commandInput && (
+                <CommandInput
+                  placeholder="Search one..."
+                  required
+                />
+              )}
               <CommandListGroup
                 data={data}
                 selected={['']}
-                groupheading={['Group heading']}
+                groupheading={groupheading || []}
                 onSelect={(value: string | undefined) => {
                   setOpen(false)
-                  setValue(value || '')
+                  onSelect.setValue(value as T)
                 }}
               />
             </Command>

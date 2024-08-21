@@ -95,5 +95,13 @@
       "ui/drawer.tsx"
     ],
     "type": "components:ui"
+  },
+  {
+    "name": "table",
+    "dependencies": [],
+    "files": [
+      "ui/table.tsx"
+    ],
+    "type": "components:ui"
   }
 ]

@@ -154,13 +154,10 @@ interface StateType {
   drawer: boolean
   alert: boolean
 }
-interface AlertDialogDrawerDataType<T> {
-  data: T[]
-  setData: React.Dispatch<React.SetStateAction<T[]>>
-}
+
 interface AlertDialogDrawerActionsType {
-  cancel: () => void
-  continue: () => void
+  cancel?: () => void
+  continue?: () => void
 }
 
 interface AlertDialogDrawerHeaderType extends Partial<React.ComponentPropsWithoutRef<typeof DrawerHeader>> {
@@ -169,21 +166,21 @@ interface AlertDialogDrawerHeaderType extends Partial<React.ComponentPropsWithou
 }
 
 interface AlertDialogDrawerFooterType extends Partial<React.ComponentPropsWithoutRef<typeof DrawerFooter>> {
-  cancel: React.ReactNode
-  submit: React.ReactNode
+  cancel?: React.ReactNode
+  submit?: React.ReactNode
 }
-interface AlertDialogCustomProps<T, C> {
+interface AlertDialogCustomProps<C> {
   type: 'drawer' | 'dialog' | 'sheet'
   state: C
   header: AlertDialogDrawerHeaderType
   footer: AlertDialogDrawerFooterType
   trigger: AlertDialogDrawerTriggerentType
   content: AlertDialogDrawerContentType
-  drawerData: AlertDialogDrawerDataType<T>
+  drawerData?: boolean
   actions?: AlertDialogDrawerActionsType
 }
 
-const AlertDialogCustom = <T, C>({
+const AlertDialogCustom = <C,>({
   type,
   trigger,
   header,
@@ -192,7 +189,7 @@ const AlertDialogCustom = <T, C>({
   drawerData,
   actions,
   state,
-}: AlertDialogCustomProps<T, C>) => {
+}: AlertDialogCustomProps<C>) => {
   const {
     state: changeState,
     handleDrawerOpenChange,
@@ -242,7 +239,7 @@ const AlertDialogCustom = <T, C>({
             className={cn('', contentClassName)}
             {...contentProps}
           >
-            <div>
+            <div data-role-wrapper>
               {header && (
                 <ComponentHeader
                   className={cn('', headerClassName)}
@@ -295,7 +292,7 @@ const AlertDialogCustom = <T, C>({
 AlertDialogCustom.displayName = 'AlertDialogDrawer'
 
 //NOTE: Alert Dialog Custom Hook
-const useAlertCustom = <T, C>({
+const useAlertCustom = <C,>({
   trigger,
   header,
   footer,
@@ -304,7 +301,7 @@ const useAlertCustom = <T, C>({
   actions,
   state: changeState,
   type,
-}: AlertDialogCustomProps<T, C>) => {
+}: AlertDialogCustomProps<C>) => {
   const { className: triggerClassName, children: triggerChildren, ...triggerProps } = trigger
   const { className: contentClassName, children: contentChildren, ...contentProps } = content
   const { className: footerClassName, children: footerChildren, submit, cancel, ...footerProps } = footer
@@ -318,27 +315,27 @@ const useAlertCustom = <T, C>({
   }, [changeState])
 
   const handleAlertCancel = React.useCallback(() => {
-    actions?.cancel()
+    actions?.cancel && actions.cancel()
     setState(prevState => ({ ...prevState, alert: false, drawer: true }))
   }, [])
 
   const handleAlertContinue = React.useCallback(() => {
-    actions?.continue()
+    actions?.continue && actions.continue()
     setState(prevState => ({ ...prevState, alert: false, drawer: false }))
   }, [])
 
   const handleDrawerOpenChange = React.useCallback(
     (drawerState: boolean) => {
-      const threadsLength = drawerData.data.length > 0
-      const showAlert = !drawerState && threadsLength && changeStateRef.current !== changeState
+      const showAlert = !drawerState && (drawerData || true) && changeStateRef.current !== changeState
 
       setState(() => ({
         alert: showAlert as boolean,
-        drawer: threadsLength ? drawerState : false,
+        drawer: drawerData || true ? drawerState : false,
       }))
     },
-    [drawerData.data.length]
+    [drawerData]
   )
+
   const Component = type === 'drawer' ? Drawer : type === 'sheet' ? Sheet : type === 'dialog' ? Dialog : Drawer
   const ComponentTrigger =
     type === 'drawer'

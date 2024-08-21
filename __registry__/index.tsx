@@ -104,6 +104,17 @@ export const Index: Record<string, any> = {
       subcategory: "undefined",
       chunks: []
     },
+    "table": {
+      name: "table",
+      type: "components:ui",
+      registryDependencies: undefined,
+      component: React.lazy(() => import("@/registry/default/ui/table")),
+      source: "",
+      files: ["registry/default/ui/table.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
     "ButtonMainDemo": {
       name: "ButtonMainDemo",
       type: "components:example",
@@ -309,6 +320,39 @@ export const Index: Record<string, any> = {
       component: React.lazy(() => import("@/registry/default/example/AlertDialogDialogDemo")),
       source: "",
       files: ["registry/default/example/AlertDialogDialogDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "DrawerMainDemo": {
+      name: "DrawerMainDemo",
+      type: "components:example",
+      registryDependencies: ["drawer","dialog"],
+      component: React.lazy(() => import("@/registry/default/example/DrawerMainDemo")),
+      source: "",
+      files: ["registry/default/example/DrawerMainDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "DrawerResponsiveDemo": {
+      name: "DrawerResponsiveDemo",
+      type: "components:example",
+      registryDependencies: ["drawer","dialog"],
+      component: React.lazy(() => import("@/registry/default/example/DrawerResponsiveDemo")),
+      source: "",
+      files: ["registry/default/example/DrawerResponsiveDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "TableMainDemo": {
+      name: "TableMainDemo",
+      type: "components:example",
+      registryDependencies: ["table"],
+      component: React.lazy(() => import("@/registry/default/example/TableMainDemo")),
+      source: "",
+      files: ["registry/default/example/TableMainDemo.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []

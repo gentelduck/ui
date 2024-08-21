@@ -66,6 +66,11 @@ export const docsConfig: DocsConfig = {
           items: [],
         },
         {
+          title: 'Drawer',
+          href: '/docs/components/Drawer',
+          items: [],
+        },
+        {
           title: 'Header',
           href: '/docs/components/Header',
           items: [],
@@ -80,6 +85,11 @@ export const docsConfig: DocsConfig = {
         {
           title: 'Tooltip',
           href: '/docs/components/Tooltip',
+          items: [],
+        },
+        {
+          title: 'Table',
+          href: '/docs/components/Table',
           items: [],
         },
       ],

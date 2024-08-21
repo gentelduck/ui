@@ -143,7 +143,7 @@ CommandShortcut.displayName = 'CommandShortcut'
 
 interface CommandListGroupDataType {
   label: string
-  element: ListItemElementType
+  element?: ListItemElementType
   onSelect?: <T>(arg?: T) => void
 }
 
@@ -180,7 +180,7 @@ const CommandListGroup = React.forwardRef(
                 key={idx}
               >
                 {group.map((el, idx) => {
-                  const { children, className, ...props } = el.element
+                  const { children, className, ...props } = el.element ?? {}
                   return (
                     <CommandItem
                       key={idx}

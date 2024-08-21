@@ -56,4 +56,10 @@ export const ui: Registry = [
     dependencies: ['@radix-ui/react-drawer'],
     files: ['ui/drawer.tsx'],
   },
+  {
+    name: 'table',
+    type: 'components:ui',
+    dependencies: [],
+    files: ['ui/table.tsx'],
+  },
 ]
