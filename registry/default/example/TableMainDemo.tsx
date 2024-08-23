@@ -89,14 +89,16 @@ export default function DataTableMainDemo() {
     <>
       <TableView<true>
         table={{
-          className: 'w-[650px] h-[335px]',
+          className: 'w-[650px] h-[338px]',
         }}
         header={columns}
         tableContentData={[...tableData]}
         // caption={{
         //   children: 'A list of your recent invoices.',
         // }}
-        // footer={{}}
+        // footer={{
+        //   children: 'Footer',
+        // }}
         selection={true}
         viewButton={true}
         tableSearch={true}

@@ -17,7 +17,7 @@ interface OnSelectType<T> {
 
 type ComboboxType<T> = {
   title?: string
-  onSelect: OnSelectType<T>
+  onSelect?: OnSelectType<T>
   className?: ClassNameType
   data: CommandListGroupDataType[]
   command?: CommandType
@@ -64,7 +64,7 @@ const Combobox = <T,>({
               label={{ showLabel: true, side: 'top', ...label }}
               command={{ ...command, action: () => setOpen(!open) } as CommandType}
             >
-              <span className="truncate">{onSelect.value as string}</span>
+              <span className="truncate">{onSelect?.value as string}</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent
@@ -84,7 +84,7 @@ const Combobox = <T,>({
                 groupheading={groupheading || []}
                 onSelect={(value: string | undefined) => {
                   setOpen(false)
-                  onSelect.setValue(value as T)
+                  onSelect?.setValue(value as T)
                 }}
               />
             </Command>

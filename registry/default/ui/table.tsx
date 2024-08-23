@@ -336,7 +336,123 @@ const TableCustomHeader = <T extends boolean = false>({
   )
 }
 
-interface TableFooterColumns extends React.HTMLProps<HTMLTableCellElement> {}
+interface TableCustomBodyProps<T extends boolean = false> {
+  headers: TableHeaderColumns<T>[]
+  resultArrays: TableContentDataType[][]
+  paginationState: PaginationState
+  selection: boolean
+  selected: TableContentDataType[]
+  setSelected: React.Dispatch<React.SetStateAction<TableContentDataType[]>>
+  options: DropdownMenuOptionsType<T>
+}
+
+const TableCustomBody = <T extends boolean = false>({
+  headers,
+  resultArrays,
+  paginationState,
+  selection,
+  selected,
+  setSelected,
+  options,
+}: TableCustomBodyProps<T>) => {
+  return (
+    <TableBody>
+      {resultArrays[paginationState.activePage ?? 0]?.map((item, idx) => (
+        <TableRow key={idx}>
+          {Object.entries(item).map(([key, value], idx) => {
+            const headersEntries = headers.map(item => item.children)
+            const { className, children, ...props } = value
+
+            return (
+              headersEntries.includes(key) && (
+                <TableCell
+                  key={key}
+                  className={cn(
+                    'py-2',
+                    selected.includes(item) && 'bg-muted',
+                    idx === Object.entries(item).length - 1 && 'flex items-center gap-2',
+                    className
+                  )}
+                  {...props}
+                >
+                  <div
+                    className={cn(
+                      'items-center gap-2 flex w-full',
+                      // idx === Object.entries(item).length - 1 && 'justify-end',
+                      headers?.[idx]?.className,
+                      className
+                    )}
+                  >
+                    {selection && idx === 0 && (
+                      <Checkbox
+                        className="border-border"
+                        onClick={() =>
+                          setSelected(selected.includes(item) ? selected.filter(i => i !== item) : [...selected, item])
+                        }
+                        checked={selected.includes(item)}
+                      />
+                    )}
+                    {item?.[key]?.withLabel && (
+                      <Badge
+                        variant={'outline'}
+                        size={'sm'}
+                        className="h-5 text-xs"
+                      >
+                        documentation
+                      </Badge>
+                    )}
+
+                    <span className="text-ellipsis overflow-hidden whitespace-nowrap">{children}</span>
+                  </div>
+                  {idx === Object.entries(item).length - 1 && (
+                    <DataTableViewOptions
+                      trigger={{
+                        className: 'flex h-8 w-12 p-0 data-[state=open]:bg-muted',
+                        children: <span className="sr-only">Open menu</span>,
+                        variant: 'ghost',
+                        size: 'icon',
+                        icon: <DotsHorizontalIcon className="h-4 w-4" />,
+                      }}
+                      content={{
+                        align: 'end',
+                        className: 'w-[160px]',
+                        options,
+                      }}
+                    />
+                  )}
+                </TableCell>
+              )
+            )
+          })}
+        </TableRow>
+      ))}
+    </TableBody>
+  )
+}
+
+interface TableCustomFooterColumns extends Partial<React.ComponentPropsWithoutRef<typeof TableFooter>> {
+  columns: Partial<React.ComponentPropsWithoutRef<typeof TableCell>>[]
+}
+
+const TableCustomFooter = ({ className, columns }: TableCustomFooterColumns) => {
+  return (
+    <TableFooter className={cn(className)}>
+      <TableRow>
+        {columns?.map((item, idx) => {
+          const { children, ...props } = item
+          return (
+            <TableCell
+              key={idx}
+              {...props}
+            >
+              {children}
+            </TableCell>
+          )
+        })}
+      </TableRow>
+    </TableFooter>
+  )
+}
 
 interface TableContentDataType {
   [key: string]: TableDataKey
@@ -355,12 +471,138 @@ interface TablePaginationType extends React.HTMLProps<HTMLDivElement> {
   showGroup?: boolean
 }
 
+interface PaginationState {
+  activePage: number
+  groupSize: number
+}
+
+const TablePagination = ({
+  resultArrays,
+  selected,
+  paginationState,
+  pagination,
+  value,
+  tableData,
+  setPaginationState,
+  setValue,
+}: {
+  selected: TableContentDataType[]
+  setValue: React.Dispatch<React.SetStateAction<string>>
+  value: string
+  tableData: TableContentDataType[]
+  pagination?: TablePaginationType
+  resultArrays: TableContentDataType[][]
+  paginationState: PaginationState
+  setPaginationState: React.Dispatch<React.SetStateAction<PaginationState>>
+}) => {
+  return (
+    <>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between">
+          {pagination?.showCount && (
+            <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
+              {selected.length} of {tableData.length} row(s) selected.
+            </span>
+          )}
+        </div>
+        <div className="flex items-center justify-between gap-4">
+          {pagination?.showGroup && (
+            <div className="flex items-center gap-2">
+              <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
+                Rows per page
+              </span>
+              <TooltipProvider>
+                <Combobox
+                  data={Array.from({ length: Math.ceil(tableData.length / 5) }, (_, index) =>
+                    ((index + 1) * 5).toString()
+                  ).reduce((acc, curr) => {
+                    acc.push({ label: curr, element: { children: curr } })
+                    return acc
+                  }, [] as CommandListGroupDataType[])}
+                  className={{ trigger: 'w-[4.5rem] h-[32px] gap-0', content: 'w-[5rem] h-fit' }}
+                  label={{ children: 'Rows per page' }}
+                  onSelect={{
+                    setValue,
+                    value,
+                  }}
+                  commandInput={false}
+                  command={{
+                    key: 'm',
+                  }}
+                />
+              </TooltipProvider>
+            </div>
+          )}
+          {pagination?.showCount && (
+            <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
+              Page {paginationState.activePage + 1} of {resultArrays.length}
+            </span>
+          )}
+
+          <Pagination className="justify-end">
+            <PaginationContent className="gap-2">
+              <PaginationItem>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="w-[32px] h-[32px] p-0"
+                  disabled={paginationState.activePage === 0}
+                  onClick={() => setPaginationState({ ...paginationState, activePage: 0 })}
+                >
+                  <ChevronsLeftIcon className="size-4" />
+                </Button>
+              </PaginationItem>
+              <PaginationItem>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="w-[32px] h-[32px] p-0"
+                  onClick={() =>
+                    setPaginationState({ ...paginationState, activePage: (paginationState.activePage ?? 1) - 1 })
+                  }
+                  disabled={paginationState.activePage === 0}
+                >
+                  <ChevronLeftIcon className="size-4" />
+                </Button>
+              </PaginationItem>
+              <PaginationItem>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="w-[32px] h-[32px] p-0"
+                  onClick={() =>
+                    setPaginationState({ ...paginationState, activePage: (paginationState.activePage ?? 1) + 1 })
+                  }
+                  disabled={paginationState.activePage === resultArrays.length - 1}
+                >
+                  <ChevronRightIcon className="size-4" />
+                </Button>
+              </PaginationItem>
+              <PaginationItem>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="w-[32px] h-[32px] p-0"
+                  onClick={() => setPaginationState({ ...paginationState, activePage: resultArrays.length - 1 })}
+                  disabled={paginationState.activePage === resultArrays.length - 1}
+                >
+                  <ChevronsRightIcon className="size-4" />
+                </Button>
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      </div>
+    </>
+  )
+}
+
 interface TableViewProps<T extends boolean = false> {
   table?: TableType
   tableContentData: TableContentDataType[]
   selection?: boolean
   header?: TableHeaderColumns<T>[]
-  footer?: TableFooterColumns
+  footer?: TableCustomFooterColumns
   caption?: TableCaptionType
   pagination?: TablePaginationType
   viewButton?: boolean
@@ -448,188 +690,31 @@ const TableView = <T extends boolean = false>({
             />
           )}
           {tableData && !!resultArrays.length && (
-            <TableBody>
-              {resultArrays[paginationState.activePage ?? 0]?.map((item, idx) => (
-                <TableRow key={idx}>
-                  {Object.entries(item).map(([key, value], idx) => {
-                    const headersEntries = headers.map(item => item.children)
-                    const { className, children, ...props } = value
-
-                    return (
-                      headersEntries.includes(key) && (
-                        <TableCell
-                          key={key}
-                          className={cn(
-                            'py-2',
-                            selected.includes(item) && 'bg-muted',
-                            idx === Object.entries(item).length - 1 && 'flex items-center gap-2',
-                            className
-                          )}
-                          {...props}
-                        >
-                          <div
-                            className={cn(
-                              'items-center gap-2 flex w-full',
-                              // idx === Object.entries(item).length - 1 && 'justify-end',
-                              headers?.[idx]?.className,
-                              className
-                            )}
-                          >
-                            {selection && idx === 0 && (
-                              <Checkbox
-                                className="border-border"
-                                onClick={() =>
-                                  setSelected(
-                                    selected.includes(item) ? selected.filter(i => i !== item) : [...selected, item]
-                                  )
-                                }
-                                checked={selected.includes(item)}
-                              />
-                            )}
-                            {item?.[key]?.withLabel && (
-                              <Badge
-                                variant={'outline'}
-                                size={'sm'}
-                                className="h-5 text-xs"
-                              >
-                                documentation
-                              </Badge>
-                            )}
-
-                            <span className="text-ellipsis overflow-hidden whitespace-nowrap">{children}</span>
-                          </div>
-                          {idx === Object.entries(item).length - 1 && (
-                            <DataTableViewOptions
-                              trigger={{
-                                className: 'flex h-8 w-12 p-0 data-[state=open]:bg-muted',
-                                children: <span className="sr-only">Open menu</span>,
-                                variant: 'ghost',
-                                size: 'icon',
-                                icon: <DotsHorizontalIcon className="h-4 w-4" />,
-                              }}
-                              content={{
-                                align: 'end',
-                                className: 'w-[160px]',
-                                options,
-                              }}
-                            />
-                          )}
-                        </TableCell>
-                      )
-                    )
-                  })}
-                </TableRow>
-              ))}
-            </TableBody>
+            <TableCustomBody<T>
+              headers={headers}
+              resultArrays={resultArrays}
+              paginationState={paginationState}
+              selection={selection ?? false}
+              selected={selected}
+              setSelected={setSelected}
+              options={options}
+            />
           )}
-          {footer && (
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={3}>Total</TableCell>
-                <TableCell className="text-right">$2,500.00</TableCell>
-              </TableRow>
-            </TableFooter>
-          )}
+          {footer?.columns && <TableCustomFooter {...footer} />}
         </Table>
       </ScrollArea>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center justify-between">
-          {pagination?.showCount && (
-            <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
-              {selected.length} of {tableData.length} row(s) selected.
-            </span>
-          )}
-        </div>
-        <div className="flex items-center justify-between gap-4">
-          {pagination?.showGroup && (
-            <div className="flex items-center gap-2">
-              <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
-                Rows per page
-              </span>
-              <TooltipProvider>
-                <Combobox
-                  data={Array.from({ length: Math.ceil(tableData.length / 5) }, (_, index) =>
-                    ((index + 1) * 5).toString()
-                  ).reduce((acc, curr) => {
-                    acc.push({ label: curr, element: { children: curr } })
-                    return acc
-                  }, [] as CommandListGroupDataType[])}
-                  className={{ trigger: 'w-[4.5rem] h-[32px] gap-0', content: 'w-[5rem] h-fit' }}
-                  label={{ children: 'Rows per page' }}
-                  onSelect={{
-                    setValue,
-                    value,
-                  }}
-                  commandInput={false}
-                  command={{
-                    key: 'm',
-                  }}
-                />
-              </TooltipProvider>
-            </div>
-          )}
-          {pagination?.showCount && (
-            <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
-              Page {paginationState.activePage + 1} of {resultArrays.length}
-            </span>
-          )}
-
-          {pagination && (
-            <Pagination className="justify-end">
-              <PaginationContent className="gap-2">
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="w-[32px] h-[32px] p-0"
-                    disabled={paginationState.activePage === 0}
-                    onClick={() => setPaginationState({ ...paginationState, activePage: 0 })}
-                  >
-                    <ChevronsLeftIcon className="size-4" />
-                  </Button>
-                </PaginationItem>
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="w-[32px] h-[32px] p-0"
-                    onClick={() =>
-                      setPaginationState({ ...paginationState, activePage: (paginationState.activePage ?? 1) - 1 })
-                    }
-                    disabled={paginationState.activePage === 0}
-                  >
-                    <ChevronLeftIcon className="size-4" />
-                  </Button>
-                </PaginationItem>
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="w-[32px] h-[32px] p-0"
-                    onClick={() =>
-                      setPaginationState({ ...paginationState, activePage: (paginationState.activePage ?? 1) + 1 })
-                    }
-                    disabled={paginationState.activePage === resultArrays.length - 1}
-                  >
-                    <ChevronRightIcon className="size-4" />
-                  </Button>
-                </PaginationItem>
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="w-[32px] h-[32px] p-0"
-                    onClick={() => setPaginationState({ ...paginationState, activePage: resultArrays.length - 1 })}
-                    disabled={paginationState.activePage === resultArrays.length - 1}
-                  >
-                    <ChevronsRightIcon className="size-4" />
-                  </Button>
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          )}
-        </div>
-      </div>
+      {pagination && (
+        <TablePagination
+          selected={selected}
+          value={value}
+          tableData={tableData}
+          resultArrays={resultArrays}
+          paginationState={paginationState}
+          pagination={pagination}
+          setValue={setValue}
+          setPaginationState={setPaginationState}
+        />
+      )}
     </div>
   )
 }

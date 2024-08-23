@@ -1,9 +1,8 @@
 import { ArrowDownIcon, ArrowRightIcon, ArrowUpIcon, CircleIcon } from 'lucide-react'
-import { Badge } from './badge'
-import { TableDataType } from './table'
 import { CheckCircledIcon, CrossCircledIcon, QuestionMarkCircledIcon, StopwatchIcon } from '@radix-ui/react-icons'
+import { TableContentDataType } from './table'
 
-export const tableData: TableDataType[] = [
+export const tableData: TableContentDataType[] = [
   {
     task: { children: 'TASK-8782' },
     title: {
