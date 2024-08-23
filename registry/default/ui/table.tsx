@@ -136,10 +136,204 @@ interface TableDropdownMenuOptions {
   column: TableHeaderColumns
 }
 
-interface TableHeaderColumns<Y extends boolean = true> extends React.HTMLProps<HTMLTableCellElement> {
+interface TableHeaderColumns<Y extends boolean = true> extends Partial<React.HTMLProps<HTMLTableCellElement>> {
   sortable: boolean
   currentSort?: Y extends true ? 'asc' | 'desc' | 'not sorted' : never
-  dropdownMenuOptions?: Y extends true ? TableDropdownMenuOptions : never
+  dropdownMenuOptions?: Y extends true ? DropdownMenuOptionsDataType<TableDropdownMenuOptions>[] : never
+}
+
+interface TableHeaderColumnsType<T extends boolean = false> {
+  header: TableHeaderColumns<T>[]
+  viewButton: boolean
+  tableSearch: boolean
+  setHeaders: React.Dispatch<React.SetStateAction<TableHeaderColumns<T>[]>>
+  setSearchQ: React.Dispatch<
+    React.SetStateAction<{
+      q: string
+      qBy: string
+    }>
+  >
+  search: { q: string; qBy: string }
+}
+
+const TableHeaderActions = <T extends boolean = false>({
+  setHeaders,
+  header,
+  search,
+  viewButton,
+  tableSearch,
+  setSearchQ,
+}: TableHeaderColumnsType<T>) => {
+  return (
+    <>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between">
+          {tableSearch && (
+            <div className="flex flex-1 items-center space-x-2">
+              <Input
+                placeholder="Filter tasks..."
+                value={search.q}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setSearchQ({ ...search, q: event.target.value })
+                }}
+                className="h-8 w-[150px] lg:w-[250px]"
+              />
+            </div>
+          )}
+        </div>
+
+        {viewButton && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size={'sm'}
+                className="ml-auto hidden [&>div]:h-8 h-8 w-[79px] lg:flex [&>div]:gap-0"
+              >
+                <MixerHorizontalIcon className="mr-2 h-4 w-4" />
+                View
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {header &&
+                header.map((column, idx) => {
+                  const { children, className, sortable, disabled, currentSort, dropdownMenuOptions, ...props } = column
+                  return (
+                    idx !== 0 && (
+                      <DropdownMenuCheckboxItem
+                        key={idx}
+                        className="capitalize"
+                        checked={header.includes(column)}
+                        onCheckedChange={() => {
+                          setHeaders(
+                            header.includes(column) ? header.filter(sub => sub !== column) : [...header, column]
+                          )
+                        }}
+                        disabled={disabled}
+                        {...(props as React.ComponentPropsWithoutRef<typeof DropdownMenuCheckboxItem>)}
+                      >
+                        {children}
+                      </DropdownMenuCheckboxItem>
+                    )
+                  )
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </div>
+    </>
+  )
+}
+
+interface TableHeaderProps<T extends boolean = false> {
+  headers: TableHeaderColumns<T>[]
+  setHeaders: React.Dispatch<React.SetStateAction<TableHeaderColumns<T>[]>>
+  tableData: TableContentDataType[]
+  setTableData: React.Dispatch<React.SetStateAction<TableContentDataType[]>>
+  selection: boolean
+  selected: TableContentDataType[]
+  setSelected: React.Dispatch<React.SetStateAction<TableContentDataType[]>>
+}
+
+const TableCustomHeader = <T extends boolean = false>({
+  headers,
+  setHeaders,
+  tableData,
+  setTableData,
+  selection,
+  selected,
+  setSelected,
+}: TableHeaderProps<T>) => {
+  return (
+    <>
+      <TableHeader>
+        <TableRow>
+          {headers.map((column, idx) => {
+            const { children, className, sortable, dropdownMenuOptions, currentSort, ...props } = column
+            return (
+              headers.some(header => header.children === column.children) && (
+                <TableHead
+                  key={idx}
+                  className="h-[40px]"
+                  {...props}
+                >
+                  {!sortable ? (
+                    <span
+                      className={cn(
+                        'flex items-center gap-2 w-full h-8 data-[state=open]:bg-accent text-xs',
+                        idx === headers.length - 1 && 'justify-end bg-red-500',
+                        className
+                      )}
+                    >
+                      {selection && idx === 0 && (
+                        <Checkbox
+                          className="border-border"
+                          onClick={() =>
+                            setSelected(selected.length === tableData.length ? [] : tableData.map(item => item))
+                          }
+                          checked={
+                            selected.length === tableData.length
+                              ? true
+                              : selected.length < tableData.length && selected.length
+                                ? 'indeterminate'
+                                : false
+                          }
+                        />
+                      )}
+                      {children}
+                    </span>
+                  ) : (
+                    <div className={cn('flex items-center space-x-2', className)}>
+                      {
+                        <DataTableViewOptions<TableDropdownMenuOptions>
+                          trigger={{
+                            className: '-ml-3 h-8 data-[state=open]:bg-accent text-xs',
+                            children: (
+                              <>
+                                <span>{children}</span>
+                                {headers[idx]?.currentSort === 'asc' ? (
+                                  <ArrowDownIcon className="ml-2 h-4 w-4" />
+                                ) : headers[idx]?.currentSort === 'desc' ? (
+                                  <ArrowUpIcon className="ml-2 h-4 w-4" />
+                                ) : (
+                                  <CaretSortIcon className="ml-2 h-4 w-4" />
+                                )}
+                              </>
+                            ),
+                            variant: 'ghost',
+                            size: 'sm',
+                          }}
+                          content={{
+                            align: 'start',
+                            options: {
+                              actionsArgs: {
+                                sortArray,
+                                setTableData,
+                                setHeaders,
+                                column,
+                                idx,
+                                data: tableData,
+                                headers,
+                                tableData,
+                              } as TableDropdownMenuOptions,
+                              group: [2, 1],
+                              optionsData: dropdownMenuOptions!,
+                            },
+                          }}
+                        />
+                      }
+                    </div>
+                  )}
+                </TableHead>
+              )
+            )
+          })}
+        </TableRow>
+      </TableHeader>
+    </>
+  )
 }
 
 interface TableFooterColumns extends React.HTMLProps<HTMLTableCellElement> {}
@@ -170,6 +364,7 @@ interface TableViewProps<T extends boolean = false> {
   caption?: TableCaptionType
   pagination?: TablePaginationType
   viewButton?: boolean
+  tableSearch?: boolean
   options: DropdownMenuOptionsType<T>
 }
 
@@ -177,6 +372,7 @@ const TableView = <T extends boolean = false>({
   selection,
   pagination,
   viewButton,
+  tableSearch,
   header,
   footer,
   tableContentData,
@@ -219,59 +415,14 @@ const TableView = <T extends boolean = false>({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-1 items-center space-x-2">
-            <Input
-              placeholder="Filter tasks..."
-              value={search.q}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setSearchQ({ ...search, q: event.target.value })
-              }}
-              className="h-8 w-[150px] lg:w-[250px]"
-            />
-          </div>
-        </div>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size={'sm'}
-              className="ml-auto hidden [&>div]:h-8 h-8 w-[79px] lg:flex [&>div]:gap-0"
-            >
-              <MixerHorizontalIcon className="mr-2 h-4 w-4" />
-              View
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {header &&
-              header.map((column, idx) => {
-                const { children, className, sortable, disabled, ...props } = column
-                return (
-                  idx !== 0 && (
-                    <DropdownMenuCheckboxItem
-                      key={idx}
-                      className="capitalize"
-                      checked={headers.includes(column)}
-                      onCheckedChange={() => {
-                        setHeaders(
-                          headers.includes(column) ? headers.filter(sub => sub !== column) : [...headers, column]
-                        )
-                      }}
-                      disabled={disabled}
-                    >
-                      {children}
-                    </DropdownMenuCheckboxItem>
-                  )
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
+      <TableHeaderActions<T>
+        viewButton={viewButton ?? false}
+        tableSearch={tableSearch ?? false}
+        search={search}
+        header={headers}
+        setHeaders={setHeaders}
+        setSearchQ={setSearchQ}
+      />
       <ScrollArea
         className={cn(`border border-border rounded-lg overflow-auto`, tableClassName)}
         {...tableProps}
@@ -286,92 +437,15 @@ const TableView = <T extends boolean = false>({
             </TableCaption>
           )}
           {header && (
-            <TableHeader>
-              <TableRow>
-                {header.map((column, idx) => {
-                  const { children, className, sortable, dropdownMenuOptions, ...props } = column
-                  // console.log(column)
-
-                  return (
-                    headers.some(header => header.children === column.children) && (
-                      <TableHead
-                        key={idx}
-                        className="h-[40px]"
-                        {...props}
-                      >
-                        {!sortable ? (
-                          <span
-                            className={cn(
-                              'flex items-center gap-2 w-full h-8 data-[state=open]:bg-accent text-xs',
-                              idx === headers.length - 1 && 'justify-end bg-red-500',
-                              className
-                            )}
-                          >
-                            {selection && idx === 0 && (
-                              <Checkbox
-                                className="border-border"
-                                onClick={() =>
-                                  setSelected(selected.length === tableData.length ? [] : tableData.map(item => item))
-                                }
-                                checked={
-                                  selected.length === tableData.length
-                                    ? true
-                                    : selected.length < tableData.length && selected.length
-                                      ? 'indeterminate'
-                                      : false
-                                }
-                              />
-                            )}
-                            {children}
-                          </span>
-                        ) : (
-                          <div className={cn('flex items-center space-x-2', className)}>
-                            {
-                              <DataTableViewOptions<TableDropdownMenuOptions>
-                                trigger={{
-                                  className: '-ml-3 h-8 data-[state=open]:bg-accent text-xs',
-                                  children: (
-                                    <>
-                                      <span>{children}</span>
-                                      {headers[idx]?.currentSort === 'asc' ? (
-                                        <ArrowDownIcon className="ml-2 h-4 w-4" />
-                                      ) : headers[idx]?.currentSort === 'desc' ? (
-                                        <ArrowUpIcon className="ml-2 h-4 w-4" />
-                                      ) : (
-                                        <CaretSortIcon className="ml-2 h-4 w-4" />
-                                      )}
-                                    </>
-                                  ),
-                                  variant: 'ghost',
-                                  size: 'sm',
-                                }}
-                                content={{
-                                  align: 'start',
-                                  options: {
-                                    actionsArgs: {
-                                      sortArray,
-                                      setTableData,
-                                      setHeaders,
-                                      column,
-                                      idx,
-                                      data: tableData,
-                                      headers,
-                                      tableData,
-                                    } as TableDropdownMenuOptions,
-                                    group: [2, 1],
-                                    optionsData: dropdownMenuOptions!,
-                                  },
-                                }}
-                              />
-                            }
-                          </div>
-                        )}
-                      </TableHead>
-                    )
-                  )
-                })}
-              </TableRow>
-            </TableHeader>
+            <TableCustomHeader<T>
+              selection={selection ?? false}
+              selected={selected}
+              headers={headers}
+              tableData={tableData}
+              setHeaders={setHeaders}
+              setTableData={setTableData}
+              setSelected={setSelected}
+            />
           )}
           {tableData && !!resultArrays.length && (
             <TableBody>

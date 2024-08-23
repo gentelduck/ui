@@ -205,8 +205,6 @@ export function DataTableViewOptions<T>({ content, trigger }: DataTableViewOptio
   const { className: labelClassName, ...labelProps } = label ?? {}
   const groupedOption = groupArrays(options?.group ?? [options?.optionsData?.length || 1], options?.optionsData ?? [])
 
-  console.log(content?.options)
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -234,7 +232,7 @@ export function DataTableViewOptions<T>({ content, trigger }: DataTableViewOptio
         )}
         {groupedOption.map((group, idx) => {
           return (
-            <>
+            <React.Fragment key={idx}>
               {group.map((item, idx) => {
                 const { children, action, className, ...props } = item
                 const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
@@ -258,7 +256,7 @@ export function DataTableViewOptions<T>({ content, trigger }: DataTableViewOptio
                 )
               })}
               {idx !== groupedOption.length - 1 && <DropdownMenuSeparator />}
-            </>
+            </React.Fragment>
           )
         })}
       </DropdownMenuContent>

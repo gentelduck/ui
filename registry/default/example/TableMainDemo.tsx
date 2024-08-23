@@ -99,6 +99,7 @@ export default function DataTableMainDemo() {
         // footer={{}}
         selection={true}
         viewButton={true}
+        tableSearch={true}
         pagination={{
           groupSize: 6,
           showCount: true,
