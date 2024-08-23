@@ -2,7 +2,7 @@
 import * as React from 'react'
 import { cn } from '@/lib'
 import { Button, ButtonProps } from './button'
-import { filteredObject, generateHeaderArrays } from '@/lib/utils'
+import { filteredObject, groupArrays } from '@/lib/utils'
 import { Separator } from './ShadcnUI'
 
 type NavGroupProps<T extends boolean> = {
@@ -27,7 +27,7 @@ interface NavCollabsedType {
 interface NavNotCollabsedType {}
 
 const NavGroup = <T extends boolean>({ navigationKeys, nav, position }: NavGroupProps<T>) => {
-  const grouped = generateHeaderArrays<ButtonProps>(nav.group, navigationKeys)
+  const grouped = groupArrays<ButtonProps>(nav.group, navigationKeys)
   const navIsCollabsed = (nav as NavCollabsedType).isCollabsed
   const filteredKeys = filteredObject(['group', 'router', 'location', 'isCollabsed'], nav)
 

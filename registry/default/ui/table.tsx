@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Checkbox } from './checkbox'
 
-import { cn } from '@/lib/utils'
+import { cn, groupArrays } from '@/lib/utils'
 import {
   Input,
   Pagination,
@@ -13,7 +13,7 @@ import {
   PaginationPrevious,
   ScrollBar,
 } from './ShadcnUI'
-import { Button, LabelType } from './button'
+import { Button, buttonVariants, LabelType } from './button'
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -22,17 +22,21 @@ import {
   ChevronsLeftIcon,
   ChevronsRightIcon,
   ChevronsUpDown,
+  ChevronUp,
+  LucideIcon,
 } from 'lucide-react'
 import { ScrollArea, ScrollAreaProps } from '@radix-ui/react-scroll-area'
 import { TooltipProvider } from './tooltip'
 import { Combobox } from './combobox'
 import { CommandListGroupDataType } from './command'
 import {
+  DataTableViewOptions,
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuOptionsType,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -45,6 +49,7 @@ import {
 import { DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu'
 import { CaretSortIcon, DotsHorizontalIcon, EyeNoneIcon, MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { Badge } from './badge'
+import { IconProps } from '@radix-ui/react-icons/dist/types'
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
@@ -146,7 +151,7 @@ interface TableHeaderColumns extends React.HTMLProps<HTMLTableCellElement> {
 
 interface TableFooterColumns extends React.HTMLProps<HTMLTableCellElement> {}
 
-interface TableDataType {
+interface TableContentDataType {
   [key: string]: TableDataKey
 }
 
@@ -163,20 +168,16 @@ interface TablePaginationType extends React.HTMLProps<HTMLDivElement> {
   showGroup?: boolean
 }
 
-interface TableOptionsType {
-  optionsData?: React.ComponentPropsWithoutRef<typeof DropdownMenuItem>[]
-}
-
 interface TableViewProps {
   table?: TableType
-  data: TableDataType[]
+  tableContentData: TableContentDataType[]
   selection?: boolean
   header?: TableHeaderColumns[]
   footer?: TableFooterColumns
   caption?: TableCaptionType
   pagination?: TablePaginationType
   viewButton?: boolean
-  options: TableOptionsType
+  options: DropdownMenuOptionsType
 }
 
 type Checked = DropdownMenuCheckboxItemProps['checked']
@@ -187,15 +188,15 @@ const TableView = ({
   viewButton,
   header,
   footer,
-  data,
+  tableContentData,
   caption,
   table,
   options,
 }: TableViewProps) => {
   const { className: tableClassName, ...tableProps } = table! ?? {}
   const { children: captionChildren, className: captionClassName, ...captionProps } = caption! ?? []
-  const [selected, setSelected] = React.useState<TableDataType[]>([])
-  const [tableData, setTableData] = React.useState(data)
+  const [selected, setSelected] = React.useState<TableContentDataType[]>([])
+  const [tableData, setTableData] = React.useState(tableContentData)
   const [paginationState, setPaginationState] = React.useState({
     activePage: pagination?.activePage ?? 0,
     groupSize: pagination?.groupSize ?? tableData.length / 3,
@@ -224,6 +225,7 @@ const TableView = ({
   })
 
   const resultArrays = splitIntoChunks(filteredData, +value)
+  const groupedOption = groupArrays(options?.group ?? [options?.optionsData?.length || 1], options?.optionsData ?? [])
 
   return (
     <div className="flex flex-col gap-4">
@@ -332,65 +334,68 @@ const TableView = ({
                           </span>
                         ) : (
                           <div className={cn('flex items-center space-x-2', className)}>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="-ml-3 h-8 data-[state=open]:bg-accent text-xs"
-                                >
-                                  <span>{children}</span>
-                                  {headers[idx]?.currentSort === 'asc' ? (
-                                    <ArrowDownIcon className="ml-2 h-4 w-4" />
-                                  ) : headers[idx]?.currentSort === 'desc' ? (
-                                    <ArrowUpIcon className="ml-2 h-4 w-4" />
-                                  ) : (
-                                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                                  )}
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="start">
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    const { sortedData, updatedColumns } = sortArray(
-                                      headers,
-                                      data,
-                                      Object.keys(data[0])[idx],
-                                      'asc'
-                                    )
-                                    setHeaders(() => updatedColumns)
-                                    setTableData(() => (updatedColumns[idx].currentSort === 'asc' ? sortedData : data))
-                                  }}
-                                >
-                                  <ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-                                  Asc
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    const { sortedData, updatedColumns } = sortArray(
-                                      headers,
-                                      data,
-                                      Object.keys(data[0])[idx],
-                                      'desc'
-                                    )
-                                    setHeaders(() => updatedColumns)
-                                    setTableData(() => (updatedColumns[idx].currentSort === 'desc' ? sortedData : data))
-                                  }}
-                                >
-                                  <ArrowUpIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-                                  Desc
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    setHeaders(headers.filter(sub => sub !== column))
-                                  }}
-                                >
-                                  <EyeNoneIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-                                  Hide
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                            <DataTableViewOptions
+                              trigger={{
+                                className: '-ml-3 h-8 data-[state=open]:bg-accent text-xs',
+                                children: (
+                                  <>
+                                    <span>{children}</span>
+                                    {headers[idx]?.currentSort === 'asc' ? (
+                                      <ArrowDownIcon className="ml-2 h-4 w-4" />
+                                    ) : headers[idx]?.currentSort === 'desc' ? (
+                                      <ArrowUpIcon className="ml-2 h-4 w-4" />
+                                    ) : (
+                                      <CaretSortIcon className="ml-2 h-4 w-4" />
+                                    )}
+                                  </>
+                                ),
+                                variant: 'ghost',
+                                size: 'sm',
+                              }}
+                              content={{
+                                align: 'start',
+                                options: {
+                                  group: [2, 1],
+                                  optionsData: [
+                                    {
+                                      onClick: ({
+                                        tableContentData,
+                                        headers,
+                                        idx,
+                                        sortArrayFun,
+                                        setHeaders,
+                                        setTableData,
+                                        column,
+                                      }: {
+                                        sortArrayFun: typeof sortArray
+                                        setHeaders: React.Dispatch<React.SetStateAction<TableHeaderColumns[]>>
+                                        setTableData: React.Dispatch<React.SetStateAction<TableContentDataType[]>>
+                                        tableContentData: TableContentDataType[]
+                                        headers: TableHeaderColumns[]
+                                        idx: number
+                                        column: TableHeaderColumns
+                                      }) => {
+                                        const { sortedData, updatedColumns } = sortArrayFun(
+                                          headers,
+                                          tableContentData,
+                                          Object.keys(tableContentData[0])[idx],
+                                          'desc'
+                                        )
+                                        setHeaders(() => updatedColumns)
+                                        setTableData(() =>
+                                          updatedColumns[idx].currentSort === 'desc' ? sortedData : tableContentData
+                                        )
+                                      },
+                                      icon: {
+                                        icon: ArrowDownIcon,
+                                        className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
+                                      },
+                                      children: 'Desc',
+                                    },
+                                  ],
+                                },
+                              }}
+                            />
                           </div>
                         )}
                       </TableHead>
@@ -453,40 +458,20 @@ const TableView = ({
                             <span className="text-ellipsis overflow-hidden whitespace-nowrap">{children}</span>
                           </div>
                           {idx === Object.entries(item).length - 1 && (
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size={'icon'}
-                                  className="flex h-8 w-12 p-0 data-[state=open]:bg-muted"
-                                >
-                                  <DotsHorizontalIcon className="h-4 w-4" />
-                                  <span className="sr-only">Open menu</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent
-                                align="end"
-                                className="w-[160px]"
-                              >
-                                {options.optionsData?.map((item, idx) => {
-                                  const { children, className, ...props } = item
-                                  return (
-                                    <DropdownMenuItem
-                                      key={idx}
-                                      className={className}
-                                      {...props}
-                                    >
-                                      {children}
-                                    </DropdownMenuItem>
-                                  )
-                                })}
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                  Delete
-                                  <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                            <DataTableViewOptions
+                              trigger={{
+                                className: 'flex h-8 w-12 p-0 data-[state=open]:bg-muted',
+                                children: <span className="sr-only">Open menu</span>,
+                                variant: 'ghost',
+                                size: 'icon',
+                                icon: <DotsHorizontalIcon className="h-4 w-4" />,
+                              }}
+                              content={{
+                                align: 'end',
+                                className: 'w-[160px]',
+                                options,
+                              }}
+                            />
                           )}
                         </TableCell>
                       )
@@ -608,42 +593,6 @@ const TableView = ({
   )
 }
 
-function sortArray<T>(
-  columns: TableHeaderColumns[],
-  array: T[],
-  key?: keyof T,
-  order: 'asc' | 'desc' | 'not sorted' = 'desc'
-) {
-  const toggleSortOrder = (
-    order: 'asc' | 'desc' | 'not sorted',
-    currentOrder: 'asc' | 'desc' | 'not sorted'
-  ): 'asc' | 'desc' | 'not sorted' => (order === 'not sorted' ? currentOrder : 'not sorted')
-
-  const updatedColumns = columns.map(col => {
-    if (col.children === key) {
-      return {
-        ...col,
-        currentSort: toggleSortOrder(col.currentSort!, order),
-      }
-    }
-    return col
-  })
-
-  const sortedData = array.sort((a, b) => {
-    const valueA = key ? a[key] : a
-    const valueB = key ? b[key] : b
-
-    if (typeof valueA === 'string' && typeof valueB === 'string') {
-      return order === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA)
-    } else if (typeof valueA === 'number' && typeof valueB === 'number') {
-      return order === 'asc' ? valueA - valueB : valueB - valueA
-    } else {
-      return order === 'asc' ? (valueA > valueB ? 1 : -1) : valueA < valueB ? 1 : -1
-    }
-  })
-  return { sortedData, updatedColumns }
-}
-
 export {
   Table,
   TableHeader,
@@ -656,6 +605,6 @@ export {
   TableView,
   type TableHeaderColumns,
   type TableViewProps as TableProps,
-  type TableDataType,
+  type TableContentDataType,
   type TableDataKey,
 }

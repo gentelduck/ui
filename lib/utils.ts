@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { TableHeaderColumns } from '@/registry/default/ui'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -36,7 +37,7 @@ export function groupDataByNumbers<T>(strings: T[], groupSizes: number[]): T[][]
   return result
 }
 
-export function generateHeaderArrays<T>(numbers: number[], headers: T[]): T[][] {
+export function groupArrays<T>(numbers: number[], headers: T[]): T[][] {
   const result: T[][] = []
   let index = 0
 
@@ -47,4 +48,40 @@ export function generateHeaderArrays<T>(numbers: number[], headers: T[]): T[][] 
   }
 
   return result
+}
+
+export function sortArray<T>(
+  columns: TableHeaderColumns[],
+  array: T[],
+  key?: keyof T,
+  order: 'asc' | 'desc' | 'not sorted' = 'desc'
+) {
+  const toggleSortOrder = (
+    order: 'asc' | 'desc' | 'not sorted',
+    currentOrder: 'asc' | 'desc' | 'not sorted'
+  ): 'asc' | 'desc' | 'not sorted' => (order === 'not sorted' ? currentOrder : 'not sorted')
+
+  const updatedColumns = columns.map(col => {
+    if (col.children === key) {
+      return {
+        ...col,
+        currentSort: toggleSortOrder(col.currentSort!, order),
+      }
+    }
+    return col
+  })
+
+  const sortedData = array.sort((a, b) => {
+    const valueA = key ? a[key] : a
+    const valueB = key ? b[key] : b
+
+    if (typeof valueA === 'string' && typeof valueB === 'string') {
+      return order === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA)
+    } else if (typeof valueA === 'number' && typeof valueB === 'number') {
+      return order === 'asc' ? valueA - valueB : valueB - valueA
+    } else {
+      return order === 'asc' ? (valueA > valueB ? 1 : -1) : valueA < valueB ? 1 : -1
+    }
+  })
+  return { sortedData, updatedColumns }
 }

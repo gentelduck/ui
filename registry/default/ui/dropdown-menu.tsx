@@ -2,11 +2,14 @@
 
 import * as React from 'react'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
-import { Check, ChevronRight, Circle } from 'lucide-react'
+import { Check, ChevronRight, Circle, LucideIcon, MoreVerticalIcon } from 'lucide-react'
 
-import { cn } from '@/lib/utils'
+import { cn, groupArrays, sortArray } from '@/lib/utils'
 import { Button } from './button'
 import { MixerHorizontalIcon } from '@radix-ui/react-icons'
+import { IconProps } from '@radix-ui/react-icons/dist/types'
+import { ButtonProps } from './button'
+import { TableHeaderColumns } from './table'
 
 const DropdownMenu = DropdownMenuPrimitive.Root
 
@@ -173,49 +176,87 @@ const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTML
 }
 DropdownMenuShortcut.displayName = 'DropdownMenuShortcut'
 
-interface DataTableViewOptionsProps<TData> {
-  table: any
+interface DropdownMenuOptionsDataType<T> extends React.ComponentPropsWithoutRef<typeof DropdownMenuItem> {
+  icon?: { icon: LucideIcon } & IconProps & React.RefAttributes<SVGSVGElement>
+  command?: React.ComponentPropsWithoutRef<typeof DropdownMenuShortcut>
+  action?: (args: T) => void
 }
 
-export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
+interface DropdownMenuOptionsType<T> {
+  optionsData?: DropdownMenuOptionsDataType<T>[]
+  group?: number[]
+}
+
+interface DataTableViewOptionsProps<T> {
+  content?: {
+    label?: React.ComponentPropsWithoutRef<typeof DropdownMenuLabel>
+    options?: DropdownMenuOptionsType<T>
+  } & React.ComponentPropsWithoutRef<typeof DropdownMenuContent>
+  trigger?: {
+    icon?: React.ReactElement
+  } & React.ComponentPropsWithoutRef<typeof DropdownMenuTrigger> &
+    ButtonProps
+}
+
+export function DataTableViewOptions<T>({ content, trigger }: DataTableViewOptionsProps<T>) {
+  const { className: triggerClassName, icon: Icon, ...triggerProps } = trigger ?? {}
+  const { className: optionsClassName, options, label, ...contentProps } = content ?? {}
+  const { className: labelClassName, ...labelProps } = label ?? {}
+  const groupedOption = groupArrays(options?.group ?? [options?.optionsData?.length || 1], options?.optionsData ?? [])
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
           size="sm"
-          className="ml-auto hidden h-8 lg:flex"
-        >
-          <MixerHorizontalIcon className="mr-2 h-4 w-4" />
-          View
-        </Button>
+          className={cn(triggerClassName)}
+          icon={Icon}
+          {...triggerProps}
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-[150px]"
+        className={cn('w-[150px]', optionsClassName)}
+        {...contentProps}
       >
-        <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {
-          //           table
-          // .getAllColumns()
-          // .filter(
-          //   (column) =>
-          //     typeof column.accessorFn !== "undefined" && column.getCanHide()
-          // )
-          // .map((column) => {
-          //   return (
-          //     <DropdownMenuCheckboxItem
-          //       key={column.id}
-          //       className="capitalize"
-          //       checked={column.getIsVisible()}
-          //       onCheckedChange={(value) => column.toggleVisibility(!!value)}
-          //     >
-          //       {column.id}
-          //     </DropdownMenuCheckboxItem>
-          //   )
-          // })
-        }
+        {label && (
+          <>
+            <DropdownMenuLabel
+              className={cn(labelClassName)}
+              {...labelProps}
+            />
+            <DropdownMenuSeparator />
+          </>
+        )}
+        {groupedOption.map((group, idx) => {
+          return (
+            <>
+              {group.map((item, idx) => {
+                const { children, className, ...props } = item
+                const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
+
+                return (
+                  <DropdownMenuItem
+                    key={idx}
+                    className={cn('flex gap-2 items-center', className)}
+                    {...props}
+                  >
+                    {Icon && (
+                      <Icon
+                        {...iconProps}
+                        className={cn('h-4 w-4', iconClassName)}
+                      />
+                    )}
+                    {children}
+                    {item.command && <DropdownMenuShortcut {...item.command} />}
+                  </DropdownMenuItem>
+                )
+              })}
+              {idx !== groupedOption.length - 1 && <DropdownMenuSeparator />}
+            </>
+          )
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   )
@@ -237,4 +278,7 @@ export {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
+  type DropdownMenuOptionsDataType,
+  type DropdownMenuOptionsType,
+  type DataTableViewOptionsProps,
 }
