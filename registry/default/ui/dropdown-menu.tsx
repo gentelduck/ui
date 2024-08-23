@@ -183,6 +183,7 @@ interface DropdownMenuOptionsDataType<T> extends React.ComponentPropsWithoutRef<
 }
 
 interface DropdownMenuOptionsType<T> {
+  actionsArgs?: T extends {} ? T : never
   optionsData?: DropdownMenuOptionsDataType<T>[]
   group?: number[]
 }
@@ -203,6 +204,8 @@ export function DataTableViewOptions<T>({ content, trigger }: DataTableViewOptio
   const { className: optionsClassName, options, label, ...contentProps } = content ?? {}
   const { className: labelClassName, ...labelProps } = label ?? {}
   const groupedOption = groupArrays(options?.group ?? [options?.optionsData?.length || 1], options?.optionsData ?? [])
+
+  console.log(content?.options)
 
   return (
     <DropdownMenu>
@@ -233,13 +236,14 @@ export function DataTableViewOptions<T>({ content, trigger }: DataTableViewOptio
           return (
             <>
               {group.map((item, idx) => {
-                const { children, className, ...props } = item
+                const { children, action, className, ...props } = item
                 const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
 
                 return (
                   <DropdownMenuItem
                     key={idx}
                     className={cn('flex gap-2 items-center', className)}
+                    onClick={() => action?.(options?.actionsArgs as T)}
                     {...props}
                   >
                     {Icon && (
