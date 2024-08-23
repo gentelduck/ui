@@ -1,49 +1,31 @@
-import { Chilanka } from 'next/font/google'
-import { TableView, TableHeaderColumns, TableDataType } from '../ui'
+import { TableView, TableHeaderColumns } from '../ui'
+import { tableData } from '../ui/data'
 
 const columns: TableHeaderColumns[] = [
   {
-    children: 'Invoice',
+    children: 'task',
     sortable: false,
   },
   {
-    children: 'Status',
-    sortable: false,
-  },
-  {
-    children: 'Method',
+    children: 'title',
+    className: 'w-[110px]',
     sortable: true,
   },
   {
-    children: 'Amount',
-    sortable: false,
-  },
-]
-
-const data: TableDataType[] = [
-  {
-    invoice: {
-      children: 'INV001',
-    },
-    paymentStatus: { children: 'Paid' },
-    paymentMethod: { children: 'paypal' },
-    totalAmount: { children: '$250.00' },
+    children: 'status',
+    sortable: true,
+    className: 'w-[70px]',
+    currentSort: 'not sorted',
   },
   {
-    invoice: {
-      children: 'INV002',
-    },
-    paymentStatus: { children: 'Paid' },
-    paymentMethod: { children: 'binnace' },
-    totalAmount: { children: '$250.00' },
+    children: 'label',
+    className: 'w-[90px]',
+    sortable: true,
+    currentSort: 'not sorted',
   },
   {
-    invoice: {
-      children: 'INV003',
-    },
-    paymentStatus: { children: 'Paid' },
-    paymentMethod: { children: 'Credit Card' },
-    totalAmount: { children: '$250.00' },
+    children: 'priority',
+    sortable: true,
   },
 ]
 
@@ -52,21 +34,34 @@ export default function DataTableMainDemo() {
     <>
       <TableView
         table={{
-          className: 'w-[700px] overflow-y-hidden',
+          className: 'w-[650px] h-[325px]',
         }}
         header={columns}
-        data={[...data]}
+        data={[...tableData]}
         // caption={{
         //   children: 'A list of your recent invoices.',
         // }}
-        selection={true}
         // footer={{}}
+        selection={true}
+        viewButton={true}
         pagination={{
           groupSize: 5,
           showCount: true,
           showGroup: true,
         }}
-        // pagination
+        options={{
+          optionsData: [
+            {
+              children: 'Edit',
+            },
+            {
+              children: 'Make a copy',
+            },
+            {
+              children: 'Favorite',
+            },
+          ],
+        }}
       />
     </>
   )

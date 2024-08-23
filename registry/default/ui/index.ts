@@ -10,5 +10,6 @@ export * from './select-switcher'
 export * from './alert-dialog'
 export * from './table'
 export * from './checkbox'
+export * from './dropdown-menu'
 
 export * from './ShadcnUI'
