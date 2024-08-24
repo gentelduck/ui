@@ -9,6 +9,9 @@ import { ScrollArea } from './ShadcnUI/scroll-area'
 
 import { Check, Search } from 'lucide-react'
 import { cn, groupDataByNumbers } from '@/lib/utils'
+import { Checkbox } from './checkbox'
+import { Button, LabelType } from './button'
+import { Separator } from './ShadcnUI'
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -47,7 +50,7 @@ const CommandInput = React.forwardRef<
     className="flex items-center border-b px-3"
     cmdk-input-wrapper=""
   >
-    <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+    <Search className="h-4 w-4 shrink-0 opacity-50" />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
@@ -142,18 +145,27 @@ const CommandShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanE
 CommandShortcut.displayName = 'CommandShortcut'
 
 interface CommandListGroupDataType {
-  label: string
+  label?: string
   element?: ListItemElementType
-  onSelect?: <T>(arg?: T) => void
+  onSelect?: OnSelectType
 }
 
-interface ListItemElementType extends Partial<React.ComponentPropsWithoutRef<typeof CommandItem>> {}
+interface OnSelectType {
+  key: <T extends string>(arg?: T) => void
+  clear: <T extends string>(arg?: T) => void
+}
+
+interface ListItemElementType extends Partial<React.ComponentPropsWithoutRef<typeof CommandItem>> {
+  icon?: React.ReactElement
+  label?: LabelType
+}
 
 interface CommandListGroupType {
+  type?: 'combobox' | 'listbox'
   data: CommandListGroupDataType[]
   group?: number[]
   groupheading?: string[]
-  onSelect?: <T extends string>(arg?: T) => void
+  onSelect?: OnSelectType
   selected: string[]
   className?: string
   checkabble?: boolean
@@ -161,52 +173,87 @@ interface CommandListGroupType {
 
 const CommandListGroup = React.forwardRef(
   (
-    { data, onSelect, selected, group, groupheading, className, checkabble = false }: CommandListGroupType,
+    { data, onSelect, selected, group, groupheading, className, checkabble = false, type }: CommandListGroupType,
     ref: React.Ref<HTMLDivElement>
   ) => {
     const groupedData = groupDataByNumbers(data, group || [data.length])
 
     return (
-      <ScrollArea className={cn(className)}>
-        <CommandList
-          className={cn('overflow-hidden max-h-full')}
-          ref={ref}
-        >
-          <CommandEmpty>No framework found.</CommandEmpty>
-          {groupedData.map((group, idx) => {
-            return (
-              <CommandGroup
-                heading={groupheading?.[idx]}
-                key={idx}
-              >
-                {group.map((el, idx) => {
-                  const { children, className, ...props } = el.element ?? {}
-                  return (
-                    <CommandItem
-                      key={idx}
-                      value={el.label}
-                      className={cn(
-                        'data-[disabled=true]:opacity-50',
-                        selected.includes(el.label) && 'bg-accent text-accent-foreground',
-                        className
-                      )}
-                      onSelect={onSelect}
-                      {...props}
-                    >
-                      {checkabble && (
-                        <Check
-                          className={cn('mr-2 h-4 w-4', selected.includes(el.label) ? 'opacity-100' : 'opacity-0')}
-                        />
-                      )}
-                      {children}
-                    </CommandItem>
-                  )
-                })}
-              </CommandGroup>
-            )
-          })}
-        </CommandList>
-      </ScrollArea>
+      <>
+        <ScrollArea className={cn(className)}>
+          <CommandList
+            className={cn('overflow-hidden max-h-full', type === 'listbox' && '')}
+            ref={ref}
+          >
+            <CommandEmpty>No framework found.</CommandEmpty>
+            {groupedData.map((group, idx) => {
+              return (
+                <CommandGroup
+                  heading={groupheading?.[idx]}
+                  key={idx}
+                >
+                  {group.map((el, idx) => {
+                    const { children, className, label, icon, ...props } = el.element ?? {}
+
+                    return (
+                      <CommandItem
+                        key={idx}
+                        value={el.label}
+                        className={cn(
+                          'data-[disabled=true]:opacity-50',
+                          selected.includes(el?.element?.children as string) &&
+                            type === 'combobox' &&
+                            'bg-accent text-accent-foreground',
+                          className
+                        )}
+                        onSelect={onSelect?.key}
+                        {...props}
+                      >
+                        {checkabble &&
+                          (type === 'combobox' ? (
+                            <Check
+                              className={cn(
+                                'mr-2 h-4 w-4',
+                                selected.includes(el?.element?.children as string) ? 'opacity-100' : 'opacity-0'
+                              )}
+                            />
+                          ) : (
+                            <Checkbox
+                              checked={selected.includes(el?.element?.children as string)}
+                              className={cn('mr-2 h-4 w-4')}
+                            />
+                          ))}
+                        <span className="flex items-center gap-2">
+                          {icon && icon}
+                          {children}
+                        </span>
+                        <CommandShortcut>{el.element?.label?.children}</CommandShortcut>
+                      </CommandItem>
+                    )
+                  })}
+                </CommandGroup>
+              )
+            })}
+          </CommandList>
+        </ScrollArea>
+        {selected.length > 0 && type === 'listbox' && (
+          <>
+            <Separator />
+            <Button
+              variant="ghost"
+              size={'sm'}
+              className="justify-center m-1 w-auto py-2 text-xs"
+              onClick={() => {
+                if (onSelect?.clear) {
+                  onSelect.clear()
+                }
+              }}
+            >
+              Clear Filter
+            </Button>
+          </>
+        )}
+      </>
     )
   }
 )

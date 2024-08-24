@@ -6,7 +6,7 @@ export const tableData: TableContentDataType[] = [
   {
     task: { children: 'TASK-8782' },
     title: {
-      children: "You can't compress the program without quantifying the open-source SSD pixel!",
+      children: <p> You can't compress the program without quantifying the open-source SSD pixel! </p>,
     },
     status: { children: 'in progress' },
     label: { children: 'documentation' },

@@ -1,6 +1,13 @@
-import { TableView, TableHeaderColumns, DropdownMenuOptionsDataType, TableContentDataType } from '../ui'
+import {
+  TableView,
+  TableHeaderColumns,
+  DropdownMenuOptionsDataType,
+  TableContentDataType,
+  CommandListGroupDataType,
+  ComboboxType,
+} from '../ui'
 import { tableData } from '../ui/data'
-import { ArrowDownIcon, ArrowUpIcon, LucideIcon, Trash2 } from 'lucide-react'
+import { ArrowDownIcon, ArrowUpIcon, CirclePlus, LucideIcon, Trash2 } from 'lucide-react'
 import { sortArray } from '@/lib/utils'
 import { EyeNoneIcon } from '@radix-ui/react-icons'
 
@@ -84,6 +91,74 @@ const columns: TableHeaderColumns<true>[] = [
   },
 ]
 
+const filtersData: ComboboxType<string>[] = [
+  {
+    type: 'listbox',
+    trigger: {
+      children: 'Status',
+    },
+    content: {
+      showSearchInput: true,
+      data: [
+        {
+          label: 'done',
+          element: {
+            label: {
+              children: '23',
+            },
+            icon: <CirclePlus className="size-4 stroke-[1.5]" />,
+            children: 'done',
+          },
+        },
+
+        {
+          label: 'pending',
+          element: {
+            label: {
+              children: '23',
+            },
+            icon: <CirclePlus className="size-4 stroke-[1.5]" />,
+            children: 'pending',
+          },
+        },
+      ],
+    },
+  },
+
+  {
+    type: 'listbox',
+    trigger: {
+      children: 'Method',
+    },
+    content: {
+      showSearchInput: true,
+      data: [
+        {
+          label: 'Visa',
+          element: {
+            label: {
+              children: '23',
+            },
+            icon: <CirclePlus className="size-4 stroke-[1.5]" />,
+            children: 'Visa',
+          },
+        },
+
+        {
+          label: 'joe',
+          element: {
+            label: {
+              children: '23',
+            },
+            icon: <CirclePlus className="size-4 stroke-[1.5]" />,
+            children: 'joe',
+          },
+        },
+      ],
+    },
+  },
+]
+
 export default function DataTableMainDemo() {
   return (
     <>
@@ -92,6 +167,7 @@ export default function DataTableMainDemo() {
           className: 'w-[650px] h-[338px]',
         }}
         header={columns}
+        filter={filtersData}
         tableContentData={[...tableData]}
         // caption={{
         //   children: 'A list of your recent invoices.',
@@ -99,13 +175,14 @@ export default function DataTableMainDemo() {
         // footer={{
         //   children: 'Footer',
         // }}
-        selection={true}
+        // selection={true}
         viewButton={true}
         tableSearch={true}
         pagination={{
           groupSize: 6,
           showCount: true,
           showGroup: true,
+          showNavigation: true,
         }}
         options={{
           group: [3, 1],

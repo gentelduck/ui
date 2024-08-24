@@ -127,8 +127,8 @@
 
 @layer utilities {
     .ellipsis {
-        font-size: 0.75rem;
-        line-height: 1rem;
+        /* font-size: 0.75rem; */
+        /* line-height: 1rem; */
         font-weight: 500;
         overflow: hidden;
         display: grid;

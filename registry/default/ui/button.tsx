@@ -27,6 +27,7 @@ export interface ButtonProps
 }
 
 export interface LabelType extends Partial<React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>> {
+  showCommand?: boolean
   showLabel?: boolean
   type?: 'notification' | 'default'
 }
@@ -138,7 +139,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               )}
               {!isCollapsed && (children || title)}
             </div>
-            {!isCollapsed && command?.label && <CommandComponent />}
+            {!isCollapsed && command?.label && !label?.showCommand && <CommandComponent />}
 
             {!isCollapsed &&
               label &&
@@ -170,7 +171,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             side={label?.side || 'right'}
           >
             {title && (title as unknown as React.ReactNode)}
-            {command?.label && <CommandComponent />}
+            {command?.label && label?.showCommand && <CommandComponent />}
             {label && (
               <span className={cn('ml-auto text-[.9rem]', !label.showLabel && 'text-muted-foreground')}>
                 {label.children as unknown as React.ReactNode}

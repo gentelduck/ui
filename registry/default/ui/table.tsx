@@ -12,10 +12,12 @@ import {
   ChevronRightIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
+  CircleMinus,
+  CirclePlus,
 } from 'lucide-react'
 import { ScrollArea } from '@radix-ui/react-scroll-area'
 import { TooltipProvider } from './tooltip'
-import { Combobox } from './combobox'
+import { Combobox, ComboboxType, OnSelectType } from './combobox'
 import { CommandListGroupDataType } from './command'
 import {
   DataTableViewOptions,
@@ -31,6 +33,7 @@ import {
 import { CaretSortIcon, DotsHorizontalIcon, MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { Badge } from './badge'
 import { DropdownMenuProps } from '@radix-ui/react-dropdown-menu'
+import { ButtonProps } from 'react-day-picker'
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
@@ -137,13 +140,14 @@ interface TableDropdownMenuOptions {
 }
 
 interface TableHeaderColumns<Y extends boolean = true> extends Partial<React.HTMLProps<HTMLTableCellElement>> {
-  sortable: boolean
+  sortable?: boolean
   currentSort?: Y extends true ? 'asc' | 'desc' | 'not sorted' : never
   dropdownMenuOptions?: Y extends true ? DropdownMenuOptionsDataType<TableDropdownMenuOptions>[] : never
 }
 
 interface TableHeaderColumnsType<T extends boolean = false> {
   header: TableHeaderColumns<T>[]
+  headers: TableHeaderColumns<T>[]
   viewButton: boolean
   tableSearch: boolean
   setHeaders: React.Dispatch<React.SetStateAction<TableHeaderColumns<T>[]>>
@@ -154,20 +158,25 @@ interface TableHeaderColumnsType<T extends boolean = false> {
     }>
   >
   search: { q: string; qBy: string }
+  filter: ComboboxType<string>[]
 }
 
 const TableHeaderActions = <T extends boolean = false>({
   setHeaders,
   header,
+  headers,
   search,
   viewButton,
   tableSearch,
   setSearchQ,
+  filter,
 }: TableHeaderColumnsType<T>) => {
+  const [value, setValue] = React.useState<string[][]>([])
+
   return (
     <>
       <div className="flex items-center justify-between">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           {tableSearch && (
             <div className="flex flex-1 items-center space-x-2">
               <Input
@@ -176,8 +185,56 @@ const TableHeaderActions = <T extends boolean = false>({
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   setSearchQ({ ...search, q: event.target.value })
                 }}
-                className="h-8 w-[150px] lg:w-[250px]"
+                className="h-8 w-[150px] lg:w-[200px]"
               />
+            </div>
+          )}
+          {filter && (
+            <div className={cn('flex items-center gap-2')}>
+              {filter?.map((filter, idx) => {
+                const {
+                  className: triggerClassName,
+                  children: triggerChildren,
+                  ...triggerProps
+                } = filter?.trigger ?? {}
+                return (
+                  <Combobox<string[]>
+                    key={idx}
+                    type={'listbox'}
+                    title={filter?.title}
+                    wrapper={filter?.wrapper}
+                    trigger={{
+                      icon: (
+                        <CirclePlus
+                          size={14}
+                          className="!size-4 stroke-[1.5]"
+                        />
+                      ),
+                      children: triggerChildren,
+                      className: cn('[&>div>span]:text-xs ml-auto', triggerClassName),
+                      // label: {
+                      //   children: 'Select one',
+                      //   showLabel: true,
+                      //   side: 'top',
+                      //   showCommand: true,
+                      // },
+                      // command: {
+                      //   label: '⌘+m',
+                      //   key: 'm',
+                      // },
+                      ...triggerProps,
+                    }}
+                    onSelect={
+                      filter?.onSelect ??
+                      ({
+                        value: value,
+                        setValue: setValue,
+                      } as any)
+                    }
+                    content={filter?.content}
+                  />
+                )
+              })}
             </div>
           )}
         </div>
@@ -188,7 +245,7 @@ const TableHeaderActions = <T extends boolean = false>({
               <Button
                 variant="outline"
                 size={'sm'}
-                className="ml-auto hidden [&>div]:h-8 h-8 w-[79px] lg:flex [&>div]:gap-0"
+                className="ml-auto hidden [&>div]:h-8 h-8 w-[79px] lg:flex [&>div]:gap-0 text-xs"
               >
                 <MixerHorizontalIcon className="mr-2 h-4 w-4" />
                 View
@@ -205,11 +262,19 @@ const TableHeaderActions = <T extends boolean = false>({
                       <DropdownMenuCheckboxItem
                         key={idx}
                         className="capitalize"
-                        checked={header.includes(column)}
+                        checked={headers.includes(column)}
                         onCheckedChange={() => {
-                          setHeaders(
-                            header.includes(column) ? header.filter(sub => sub !== column) : [...header, column]
-                          )
+                          setHeaders(prevHeaders => {
+                            const exists = prevHeaders.includes(column)
+                            if (exists) {
+                              return prevHeaders.filter(sub => sub !== column)
+                            }
+
+                            const originalIndex = header.indexOf(column)
+                            const newHeaders = [...prevHeaders]
+                            newHeaders.splice(originalIndex, 0, column)
+                            return newHeaders.sort((a, b) => header.indexOf(a) - header.indexOf(b))
+                          })
                         }}
                         disabled={disabled}
                         {...(props as React.ComponentPropsWithoutRef<typeof DropdownMenuCheckboxItem>)}
@@ -263,7 +328,7 @@ const TableCustomHeader = <T extends boolean = false>({
                     <span
                       className={cn(
                         'flex items-center gap-2 w-full h-8 data-[state=open]:bg-accent text-xs',
-                        idx === headers.length - 1 && 'justify-end bg-red-500',
+                        idx === headers.length - 1 && 'justify-end',
                         className
                       )}
                     >
@@ -404,7 +469,7 @@ const TableCustomBody = <T extends boolean = false>({
 
                     <span className="text-ellipsis overflow-hidden whitespace-nowrap">{children}</span>
                   </div>
-                  {idx === Object.entries(item).length - 1 && (
+                  {idx === Object.entries(item).length - 1 && options && (
                     <DataTableViewOptions
                       trigger={{
                         className: 'flex h-8 w-12 p-0 data-[state=open]:bg-muted',
@@ -468,6 +533,7 @@ interface TablePaginationType extends React.HTMLProps<HTMLDivElement> {
   groupSize: number
   activePage?: number
   showCount?: boolean
+  showNavigation?: boolean
   showGroup?: boolean
 }
 
@@ -487,8 +553,8 @@ const TablePagination = ({
   setValue,
 }: {
   selected: TableContentDataType[]
-  setValue: React.Dispatch<React.SetStateAction<string>>
-  value: string
+  setValue: React.Dispatch<React.SetStateAction<string[]>>
+  value: string[]
   tableData: TableContentDataType[]
   pagination?: TablePaginationType
   resultArrays: TableContentDataType[][]
@@ -512,22 +578,28 @@ const TablePagination = ({
                 Rows per page
               </span>
               <TooltipProvider>
-                <Combobox
-                  data={Array.from({ length: Math.ceil(tableData.length / 5) }, (_, index) =>
-                    ((index + 1) * 5).toString()
-                  ).reduce((acc, curr) => {
-                    acc.push({ label: curr, element: { children: curr } })
-                    return acc
-                  }, [] as CommandListGroupDataType[])}
-                  className={{ trigger: 'w-[4.5rem] h-[32px] gap-0', content: 'w-[5rem] h-fit' }}
-                  label={{ children: 'Rows per page' }}
+                <Combobox<string>
+                  type="combobox"
+                  content={{
+                    data: Array.from({ length: Math.ceil(tableData.length / 5) }, (_, index) =>
+                      ((index + 1) * 5).toString()
+                    ).reduce((acc, curr) => {
+                      acc.push({ label: curr, element: { children: curr } })
+                      return acc
+                    }, [] as CommandListGroupDataType[]),
+                    showSearchInput: false,
+                    className: 'w-[5rem] h-fit',
+                  }}
+                  trigger={{
+                    command: {
+                      key: 'm',
+                    },
+                    label: { children: 'Rows per page', showLabel: true, side: 'top', className: 'text-xs' },
+                    className: 'w-[4.5rem] h-[32px] gap-0',
+                  }}
                   onSelect={{
                     setValue,
                     value,
-                  }}
-                  commandInput={false}
-                  command={{
-                    key: 'm',
                   }}
                 />
               </TooltipProvider>
@@ -539,58 +611,60 @@ const TablePagination = ({
             </span>
           )}
 
-          <Pagination className="justify-end">
-            <PaginationContent className="gap-2">
-              <PaginationItem>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="w-[32px] h-[32px] p-0"
-                  disabled={paginationState.activePage === 0}
-                  onClick={() => setPaginationState({ ...paginationState, activePage: 0 })}
-                >
-                  <ChevronsLeftIcon className="size-4" />
-                </Button>
-              </PaginationItem>
-              <PaginationItem>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="w-[32px] h-[32px] p-0"
-                  onClick={() =>
-                    setPaginationState({ ...paginationState, activePage: (paginationState.activePage ?? 1) - 1 })
-                  }
-                  disabled={paginationState.activePage === 0}
-                >
-                  <ChevronLeftIcon className="size-4" />
-                </Button>
-              </PaginationItem>
-              <PaginationItem>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="w-[32px] h-[32px] p-0"
-                  onClick={() =>
-                    setPaginationState({ ...paginationState, activePage: (paginationState.activePage ?? 1) + 1 })
-                  }
-                  disabled={paginationState.activePage === resultArrays.length - 1}
-                >
-                  <ChevronRightIcon className="size-4" />
-                </Button>
-              </PaginationItem>
-              <PaginationItem>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="w-[32px] h-[32px] p-0"
-                  onClick={() => setPaginationState({ ...paginationState, activePage: resultArrays.length - 1 })}
-                  disabled={paginationState.activePage === resultArrays.length - 1}
-                >
-                  <ChevronsRightIcon className="size-4" />
-                </Button>
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          {pagination?.showNavigation && (
+            <Pagination className="justify-end">
+              <PaginationContent className="gap-2">
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="w-[32px] h-[32px] p-0"
+                    disabled={paginationState.activePage === 0}
+                    onClick={() => setPaginationState({ ...paginationState, activePage: 0 })}
+                  >
+                    <ChevronsLeftIcon className="size-4" />
+                  </Button>
+                </PaginationItem>
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="w-[32px] h-[32px] p-0"
+                    onClick={() =>
+                      setPaginationState({ ...paginationState, activePage: (paginationState.activePage ?? 1) - 1 })
+                    }
+                    disabled={paginationState.activePage === 0}
+                  >
+                    <ChevronLeftIcon className="size-4" />
+                  </Button>
+                </PaginationItem>
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="w-[32px] h-[32px] p-0"
+                    onClick={() =>
+                      setPaginationState({ ...paginationState, activePage: (paginationState.activePage ?? 1) + 1 })
+                    }
+                    disabled={paginationState.activePage === resultArrays.length - 1}
+                  >
+                    <ChevronRightIcon className="size-4" />
+                  </Button>
+                </PaginationItem>
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="w-[32px] h-[32px] p-0"
+                    onClick={() => setPaginationState({ ...paginationState, activePage: resultArrays.length - 1 })}
+                    disabled={paginationState.activePage === resultArrays.length - 1}
+                  >
+                    <ChevronsRightIcon className="size-4" />
+                  </Button>
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
         </div>
       </div>
     </>
@@ -598,6 +672,7 @@ const TablePagination = ({
 }
 
 interface TableViewProps<T extends boolean = false> {
+  filter: ComboboxType<string>[]
   table?: TableType
   tableContentData: TableContentDataType[]
   selection?: boolean
@@ -621,6 +696,7 @@ const TableView = <T extends boolean = false>({
   caption,
   table,
   options,
+  filter,
 }: TableViewProps<T>) => {
   const { className: tableClassName, ...tableProps } = table! ?? {}
   const { children: captionChildren, className: captionClassName, ...captionProps } = caption! ?? []
@@ -632,7 +708,7 @@ const TableView = <T extends boolean = false>({
   })
   const [headers, setHeaders] = React.useState<TableHeaderColumns<T>[]>(header ?? [])
   const [search, setSearchQ] = React.useState<{ q: string; qBy: string }>({ q: '', qBy: '' })
-  const [value, setValue] = React.useState<string>(paginationState.groupSize.toString())
+  const [value, setValue] = React.useState<string[]>([paginationState.groupSize.toString()])
 
   const splitIntoChunks = (array: typeof tableData, chunkSize: number) => {
     const chunks = []
@@ -661,7 +737,9 @@ const TableView = <T extends boolean = false>({
         viewButton={viewButton ?? false}
         tableSearch={tableSearch ?? false}
         search={search}
-        header={headers}
+        header={header ?? []}
+        filter={filter ?? []}
+        headers={headers}
         setHeaders={setHeaders}
         setSearchQ={setSearchQ}
       />
