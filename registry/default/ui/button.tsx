@@ -85,7 +85,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }: ButtonProps,
     ref: React.ForwardedRef<HTMLButtonElement> | undefined
   ) => {
-    const { className: labelClassName, type = 'default', showLabel, ...labelProps } = label || {}
+    const { className: labelClassName, type = 'default', showLabel, showCommand, ...labelProps } = label || {}
     const Component = asChild ? Slot : 'button'
 
     // Handle keyboard shortcuts
@@ -172,7 +172,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           >
             {title && (title as unknown as React.ReactNode)}
             {command?.label && label?.showCommand && <CommandComponent />}
-            {label && (
+            {label?.showLabel && (
               <span className={cn('ml-auto text-[.9rem]', !label.showLabel && 'text-muted-foreground')}>
                 {label.children as unknown as React.ReactNode}
               </span>

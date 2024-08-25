@@ -139,7 +139,9 @@ interface TableDropdownMenuOptions {
   column: TableHeaderColumns
 }
 
-interface TableHeaderColumns<Y extends boolean = true> extends Partial<React.HTMLProps<HTMLTableCellElement>> {
+interface TableHeaderColumns<Y extends boolean = true, T extends string = string>
+  extends Partial<React.HTMLProps<HTMLTableCellElement>> {
+  label: T
   sortable?: boolean
   currentSort?: Y extends true ? 'asc' | 'desc' | 'not sorted' : never
   dropdownMenuOptions?: Y extends true ? DropdownMenuOptionsDataType<TableDropdownMenuOptions>[] : never
@@ -158,6 +160,20 @@ interface TableHeaderColumnsType<T extends boolean = false> {
   filter: ComboboxType<string>[]
 }
 
+const useDebounceCallback = <T extends (...args: any[]) => void>(callback: T, delay: number) => {
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+
+  return (...args: Parameters<T>) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      callback(...args)
+    }, delay)
+  }
+}
+
 const TableHeaderActions = <T extends boolean = false>({
   setHeaders,
   header,
@@ -173,6 +189,13 @@ const TableHeaderActions = <T extends boolean = false>({
     search.setSearchValue({ ...search.searchValue, qBy: value })
   }, [value])
 
+  const debouncedSearch = useDebounceCallback((newValue: string) => {
+    search.setSearchValue(prev => ({
+      ...prev,
+      q: newValue,
+    }))
+  }, 500)
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -181,10 +204,7 @@ const TableHeaderActions = <T extends boolean = false>({
             <div className="flex flex-1 items-center space-x-2">
               <Input
                 placeholder="Filter tasks..."
-                value={search.searchValue.q}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  search.setSearchValue({ ...search.searchValue, q: event.target.value })
-                }}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => debouncedSearch(event.target.value)}
                 className="h-8 w-[150px] lg:w-[200px]"
               />
             </div>
@@ -255,7 +275,8 @@ const TableHeaderActions = <T extends boolean = false>({
               <DropdownMenuSeparator />
               {header &&
                 header.map((column, idx) => {
-                  const { children, className, sortable, disabled, currentSort, dropdownMenuOptions, ...props } = column
+                  const { children, className, label, sortable, disabled, currentSort, dropdownMenuOptions, ...props } =
+                    column
                   return (
                     idx !== 0 && (
                       <DropdownMenuCheckboxItem
@@ -278,7 +299,7 @@ const TableHeaderActions = <T extends boolean = false>({
                         disabled={disabled}
                         {...(props as React.ComponentPropsWithoutRef<typeof DropdownMenuCheckboxItem>)}
                       >
-                        {children}
+                        {label ?? children}
                       </DropdownMenuCheckboxItem>
                     )
                   )
@@ -315,7 +336,7 @@ const TableCustomHeader = <T extends boolean = false>({
       <TableHeader>
         <TableRow>
           {headers.map((column, idx) => {
-            const { children, className, sortable, dropdownMenuOptions, currentSort, ...props } = column
+            const { children, className, sortable, label, dropdownMenuOptions, currentSort, ...props } = column
             return (
               headers.some(header => header.children === column.children) && (
                 <TableHead
@@ -346,7 +367,7 @@ const TableCustomHeader = <T extends boolean = false>({
                           }
                         />
                       )}
-                      {children}
+                      {label ?? children}
                     </span>
                   ) : (
                     <div className={cn('flex items-center space-x-2', className)}>
@@ -356,7 +377,7 @@ const TableCustomHeader = <T extends boolean = false>({
                             className: '-ml-3 h-8 data-[state=open]:bg-accent text-xs',
                             children: (
                               <>
-                                <span>{children}</span>
+                                <span>{label ?? children}</span>
                                 {headers[idx]?.currentSort === 'asc' ? (
                                   <ArrowDownIcon className="ml-2 h-4 w-4" />
                                 ) : headers[idx]?.currentSort === 'desc' ? (
@@ -424,11 +445,13 @@ const TableCustomBody = <T extends boolean = false>({
       {resultArrays[paginationState.activePage ?? 0]?.map((item, idx) => (
         <TableRow key={idx}>
           {Object.entries(item).map(([key, value], idx) => {
-            const headersEntries = headers.map(item => item.children)
+            const headersEntries = headers.map(
+              item => item.label.toLowerCase() ?? item.children?.toString().toLowerCase()
+            )
             const { className, children, ...props } = value
 
             return (
-              headersEntries.includes(key) && (
+              headersEntries.includes(key.toLowerCase()) && (
                 <TableCell
                   key={key}
                   className={cn(
@@ -671,7 +694,7 @@ const TablePagination = ({
 }
 
 interface TableViewProps<T extends boolean = false> {
-  filter: ComboboxType<string>[]
+  filters: ComboboxType<string>[]
   table?: TableType
   tableContentData: TableContentDataType[]
   selection?: boolean
@@ -695,7 +718,7 @@ const TableView = <T extends boolean = false>({
   caption,
   table,
   options,
-  filter,
+  filters,
 }: TableViewProps<T>) => {
   const { className: tableClassName, ...tableProps } = table! ?? {}
   const { children: captionChildren, className: captionClassName, ...captionProps } = caption! ?? []
@@ -708,7 +731,9 @@ const TableView = <T extends boolean = false>({
   const [headers, setHeaders] = React.useState<TableHeaderColumns<T>[]>(header ?? [])
   const [search, setSearch] = React.useState<{ q: string; qBy: string[] }>({ q: '', qBy: [] })
   const [value, setValue] = React.useState<string[]>([paginationState.groupSize.toString()])
+  const [filterLabels, setFilterLabels] = React.useState<{ [key: string]: number }>({})
 
+  // Function to split array into chunks
   const splitIntoChunks = (array: typeof tableData, chunkSize: number) => {
     const chunks = []
     for (let i = 0; i < array.length; i += chunkSize) {
@@ -717,23 +742,65 @@ const TableView = <T extends boolean = false>({
     return chunks
   }
 
-  const hi = React.useRef()
-  console.log(hi.current)
+  const filteredData = React.useMemo(() => {
+    // Step 1: Filter the data based on search.q and search.qBy
+    const data = tableData.filter(item => {
+      return !search.qBy.length
+        ? Object.values(item).some(value => JSON.stringify(value).toLowerCase().includes(search.q.toLowerCase()))
+        : Object.values(item).some(value =>
+            search.qBy.some(q => JSON.stringify(value).toLowerCase().includes(q.toLowerCase()))
+          )
+    })
 
-  //NOTE: filtring the data depednign on the q
-  const filteredData = tableData.filter(item => {
-    if (!search.qBy.length) {
-      return Object.values(item).some(value => {
-        if (JSON.stringify(value).includes(search.q)) {
-          return item
-        }
+    // Step 2: Calculate label counts based on the filtered data
+    const labelCounts: { [key: string]: number } = {}
+    data.forEach(item => {
+      Object.values(item).forEach(value => {
+        filters?.forEach(filter => {
+          filter?.content?.data.forEach(option => {
+            const label = option?.label?.toLowerCase()
+            if (
+              JSON.stringify(value)
+                .toLowerCase()
+                .includes(label ?? '')
+            ) {
+              labelCounts[label ?? ''] = (labelCounts[label ?? ''] || 0) + 1
+            }
+          })
+        })
       })
-    } else {
-      return Object.values(item).some(value => {
-        return search.qBy.some(q => JSON.stringify(value).toLowerCase().includes(q.toLowerCase()))
-      })
-    }
-  })
+    })
+
+    // Update the filterLabels state with the new counts
+    setFilterLabels(labelCounts)
+
+    return data
+  }, [tableData, filters, search])
+
+  // Update the filters to display the count based on the filtered data
+  const updatedFilters = React.useMemo(() => {
+    return filters?.map(filter => {
+      return {
+        ...filter,
+        content: {
+          ...filter.content,
+          data: filter?.content?.data.map(option => {
+            const label = option?.label?.toLowerCase()
+            return {
+              ...option,
+              element: {
+                ...option.element,
+                label: {
+                  ...option?.element?.label,
+                  children: filterLabels[label ?? ''] || 0,
+                },
+              },
+            }
+          }),
+        },
+      }
+    })
+  }, [filters, filterLabels])
 
   const resultArrays = splitIntoChunks(filteredData, +value)
 
@@ -744,7 +811,7 @@ const TableView = <T extends boolean = false>({
         viewButton={viewButton ?? false}
         tableSearch={tableSearch ?? false}
         header={header ?? []}
-        filter={filter ?? []}
+        filter={(updatedFilters as ComboboxType<string>[]) ?? []}
         headers={headers}
         setHeaders={setHeaders}
       />

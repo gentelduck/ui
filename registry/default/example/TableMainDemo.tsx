@@ -21,6 +21,7 @@ import {
 } from 'lucide-react'
 import { sortArray } from '@/lib/utils'
 import { EyeNoneIcon } from '@radix-ui/react-icons'
+import { Children } from 'react'
 
 export interface TableViewProps {
   sortArray: typeof sortArray
@@ -70,39 +71,43 @@ const tableHeaderDropDown: DropdownMenuOptionsDataType<TableViewProps>[] = [
   },
 ]
 
-const columns: TableHeaderColumns<true>[] = [
+type HeaderColumns = 'task' | 'title' | 'status' | 'label' | 'priority'
+const columns: TableHeaderColumns<true, Capitalize<HeaderColumns>>[] = [
   {
-    children: 'task',
+    label: 'Task',
     sortable: false,
   },
   {
-    children: 'title',
+    label: 'Title',
     className: 'w-[110px]',
     sortable: true,
     dropdownMenuOptions: tableHeaderDropDown,
   },
   {
-    children: 'status',
+    label: 'Status',
     sortable: true,
     className: 'w-[70px]',
     currentSort: 'not sorted',
     dropdownMenuOptions: tableHeaderDropDown,
   },
   {
-    children: 'label',
+    label: 'Label',
     className: 'w-[90px]',
     sortable: true,
     currentSort: 'not sorted',
     dropdownMenuOptions: tableHeaderDropDown,
   },
   {
-    children: 'priority',
+    label: 'Priority',
     sortable: true,
     dropdownMenuOptions: tableHeaderDropDown,
   },
 ]
 
-const filtersData: ComboboxType<string>[] = [
+type StatusType = 'Backlog' | 'Todo' | 'In progress' | 'Done'
+type PriorityType = 'High' | 'Medium' | 'Low'
+const iconStyle = 'size-4 stroke-[1.5] text-muted-foreground'
+const filtersData = [
   {
     type: 'listbox',
     trigger: {
@@ -114,59 +119,38 @@ const filtersData: ComboboxType<string>[] = [
         {
           label: 'Backlog',
           element: {
-            label: {
-              children: '23',
-            },
-            icon: <CircleHelp className="size-4 stroke-[1.5] text-muted-foreground" />,
-            children: 'Backlog',
+            icon: <CircleHelp className={iconStyle} />,
           },
         },
         {
           label: 'Todo',
           element: {
-            label: {
-              children: '23',
-            },
-            icon: <Circle className="size-4 stroke-[1.5] text-muted-foreground" />,
-            children: 'Todo',
+            icon: <Circle className={iconStyle} />,
           },
         },
         {
           label: 'In progress',
           element: {
-            label: {
-              children: '23',
-            },
-            icon: <Clock12 className="size-4 stroke-[1.5] text-muted-foreground" />,
-            children: 'In progress',
+            icon: <Clock12 className={iconStyle} />,
           },
         },
 
         {
           label: 'Done',
           element: {
-            label: {
-              children: '23',
-            },
-            icon: <CircleCheck className="size-4 stroke-[1.5] text-muted-foreground" />,
-            children: 'Done',
+            icon: <CircleCheck className={iconStyle} />,
           },
         },
 
         {
           label: 'Canceled',
           element: {
-            label: {
-              children: '23',
-            },
-            icon: <CircleX className="size-4 stroke-[1.5] text-muted-foreground" />,
-            children: 'Canceled',
+            icon: <CircleX className={iconStyle} />,
           },
         },
       ],
     },
-  },
-
+  } as ComboboxType<string, StatusType>,
   {
     type: 'listbox',
     trigger: {
@@ -176,28 +160,39 @@ const filtersData: ComboboxType<string>[] = [
       showSearchInput: true,
       data: [
         {
-          label: 'Visa',
+          label: 'Low',
           element: {
-            label: {
-              children: '23',
-            },
             icon: <CirclePlus className="size-4 stroke-[1.5]" />,
-            children: 'Visa',
           },
         },
-
         {
-          label: 'joe',
+          label: 'Medium',
           element: {
-            label: {
-              children: '23',
-            },
             icon: <CirclePlus className="size-4 stroke-[1.5]" />,
-            children: 'joe',
+          },
+        },
+        {
+          label: 'High',
+          element: {
+            icon: <CirclePlus className="size-4 stroke-[1.5]" />,
           },
         },
       ],
     },
+  } as ComboboxType<string, PriorityType>,
+]
+
+const optionsData: DropdownMenuOptionsDataType<true>[] = [
+  { children: 'Edit' },
+  { children: 'Make a copy' },
+  { children: 'Favorite' },
+  {
+    children: 'Delete',
+    command: { children: '⌘⌫' },
+    icon: {
+      icon: Trash2,
+    },
+    className: 'text-red-500',
   },
 ]
 
@@ -209,7 +204,8 @@ export default function DataTableMainDemo() {
           className: 'w-[650px] h-[338px]',
         }}
         header={columns}
-        filter={filtersData}
+        selection={true}
+        filters={filtersData}
         tableContentData={[...tableData]}
         // caption={{
         //   children: 'A list of your recent invoices.',
@@ -228,19 +224,7 @@ export default function DataTableMainDemo() {
         }}
         options={{
           group: [3, 1],
-          optionsData: [
-            { children: 'Edit' },
-            { children: 'Make a copy' },
-            { children: 'Favorite' },
-            {
-              children: 'Delete',
-              command: { children: '⌘⌫' },
-              icon: {
-                icon: Trash2,
-              },
-              className: 'text-red-500',
-            },
-          ],
+          optionsData: optionsData,
         }}
       />
     </>

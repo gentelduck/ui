@@ -16,14 +16,14 @@ interface OnSelectType<T> {
   setValue: React.Dispatch<React.SetStateAction<T[]>>
 }
 
-type ComboboxType<T> = {
+type ComboboxType<T = string, C extends string = string> = {
   type: 'combobox' | 'listbox'
   onSelect?: OnSelectType<T>
   wrapper?: React.HTMLProps<HTMLDivElement> & {}
   title?: Partial<React.ComponentPropsWithoutRef<typeof Label>> & {}
   trigger?: Partial<React.ComponentPropsWithoutRef<typeof Button>> & {}
   content?: Partial<React.ComponentPropsWithoutRef<typeof PopoverContent>> & {
-    data: CommandListGroupDataType[]
+    data: CommandListGroupDataType<C>[]
     showSearchInput?: boolean
     groupheading?: string[]
   }

@@ -61,7 +61,7 @@ export function ComponentPreview({
       return Button?.props?.value || Button?.props?.__rawString__ || null
     }
   }, [Code])
-  console.log(name)
+  // console.log(name)
 
   return (
     <div

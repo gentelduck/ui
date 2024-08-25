@@ -144,8 +144,8 @@ const CommandShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanE
 }
 CommandShortcut.displayName = 'CommandShortcut'
 
-interface CommandListGroupDataType {
-  label?: string
+interface CommandListGroupDataType<T extends string = string> {
+  label?: T
   element?: ListItemElementType
   onSelect?: OnSelectType
 }
@@ -193,7 +193,7 @@ const CommandListGroup = React.forwardRef(
                   key={idx}
                 >
                   {group.map((el, idx) => {
-                    const { children, className, label, icon, ...props } = el.element ?? {}
+                    const { children, className, icon, ...props } = el.element ?? {}
 
                     return (
                       <CommandItem
@@ -201,7 +201,7 @@ const CommandListGroup = React.forwardRef(
                         value={el.label}
                         className={cn(
                           'data-[disabled=true]:opacity-50',
-                          selected.includes(el?.element?.children as string) &&
+                          selected.includes((el?.label as string) ?? (el?.element?.children as string)) &&
                             type === 'combobox' &&
                             'bg-accent text-accent-foreground',
                           className
@@ -214,7 +214,9 @@ const CommandListGroup = React.forwardRef(
                             <Check
                               className={cn(
                                 'mr-2 h-4 w-4',
-                                selected.includes(el?.element?.children as string) ? 'opacity-100' : 'opacity-0'
+                                selected.includes((el?.label as string) ?? (el?.element?.children as string))
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
                               )}
                             />
                           ) : (
@@ -225,7 +227,7 @@ const CommandListGroup = React.forwardRef(
                           ))}
                         <span className="flex items-center gap-2">
                           {icon && icon}
-                          {children}
+                          {children ?? el?.label}
                         </span>
                         <CommandShortcut>{el.element?.label?.children}</CommandShortcut>
                       </CommandItem>

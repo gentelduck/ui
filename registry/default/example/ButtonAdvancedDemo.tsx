@@ -29,6 +29,7 @@ export default function ButtonAdvancedDemo() {
           loading={loading}
           label={{
             children: label,
+            showCommand: true,
           }}
           command={{
             label: commandLabel as string,
