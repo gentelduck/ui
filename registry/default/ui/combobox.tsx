@@ -153,8 +153,9 @@ const Combobox = <T,>({ wrapper, title, trigger, content, onSelect, type }: Comb
                       )
                     },
                     clear: () => {
-                      console.log(onSelect?.value)
-                      // onSelect?.setValue(data?.filter(el => filteredData?.includes(el.label as T)) as T[])
+                      onSelect?.setValue(
+                        onSelect?.value.filter(item => !data?.map(item => item.label).includes(item as string)) as T[]
+                      )
                     },
                   }}
                 />

@@ -151,13 +151,10 @@ interface TableHeaderColumnsType<T extends boolean = false> {
   viewButton: boolean
   tableSearch: boolean
   setHeaders: React.Dispatch<React.SetStateAction<TableHeaderColumns<T>[]>>
-  setSearchQ: React.Dispatch<
-    React.SetStateAction<{
-      q: string
-      qBy: string
-    }>
-  >
-  search: { q: string; qBy: string }
+  search: {
+    searchValue: { q: string; qBy: string[] }
+    setSearchValue: React.Dispatch<React.SetStateAction<{ q: string; qBy: string[] }>>
+  }
   filter: ComboboxType<string>[]
 }
 
@@ -168,10 +165,13 @@ const TableHeaderActions = <T extends boolean = false>({
   search,
   viewButton,
   tableSearch,
-  setSearchQ,
   filter,
 }: TableHeaderColumnsType<T>) => {
-  const [value, setValue] = React.useState<string[][]>([])
+  const [value, setValue] = React.useState<string[]>([])
+
+  React.useEffect(() => {
+    search.setSearchValue({ ...search.searchValue, qBy: value })
+  }, [value])
 
   return (
     <>
@@ -181,9 +181,9 @@ const TableHeaderActions = <T extends boolean = false>({
             <div className="flex flex-1 items-center space-x-2">
               <Input
                 placeholder="Filter tasks..."
-                value={search.q}
+                value={search.searchValue.q}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setSearchQ({ ...search, q: event.target.value })
+                  search.setSearchValue({ ...search.searchValue, q: event.target.value })
                 }}
                 className="h-8 w-[150px] lg:w-[200px]"
               />
@@ -198,7 +198,7 @@ const TableHeaderActions = <T extends boolean = false>({
                   ...triggerProps
                 } = filter?.trigger ?? {}
                 return (
-                  <Combobox<string[]>
+                  <Combobox<string>
                     key={idx}
                     type={'listbox'}
                     title={filter?.title}
@@ -225,11 +225,10 @@ const TableHeaderActions = <T extends boolean = false>({
                       ...triggerProps,
                     }}
                     onSelect={
-                      filter?.onSelect ??
-                      ({
+                      filter?.onSelect ?? {
                         value: value,
                         setValue: setValue,
-                      } as any)
+                      }
                     }
                     content={filter?.content}
                   />
@@ -707,7 +706,7 @@ const TableView = <T extends boolean = false>({
     groupSize: pagination?.groupSize ?? tableData.length / 3,
   })
   const [headers, setHeaders] = React.useState<TableHeaderColumns<T>[]>(header ?? [])
-  const [search, setSearchQ] = React.useState<{ q: string; qBy: string }>({ q: '', qBy: '' })
+  const [search, setSearch] = React.useState<{ q: string; qBy: string[] }>({ q: '', qBy: [] })
   const [value, setValue] = React.useState<string[]>([paginationState.groupSize.toString()])
 
   const splitIntoChunks = (array: typeof tableData, chunkSize: number) => {
@@ -718,14 +717,21 @@ const TableView = <T extends boolean = false>({
     return chunks
   }
 
+  const hi = React.useRef()
+  console.log(hi.current)
+
   //NOTE: filtring the data depednign on the q
   const filteredData = tableData.filter(item => {
-    if (search.qBy === '') {
+    if (!search.qBy.length) {
       return Object.values(item).some(value => {
-        return JSON.stringify(value).includes(search.q)
+        if (JSON.stringify(value).includes(search.q)) {
+          return item
+        }
       })
     } else {
-      return item[search.qBy as keyof typeof item]?.toString()?.includes(search.q)
+      return Object.values(item).some(value => {
+        return search.qBy.some(q => JSON.stringify(value).toLowerCase().includes(q.toLowerCase()))
+      })
     }
   })
 
@@ -734,14 +740,13 @@ const TableView = <T extends boolean = false>({
   return (
     <div className="flex flex-col gap-4">
       <TableHeaderActions<T>
+        search={{ searchValue: search, setSearchValue: setSearch }}
         viewButton={viewButton ?? false}
         tableSearch={tableSearch ?? false}
-        search={search}
         header={header ?? []}
         filter={filter ?? []}
         headers={headers}
         setHeaders={setHeaders}
-        setSearchQ={setSearchQ}
       />
       <ScrollArea
         className={cn(`border border-border rounded-lg overflow-auto`, tableClassName)}

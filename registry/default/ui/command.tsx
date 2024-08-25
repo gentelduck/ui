@@ -220,7 +220,7 @@ const CommandListGroup = React.forwardRef(
                           ) : (
                             <Checkbox
                               checked={selected.includes(el?.element?.children as string)}
-                              className={cn('mr-2 h-4 w-4')}
+                              className={cn('mr-2 h-4 w-4  border-muted-foreground')}
                             />
                           ))}
                         <span className="flex items-center gap-2">

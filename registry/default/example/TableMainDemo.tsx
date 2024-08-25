@@ -7,7 +7,18 @@ import {
   ComboboxType,
 } from '../ui'
 import { tableData } from '../ui/data'
-import { ArrowDownIcon, ArrowUpIcon, CirclePlus, LucideIcon, Trash2 } from 'lucide-react'
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  Circle,
+  CircleCheck,
+  CircleHelp,
+  CirclePlus,
+  CircleX,
+  Clock12,
+  LucideIcon,
+  Trash2,
+} from 'lucide-react'
 import { sortArray } from '@/lib/utils'
 import { EyeNoneIcon } from '@radix-ui/react-icons'
 
@@ -101,24 +112,55 @@ const filtersData: ComboboxType<string>[] = [
       showSearchInput: true,
       data: [
         {
-          label: 'done',
+          label: 'Backlog',
           element: {
             label: {
               children: '23',
             },
-            icon: <CirclePlus className="size-4 stroke-[1.5]" />,
-            children: 'done',
+            icon: <CircleHelp className="size-4 stroke-[1.5] text-muted-foreground" />,
+            children: 'Backlog',
+          },
+        },
+        {
+          label: 'Todo',
+          element: {
+            label: {
+              children: '23',
+            },
+            icon: <Circle className="size-4 stroke-[1.5] text-muted-foreground" />,
+            children: 'Todo',
+          },
+        },
+        {
+          label: 'In progress',
+          element: {
+            label: {
+              children: '23',
+            },
+            icon: <Clock12 className="size-4 stroke-[1.5] text-muted-foreground" />,
+            children: 'In progress',
           },
         },
 
         {
-          label: 'pending',
+          label: 'Done',
           element: {
             label: {
               children: '23',
             },
-            icon: <CirclePlus className="size-4 stroke-[1.5]" />,
-            children: 'pending',
+            icon: <CircleCheck className="size-4 stroke-[1.5] text-muted-foreground" />,
+            children: 'Done',
+          },
+        },
+
+        {
+          label: 'Canceled',
+          element: {
+            label: {
+              children: '23',
+            },
+            icon: <CircleX className="size-4 stroke-[1.5] text-muted-foreground" />,
+            children: 'Canceled',
           },
         },
       ],
