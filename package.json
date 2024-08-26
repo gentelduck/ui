@@ -112,6 +112,7 @@
     "tsx": "^4.17.0",
     "turbo": "^1.13.4",
     "typescript-eslint": "^8.1.0",
+    "uuidv7": "^1.0.1",
     "vaul": "0.9.0",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^0.31.4",

@@ -2,14 +2,12 @@
 
 import * as React from 'react'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
-import { Check, ChevronRight, Circle, LucideIcon, MoreVerticalIcon } from 'lucide-react'
+import { Check, ChevronRight, Circle, LucideIcon } from 'lucide-react'
 
-import { cn, groupArrays, sortArray } from '@/lib/utils'
+import { cn, groupArrays } from '@/lib/utils'
 import { Button, CommandType } from './button'
-import { MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { IconProps } from '@radix-ui/react-icons/dist/types'
 import { ButtonProps } from './button'
-import { TableHeaderColumns } from './table'
 
 const DropdownMenu = DropdownMenuPrimitive.Root
 
@@ -181,15 +179,16 @@ interface DropdownMenuOptionsDataType<T, Y extends boolean = true>
   icon?: { icon: LucideIcon } & IconProps & React.RefAttributes<SVGSVGElement>
   command?: React.ComponentPropsWithoutRef<typeof DropdownMenuShortcut> & CommandType
   action?: (args: T) => void
-  nestedData?: Y extends true ? DropdownMenuOptionsDataType<T>[] & ButtonProps : never
+  nestedData?: Y extends true ? DropdownMenuOptionsType<T> : never
 }
 
 interface DropdownMenuOptionsType<T> {
+  actionsArgs?: T extends {} ? T : never
   optionsData?: DropdownMenuOptionsDataType<T>[] & ButtonProps
   group?: number[]
 }
 
-interface DataTableViewOptionsProps<T> {
+interface DropdownMenuViewProps<T> {
   content?: {
     label?: React.ComponentPropsWithoutRef<typeof DropdownMenuLabel>
     options?: DropdownMenuOptionsType<T>
@@ -200,7 +199,7 @@ interface DataTableViewOptionsProps<T> {
     ButtonProps
 }
 
-export function DataTableViewOptions<T>({ content, trigger }: DataTableViewOptionsProps<T>) {
+function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
   const { className: triggerClassName, icon: Icon, ...triggerProps } = trigger ?? {}
   const { className: optionsClassName, options, label, ...contentProps } = content ?? {}
   const { className: labelClassName, ...labelProps } = label ?? {}
@@ -233,15 +232,25 @@ export function DataTableViewOptions<T>({ content, trigger }: DataTableViewOptio
         )}
         {groupedOption.map((group, idx) => {
           return (
-            <React.Fragment key={idx}>
+            <React.Fragment key={`group-${idx}`}>
               {group.map((item, idx) => {
-                const { children, action, className, ...props } = item
+                const { children, action, className, nestedData, ...props } = item
                 const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
-                const { className: commandClassName, label: commandLabel, ...commandProps } = item.command ?? {}
+                const {
+                  className: commandClassName,
+                  label: commandLabel,
+                  action: commandAction,
+                  ...commandProps
+                } = item.command ?? {}
+                const groupedNestedOption =
+                  groupArrays(
+                    nestedData?.group ?? [nestedData?.optionsData?.length || 1],
+                    nestedData?.optionsData ?? []
+                  ) ?? []
 
-                return !item.nestedData?.length ? (
+                return !nestedData?.optionsData?.length ? (
                   <DropdownMenuItem
-                    key={idx}
+                    key={`item-${idx}`}
                     className={cn('flex gap-2 items-center', className)}
                     {...props}
                   >
@@ -257,6 +266,7 @@ export function DataTableViewOptions<T>({ content, trigger }: DataTableViewOptio
                         <DropdownMenuShortcut
                           children={commandLabel}
                           {...commandProps}
+                          key={`command-${idx}`}
                         />
                         <Button
                           command={item.command}
@@ -266,7 +276,7 @@ export function DataTableViewOptions<T>({ content, trigger }: DataTableViewOptio
                     )}
                   </DropdownMenuItem>
                 ) : (
-                  <DropdownMenuSub>
+                  <DropdownMenuSub key={`sub-item-${idx}`}>
                     <DropdownMenuSubTrigger className={cn('flex item-center gap-2')}>
                       {Icon && (
                         <Icon
@@ -274,58 +284,67 @@ export function DataTableViewOptions<T>({ content, trigger }: DataTableViewOptio
                           className={cn('h-4 w-4', iconClassName)}
                         />
                       )}
-
                       {children}
                     </DropdownMenuSubTrigger>
                     <DropdownMenuPortal>
                       <DropdownMenuSubContent>
-                        {item.nestedData?.map((nestedItem, idx) => {
-                          const {
-                            children: nestedChildren,
-                            action: nestedAction,
-                            className: nestedClassName,
-                            ...nestedProps
-                          } = nestedItem
-                          const {
-                            icon: NestedIcon,
-                            className: nestedIconClassName,
-                            ...nestedIconProps
-                          } = nestedItem.icon ?? {}
-                          const {
-                            className: nestedCommandClassName,
-                            label: enstedCommandLabel,
-                            ...nestedCommandProps
-                          } = nestedItem.command ?? {}
-
+                        {groupedNestedOption?.map((nestedItem, idx) => {
                           return (
-                            <DropdownMenuItem
-                              key={idx}
-                              className={cn('flex gap-2 items-center', nestedClassName)}
-                              {...nestedProps}
-                            >
-                              {NestedIcon && (
-                                <NestedIcon
-                                  {...nestedIconProps}
-                                  className={cn('h-4 w-4', nestedIconClassName)}
-                                />
+                            <React.Fragment key={`nested-${idx}`}>
+                              {nestedItem.map((nestedItemInner, idx) => {
+                                const {
+                                  children: nestedChildren,
+                                  action: nestedAction,
+                                  className: nestedClassName,
+                                  ...nestedProps
+                                } = nestedItemInner
+                                const {
+                                  icon: NestedIcon,
+                                  className: nestedIconClassName,
+                                  ...nestedIconProps
+                                } = nestedItemInner.icon ?? {}
+                                const {
+                                  className: nestedCommandClassName,
+                                  label: enstedCommandLabel,
+                                  action: nestedCommandAction,
+                                  ...nestedCommandProps
+                                } = nestedItemInner.command ?? {}
+
+                                return (
+                                  <DropdownMenuItem
+                                    key={`nested-item-${idx}`}
+                                    className={cn('flex gap-2 items-center', nestedClassName)}
+                                    {...nestedProps}
+                                  >
+                                    {NestedIcon && (
+                                      <NestedIcon
+                                        {...nestedIconProps}
+                                        className={cn('h-4 w-4', nestedIconClassName)}
+                                      />
+                                    )}
+                                    {children}
+                                    {nestedItemInner.command && (
+                                      <>
+                                        <DropdownMenuShortcut
+                                          children={enstedCommandLabel}
+                                          {...nestedCommandProps}
+                                          key={`nested-item-shortcut-${idx}`}
+                                        />
+                                        <Button
+                                          command={nestedItemInner.command}
+                                          className="sr-only hidden"
+                                        />
+                                      </>
+                                    )}
+                                  </DropdownMenuItem>
+                                )
+                              })}
+                              {idx !== groupedNestedOption?.length - 1 && (
+                                <DropdownMenuSeparator key={`separator-${idx}`} />
                               )}
-                              {children}
-                              {nestedItem.command && (
-                                <>
-                                  <DropdownMenuShortcut
-                                    children={enstedCommandLabel}
-                                    {...nestedCommandProps}
-                                  />
-                                  <Button
-                                    command={nestedItem.command}
-                                    className="sr-only hidden"
-                                  />
-                                </>
-                              )}
-                            </DropdownMenuItem>
+                            </React.Fragment>
                           )
                         })}
-                        {idx !== item.nestedData?.length - 1 && <DropdownMenuSeparator />}
                       </DropdownMenuSubContent>
                     </DropdownMenuPortal>
                   </DropdownMenuSub>
@@ -356,7 +375,7 @@ export {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
+  DropdownMenuView,
   type DropdownMenuOptionsDataType,
   type DropdownMenuOptionsType,
-  type DataTableViewOptionsProps,
 }

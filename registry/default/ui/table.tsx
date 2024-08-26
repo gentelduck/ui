@@ -31,6 +31,7 @@ import {
 } from './dropdown-menu'
 import { CaretSortIcon, DotsHorizontalIcon, MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { Badge } from './badge'
+import { ContextCustomView } from './context-menu'
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
@@ -488,7 +489,6 @@ const TableCustomBody = <
     <TableBody>
       {resultArrays[paginationState.activePage ?? 0]?.map((item, idx) => {
         const tableDataFiltered = Object.entries(item).filter(([key]) => {
-          // Convert headers labels to lowercase and check if the key exists
           const headersEntries = headers.map(
             item => item.label.toLowerCase() ?? item.children?.toString().toLowerCase()
           )
@@ -496,79 +496,93 @@ const TableCustomBody = <
         }) as TableDataFilteredType<typeof item>
 
         return (
-          <TableRow key={idx}>
-            {tableDataFiltered.map(([key, value], idx) => {
-              const headersEntries = headers.map(
-                item => item.label.toLowerCase() ?? item.children?.toString().toLowerCase()
-              )
-              const { className, children, ...props } = value
-              const {
-                className: labelClassName,
-                children: labelChildren,
-                type: labelType = 'default',
-                ...labelProps
-              } = item?.[key]?.withLabel ?? {}
+          <ContextCustomView
+            trigger={{
+              children: (
+                <TableRow key={idx}>
+                  {tableDataFiltered.map(([key, value], idx) => {
+                    const headersEntries = headers.map(
+                      item => item.label.toLowerCase() ?? item.children?.toString().toLowerCase()
+                    )
+                    const { className, children, withLabel, ...props } = value
+                    const {
+                      className: labelClassName,
+                      children: labelChildren,
+                      type: labelType = 'default',
+                      ...labelProps
+                    } = item?.[key]?.withLabel ?? {}
 
-              return (
-                headersEntries.includes(key.toString().toLowerCase()) && (
-                  <TableCell
-                    key={key}
-                    className={cn('py-2 h-[50px]', selected.includes(item) && 'bg-muted', className)}
-                    {...props}
-                  >
-                    <div
-                      className={cn(
-                        'items-center gap-2 flex w-full',
-                        headers?.[idx]?.className,
-                        className,
-                        idx === headersEntries.length - 1 && options && 'justify-between w-full'
-                      )}
-                    >
-                      {selection && idx === 0 && (
-                        <Checkbox
-                          className="border-border"
-                          onClick={() =>
-                            setSelected(
-                              selected.includes(item) ? selected.filter(i => i !== item) : [...selected, item]
-                            )
-                          }
-                          checked={selected.includes(item)}
-                        />
-                      )}
-                      {labelChildren && (
-                        <Badge
-                          variant={'outline'}
-                          size={'sm'}
-                          className={cn(labelType === 'default' ? '' : 'bg-red-500', labelClassName)}
-                          {...labelProps}
+                    return (
+                      headersEntries.includes(key.toString().toLowerCase()) && (
+                        <TableCell
+                          key={key}
+                          className={cn('py-2 h-[50px]', selected.includes(item) && 'bg-muted', className)}
+                          {...props}
                         >
-                          {labelChildren}
-                        </Badge>
-                      )}
+                          <div
+                            className={cn(
+                              'items-center gap-2 flex w-full',
+                              headers?.[idx]?.className,
+                              className,
+                              idx === headersEntries.length - 1 && options && 'justify-between w-full'
+                            )}
+                          >
+                            {selection && idx === 0 && (
+                              <Checkbox
+                                className="border-border"
+                                onClick={() =>
+                                  setSelected(
+                                    selected.includes(item) ? selected.filter(i => i !== item) : [...selected, item]
+                                  )
+                                }
+                                checked={selected.includes(item)}
+                              />
+                            )}
+                            {labelChildren && (
+                              <Badge
+                                variant={'outline'}
+                                size={'sm'}
+                                className={cn(labelType === 'default' ? '' : 'bg-red-500', labelClassName)}
+                                {...labelProps}
+                              >
+                                {labelChildren}
+                              </Badge>
+                            )}
 
-                      <span className="text-ellipsis overflow-hidden whitespace-nowrap">{children}</span>
-                      {idx === headersEntries.length - 1 && options && (
-                        <DataTableViewOptions
-                          trigger={{
-                            className: 'flex h-8 w-8 p-0 data-[state=open]:bg-muted',
-                            children: <span className="sr-only">Open menu</span>,
-                            variant: 'ghost',
-                            size: 'icon',
-                            icon: <DotsHorizontalIcon className="h-4 w-4" />,
-                          }}
-                          content={{
-                            align: 'end',
-                            className: 'w-[160px]',
-                            options,
-                          }}
-                        />
-                      )}
-                    </div>
-                  </TableCell>
-                )
-              )
-            })}
-          </TableRow>
+                            <span className="text-ellipsis overflow-hidden whitespace-nowrap">{children}</span>
+                            {idx === headersEntries.length - 1 && options && (
+                              <DataTableViewOptions
+                                trigger={{
+                                  className: 'flex h-8 w-8 p-0 data-[state=open]:bg-muted',
+                                  children: <span className="sr-only">Open menu</span>,
+                                  variant: 'ghost',
+                                  size: 'icon',
+                                  icon: <DotsHorizontalIcon className="h-4 w-4" />,
+                                }}
+                                content={{
+                                  align: 'end',
+                                  className: 'w-[160px]',
+                                  options,
+                                }}
+                              />
+                            )}
+                          </div>
+                        </TableCell>
+                      )
+                    )
+                  })}
+                </TableRow>
+              ),
+            }}
+            content={{
+              options: [
+                {
+                  label: 'Delete',
+                  action: () => {},
+                },
+              ],
+            }}
+          ></ContextCustomView>
         )
       })}
     </TableBody>

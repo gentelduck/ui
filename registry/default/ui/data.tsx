@@ -16,10 +16,10 @@ export const tableData: TableContentDataType<HeaderColumns, TableDataType>[] = [
     task: { children: 'TASK-8782' },
     title: {
       children: <p> You can't compress the program without quantifying the open-source SSD pixel! </p>,
-      withLabel: {
-        type: 'notification',
-        children: 'Documentation',
-      },
+      // withLabel: {
+      //   type: 'notification',
+      //   children: 'Documentation',
+      // },
     },
     status: { children: 'In Progress' },
     label: { children: 'Documentation' },

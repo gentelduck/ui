@@ -290,6 +290,9 @@ importers:
       typescript-eslint:
         specifier: ^8.1.0
         version: 8.1.0(eslint@8.57.0)(typescript@5.5.4)
+      uuidv7:
+        specifier: ^1.0.1
+        version: 1.0.1
       vaul:
         specifier: 0.9.0
         version: 0.9.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -6351,6 +6354,10 @@ packages:
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    hasBin: true
+
+  uuidv7@1.0.1:
+    resolution: {integrity: sha512-2noB909GbI352dKfASOY6VHHl59KvevZ1FF8gCAXCwDyrt2kkZhuFbczF9udqTfeejiRYEmO4wzUZ0WhVP+IUA==}
     hasBin: true
 
   uvu@0.5.6:
@@ -13577,6 +13584,8 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   uuid@9.0.1: {}
+
+  uuidv7@1.0.1: {}
 
   uvu@0.5.6:
     dependencies:

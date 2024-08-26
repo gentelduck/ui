@@ -11,5 +11,6 @@ export * from './alert-dialog'
 export * from './table'
 export * from './checkbox'
 export * from './dropdown-menu'
+export * from './context-menu'
 
 export * from './ShadcnUI'

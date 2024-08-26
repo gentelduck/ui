@@ -172,26 +172,29 @@ const optionsData: DropdownMenuOptionsDataType<true, true>[] = [
   {
     children: 'Edit',
     onClick: () => console.log('edit'),
-    nestedData: [
-      {
-        command: {
-          key: 'e',
-          label: '⌘+e',
-          action: () => console.log('edit'),
+    nestedData: {
+      group: [1],
+      optionsData: [
+        {
+          command: {
+            key: 'e',
+            label: '⌘+e',
+            action: () => console.log('edit'),
+          },
+          icon: {
+            icon: Trash2,
+          },
+          children: 'Duplicate',
+          onClick: () => console.log('duplicate'),
         },
-        icon: {
-          icon: Trash2,
-        },
-        children: 'Duplicate',
-        onClick: () => console.log('duplicate'),
-      },
-    ],
+      ],
+    },
   },
   { children: 'Make a copy' },
   { children: 'Favorite' },
   {
     children: 'Delete',
-    // command: { children: '⌘⌫' },
+    command: { label: '⌘⌫', key: 'a' },
     icon: {
       icon: Trash2,
     },
