@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Checkbox } from './checkbox'
 
-import { cn, groupArrays, sortArray } from '@/lib/utils'
+import { cn, sortArray } from '@/lib/utils'
 import { Input, Pagination, PaginationContent, PaginationItem } from './ShadcnUI'
 import { Button, LabelType } from './button'
 import {
@@ -12,12 +12,11 @@ import {
   ChevronRightIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
-  CircleMinus,
   CirclePlus,
 } from 'lucide-react'
 import { ScrollArea } from '@radix-ui/react-scroll-area'
 import { TooltipProvider } from './tooltip'
-import { Combobox, ComboboxType, OnSelectType } from './combobox'
+import { Combobox, ComboboxType } from './combobox'
 import { CommandListGroupDataType } from './command'
 import {
   DataTableViewOptions,
@@ -32,8 +31,6 @@ import {
 } from './dropdown-menu'
 import { CaretSortIcon, DotsHorizontalIcon, MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { Badge } from './badge'
-import { DropdownMenuProps } from '@radix-ui/react-dropdown-menu'
-import { ButtonProps } from 'react-day-picker'
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
@@ -128,36 +125,57 @@ const TableCaption = React.forwardRef<HTMLTableCaptionElement, React.HTMLAttribu
 )
 TableCaption.displayName = 'TableCaption'
 
-interface TableDropdownMenuOptions {
+interface TableDropdownMenuOptions<Y extends keyof C = string, C extends Record<string, any> = Record<string, string>> {
   sortArray: typeof sortArray
   setHeaders: React.Dispatch<React.SetStateAction<TableHeaderColumns[]>>
   headers: TableHeaderColumns[]
-  tableData: TableContentDataType[]
-  setTableData: React.Dispatch<React.SetStateAction<TableContentDataType[]>>
-  data: TableContentDataType[]
+  tableData: TableContentDataType<Y, C>[]
+  setTableData: React.Dispatch<React.SetStateAction<TableContentDataType<Y, C>[]>>
+  data: TableContentDataType<Y, C>[]
   idx: number
   column: TableHeaderColumns
 }
 
-interface TableHeaderColumns<Y extends boolean = true, T extends string = string>
-  extends Partial<React.HTMLProps<HTMLTableCellElement>> {
-  label: T
+interface TableHeaderColumns<
+  T extends boolean = true,
+  Y extends keyof C = string,
+  C extends Record<string, any> = Record<string, string>,
+> extends Partial<React.HTMLProps<HTMLTableCellElement>> {
+  label: string //Y extends keyof C ? C[Y] :
   sortable?: boolean
-  currentSort?: Y extends true ? 'asc' | 'desc' | 'not sorted' : never
-  dropdownMenuOptions?: Y extends true ? DropdownMenuOptionsDataType<TableDropdownMenuOptions>[] : never
+  currentSort?: T extends true ? 'asc' | 'desc' | 'not sorted' : never
+  dropdownMenuOptions?: T extends true ? DropdownMenuOptionsDataType<TableDropdownMenuOptions<Y, C>>[] : never
 }
 
-interface TableHeaderColumnsType<T extends boolean = false> {
-  header: TableHeaderColumns<T>[]
-  headers: TableHeaderColumns<T>[]
+interface TableHeaderColumnsType<
+  T extends boolean = true,
+  Y extends keyof C = string,
+  C extends Record<string, any> = Record<string, string>,
+> {
+  header: TableHeaderColumns<T, Y, C>[]
+  headers: TableHeaderColumns<T, Y, C>[]
   viewButton: boolean
   tableSearch: boolean
-  setHeaders: React.Dispatch<React.SetStateAction<TableHeaderColumns<T>[]>>
+  setHeaders: React.Dispatch<React.SetStateAction<TableHeaderColumns<T, Y, C>[]>>
   search: {
     searchValue: { q: string; qBy: string[] }
     setSearchValue: React.Dispatch<React.SetStateAction<{ q: string; qBy: string[] }>>
   }
   filter: ComboboxType<string>[]
+}
+
+export interface TableHeaderOptionsType<
+  Y extends keyof C = string,
+  C extends Record<string, any> = Record<string, string>,
+> {
+  sortArray: typeof sortArray
+  setHeaders: React.Dispatch<React.SetStateAction<TableHeaderColumns[]>>
+  headers: TableHeaderColumns[]
+  tableData: TableContentDataType<Y, C>[]
+  setTableData: React.Dispatch<React.SetStateAction<TableContentDataType<Y, C>[]>>
+  data: TableContentDataType<Y, C>[]
+  idx: number
+  column: TableHeaderColumns
 }
 
 const useDebounceCallback = <T extends (...args: any[]) => void>(callback: T, delay: number) => {
@@ -174,7 +192,11 @@ const useDebounceCallback = <T extends (...args: any[]) => void>(callback: T, de
   }
 }
 
-const TableHeaderActions = <T extends boolean = false>({
+const TableHeaderActions = <
+  T extends boolean = true,
+  Y extends keyof C = string,
+  C extends Record<string, any> = Record<string, string>,
+>({
   setHeaders,
   header,
   headers,
@@ -182,7 +204,7 @@ const TableHeaderActions = <T extends boolean = false>({
   viewButton,
   tableSearch,
   filter,
-}: TableHeaderColumnsType<T>) => {
+}: TableHeaderColumnsType<T, Y, C>) => {
   const [value, setValue] = React.useState<string[]>([])
 
   React.useEffect(() => {
@@ -312,17 +334,25 @@ const TableHeaderActions = <T extends boolean = false>({
   )
 }
 
-interface TableHeaderProps<T extends boolean = false> {
-  headers: TableHeaderColumns<T>[]
-  setHeaders: React.Dispatch<React.SetStateAction<TableHeaderColumns<T>[]>>
-  tableData: TableContentDataType[]
-  setTableData: React.Dispatch<React.SetStateAction<TableContentDataType[]>>
+interface TableHeaderProps<
+  T extends boolean = false,
+  Y extends keyof C = string,
+  C extends Record<string, any> = Record<string, string>,
+> {
+  headers: TableHeaderColumns<T, Y, C>[]
+  setHeaders: React.Dispatch<React.SetStateAction<TableHeaderColumns<T, Y, C>[]>>
+  tableData: TableContentDataType<Y, C>[]
+  setTableData: React.Dispatch<React.SetStateAction<TableContentDataType<Y, C>[]>>
   selection: boolean
-  selected: TableContentDataType[]
-  setSelected: React.Dispatch<React.SetStateAction<TableContentDataType[]>>
+  selected: TableContentDataType<Y, C>[]
+  setSelected: React.Dispatch<React.SetStateAction<TableContentDataType<Y, C>[]>>
 }
 
-const TableCustomHeader = <T extends boolean = false>({
+const TableCustomHeader = <
+  T extends boolean = false,
+  Y extends keyof C = string,
+  C extends Record<string, any> = Record<string, string>,
+>({
   headers,
   setHeaders,
   tableData,
@@ -330,7 +360,7 @@ const TableCustomHeader = <T extends boolean = false>({
   selection,
   selected,
   setSelected,
-}: TableHeaderProps<T>) => {
+}: TableHeaderProps<T, Y, C>) => {
   return (
     <>
       <TableHeader>
@@ -372,7 +402,7 @@ const TableCustomHeader = <T extends boolean = false>({
                   ) : (
                     <div className={cn('flex items-center space-x-2', className)}>
                       {
-                        <DataTableViewOptions<TableDropdownMenuOptions>
+                        <DataTableViewOptions<TableDropdownMenuOptions<Y, C>>
                           trigger={{
                             className: '-ml-3 h-8 data-[state=open]:bg-accent text-xs',
                             children: (
@@ -402,9 +432,11 @@ const TableCustomHeader = <T extends boolean = false>({
                                 data: tableData,
                                 headers,
                                 tableData,
-                              } as TableDropdownMenuOptions,
+                              } as TableDropdownMenuOptions<Y, C>,
                               group: [2, 1],
-                              optionsData: dropdownMenuOptions!,
+                              optionsData: dropdownMenuOptions as
+                                | DropdownMenuOptionsDataType<TableDropdownMenuOptions<Y, C>>[]
+                                | undefined,
                             },
                           }}
                         />
@@ -421,17 +453,29 @@ const TableCustomHeader = <T extends boolean = false>({
   )
 }
 
-interface TableCustomBodyProps<T extends boolean = false> {
-  headers: TableHeaderColumns<T>[]
-  resultArrays: TableContentDataType[][]
+interface TableCustomBodyProps<
+  T extends boolean = false,
+  Y extends keyof C = string,
+  C extends Record<string, any> = Record<string, string>,
+> {
+  headers: TableHeaderColumns<T, Y, C>[]
+  resultArrays: TableContentDataType<Y, C>[][]
   paginationState: PaginationState
   selection: boolean
-  selected: TableContentDataType[]
-  setSelected: React.Dispatch<React.SetStateAction<TableContentDataType[]>>
+  selected: TableContentDataType<Y, C>[]
+  setSelected: React.Dispatch<React.SetStateAction<TableContentDataType<Y, C>[]>>
   options: DropdownMenuOptionsType<T>
 }
 
-const TableCustomBody = <T extends boolean = false>({
+type TableDataFilteredType<T extends Record<string, any>> = {
+  [K in keyof T]: [K, T[K]]
+}[keyof T][]
+
+const TableCustomBody = <
+  T extends boolean = false,
+  Y extends keyof C = string,
+  C extends Record<string, any> = Record<string, string>,
+>({
   headers,
   resultArrays,
   paginationState,
@@ -439,80 +483,94 @@ const TableCustomBody = <T extends boolean = false>({
   selected,
   setSelected,
   options,
-}: TableCustomBodyProps<T>) => {
+}: TableCustomBodyProps<T, Y, C>) => {
   return (
     <TableBody>
-      {resultArrays[paginationState.activePage ?? 0]?.map((item, idx) => (
-        <TableRow key={idx}>
-          {Object.entries(item).map(([key, value], idx) => {
-            const headersEntries = headers.map(
-              item => item.label.toLowerCase() ?? item.children?.toString().toLowerCase()
-            )
-            const { className, children, ...props } = value
+      {resultArrays[paginationState.activePage ?? 0]?.map((item, idx) => {
+        const tableDataFiltered = Object.entries(item).filter(([key]) => {
+          // Convert headers labels to lowercase and check if the key exists
+          const headersEntries = headers.map(
+            item => item.label.toLowerCase() ?? item.children?.toString().toLowerCase()
+          )
+          return headersEntries.includes(key.toLowerCase())
+        }) as TableDataFilteredType<typeof item>
 
-            return (
-              headersEntries.includes(key.toLowerCase()) && (
-                <TableCell
-                  key={key}
-                  className={cn(
-                    'py-2',
-                    selected.includes(item) && 'bg-muted',
-                    idx === Object.entries(item).length - 1 && 'flex items-center gap-2',
-                    className
-                  )}
-                  {...props}
-                >
-                  <div
-                    className={cn(
-                      'items-center gap-2 flex w-full',
-                      // idx === Object.entries(item).length - 1 && 'justify-end',
-                      headers?.[idx]?.className,
-                      className
-                    )}
-                  >
-                    {selection && idx === 0 && (
-                      <Checkbox
-                        className="border-border"
-                        onClick={() =>
-                          setSelected(selected.includes(item) ? selected.filter(i => i !== item) : [...selected, item])
-                        }
-                        checked={selected.includes(item)}
-                      />
-                    )}
-                    {item?.[key]?.withLabel && (
-                      <Badge
-                        variant={'outline'}
-                        size={'sm'}
-                        className="h-5 text-xs"
-                      >
-                        documentation
-                      </Badge>
-                    )}
-
-                    <span className="text-ellipsis overflow-hidden whitespace-nowrap">{children}</span>
-                  </div>
-                  {idx === Object.entries(item).length - 1 && options && (
-                    <DataTableViewOptions
-                      trigger={{
-                        className: 'flex h-8 w-12 p-0 data-[state=open]:bg-muted',
-                        children: <span className="sr-only">Open menu</span>,
-                        variant: 'ghost',
-                        size: 'icon',
-                        icon: <DotsHorizontalIcon className="h-4 w-4" />,
-                      }}
-                      content={{
-                        align: 'end',
-                        className: 'w-[160px]',
-                        options,
-                      }}
-                    />
-                  )}
-                </TableCell>
+        return (
+          <TableRow key={idx}>
+            {tableDataFiltered.map(([key, value], idx) => {
+              const headersEntries = headers.map(
+                item => item.label.toLowerCase() ?? item.children?.toString().toLowerCase()
               )
-            )
-          })}
-        </TableRow>
-      ))}
+              const { className, children, ...props } = value
+              const {
+                className: labelClassName,
+                children: labelChildren,
+                type: labelType = 'default',
+                ...labelProps
+              } = item?.[key]?.withLabel ?? {}
+
+              return (
+                headersEntries.includes(key.toString().toLowerCase()) && (
+                  <TableCell
+                    key={key}
+                    className={cn('py-2 h-[50px]', selected.includes(item) && 'bg-muted', className)}
+                    {...props}
+                  >
+                    <div
+                      className={cn(
+                        'items-center gap-2 flex w-full',
+                        headers?.[idx]?.className,
+                        className,
+                        idx === headersEntries.length - 1 && options && 'justify-between w-full'
+                      )}
+                    >
+                      {selection && idx === 0 && (
+                        <Checkbox
+                          className="border-border"
+                          onClick={() =>
+                            setSelected(
+                              selected.includes(item) ? selected.filter(i => i !== item) : [...selected, item]
+                            )
+                          }
+                          checked={selected.includes(item)}
+                        />
+                      )}
+                      {labelChildren && (
+                        <Badge
+                          variant={'outline'}
+                          size={'sm'}
+                          className={cn(labelType === 'default' ? '' : 'bg-red-500', labelClassName)}
+                          {...labelProps}
+                        >
+                          {labelChildren}
+                        </Badge>
+                      )}
+
+                      <span className="text-ellipsis overflow-hidden whitespace-nowrap">{children}</span>
+                      {idx === headersEntries.length - 1 && options && (
+                        <DataTableViewOptions
+                          trigger={{
+                            className: 'flex h-8 w-8 p-0 data-[state=open]:bg-muted',
+                            children: <span className="sr-only">Open menu</span>,
+                            variant: 'ghost',
+                            size: 'icon',
+                            icon: <DotsHorizontalIcon className="h-4 w-4" />,
+                          }}
+                          content={{
+                            align: 'end',
+                            className: 'w-[160px]',
+                            options,
+                          }}
+                        />
+                      )}
+                    </div>
+                  </TableCell>
+                )
+              )
+            })}
+          </TableRow>
+        )
+      })}
     </TableBody>
   )
 }
@@ -541,17 +599,17 @@ const TableCustomFooter = ({ className, columns }: TableCustomFooterColumns) => 
   )
 }
 
-interface TableContentDataType {
-  [key: string]: TableDataKey
+type TableContentDataType<Y extends keyof C = string, C extends Record<string, any> = Record<string, string>> = {
+  [key in Y]: TableDataKey & { children: C[key] }
 }
 
 interface TableType extends Partial<React.ComponentPropsWithoutRef<typeof ScrollArea>> {}
 interface TableDataKey extends React.HTMLProps<HTMLTableCellElement> {
-  withLabel?: LabelType
+  withLabel?: Omit<LabelType, 'showCommand' | 'showLabel'>
   withIcon?: React.ReactNode
 }
 interface TableCaptionType extends React.HTMLProps<HTMLTableCaptionElement> {}
-interface TablePaginationType extends React.HTMLProps<HTMLDivElement> {
+interface TablePaginationsType extends React.HTMLProps<HTMLDivElement> {
   groupSize: number
   activePage?: number
   showPageCount?: boolean
@@ -565,30 +623,32 @@ interface PaginationState {
   groupSize: number
 }
 
-const TablePagination = ({
+interface TablePaginationType<Y extends keyof C, C extends Record<string, any> = Record<string, string>> {
+  selected: TableContentDataType<Y, C>[]
+  setValue: React.Dispatch<React.SetStateAction<string[]>>
+  value: string[]
+  tableData: TableContentDataType<Y, C>[]
+  paginations?: TablePaginationsType
+  resultArrays: TableContentDataType<Y, C>[][]
+  paginationState: PaginationState
+  setPaginationState: React.Dispatch<React.SetStateAction<PaginationState>>
+}
+
+const TablePagination = <Y extends keyof C, C extends Record<string, any> = Record<string, string>>({
   resultArrays,
   selected,
   paginationState,
-  pagination,
+  paginations,
   value,
   tableData,
   setPaginationState,
   setValue,
-}: {
-  selected: TableContentDataType[]
-  setValue: React.Dispatch<React.SetStateAction<string[]>>
-  value: string[]
-  tableData: TableContentDataType[]
-  pagination?: TablePaginationType
-  resultArrays: TableContentDataType[][]
-  paginationState: PaginationState
-  setPaginationState: React.Dispatch<React.SetStateAction<PaginationState>>
-}) => {
+}: TablePaginationType<Y, C>) => {
   //NOTE: gen the page length data
-  const pageLengthData = pagination?.groupSize
-    ? Array.from({ length: Math.ceil(tableData.length / pagination.groupSize) }, (_, index) => {
-        const start = index * pagination.groupSize + 1
-        const end = Math.min((index + 1) * pagination.groupSize, tableData.length)
+  const pageLengthData = paginations?.groupSize
+    ? Array.from({ length: Math.ceil(tableData.length / paginations.groupSize) }, (_, index) => {
+        const start = index * paginations.groupSize + 1
+        const end = Math.min((index + 1) * paginations.groupSize, tableData.length)
         if (start > tableData.length) return null
         return end.toString()
       })
@@ -603,14 +663,14 @@ const TablePagination = ({
     <>
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-between">
-          {pagination?.showSelectCount && (
+          {paginations?.showSelectCount && (
             <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
               {selected.length} of {tableData.length} row(s) selected.
             </span>
           )}
         </div>
         <div className="flex items-center justify-between gap-4">
-          {pagination?.showGroup && (
+          {paginations?.showGroup && (
             <div className="flex items-center gap-2">
               <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
                 Rows per page
@@ -638,13 +698,13 @@ const TablePagination = ({
               </TooltipProvider>
             </div>
           )}
-          {pagination?.showPageCount && (
+          {paginations?.showPageCount && (
             <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
               Page {paginationState.activePage + 1} of {resultArrays.length}
             </span>
           )}
 
-          {pagination?.showNavigation && (
+          {paginations?.showNavigation && (
             <Pagination className="justify-end">
               <PaginationContent className="gap-2">
                 <PaginationItem>
@@ -704,21 +764,29 @@ const TablePagination = ({
   )
 }
 
-interface TableViewProps<T extends boolean = false> {
+export interface TableViewProps<
+  T extends boolean = false,
+  Y extends keyof C = string,
+  C extends Record<string, any> = Record<string, string>,
+> {
   filters: ComboboxType<string>[]
   table?: TableType
-  tableContentData: TableContentDataType[]
+  tableContentData: TableContentDataType<Y, C>[]
   selection?: boolean
-  header?: TableHeaderColumns<T>[]
+  header?: TableHeaderColumns<T, Y, C>[]
   footer?: TableCustomFooterColumns
   caption?: TableCaptionType
-  pagination?: TablePaginationType
+  pagination?: TablePaginationsType
   viewButton?: boolean
   tableSearch?: boolean
   options: DropdownMenuOptionsType<T>
 }
 
-const TableView = <T extends boolean = false>({
+const TableView = <
+  T extends boolean = false,
+  Y extends keyof C = string,
+  C extends Record<string, any> = Record<string, string>,
+>({
   selection,
   pagination,
   viewButton,
@@ -730,16 +798,16 @@ const TableView = <T extends boolean = false>({
   table,
   options,
   filters,
-}: TableViewProps<T>) => {
+}: TableViewProps<T, Y, C>) => {
   const { className: tableClassName, ...tableProps } = table! ?? {}
   const { children: captionChildren, className: captionClassName, ...captionProps } = caption! ?? []
-  const [selected, setSelected] = React.useState<TableContentDataType[]>([])
-  const [tableData, setTableData] = React.useState(tableContentData)
+  const [selected, setSelected] = React.useState<TableContentDataType<Y, C>[]>([])
+  const [tableData, setTableData] = React.useState<TableContentDataType<Y, C>[]>(tableContentData)
   const [paginationState, setPaginationState] = React.useState({
     activePage: pagination?.activePage ?? 0,
     groupSize: pagination?.groupSize ?? tableData.length / 3,
   })
-  const [headers, setHeaders] = React.useState<TableHeaderColumns<T>[]>(header ?? [])
+  const [headers, setHeaders] = React.useState<TableHeaderColumns<T, Y, C>[]>(header ?? [])
   const [search, setSearch] = React.useState<{ q: string; qBy: string[] }>({ q: '', qBy: [] })
   const [value, setValue] = React.useState<string[]>([paginationState.groupSize.toString()])
   const [filterLabels, setFilterLabels] = React.useState<{ [key: string]: number }>({})
@@ -817,7 +885,7 @@ const TableView = <T extends boolean = false>({
 
   return (
     <div className="flex flex-col gap-4">
-      <TableHeaderActions<T>
+      <TableHeaderActions<T, Y, C>
         search={{ searchValue: search, setSearchValue: setSearch }}
         viewButton={viewButton ?? false}
         tableSearch={tableSearch ?? false}
@@ -840,7 +908,7 @@ const TableView = <T extends boolean = false>({
             </TableCaption>
           )}
           {header && (
-            <TableCustomHeader<T>
+            <TableCustomHeader<T, Y, C>
               selection={selection ?? false}
               selected={selected}
               headers={headers}
@@ -851,7 +919,7 @@ const TableView = <T extends boolean = false>({
             />
           )}
           {tableData && !!resultArrays.length && (
-            <TableCustomBody<T>
+            <TableCustomBody<T, Y, C>
               headers={headers}
               resultArrays={resultArrays}
               paginationState={paginationState}
@@ -865,13 +933,13 @@ const TableView = <T extends boolean = false>({
         </Table>
       </ScrollArea>
       {pagination && (
-        <TablePagination
+        <TablePagination<Y, C>
           selected={selected}
           value={value}
           tableData={tableData}
           resultArrays={resultArrays}
           paginationState={paginationState}
-          pagination={pagination}
+          paginations={pagination}
           setValue={setValue}
           setPaginationState={setPaginationState}
         />

@@ -3,10 +3,10 @@ import {
   TableHeaderColumns,
   DropdownMenuOptionsDataType,
   TableContentDataType,
-  CommandListGroupDataType,
   ComboboxType,
+  TableHeaderOptionsType,
 } from '../ui'
-import { tableData } from '../ui/data'
+import { tableData, TableDataType } from '../ui/data'
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -21,23 +21,11 @@ import {
 } from 'lucide-react'
 import { sortArray } from '@/lib/utils'
 import { EyeNoneIcon } from '@radix-ui/react-icons'
-import { Children } from 'react'
 
-export interface TableViewProps {
-  sortArray: typeof sortArray
-  setHeaders: React.Dispatch<React.SetStateAction<TableHeaderColumns[]>>
-  headers: TableHeaderColumns[]
-  tableData: TableContentDataType[]
-  setTableData: React.Dispatch<React.SetStateAction<TableContentDataType[]>>
-  data: TableContentDataType[]
-  idx: number
-  column: TableHeaderColumns
-}
-
-const tableHeaderDropDown: DropdownMenuOptionsDataType<TableViewProps>[] = [
+const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<HeaderColumns, TableDataType>>[] = [
   {
     action: ({ sortArray, setHeaders, setTableData, data, headers, idx }) => {
-      const { sortedData, updatedColumns } = sortArray(headers, data, Object.keys(data[0])[idx], 'asc')
+      const { sortedData, updatedColumns } = sortArray(headers, data, Object.keys(data[0])[idx] as HeaderColumns, 'asc')
       setHeaders(() => updatedColumns)
       setTableData(() => (updatedColumns[idx].currentSort === 'asc' ? sortedData : data))
     },
@@ -49,7 +37,12 @@ const tableHeaderDropDown: DropdownMenuOptionsDataType<TableViewProps>[] = [
   },
   {
     action: ({ sortArray, setHeaders, setTableData, data, headers, idx }) => {
-      const { sortedData, updatedColumns } = sortArray(headers, data, Object.keys(data[0])[idx], 'desc')
+      const { sortedData, updatedColumns } = sortArray(
+        headers,
+        data,
+        Object.keys(data[0])[idx] as HeaderColumns,
+        'desc'
+      )
       setHeaders(() => updatedColumns)
       setTableData(() => (updatedColumns[idx].currentSort === 'desc' ? sortedData : data))
     },
@@ -71,8 +64,8 @@ const tableHeaderDropDown: DropdownMenuOptionsDataType<TableViewProps>[] = [
   },
 ]
 
-type HeaderColumns = 'task' | 'title' | 'status' | 'label' | 'priority'
-const columns: TableHeaderColumns<true, Capitalize<HeaderColumns>>[] = [
+export type HeaderColumns = 'task' | 'title' | 'status' | 'label' | 'priority'
+const columns: TableHeaderColumns<true, HeaderColumns, TableDataType>[] = [
   {
     label: 'Task',
     sortable: false,
@@ -104,8 +97,8 @@ const columns: TableHeaderColumns<true, Capitalize<HeaderColumns>>[] = [
   },
 ]
 
-type StatusType = 'Backlog' | 'Todo' | 'In progress' | 'Done'
-type PriorityType = 'High' | 'Medium' | 'Low'
+export type StatusType = 'Backlog' | 'Todo' | 'In Progress' | 'Done' | 'Canceled'
+export type PriorityType = 'High' | 'Medium' | 'Low'
 const iconStyle = 'size-4 stroke-[1.5] text-muted-foreground'
 const filtersData = [
   {
@@ -199,9 +192,9 @@ const optionsData: DropdownMenuOptionsDataType<true>[] = [
 export default function DataTableMainDemo() {
   return (
     <>
-      <TableView<true>
+      <TableView<true, HeaderColumns, TableDataType>
         table={{
-          className: 'w-[650px] h-[338px]',
+          className: 'w-[650px] h-[340px]',
         }}
         header={columns}
         selection={true}
