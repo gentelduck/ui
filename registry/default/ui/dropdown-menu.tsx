@@ -5,7 +5,7 @@ import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { Check, ChevronRight, Circle, LucideIcon, MoreVerticalIcon } from 'lucide-react'
 
 import { cn, groupArrays, sortArray } from '@/lib/utils'
-import { Button } from './button'
+import { Button, CommandType } from './button'
 import { MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { IconProps } from '@radix-ui/react-icons/dist/types'
 import { ButtonProps } from './button'
@@ -176,15 +176,16 @@ const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTML
 }
 DropdownMenuShortcut.displayName = 'DropdownMenuShortcut'
 
-interface DropdownMenuOptionsDataType<T> extends React.ComponentPropsWithoutRef<typeof DropdownMenuItem> {
+interface DropdownMenuOptionsDataType<T, Y extends boolean = true>
+  extends React.ComponentPropsWithoutRef<typeof DropdownMenuItem> {
   icon?: { icon: LucideIcon } & IconProps & React.RefAttributes<SVGSVGElement>
-  command?: React.ComponentPropsWithoutRef<typeof DropdownMenuShortcut>
+  command?: React.ComponentPropsWithoutRef<typeof DropdownMenuShortcut> & CommandType
   action?: (args: T) => void
+  nestedData?: Y extends true ? DropdownMenuOptionsDataType<T>[] & ButtonProps : never
 }
 
 interface DropdownMenuOptionsType<T> {
-  actionsArgs?: T extends {} ? T : never
-  optionsData?: DropdownMenuOptionsDataType<T>[]
+  optionsData?: DropdownMenuOptionsDataType<T>[] & ButtonProps
   group?: number[]
 }
 
@@ -236,12 +237,12 @@ export function DataTableViewOptions<T>({ content, trigger }: DataTableViewOptio
               {group.map((item, idx) => {
                 const { children, action, className, ...props } = item
                 const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
+                const { className: commandClassName, label: commandLabel, ...commandProps } = item.command ?? {}
 
-                return (
+                return !item.nestedData?.length ? (
                   <DropdownMenuItem
                     key={idx}
                     className={cn('flex gap-2 items-center', className)}
-                    onClick={() => action?.(options?.actionsArgs as T)}
                     {...props}
                   >
                     {Icon && (
@@ -251,8 +252,83 @@ export function DataTableViewOptions<T>({ content, trigger }: DataTableViewOptio
                       />
                     )}
                     {children}
-                    {item.command && <DropdownMenuShortcut {...item.command} />}
+                    {item.command && (
+                      <>
+                        <DropdownMenuShortcut
+                          children={commandLabel}
+                          {...commandProps}
+                        />
+                        <Button
+                          command={item.command}
+                          className="sr-only hidden"
+                        />
+                      </>
+                    )}
                   </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger className={cn('flex item-center gap-2')}>
+                      {Icon && (
+                        <Icon
+                          {...iconProps}
+                          className={cn('h-4 w-4', iconClassName)}
+                        />
+                      )}
+
+                      {children}
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuPortal>
+                      <DropdownMenuSubContent>
+                        {item.nestedData?.map((nestedItem, idx) => {
+                          const {
+                            children: nestedChildren,
+                            action: nestedAction,
+                            className: nestedClassName,
+                            ...nestedProps
+                          } = nestedItem
+                          const {
+                            icon: NestedIcon,
+                            className: nestedIconClassName,
+                            ...nestedIconProps
+                          } = nestedItem.icon ?? {}
+                          const {
+                            className: nestedCommandClassName,
+                            label: enstedCommandLabel,
+                            ...nestedCommandProps
+                          } = nestedItem.command ?? {}
+
+                          return (
+                            <DropdownMenuItem
+                              key={idx}
+                              className={cn('flex gap-2 items-center', nestedClassName)}
+                              {...nestedProps}
+                            >
+                              {NestedIcon && (
+                                <NestedIcon
+                                  {...nestedIconProps}
+                                  className={cn('h-4 w-4', nestedIconClassName)}
+                                />
+                              )}
+                              {children}
+                              {nestedItem.command && (
+                                <>
+                                  <DropdownMenuShortcut
+                                    children={enstedCommandLabel}
+                                    {...nestedCommandProps}
+                                  />
+                                  <Button
+                                    command={nestedItem.command}
+                                    className="sr-only hidden"
+                                  />
+                                </>
+                              )}
+                            </DropdownMenuItem>
+                          )
+                        })}
+                        {idx !== item.nestedData?.length - 1 && <DropdownMenuSeparator />}
+                      </DropdownMenuSubContent>
+                    </DropdownMenuPortal>
+                  </DropdownMenuSub>
                 )
               })}
               {idx !== groupedOption.length - 1 && <DropdownMenuSeparator />}

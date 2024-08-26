@@ -623,7 +623,7 @@ interface PaginationState {
   groupSize: number
 }
 
-interface TablePaginationType<Y extends keyof C, C extends Record<string, any> = Record<string, string>> {
+interface TablePaginationType<Y extends keyof C = string, C extends Record<string, any> = Record<string, string>> {
   selected: TableContentDataType<Y, C>[]
   setValue: React.Dispatch<React.SetStateAction<string[]>>
   value: string[]
@@ -634,7 +634,7 @@ interface TablePaginationType<Y extends keyof C, C extends Record<string, any> =
   setPaginationState: React.Dispatch<React.SetStateAction<PaginationState>>
 }
 
-const TablePagination = <Y extends keyof C, C extends Record<string, any> = Record<string, string>>({
+const TablePagination = <Y extends keyof C = string, C extends Record<string, any> = Record<string, string>>({
   resultArrays,
   selected,
   paginationState,

@@ -1,11 +1,4 @@
-import {
-  TableView,
-  TableHeaderColumns,
-  DropdownMenuOptionsDataType,
-  TableContentDataType,
-  ComboboxType,
-  TableHeaderOptionsType,
-} from '../ui'
+import { TableView, TableHeaderColumns, DropdownMenuOptionsDataType, ComboboxType, TableHeaderOptionsType } from '../ui'
 import { tableData, TableDataType } from '../ui/data'
 import {
   ArrowDownIcon,
@@ -19,8 +12,8 @@ import {
   LucideIcon,
   Trash2,
 } from 'lucide-react'
-import { sortArray } from '@/lib/utils'
 import { EyeNoneIcon } from '@radix-ui/react-icons'
+import { u } from 'unist-builder'
 
 const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<HeaderColumns, TableDataType>>[] = [
   {
@@ -175,13 +168,30 @@ const filtersData = [
   } as ComboboxType<string, PriorityType>,
 ]
 
-const optionsData: DropdownMenuOptionsDataType<true>[] = [
-  { children: 'Edit' },
+const optionsData: DropdownMenuOptionsDataType<true, true>[] = [
+  {
+    children: 'Edit',
+    onClick: () => console.log('edit'),
+    nestedData: [
+      {
+        command: {
+          key: 'e',
+          label: '⌘+e',
+          action: () => console.log('edit'),
+        },
+        icon: {
+          icon: Trash2,
+        },
+        children: 'Duplicate',
+        onClick: () => console.log('duplicate'),
+      },
+    ],
+  },
   { children: 'Make a copy' },
   { children: 'Favorite' },
   {
     children: 'Delete',
-    command: { children: '⌘⌫' },
+    // command: { children: '⌘⌫' },
     icon: {
       icon: Trash2,
     },
