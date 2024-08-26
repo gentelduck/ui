@@ -554,7 +554,8 @@ interface TableCaptionType extends React.HTMLProps<HTMLTableCaptionElement> {}
 interface TablePaginationType extends React.HTMLProps<HTMLDivElement> {
   groupSize: number
   activePage?: number
-  showCount?: boolean
+  showPageCount?: boolean
+  showSelectCount?: boolean
   showNavigation?: boolean
   showGroup?: boolean
 }
@@ -583,11 +584,26 @@ const TablePagination = ({
   paginationState: PaginationState
   setPaginationState: React.Dispatch<React.SetStateAction<PaginationState>>
 }) => {
+  //NOTE: gen the page length data
+  const pageLengthData = pagination?.groupSize
+    ? Array.from({ length: Math.ceil(tableData.length / pagination.groupSize) }, (_, index) => {
+        const start = index * pagination.groupSize + 1
+        const end = Math.min((index + 1) * pagination.groupSize, tableData.length)
+        if (start > tableData.length) return null
+        return end.toString()
+      })
+        .filter(Boolean)
+        .reduce((acc, curr) => {
+          acc.push({ label: curr!, element: { children: curr! } })
+          return acc
+        }, [] as CommandListGroupDataType[])
+    : []
+
   return (
     <>
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-between">
-          {pagination?.showCount && (
+          {pagination?.showSelectCount && (
             <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
               {selected.length} of {tableData.length} row(s) selected.
             </span>
@@ -603,12 +619,7 @@ const TablePagination = ({
                 <Combobox<string>
                   type="combobox"
                   content={{
-                    data: Array.from({ length: Math.ceil(tableData.length / 5) }, (_, index) =>
-                      ((index + 1) * 5).toString()
-                    ).reduce((acc, curr) => {
-                      acc.push({ label: curr, element: { children: curr } })
-                      return acc
-                    }, [] as CommandListGroupDataType[]),
+                    data: pageLengthData ?? [],
                     showSearchInput: false,
                     className: 'w-[5rem] h-fit',
                   }}
@@ -627,7 +638,7 @@ const TablePagination = ({
               </TooltipProvider>
             </div>
           )}
-          {pagination?.showCount && (
+          {pagination?.showPageCount && (
             <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
               Page {paginationState.activePage + 1} of {resultArrays.length}
             </span>

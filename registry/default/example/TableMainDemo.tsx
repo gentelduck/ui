@@ -218,7 +218,8 @@ export default function DataTableMainDemo() {
         tableSearch={true}
         pagination={{
           groupSize: 6,
-          showCount: true,
+          showSelectCount: true,
+          showPageCount: true,
           showGroup: true,
           showNavigation: true,
         }}
