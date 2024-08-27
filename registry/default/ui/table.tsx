@@ -13,13 +13,13 @@ import {
   ChevronsLeftIcon,
   ChevronsRightIcon,
   CirclePlus,
+  Ellipsis,
 } from 'lucide-react'
 import { ScrollArea } from '@radix-ui/react-scroll-area'
 import { TooltipProvider } from './tooltip'
 import { Combobox, ComboboxType } from './combobox'
 import { CommandListGroupDataType } from './command'
 import {
-  DataTableViewOptions,
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
@@ -28,6 +28,7 @@ import {
   DropdownMenuOptionsType,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuView,
 } from './dropdown-menu'
 import { CaretSortIcon, DotsHorizontalIcon, MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { Badge } from './badge'
@@ -247,24 +248,12 @@ const TableHeaderActions = <
                     title={filter?.title}
                     wrapper={filter?.wrapper}
                     trigger={{
-                      icon: (
-                        <CirclePlus
-                          size={14}
-                          className="!size-4 stroke-[1.5]"
-                        />
-                      ),
+                      icon: {
+                        icon: CirclePlus,
+                        className: '!size-4 stroke-[1.5]',
+                      },
                       children: triggerChildren,
                       className: cn('[&>div>span]:text-xs ml-auto', triggerClassName),
-                      // label: {
-                      //   children: 'Select one',
-                      //   showLabel: true,
-                      //   side: 'top',
-                      //   showCommand: true,
-                      // },
-                      // command: {
-                      //   label: '⌘+m',
-                      //   key: 'm',
-                      // },
                       ...triggerProps,
                     }}
                     onSelect={
@@ -403,7 +392,7 @@ const TableCustomHeader = <
                   ) : (
                     <div className={cn('flex items-center space-x-2', className)}>
                       {
-                        <DataTableViewOptions<TableDropdownMenuOptions<Y, C>>
+                        <DropdownMenuView<TableDropdownMenuOptions<Y, C>>
                           trigger={{
                             className: '-ml-3 h-8 data-[state=open]:bg-accent text-xs',
                             children: (
@@ -497,6 +486,7 @@ const TableCustomBody = <
 
         return (
           <ContextCustomView
+            key={idx}
             trigger={{
               children: (
                 <TableRow key={idx}>
@@ -551,13 +541,16 @@ const TableCustomBody = <
 
                             <span className="text-ellipsis overflow-hidden whitespace-nowrap">{children}</span>
                             {idx === headersEntries.length - 1 && options && (
-                              <DataTableViewOptions
+                              <DropdownMenuView
                                 trigger={{
                                   className: 'flex h-8 w-8 p-0 data-[state=open]:bg-muted',
                                   children: <span className="sr-only">Open menu</span>,
                                   variant: 'ghost',
                                   size: 'icon',
-                                  icon: <DotsHorizontalIcon className="h-4 w-4" />,
+                                  icon: {
+                                    icon: Ellipsis,
+                                    className: 'h-4 w-4',
+                                  },
                                 }}
                                 content={{
                                   align: 'end',
@@ -575,12 +568,9 @@ const TableCustomBody = <
               ),
             }}
             content={{
-              options: [
-                {
-                  label: 'Delete',
-                  action: () => {},
-                },
-              ],
+              options: {
+                optionsData: options?.optionsData,
+              },
             }}
           ></ContextCustomView>
         )

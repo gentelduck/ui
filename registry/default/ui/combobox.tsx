@@ -73,11 +73,10 @@ const Combobox = <T,>({ wrapper, title, trigger, content, onSelect, type }: Comb
               variant="outline"
               disabled={false}
               role="combobox"
-              secondIcon={
-                <ChevronsUpDown
-                  className={cn('ml-2 h-4 w-4 shrink-0 opacity-50 overflow-hidden', type === 'listbox' && 'hidden')}
-                />
-              }
+              secondIcon={{
+                icon: ChevronsUpDown,
+                className: cn('ml-2 h-4 w-4 shrink-0 opacity-50 overflow-hidden', type === 'listbox' && 'hidden'),
+              }}
               aria-expanded={open}
               className={cn(
                 `justify-between`,

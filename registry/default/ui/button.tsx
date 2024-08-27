@@ -12,14 +12,15 @@ import { VariantProps } from 'class-variance-authority'
 import { Loader, LucideIcon } from 'lucide-react'
 import { IconProps } from '@radix-ui/react-icons/dist/types'
 
+export type IconType = { icon: LucideIcon } & IconProps & React.RefAttributes<SVGSVGElement>
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   isCollapsed?: boolean
-  icon?: { icon: LucideIcon } & IconProps & React.RefAttributes<SVGSVGElement>
+  icon?: IconType
   title?: string
-  secondIcon?: { icon: LucideIcon } & IconProps & React.RefAttributes<SVGSVGElement>
+  secondIcon?: IconType
   label?: LabelType
   route?: string
   command?: CommandType
@@ -77,8 +78,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       label,
       children,
-      icon: Icon,
-      secondIcon: SecondIcon,
+      icon,
+      secondIcon,
       delayDuration = 0,
       loading = false,
       command,
@@ -88,6 +89,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const { className: labelClassName, type = 'default', showLabel, showCommand, ...labelProps } = label || {}
     const Component = asChild ? Slot : 'button'
+    const { icon: Icon, className: iconClassName, ...iconProps } = icon ?? {}
+    const { icon: SecondIcon, className: secondIconClassName, ...secondIconProps } = secondIcon ?? {}
 
     // Handle keyboard shortcuts
     React.useEffect(() => {
@@ -134,7 +137,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           >
             <div className="flex items-center gap-2">
               {!loading ? (
-                Icon && <span className="[&_svg]:size-[1.18rem]">{!!Icon && !loading && Icon} </span>
+                Icon && (
+                  <span className="[&_svg]:size-[1.18rem]">
+                    {!!icon && !loading && (
+                      <Icon
+                        className={iconClassName}
+                        {...iconProps}
+                      />
+                    )}
+                  </span>
+                )
               ) : (
                 <Loader className="size-[1.18rem] animate-spin" />
               )}
@@ -162,13 +174,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                   {label?.children}
                 </Badge>
               ))}
-            {!isCollapsed && !loading && SecondIcon}
+            {!isCollapsed && !loading && SecondIcon && (
+              <SecondIcon
+                className={secondIconClassName}
+                {...secondIconProps}
+              />
+            )}
           </Component>
         </TooltipTrigger>
         {(isCollapsed || label?.showLabel) && (title || label) && (
           <TooltipContent
             {...label}
-            className={cn('flex items-center gap-4 z-50 justify-start', label?.className)}
+            className={cn('flex items-center gap-2 z-50 justify-start', label?.className)}
             side={label?.side || 'right'}
           >
             {title && (title as unknown as React.ReactNode)}

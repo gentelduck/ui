@@ -97,6 +97,16 @@ const filtersData = [
     type: 'listbox',
     trigger: {
       children: 'Status',
+      label: {
+        children: 'Filter Status',
+        showLabel: true,
+        showCommand: true,
+        side: 'top',
+      },
+      command: {
+        label: '⌘+bs',
+        key: 'bs',
+      },
     },
     content: {
       showSearchInput: true,
@@ -140,6 +150,16 @@ const filtersData = [
     type: 'listbox',
     trigger: {
       children: 'Method',
+      label: {
+        children: 'Filter Method',
+        showLabel: true,
+        showCommand: true,
+        side: 'top',
+      },
+      command: {
+        label: '⌘+bh',
+        key: 'f1',
+      },
     },
     content: {
       showSearchInput: true,

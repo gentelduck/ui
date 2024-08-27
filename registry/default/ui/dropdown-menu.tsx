@@ -2,11 +2,10 @@
 
 import * as React from 'react'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
-import { Check, ChevronRight, Circle, LucideIcon } from 'lucide-react'
+import { Check, ChevronRight, Circle } from 'lucide-react'
 
 import { cn, groupArrays } from '@/lib/utils'
 import { Button, CommandType } from './button'
-import { IconProps } from '@radix-ui/react-icons/dist/types'
 import { ButtonProps } from './button'
 
 const DropdownMenu = DropdownMenuPrimitive.Root
@@ -178,7 +177,7 @@ type DropdownMenuOptionsDataType<T, Y extends boolean = true> = {
   command?: React.ComponentPropsWithoutRef<typeof DropdownMenuShortcut> & CommandType
   action?: (args: T) => void
   nestedData?: Y extends true ? DropdownMenuOptionsType<T> : never
-} & Partial<ButtonProps> &
+} & Partial<Omit<ButtonProps, 'command'>> &
   Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuCheckboxItem>> &
   Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuItem>> &
   Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuRadioItem>>
@@ -195,15 +194,12 @@ interface DropdownMenuViewProps<T> {
     label?: React.ComponentPropsWithoutRef<typeof DropdownMenuLabel>
     options?: DropdownMenuOptionsType<T>
   } & React.ComponentPropsWithoutRef<typeof DropdownMenuContent>
-  trigger?: {
-    icon?: React.ReactElement
-  } & React.ComponentPropsWithoutRef<typeof DropdownMenuTrigger> &
-    ButtonProps
+  trigger?: React.ComponentPropsWithoutRef<typeof DropdownMenuTrigger> & ButtonProps
 }
 
 function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
   const { className: triggerClassName, icon: Icon, ...triggerProps } = trigger ?? {}
-  const { className: optionsClassName, options, label, ...contentProps } = content ?? {}
+  const { className: optionsClassName, itemType = 'label', options, label, ...contentProps } = content ?? {}
   const { className: labelClassName, ...labelProps } = label ?? {}
   const groupedOption = groupArrays(options?.group ?? [options?.optionsData?.length || 1], options?.optionsData ?? [])
 
@@ -236,7 +232,7 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
           return (
             <React.Fragment key={`group-${idx}`}>
               {group.map((item, idx) => {
-                const { children, action, className, nestedData, ...props } = item
+                const { children, action, className, value, nestedData, checked, onCheckedChange, ...props } = item
                 const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
                 const {
                   className: commandClassName,
@@ -250,16 +246,24 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
                     nestedData?.optionsData ?? []
                   ) ?? []
 
+                const Component =
+                  itemType === 'checkbox'
+                    ? DropdownMenuCheckboxItem
+                    : itemType === 'radio'
+                      ? DropdownMenuRadioItem
+                      : DropdownMenuItem
+
                 return !nestedData?.optionsData?.length ? (
-                  <DropdownMenuItem
+                  <Component
+                    value={value as string}
                     key={`item-${idx}`}
                     className={cn('flex gap-2 items-center', className)}
                     {...props}
                   >
                     {Icon && (
                       <Icon
-                        {...iconProps}
                         className={cn('h-4 w-4', iconClassName)}
+                        {...iconProps}
                       />
                     )}
                     {children}
@@ -276,14 +280,14 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
                         />
                       </>
                     )}
-                  </DropdownMenuItem>
+                  </Component>
                 ) : (
                   <DropdownMenuSub key={`sub-item-${idx}`}>
                     <DropdownMenuSubTrigger className={cn('flex item-center gap-2')}>
                       {Icon && (
                         <Icon
-                          {...iconProps}
                           className={cn('h-4 w-4', iconClassName)}
+                          {...iconProps}
                         />
                       )}
                       {children}

@@ -221,7 +221,7 @@ const CommandListGroup = React.forwardRef(
                             />
                           ) : (
                             <Checkbox
-                              checked={selected.includes(el?.element?.children as string)}
+                              checked={selected.includes((el?.label as string) ?? (el?.element?.children as string))}
                               className={cn('mr-2 h-4 w-4  border-muted-foreground')}
                             />
                           ))}
