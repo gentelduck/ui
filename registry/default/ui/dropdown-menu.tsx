@@ -174,22 +174,24 @@ const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTML
 }
 DropdownMenuShortcut.displayName = 'DropdownMenuShortcut'
 
-interface DropdownMenuOptionsDataType<T, Y extends boolean = true>
-  extends React.ComponentPropsWithoutRef<typeof DropdownMenuItem> {
-  icon?: { icon: LucideIcon } & IconProps & React.RefAttributes<SVGSVGElement>
+type DropdownMenuOptionsDataType<T, Y extends boolean = true> = {
   command?: React.ComponentPropsWithoutRef<typeof DropdownMenuShortcut> & CommandType
   action?: (args: T) => void
   nestedData?: Y extends true ? DropdownMenuOptionsType<T> : never
-}
+} & Partial<ButtonProps> &
+  Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuCheckboxItem>> &
+  Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuItem>> &
+  Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuRadioItem>>
 
 interface DropdownMenuOptionsType<T> {
   actionsArgs?: T extends {} ? T : never
-  optionsData?: DropdownMenuOptionsDataType<T>[] & ButtonProps
+  optionsData?: DropdownMenuOptionsDataType<T>[]
   group?: number[]
 }
 
 interface DropdownMenuViewProps<T> {
   content?: {
+    itemType?: 'checkbox' | 'radio' | 'label'
     label?: React.ComponentPropsWithoutRef<typeof DropdownMenuLabel>
     options?: DropdownMenuOptionsType<T>
   } & React.ComponentPropsWithoutRef<typeof DropdownMenuContent>

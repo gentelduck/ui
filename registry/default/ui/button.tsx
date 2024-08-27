@@ -9,16 +9,17 @@ import { CommandShortcut } from './command'
 import { cn } from '@/lib'
 import { cva } from 'class-variance-authority'
 import { VariantProps } from 'class-variance-authority'
-import { Loader } from 'lucide-react'
+import { Loader, LucideIcon } from 'lucide-react'
+import { IconProps } from '@radix-ui/react-icons/dist/types'
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   isCollapsed?: boolean
-  icon?: React.ReactElement
+  icon?: { icon: LucideIcon } & IconProps & React.RefAttributes<SVGSVGElement>
   title?: string
-  secondIcon?: React.ReactElement
+  secondIcon?: { icon: LucideIcon } & IconProps & React.RefAttributes<SVGSVGElement>
   label?: LabelType
   route?: string
   command?: CommandType
