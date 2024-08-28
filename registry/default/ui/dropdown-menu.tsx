@@ -198,18 +198,31 @@ interface DropdownMenuViewProps<T> {
 }
 
 function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
-  const { className: triggerClassName, icon: Icon, ...triggerProps } = trigger ?? {}
+  const { className: triggerClassName, command: triggerCommand, icon: Icon, ...triggerProps } = trigger ?? {}
   const { className: optionsClassName, itemType = 'label', options, label, ...contentProps } = content ?? {}
   const { className: labelClassName, ...labelProps } = label ?? {}
   const groupedOption = groupArrays(options?.group ?? [options?.optionsData?.length || 1], options?.optionsData ?? [])
 
+  const [open, setOpen] = React.useState(false)
   return (
-    <DropdownMenu>
+    <DropdownMenu
+      open={open}
+      onOpenChange={setOpen}
+    >
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
           size="sm"
-          className={cn(triggerClassName)}
+          className={cn('w-[fit-content]', triggerClassName)}
+          command={
+            {
+              ...triggerCommand,
+              state: open,
+              action: () => {
+                setOpen(!open)
+              },
+            } as CommandType
+          }
           icon={Icon}
           {...triggerProps}
         />
@@ -222,7 +235,7 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
         {label && (
           <>
             <DropdownMenuLabel
-              className={cn(labelClassName)}
+              className={cn('text-sm', labelClassName)}
               {...labelProps}
             />
             <DropdownMenuSeparator />
@@ -232,7 +245,7 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
           return (
             <React.Fragment key={`group-${idx}`}>
               {group.map((item, idx) => {
-                const { children, action, className, value, nestedData, checked, onCheckedChange, ...props } = item
+                const { children, action, className, value, nestedData, key: _key, ...props } = item
                 const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
                 const {
                   className: commandClassName,
@@ -253,107 +266,110 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
                       ? DropdownMenuRadioItem
                       : DropdownMenuItem
 
-                return !nestedData?.optionsData?.length ? (
-                  <Component
-                    value={value as string}
-                    key={`item-${idx}`}
-                    className={cn('flex gap-2 items-center', className)}
-                    {...props}
-                  >
-                    {Icon && (
-                      <Icon
-                        className={cn('h-4 w-4', iconClassName)}
-                        {...iconProps}
-                      />
-                    )}
-                    {children}
-                    {item.command && (
-                      <>
-                        <DropdownMenuShortcut
-                          children={commandLabel}
-                          {...commandProps}
-                          key={`command-${idx}`}
-                        />
-                        <Button
-                          command={item.command}
-                          className="sr-only hidden"
-                        />
-                      </>
-                    )}
-                  </Component>
-                ) : (
-                  <DropdownMenuSub key={`sub-item-${idx}`}>
-                    <DropdownMenuSubTrigger className={cn('flex item-center gap-2')}>
-                      {Icon && (
-                        <Icon
-                          className={cn('h-4 w-4', iconClassName)}
-                          {...iconProps}
-                        />
-                      )}
-                      {children}
-                    </DropdownMenuSubTrigger>
-                    <DropdownMenuPortal>
-                      <DropdownMenuSubContent>
-                        {groupedNestedOption?.map((nestedItem, idx) => {
-                          return (
-                            <React.Fragment key={`nested-${idx}`}>
-                              {nestedItem.map((nestedItemInner, idx) => {
-                                const {
-                                  children: nestedChildren,
-                                  action: nestedAction,
-                                  className: nestedClassName,
-                                  ...nestedProps
-                                } = nestedItemInner
-                                const {
-                                  icon: NestedIcon,
-                                  className: nestedIconClassName,
-                                  ...nestedIconProps
-                                } = nestedItemInner.icon ?? {}
-                                const {
-                                  className: nestedCommandClassName,
-                                  label: enstedCommandLabel,
-                                  action: nestedCommandAction,
-                                  ...nestedCommandProps
-                                } = nestedItemInner.command ?? {}
+                return (
+                  <React.Fragment key={`item-${idx}`}>
+                    {!nestedData?.optionsData?.length ? (
+                      <Component
+                        value={value as string}
+                        className={cn('flex gap-2 items-center', className)}
+                        {...props}
+                      >
+                        {Icon && (
+                          <Icon
+                            className={cn('h-4 w-4', iconClassName)}
+                            {...iconProps}
+                          />
+                        )}
+                        {children}
+                        {item.command && (
+                          <>
+                            <DropdownMenuShortcut
+                              children={commandLabel}
+                              {...commandProps}
+                              key={`command-${idx}`}
+                            />
+                            <Button
+                              command={item.command}
+                              className="sr-only hidden"
+                            />
+                          </>
+                        )}
+                      </Component>
+                    ) : (
+                      <DropdownMenuSub key={`sub-item-${idx}`}>
+                        <DropdownMenuSubTrigger className={cn('flex item-center gap-2')}>
+                          {Icon && (
+                            <Icon
+                              className={cn('h-4 w-4', iconClassName)}
+                              {...iconProps}
+                            />
+                          )}
+                          {children}
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuPortal>
+                          <DropdownMenuSubContent>
+                            {groupedNestedOption?.map((nestedItem, idx) => {
+                              return (
+                                <React.Fragment key={`nested-${idx}`}>
+                                  {nestedItem.map((nestedItemInner, idx) => {
+                                    const {
+                                      children: nestedChildren,
+                                      action: nestedAction,
+                                      className: nestedClassName,
+                                      ...nestedProps
+                                    } = nestedItemInner
+                                    const {
+                                      icon: NestedIcon,
+                                      className: nestedIconClassName,
+                                      ...nestedIconProps
+                                    } = nestedItemInner.icon ?? {}
+                                    const {
+                                      className: nestedCommandClassName,
+                                      label: enstedCommandLabel,
+                                      action: nestedCommandAction,
+                                      ...nestedCommandProps
+                                    } = nestedItemInner.command ?? {}
 
-                                return (
-                                  <DropdownMenuItem
-                                    key={`nested-item-${idx}`}
-                                    className={cn('flex gap-2 items-center', nestedClassName)}
-                                    {...nestedProps}
-                                  >
-                                    {NestedIcon && (
-                                      <NestedIcon
-                                        {...nestedIconProps}
-                                        className={cn('h-4 w-4', nestedIconClassName)}
-                                      />
-                                    )}
-                                    {children}
-                                    {nestedItemInner.command && (
-                                      <>
-                                        <DropdownMenuShortcut
-                                          children={enstedCommandLabel}
-                                          {...nestedCommandProps}
-                                          key={`nested-item-shortcut-${idx}`}
-                                        />
-                                        <Button
-                                          command={nestedItemInner.command}
-                                          className="sr-only hidden"
-                                        />
-                                      </>
-                                    )}
-                                  </DropdownMenuItem>
-                                )
-                              })}
-                              {idx !== groupedNestedOption?.length - 1 && (
-                                <DropdownMenuSeparator key={`separator-${idx}`} />
-                              )}
-                            </React.Fragment>
-                          )
-                        })}
-                      </DropdownMenuSubContent>
-                    </DropdownMenuPortal>
-                  </DropdownMenuSub>
+                                    return (
+                                      <DropdownMenuItem
+                                        key={`nested-item-${idx}`}
+                                        className={cn('flex gap-2 items-center', nestedClassName)}
+                                        {...nestedProps}
+                                      >
+                                        {NestedIcon && (
+                                          <NestedIcon
+                                            {...nestedIconProps}
+                                            className={cn('h-4 w-4', nestedIconClassName)}
+                                          />
+                                        )}
+                                        {children}
+                                        {nestedItemInner.command && (
+                                          <>
+                                            <DropdownMenuShortcut
+                                              children={enstedCommandLabel}
+                                              {...nestedCommandProps}
+                                              key={`nested-item-shortcut-${idx}`}
+                                            />
+                                            <Button
+                                              command={nestedItemInner.command}
+                                              className="sr-only hidden"
+                                            />
+                                          </>
+                                        )}
+                                      </DropdownMenuItem>
+                                    )
+                                  })}
+                                  {idx !== groupedNestedOption?.length - 1 && (
+                                    <DropdownMenuSeparator key={`separator-${idx}`} />
+                                  )}
+                                </React.Fragment>
+                              )
+                            })}
+                          </DropdownMenuSubContent>
+                        </DropdownMenuPortal>
+                      </DropdownMenuSub>
+                    )}
+                  </React.Fragment>
                 )
               })}
               {idx !== groupedOption.length - 1 && <DropdownMenuSeparator />}

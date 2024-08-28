@@ -12,6 +12,7 @@ import { cn, groupDataByNumbers } from '@/lib/utils'
 import { Checkbox } from './checkbox'
 import { Button, LabelType } from './button'
 import { Separator } from './ShadcnUI'
+import { TypeOfExpression } from 'ts-morph'
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -155,10 +156,10 @@ interface OnSelectType {
   clear: <T extends string>(arg?: T) => void
 }
 
-interface ListItemElementType extends Partial<React.ComponentPropsWithoutRef<typeof CommandItem>> {
-  icon?: React.ReactElement
-  label?: LabelType
-}
+interface ListItemElementType
+  extends Partial<
+    React.ComponentPropsWithoutRef<typeof CommandItem> & React.CustomComponentPropsWithRef<typeof Button>
+  > {}
 
 interface CommandListGroupType {
   type?: 'combobox' | 'listbox'
@@ -194,6 +195,7 @@ const CommandListGroup = React.forwardRef(
                 >
                   {group.map((el, idx) => {
                     const { children, className, icon, ...props } = el.element ?? {}
+                    const { className: iconClassName, icon: Icon, ...iconProps } = icon ?? {}
 
                     return (
                       <CommandItem
@@ -207,7 +209,7 @@ const CommandListGroup = React.forwardRef(
                           className
                         )}
                         onSelect={onSelect?.key}
-                        {...props}
+                        {...(props as typeof CommandItem)}
                       >
                         {checkabble &&
                           (type === 'combobox' ? (
@@ -226,7 +228,12 @@ const CommandListGroup = React.forwardRef(
                             />
                           ))}
                         <span className="flex items-center gap-2">
-                          {icon && icon}
+                          {Icon && (
+                            <Icon
+                              className={cn(iconClassName)}
+                              {...iconProps}
+                            />
+                          )}
                           {children ?? el?.label}
                         </span>
                         <CommandShortcut>{el.element?.label?.children}</CommandShortcut>

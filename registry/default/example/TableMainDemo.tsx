@@ -59,31 +59,33 @@ const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<He
 export type HeaderColumns = 'task' | 'title' | 'status' | 'label' | 'priority'
 const columns: TableHeaderColumns<true, HeaderColumns, TableDataType>[] = [
   {
-    label: 'Task',
+    label: 'task',
     sortable: false,
   },
   {
-    label: 'Title',
+    label: 'title',
     className: 'w-[110px]',
     sortable: true,
+    showLabel: true,
     dropdownMenuOptions: tableHeaderDropDown,
   },
   {
-    label: 'Status',
+    label: 'status',
     sortable: true,
+    showLabel: true,
     className: 'w-[70px]',
     currentSort: 'not sorted',
     dropdownMenuOptions: tableHeaderDropDown,
   },
   {
-    label: 'Label',
+    label: 'label',
     className: 'w-[90px]',
     sortable: true,
     currentSort: 'not sorted',
     dropdownMenuOptions: tableHeaderDropDown,
   },
   {
-    label: 'Priority',
+    label: 'priority',
     sortable: true,
     dropdownMenuOptions: tableHeaderDropDown,
   },
@@ -114,33 +116,46 @@ const filtersData = [
         {
           label: 'Backlog',
           element: {
-            icon: <CircleHelp className={iconStyle} />,
+            icon: {
+              icon: CircleHelp,
+              className: iconStyle,
+            },
           },
         },
         {
           label: 'Todo',
           element: {
-            icon: <Circle className={iconStyle} />,
+            icon: {
+              icon: Circle,
+              className: iconStyle,
+            },
           },
         },
         {
           label: 'In progress',
           element: {
-            icon: <Clock12 className={iconStyle} />,
+            icon: {
+              icon: Clock12,
+              className: iconStyle,
+            },
           },
         },
-
         {
           label: 'Done',
           element: {
-            icon: <CircleCheck className={iconStyle} />,
+            icon: {
+              icon: CircleCheck,
+              className: iconStyle,
+            },
           },
         },
-
         {
           label: 'Canceled',
           element: {
-            icon: <CircleX className={iconStyle} />,
+            icon: {
+              icon: CircleX,
+              className: iconStyle,
+            },
           },
         },
       ],
@@ -167,19 +182,28 @@ const filtersData = [
         {
           label: 'Low',
           element: {
-            icon: <CirclePlus className="size-4 stroke-[1.5]" />,
+            icon: {
+              icon: CirclePlus,
+              className: 'size-4 stroke-[1.5]',
+            },
           },
         },
         {
           label: 'Medium',
           element: {
-            icon: <CirclePlus className="size-4 stroke-[1.5]" />,
+            icon: {
+              icon: CirclePlus,
+              className: 'size-4 stroke-[1.5]',
+            },
           },
         },
         {
           label: 'High',
           element: {
-            icon: <CirclePlus className="size-4 stroke-[1.5]" />,
+            icon: {
+              icon: CirclePlus,
+              className: 'size-4 stroke-[1.5]',
+            },
           },
         },
       ],

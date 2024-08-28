@@ -19,18 +19,8 @@ import { ScrollArea } from '@radix-ui/react-scroll-area'
 import { TooltipProvider } from './tooltip'
 import { Combobox, ComboboxType } from './combobox'
 import { CommandListGroupDataType } from './command'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuOptionsDataType,
-  DropdownMenuOptionsType,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  DropdownMenuView,
-} from './dropdown-menu'
-import { CaretSortIcon, DotsHorizontalIcon, MixerHorizontalIcon } from '@radix-ui/react-icons'
+import { DropdownMenuOptionsDataType, DropdownMenuOptionsType, DropdownMenuView } from './dropdown-menu'
+import { CaretSortIcon, MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { Badge } from './badge'
 import { ContextCustomView } from './context-menu'
 
@@ -140,18 +130,19 @@ interface TableDropdownMenuOptions<Y extends keyof C = string, C extends Record<
 
 interface TableHeaderColumns<
   T extends boolean = true,
-  Y extends keyof C = string,
+  Y extends keyof C & string = string,
   C extends Record<string, any> = Record<string, string>,
 > extends Partial<React.HTMLProps<HTMLTableCellElement>> {
-  label: string //Y extends keyof C ? C[Y] :
+  label: Y extends keyof C ? Y : string
   sortable?: boolean
+  showLabel?: T
   currentSort?: T extends true ? 'asc' | 'desc' | 'not sorted' : never
   dropdownMenuOptions?: T extends true ? DropdownMenuOptionsDataType<TableDropdownMenuOptions<Y, C>>[] : never
 }
 
 interface TableHeaderColumnsType<
   T extends boolean = true,
-  Y extends keyof C = string,
+  Y extends keyof C & string = string,
   C extends Record<string, any> = Record<string, string>,
 > {
   header: TableHeaderColumns<T, Y, C>[]
@@ -196,7 +187,7 @@ const useDebounceCallback = <T extends (...args: any[]) => void>(callback: T, de
 
 const TableHeaderActions = <
   T extends boolean = true,
-  Y extends keyof C = string,
+  Y extends keyof C & string = string,
   C extends Record<string, any> = Record<string, string>,
 >({
   setHeaders,
@@ -219,6 +210,31 @@ const TableHeaderActions = <
       q: newValue,
     }))
   }, 500)
+
+  const optionsData = header.map((column, idx) => {
+    const { children, className, label, sortable, disabled, currentSort, dropdownMenuOptions, ...props } = column
+
+    return {
+      key: idx,
+      className: 'capitalize',
+      checked: headers.includes(column),
+      disabled: disabled,
+      onCheckedChange: () => {
+        setHeaders(prevHeaders => {
+          const exists = prevHeaders.includes(column)
+          if (exists) {
+            return prevHeaders.filter(sub => sub !== column)
+          }
+          const originalIndex = header.indexOf(column)
+          const newHeaders = [...prevHeaders]
+          newHeaders.splice(originalIndex, 0, column)
+          return newHeaders.sort((a, b) => header.indexOf(a) - header.indexOf(b))
+        })
+      },
+      children: label ?? children,
+      ...props,
+    } as DropdownMenuOptionsDataType<false>
+  }) as DropdownMenuOptionsDataType<false>[]
 
   return (
     <>
@@ -269,55 +285,38 @@ const TableHeaderActions = <
             </div>
           )}
         </div>
-
         {viewButton && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size={'sm'}
-                className="ml-auto hidden [&>div]:h-8 h-8 w-[79px] lg:flex [&>div]:gap-0 text-xs"
-              >
-                <MixerHorizontalIcon className="mr-2 h-4 w-4" />
-                View
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {header &&
-                header.map((column, idx) => {
-                  const { children, className, label, sortable, disabled, currentSort, dropdownMenuOptions, ...props } =
-                    column
-                  return (
-                    idx !== 0 && (
-                      <DropdownMenuCheckboxItem
-                        key={idx}
-                        className="capitalize"
-                        checked={headers.includes(column)}
-                        onCheckedChange={() => {
-                          setHeaders(prevHeaders => {
-                            const exists = prevHeaders.includes(column)
-                            if (exists) {
-                              return prevHeaders.filter(sub => sub !== column)
-                            }
-
-                            const originalIndex = header.indexOf(column)
-                            const newHeaders = [...prevHeaders]
-                            newHeaders.splice(originalIndex, 0, column)
-                            return newHeaders.sort((a, b) => header.indexOf(a) - header.indexOf(b))
-                          })
-                        }}
-                        disabled={disabled}
-                        {...(props as React.ComponentPropsWithoutRef<typeof DropdownMenuCheckboxItem>)}
-                      >
-                        {label ?? children}
-                      </DropdownMenuCheckboxItem>
-                    )
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <DropdownMenuView
+            trigger={{
+              children: (
+                <>
+                  <MixerHorizontalIcon className="mr-2 h-4 w-4" />
+                  View
+                </>
+              ),
+              className: 'ml-auto hidden [&>div]:h-8 h-8 w-[79px] lg:flex [&>div]:gap-0 text-xs',
+              label: {
+                children: 'Toggle columns',
+                showCommand: true,
+                showLabel: true,
+                side: 'top',
+              },
+              command: {
+                key: 'y',
+                label: '⌘+v',
+              },
+            }}
+            content={{
+              className: 'w-[180px]',
+              itemType: 'checkbox',
+              label: {
+                children: 'Toggle columns',
+              },
+              options: {
+                optionsData: optionsData,
+              },
+            }}
+          />
         )}
       </div>
     </>
@@ -326,7 +325,7 @@ const TableHeaderActions = <
 
 interface TableHeaderProps<
   T extends boolean = false,
-  Y extends keyof C = string,
+  Y extends keyof C & string = string,
   C extends Record<string, any> = Record<string, string>,
 > {
   headers: TableHeaderColumns<T, Y, C>[]
@@ -340,7 +339,7 @@ interface TableHeaderProps<
 
 const TableCustomHeader = <
   T extends boolean = false,
-  Y extends keyof C = string,
+  Y extends keyof C & string = string,
   C extends Record<string, any> = Record<string, string>,
 >({
   headers,
@@ -356,7 +355,8 @@ const TableCustomHeader = <
       <TableHeader>
         <TableRow>
           {headers.map((column, idx) => {
-            const { children, className, sortable, label, dropdownMenuOptions, currentSort, ...props } = column
+            const { children, className, sortable, label, showLabel, dropdownMenuOptions, currentSort, ...props } =
+              column
             return (
               headers.some(header => header.children === column.children) && (
                 <TableHead
@@ -394,10 +394,10 @@ const TableCustomHeader = <
                       {
                         <DropdownMenuView<TableDropdownMenuOptions<Y, C>>
                           trigger={{
-                            className: '-ml-3 h-8 data-[state=open]:bg-accent text-xs',
+                            className: '-ml-3 h-8 data-[state=open]:bg-accent text-xs ',
                             children: (
                               <>
-                                <span>{label ?? children}</span>
+                                <span className="capitalize">{label ?? children}</span>
                                 {headers[idx]?.currentSort === 'asc' ? (
                                   <ArrowDownIcon className="ml-2 h-4 w-4" />
                                 ) : headers[idx]?.currentSort === 'desc' ? (
@@ -407,6 +407,14 @@ const TableCustomHeader = <
                                 )}
                               </>
                             ),
+                            label: showLabel
+                              ? {
+                                  children: label + ' options',
+                                  className: 'capitalize',
+                                  showLabel: true,
+                                  side: 'top',
+                                }
+                              : undefined,
                             variant: 'ghost',
                             size: 'sm',
                           }}
@@ -422,7 +430,7 @@ const TableCustomHeader = <
                                 data: tableData,
                                 headers,
                                 tableData,
-                              } as TableDropdownMenuOptions<Y, C>,
+                              } as unknown as TableDropdownMenuOptions<Y, C>,
                               group: [2, 1],
                               optionsData: dropdownMenuOptions as
                                 | DropdownMenuOptionsDataType<TableDropdownMenuOptions<Y, C>>[]
@@ -445,7 +453,7 @@ const TableCustomHeader = <
 
 interface TableCustomBodyProps<
   T extends boolean = false,
-  Y extends keyof C = string,
+  Y extends keyof C & string = string,
   C extends Record<string, any> = Record<string, string>,
 > {
   headers: TableHeaderColumns<T, Y, C>[]
@@ -463,7 +471,7 @@ type TableDataFilteredType<T extends Record<string, any>> = {
 
 const TableCustomBody = <
   T extends boolean = false,
-  Y extends keyof C = string,
+  Y extends keyof C & string = string,
   C extends Record<string, any> = Record<string, string>,
 >({
   headers,
@@ -479,7 +487,7 @@ const TableCustomBody = <
       {resultArrays[paginationState.activePage ?? 0]?.map((item, idx) => {
         const tableDataFiltered = Object.entries(item).filter(([key]) => {
           const headersEntries = headers.map(
-            item => item.label.toLowerCase() ?? item.children?.toString().toLowerCase()
+            item => item.label.toString().toLowerCase() ?? item.children?.toString().toLowerCase()
           )
           return headersEntries.includes(key.toLowerCase())
         }) as TableDataFilteredType<typeof item>
@@ -492,7 +500,7 @@ const TableCustomBody = <
                 <TableRow key={idx}>
                   {tableDataFiltered.map(([key, value], idx) => {
                     const headersEntries = headers.map(
-                      item => item.label.toLowerCase() ?? item.children?.toString().toLowerCase()
+                      item => item.label.toString().toLowerCase() ?? item.children?.toString().toLowerCase()
                     )
                     const { className, children, withLabel, ...props } = value
                     const {
@@ -770,7 +778,7 @@ const TablePagination = <Y extends keyof C = string, C extends Record<string, an
 
 export interface TableViewProps<
   T extends boolean = false,
-  Y extends keyof C = string,
+  Y extends keyof C & string = string,
   C extends Record<string, any> = Record<string, string>,
 > {
   filters: ComboboxType<string>[]
@@ -788,7 +796,7 @@ export interface TableViewProps<
 
 const TableView = <
   T extends boolean = false,
-  Y extends keyof C = string,
+  Y extends keyof C & string = string,
   C extends Record<string, any> = Record<string, string>,
 >({
   selection,

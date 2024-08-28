@@ -184,7 +184,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         </TooltipTrigger>
         {(isCollapsed || label?.showLabel) && (title || label) && (
           <TooltipContent
-            {...label}
+            {...labelProps}
             className={cn('flex items-center gap-2 z-50 justify-start', label?.className)}
             side={label?.side || 'right'}
           >
