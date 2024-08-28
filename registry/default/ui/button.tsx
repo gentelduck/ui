@@ -87,7 +87,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }: ButtonProps,
     ref: React.ForwardedRef<HTMLButtonElement> | undefined
   ) => {
-    const { className: labelClassName, type = 'default', showLabel, showCommand, ...labelProps } = label || {}
+    const {
+      className: labelClassName,
+      type = 'default',
+      children: labelChildren,
+      side,
+      showLabel,
+      showCommand,
+      ...labelProps
+    } = label || {}
     const Component = asChild ? Slot : 'button'
     const { icon: Icon, className: iconClassName, ...iconProps } = icon ?? {}
     const { icon: SecondIcon, className: secondIconClassName, ...secondIconProps } = secondIcon ?? {}
@@ -152,17 +160,17 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               )}
               {!isCollapsed && (children || title)}
             </div>
-            {!isCollapsed && command?.label && !label?.showCommand && <CommandComponent />}
+            {!isCollapsed && command?.label && !showCommand && <CommandComponent />}
 
             {!isCollapsed &&
               label &&
-              !label?.showLabel &&
+              !showLabel &&
               (type == 'default' ? (
                 <span
                   className={cn('ml-2 text-[.9rem]', labelClassName)}
                   {...labelProps}
                 >
-                  {label.children as unknown as React.ReactNode}
+                  {labelChildren}
                 </span>
               ) : (
                 <Badge
@@ -171,7 +179,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                   className={cn('size-5 text-[.6rem] absolute top-0 right-0', labelClassName)}
                   {...labelProps}
                 >
-                  {label?.children}
+                  {labelChildren}
                 </Badge>
               ))}
             {!isCollapsed && !loading && SecondIcon && (
@@ -182,18 +190,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             )}
           </Component>
         </TooltipTrigger>
-        {(isCollapsed || label?.showLabel) && (title || label) && (
+        {(isCollapsed || showLabel) && (title || label) && (
           <TooltipContent
             {...labelProps}
-            className={cn('flex items-center gap-2 z-50 justify-start', label?.className)}
-            side={label?.side || 'right'}
+            className={cn('flex items-center gap-2 z-50 justify-start', className)}
+            side={side || 'right'}
           >
-            {title && (title as unknown as React.ReactNode)}
-            {command?.label && label?.showCommand && <CommandComponent />}
-            {label?.showLabel && (
-              <span className={cn('ml-auto text-[.9rem]', !label.showLabel && 'text-muted-foreground')}>
-                {label.children as unknown as React.ReactNode}
-              </span>
+            {title && title}
+            {command?.label && showCommand && <CommandComponent />}
+            {showLabel && (
+              <span className={cn('ml-auto text-[.9rem]', !showLabel && 'text-muted-foreground')}>{labelChildren}</span>
             )}
           </TooltipContent>
         )}

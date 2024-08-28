@@ -10,7 +10,12 @@ import {
   CircleX,
   Clock12,
   LucideIcon,
+  Pencil,
+  Share2,
+  Star,
   Trash2,
+  Twitch,
+  Twitter,
 } from 'lucide-react'
 import { EyeNoneIcon } from '@radix-ui/react-icons'
 
@@ -215,33 +220,50 @@ const optionsData: DropdownMenuOptionsDataType<true, true>[] = [
   {
     children: 'Edit',
     onClick: () => console.log('edit'),
+    icon: { icon: Pencil },
+  },
+  {
+    children: 'Share',
+    icon: {
+      icon: Share2,
+    },
     nestedData: {
-      group: [1],
+      group: [2],
       optionsData: [
         {
+          className: '[&_svg]:text-[#1DA1F2]',
+          children: 'Twitter',
+          icon: {
+            icon: Twitter,
+          },
+        },
+        {
           command: {
-            key: 'e',
+            key: 'b',
             label: '⌘+e',
-            action: () => console.log('edit'),
           },
           icon: {
-            icon: Trash2,
+            icon: Twitch,
           },
-          children: 'Duplicate',
-          onClick: () => console.log('duplicate'),
+          className: '[&_svg]:text-[#6441a5]',
+          children: 'Twitch',
         },
       ],
     },
   },
-  { children: 'Make a copy' },
-  { children: 'Favorite' },
+  {
+    children: 'Favorite',
+    icon: {
+      icon: Star,
+    },
+  },
   {
     children: 'Delete',
     command: { label: '⌘⌫', key: 'a' },
     icon: {
       icon: Trash2,
     },
-    className: 'text-red-500',
+    className: '[&_span]:text-red-500 text-red-500 [&_span]:hover:text-primary',
   },
 ]
 
@@ -250,7 +272,7 @@ export default function DataTableMainDemo() {
     <>
       <TableView<true, HeaderColumns, TableDataType>
         table={{
-          className: 'w-[650px] h-[340px]',
+          className: 'w-[650px] h-[342px]',
         }}
         header={columns}
         selection={true}
@@ -272,7 +294,11 @@ export default function DataTableMainDemo() {
           showGroup: true,
           showNavigation: true,
         }}
-        options={{
+        contextMenu={{
+          group: [3, 1],
+          optionsData: optionsData,
+        }}
+        dropdownMenu={{
           group: [3, 1],
           optionsData: optionsData,
         }}

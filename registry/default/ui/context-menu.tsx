@@ -2,12 +2,10 @@
 
 import * as React from 'react'
 import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
-import { Check, ChevronRight, Circle, LucideIcon } from 'lucide-react'
+import { Check, ChevronRight, Circle } from 'lucide-react'
 
 import { cn, groupArrays } from '@/lib/utils'
-import { IconProps } from '@radix-ui/react-icons/dist/types'
 import { Button, ButtonProps, CommandType } from './button'
-import { ParseInput } from 'zod'
 
 const ContextMenu = ContextMenuPrimitive.Root
 
@@ -173,35 +171,39 @@ const ContextMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLS
 }
 ContextMenuShortcut.displayName = 'ContextMenuShortcut'
 
-interface DropdownMenuOptionsDataType<T, Y extends boolean = true>
-  extends Partial<React.ComponentPropsWithoutRef<typeof ContextMenuItem>> {
-  icon?: { icon: LucideIcon } & IconProps & React.RefAttributes<SVGSVGElement>
-  command?: Partial<React.ComponentPropsWithoutRef<typeof ContextMenuShortcut>> & CommandType
-  action?: (args: T) => void
-  nestedData?: Y extends true ? ContextCustomViewOptionsType<T> : never
-}
+type DropdownMenuOptionsDataType<T, Y extends boolean = true> = {
+  command?: React.ComponentPropsWithoutRef<typeof ContextMenuShortcut> & CommandType
+  nestedData?: Y extends true
+    ? Partial<React.ComponentPropsWithoutRef<typeof ContextMenuSubContent> & ContextMenuOptionsType<T>>
+    : never
+} & Partial<Omit<ButtonProps, 'command'>> &
+  Partial<React.ComponentPropsWithoutRef<typeof ContextMenuCheckboxItem>> &
+  Partial<React.ComponentPropsWithoutRef<typeof ContextMenuItem>> &
+  Partial<React.ComponentPropsWithoutRef<typeof ContextMenuRadioItem>>
 
-interface ContextCustomViewOptionsType<T> {
+interface ContextMenuOptionsType<T> {
+  itemType?: 'checkbox' | 'radio' | 'label'
   actionsArgs?: T extends {} ? T : never
-  optionsData?: DropdownMenuOptionsDataType<T>[] & ButtonProps
+  optionsData?: DropdownMenuOptionsDataType<T>[]
   group?: number[]
 }
 
 interface ContextCustomViewProps<T> {
   wrapper?: Partial<React.ComponentPropsWithoutRef<typeof ContextMenu>>
-  content?: {
-    options?: ContextCustomViewOptionsType<T>
-  } & Partial<React.ComponentPropsWithoutRef<typeof ContextMenuContent>>
-  trigger?: {
-    icon?: React.ReactElement
-  } & Partial<React.ComponentPropsWithoutRef<typeof ContextMenuTrigger>> &
-    ButtonProps
+  content?: Partial<
+    {
+      label?: React.ComponentPropsWithoutRef<typeof ContextMenuLabel>
+      options?: ContextMenuOptionsType<T>
+    } & React.ComponentPropsWithoutRef<typeof ContextMenuContent>
+  >
+  trigger?: React.ComponentPropsWithoutRef<typeof ContextMenuTrigger> & ButtonProps
 }
 
-const ContextCustomView = <T,>({ content, trigger }: ContextCustomViewProps<T>) => {
+const ContextCustomView = <T,>({ content, trigger, wrapper }: ContextCustomViewProps<T>) => {
   const { className: triggerClassName, icon: Icon, children: triggerChildren, ...triggerProps } = trigger ?? {}
   const { className: optionsClassName, options, ...contentProps } = content ?? {}
   const groupedOption = groupArrays(options?.group ?? [options?.optionsData?.length || 1], options?.optionsData ?? [])
+  const {} = wrapper ?? {}
 
   return (
     <ContextMenu>
@@ -219,14 +221,14 @@ const ContextCustomView = <T,>({ content, trigger }: ContextCustomViewProps<T>) 
         )}
       </ContextMenuTrigger>
       <ContextMenuContent
-        className={cn('w-[250px]', optionsClassName)}
+        className={cn('w-[200px]', optionsClassName)}
         {...contentProps}
       >
         {groupedOption.map((group, idx) => {
           return (
             <React.Fragment key={`group-${idx}`}>
               {group.map((item, idx) => {
-                const { children, action, className, nestedData, ...props } = item
+                const { children, className, value, nestedData, ...props } = item
                 const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
                 const {
                   className: commandClassName,
@@ -239,107 +241,135 @@ const ContextCustomView = <T,>({ content, trigger }: ContextCustomViewProps<T>) 
                     nestedData?.group ?? [nestedData?.optionsData?.length || 1],
                     nestedData?.optionsData ?? []
                   ) ?? []
+                const {
+                  className: nestedClassName,
+                  group: nestedGroup,
+                  optionsData: nestedOptions,
+                  ...nestedProps
+                } = nestedData ?? {}
 
-                return !nestedData?.optionsData?.length ? (
-                  <ContextMenuItem
-                    key={`item-${idx}`}
-                    className={cn('flex gap-2 items-center', className)}
-                    {...props}
-                  >
-                    {Icon && (
-                      <Icon
-                        {...iconProps}
-                        className={cn('h-4 w-4', iconClassName)}
-                      />
-                    )}
-                    {children}
-                    {item.command && (
-                      <>
-                        <ContextMenuShortcut
-                          children={commandLabel}
-                          {...commandProps}
-                          key={`command-${idx}`}
-                        />
-                        <Button
-                          command={item.command}
-                          className="sr-only hidden"
-                        />
-                      </>
-                    )}
-                  </ContextMenuItem>
-                ) : (
-                  <ContextMenuSub key={`sub-item-${idx}`}>
-                    <ContextMenuSubTrigger className={cn('flex item-center gap-2')}>
-                      {Icon && (
-                        <Icon
-                          {...iconProps}
-                          className={cn('h-4 w-4', iconClassName)}
-                        />
-                      )}
-                      {children}
-                    </ContextMenuSubTrigger>
-                    <ContextMenuPortal>
-                      <ContextMenuSubContent>
-                        {groupedNestedOption?.map((nestedItem, idx) => {
-                          return (
-                            <React.Fragment key={`nested-${idx}`}>
-                              {nestedItem.map((nestedItemInner, idx) => {
-                                const {
-                                  children: nestedChildren,
-                                  action: nestedAction,
-                                  className: nestedClassName,
-                                  ...nestedProps
-                                } = nestedItemInner
-                                const {
-                                  icon: NestedIcon,
-                                  className: nestedIconClassName,
-                                  ...nestedIconProps
-                                } = nestedItemInner.icon ?? {}
-                                const {
-                                  className: nestedCommandClassName,
-                                  label: enstedCommandLabel,
-                                  action: nestedCommandAction,
-                                  ...nestedCommandProps
-                                } = nestedItemInner.command ?? {}
+                const Component =
+                  options?.itemType === 'checkbox'
+                    ? ContextMenuCheckboxItem
+                    : options?.itemType === 'radio'
+                      ? ContextMenuRadioItem
+                      : ContextMenuItem
 
-                                return (
-                                  <ContextMenuItem
-                                    key={`nested-item-${idx}`}
-                                    className={cn('flex gap-2 items-center', nestedClassName)}
-                                    {...nestedProps}
-                                  >
-                                    {NestedIcon && (
-                                      <NestedIcon
-                                        {...nestedIconProps}
-                                        className={cn('h-4 w-4', nestedIconClassName)}
-                                      />
-                                    )}
-                                    {children}
-                                    {nestedItemInner.command && (
-                                      <>
-                                        <ContextMenuShortcut
-                                          children={enstedCommandLabel}
-                                          {...nestedCommandProps}
-                                          key={`nested-item-shortcut-${idx}`}
-                                        />
-                                        <Button
-                                          command={nestedItemInner.command}
-                                          className="sr-only hidden"
-                                        />
-                                      </>
-                                    )}
-                                  </ContextMenuItem>
-                                )
-                              })}
-                              {idx !== groupedNestedOption?.length - 1 && (
-                                <ContextMenuSeparator key={`separator-${idx}`} />
-                              )}
-                            </React.Fragment>
-                          )
-                        })}
-                      </ContextMenuSubContent>
-                    </ContextMenuPortal>
-                  </ContextMenuSub>
+                return (
+                  <React.Fragment key={`item-${idx}`}>
+                    {!nestedData?.optionsData?.length ? (
+                      <Component
+                        value={value as string}
+                        className={cn('flex gap-2 items-center', className)}
+                        {...props}
+                      >
+                        {Icon && (
+                          <Icon
+                            {...iconProps}
+                            className={cn('h-4 w-4', iconClassName)}
+                          />
+                        )}
+                        {children}
+                        {item.command && (
+                          <>
+                            <ContextMenuShortcut
+                              children={commandLabel}
+                              {...commandProps}
+                              key={`command-${idx}`}
+                            />
+                            <Button
+                              command={item.command}
+                              className="sr-only hidden"
+                            />
+                          </>
+                        )}
+                      </Component>
+                    ) : (
+                      <ContextMenuSub key={`sub-item-${idx}`}>
+                        <ContextMenuSubTrigger className={cn('flex item-center gap-2')}>
+                          {Icon && (
+                            <Icon
+                              {...iconProps}
+                              className={cn('h-4 w-4', iconClassName)}
+                            />
+                          )}
+                          {children}
+                        </ContextMenuSubTrigger>
+                        <ContextMenuPortal>
+                          <ContextMenuSubContent
+                            className={cn('w-[200px]', nestedClassName)}
+                            {...nestedProps}
+                          >
+                            {groupedNestedOption?.map((nestedItem, idx) => {
+                              return (
+                                <React.Fragment key={`nested-${idx}`}>
+                                  {nestedItem.map((nestedItemInner, idx) => {
+                                    const {
+                                      children: nestedChildren,
+                                      value,
+                                      className: nestedClassName,
+                                      ...nestedProps
+                                    } = nestedItemInner
+                                    const {
+                                      icon: NestedIcon,
+                                      className: nestedIconClassName,
+                                      ...nestedIconProps
+                                    } = nestedItemInner.icon ?? {}
+                                    const {
+                                      className: nestedCommandClassName,
+                                      label: enstedCommandLabel,
+                                      action: nestedCommandAction,
+                                      ...nestedCommandProps
+                                    } = nestedItemInner.command ?? {}
+
+                                    const NestedComponent =
+                                      nestedData.itemType === 'checkbox'
+                                        ? ContextMenuCheckboxItem
+                                        : nestedData.itemType === 'radio'
+                                          ? ContextMenuRadioItem
+                                          : ContextMenuItem
+
+                                    return (
+                                      <NestedComponent
+                                        value={value as string}
+                                        key={`nested-item-${idx}`}
+                                        className={cn('flex gap-2 items-center', nestedClassName)}
+                                        {...nestedProps}
+                                      >
+                                        {NestedIcon && (
+                                          <NestedIcon
+                                            {...nestedIconProps}
+                                            className={cn('h-4 w-4', nestedIconClassName)}
+                                          />
+                                        )}
+                                        {nestedChildren}
+                                        {nestedItemInner.command && (
+                                          <>
+                                            <ContextMenuShortcut
+                                              children={enstedCommandLabel}
+                                              {...nestedCommandProps}
+                                              key={`nested-item-shortcut-${idx}`}
+                                            />
+                                            <Button
+                                              command={nestedItemInner.command}
+                                              className="sr-only hidden"
+                                            />
+                                          </>
+                                        )}
+                                      </NestedComponent>
+                                    )
+                                  })}
+                                  {idx !== groupedNestedOption?.length - 1 && (
+                                    <ContextMenuSeparator key={`separator-${idx}`} />
+                                  )}
+                                </React.Fragment>
+                              )
+                            })}
+                          </ContextMenuSubContent>
+                        </ContextMenuPortal>
+                      </ContextMenuSub>
+                    )}
+                  </React.Fragment>
                 )
               })}
               {idx !== groupedOption.length - 1 && <ContextMenuSeparator />}
@@ -370,4 +400,5 @@ export {
   ContextMenuSubTrigger,
   ContextMenuRadioGroup,
   ContextCustomView,
+  type ContextMenuOptionsType,
 }

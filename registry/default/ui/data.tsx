@@ -43,7 +43,7 @@ export const tableData: TableContentDataType<HeaderColumns, TableDataType>[] = [
     task: { children: 'TASK-7839' },
     title: { children: 'We need to bypass the neural TCP card!' },
     status: { children: 'Todo' },
-    label: { children: 'bug' },
+    label: { children: 'Bug' },
     priority: { children: 'High' },
   },
   {
@@ -52,21 +52,21 @@ export const tableData: TableContentDataType<HeaderColumns, TableDataType>[] = [
       children: 'The SAS interface is down, bypass the open-source pixel so we can back up the PNG bandwtaskth!',
     },
     status: { children: 'Backlog' },
-    label: { children: 'feature' },
+    label: { children: 'Feature' },
     priority: { children: 'Medium' },
   },
   {
     task: { children: 'TASK-8686' },
     title: { children: "I'll parse the wireless SSL protocol, that should drive the API panel!" },
     status: { children: 'Canceled' },
-    label: { children: 'feature' },
+    label: { children: 'Feature' },
     priority: { children: 'Medium' },
   },
   {
     task: { children: 'TASK-1280' },
     title: { children: 'Use the digital TLS panel, then you can transmit the haptic system!' },
     status: { children: 'Done' },
-    label: { children: 'bug' },
+    label: { children: 'Bug' },
     priority: { children: 'High' },
   },
   {
@@ -75,21 +75,21 @@ export const tableData: TableContentDataType<HeaderColumns, TableDataType>[] = [
       children: 'The UTF8 application is down, parse the neural bandwtaskth so we can back up the PNG firewall!',
     },
     status: { children: 'Done' },
-    label: { children: 'feature' },
+    label: { children: 'Feature' },
     priority: { children: 'High' },
   },
   {
     task: { children: 'TASK-1138' },
     title: { children: "Generating the driver won't do anything, we need to quantify the 1080p SMTP bandwtaskth!" },
     status: { children: 'In Progress' },
-    label: { children: 'feature' },
+    label: { children: 'Feature' },
     priority: { children: 'Medium' },
   },
   {
     task: { children: 'TASK-7184' },
     title: { children: 'We need to program the back-end THX pixel!' },
     status: { children: 'Todo' },
-    label: { children: 'feature' },
+    label: { children: 'Feature' },
     priority: { children: 'Low' },
   },
   {
@@ -117,21 +117,21 @@ export const tableData: TableContentDataType<HeaderColumns, TableDataType>[] = [
     task: { children: 'TASK-2858' },
     title: { children: 'We need to overrtaske the online UDP bus!' },
     status: { children: 'Backlog' },
-    label: { children: 'bug' },
+    label: { children: 'Bug' },
     priority: { children: 'Medium' },
   },
   {
     task: { children: 'TASK-9864' },
     title: { children: "I'll reboot the 1080p FTP panel, that should matrix the HEX hard drive!" },
     status: { children: 'Done' },
-    label: { children: 'bug' },
+    label: { children: 'Bug' },
     priority: { children: 'High' },
   },
   {
     task: { children: 'TASK-8404' },
     title: { children: 'We need to generate the virtual HEX alarm!' },
     status: { children: 'In Progress' },
-    label: { children: 'bug' },
+    label: { children: 'Bug' },
     priority: { children: 'Low' },
   },
   {
@@ -159,7 +159,7 @@ export const tableData: TableContentDataType<HeaderColumns, TableDataType>[] = [
     task: { children: 'TASK-9885' },
     title: { children: 'We need to compress the auxiliary VGA driver!' },
     status: { children: 'Backlog' },
-    label: { children: 'bug' },
+    label: { children: 'Bug' },
     priority: { children: 'High' },
   },
   {
@@ -173,7 +173,7 @@ export const tableData: TableContentDataType<HeaderColumns, TableDataType>[] = [
     task: { children: 'TASK-9285' },
     title: { children: 'The IP monitor is down, copy the haptic alarm so we can generate the HTTP transmitter!' },
     status: { children: 'Todo' },
-    label: { children: 'bug' },
+    label: { children: 'Bug' },
     priority: { children: 'High' },
   },
   {
@@ -189,21 +189,21 @@ export const tableData: TableContentDataType<HeaderColumns, TableDataType>[] = [
     task: { children: 'TASK-7068' },
     title: { children: "You can't generate the capacitor without indexing the wireless HEX pixel!" },
     status: { children: 'Canceled' },
-    label: { children: 'bug' },
+    label: { children: 'Bug' },
     priority: { children: 'Low' },
   },
   {
     task: { children: 'TASK-6502' },
     title: { children: "Navigating the microchip won't do anything, we need to bypass the back-end SQL bus!" },
     status: { children: 'Todo' },
-    label: { children: 'bug' },
+    label: { children: 'Bug' },
     priority: { children: 'High' },
   },
   {
     task: { children: 'TASK-5326' },
     title: { children: 'We need to hack the redundant UTF8 transmitter!' },
     status: { children: 'Todo' },
-    label: { children: 'bug' },
+    label: { children: 'Bug' },
     priority: { children: 'Low' },
   },
   {
@@ -217,11 +217,11 @@ export const tableData: TableContentDataType<HeaderColumns, TableDataType>[] = [
 
 export const labels = [
   {
-    value: 'bug',
+    value: 'Bug',
     label: 'Bug',
   },
   {
-    value: 'feature',
+    value: 'Feature',
     label: 'Feature',
   },
   {

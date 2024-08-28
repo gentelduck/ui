@@ -174,34 +174,41 @@ const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTML
 DropdownMenuShortcut.displayName = 'DropdownMenuShortcut'
 
 type DropdownMenuOptionsDataType<T, Y extends boolean = true> = {
+  action: (args: T) => void
   command?: React.ComponentPropsWithoutRef<typeof DropdownMenuShortcut> & CommandType
-  action?: (args: T) => void
-  nestedData?: Y extends true ? DropdownMenuOptionsType<T> : never
+  nestedData?: Y extends true
+    ? Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuSubContent> & DropdownMenuOptionsType<T>>
+    : never
 } & Partial<Omit<ButtonProps, 'command'>> &
   Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuCheckboxItem>> &
   Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuItem>> &
   Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuRadioItem>>
 
 interface DropdownMenuOptionsType<T> {
+  itemType?: 'checkbox' | 'radio' | 'label'
   actionsArgs?: T extends {} ? T : never
   optionsData?: DropdownMenuOptionsDataType<T>[]
   group?: number[]
 }
 
 interface DropdownMenuViewProps<T> {
-  content?: {
-    itemType?: 'checkbox' | 'radio' | 'label'
-    label?: React.ComponentPropsWithoutRef<typeof DropdownMenuLabel>
-    options?: DropdownMenuOptionsType<T>
-  } & React.ComponentPropsWithoutRef<typeof DropdownMenuContent>
+  content?: Partial<
+    {
+      label?: React.ComponentPropsWithoutRef<typeof DropdownMenuLabel>
+      options?: DropdownMenuOptionsType<T>
+    } & React.ComponentPropsWithoutRef<typeof DropdownMenuContent>
+  >
   trigger?: React.ComponentPropsWithoutRef<typeof DropdownMenuTrigger> & ButtonProps
 }
 
 function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
   const { className: triggerClassName, command: triggerCommand, icon: Icon, ...triggerProps } = trigger ?? {}
-  const { className: optionsClassName, itemType = 'label', options, label, ...contentProps } = content ?? {}
+  const { className: optionsClassName, options, label, ...contentProps } = content ?? {}
   const { className: labelClassName, ...labelProps } = label ?? {}
+
   const groupedOption = groupArrays(options?.group ?? [options?.optionsData?.length || 1], options?.optionsData ?? [])
+
+  console.log(optionsClassName)
 
   const [open, setOpen] = React.useState(false)
   return (
@@ -229,7 +236,7 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className={cn('w-[150px]', optionsClassName)}
+        className={cn('w-[200px]', optionsClassName)}
         {...contentProps}
       >
         {label && (
@@ -245,7 +252,7 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
           return (
             <React.Fragment key={`group-${idx}`}>
               {group.map((item, idx) => {
-                const { children, action, className, value, nestedData, key: _key, ...props } = item
+                const { children, className, itemType = 'label', value, nestedData, key: _key, ...props } = item
                 const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
                 const {
                   className: commandClassName,
@@ -253,6 +260,12 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
                   action: commandAction,
                   ...commandProps
                 } = item.command ?? {}
+                const {
+                  className: nestedClassName,
+                  group: nestedGroup,
+                  optionsData: nestedOptions,
+                  ...nestedProps
+                } = nestedData ?? {}
                 const groupedNestedOption =
                   groupArrays(
                     nestedData?.group ?? [nestedData?.optionsData?.length || 1],
@@ -260,9 +273,9 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
                   ) ?? []
 
                 const Component =
-                  itemType === 'checkbox'
+                  options?.itemType === 'checkbox'
                     ? DropdownMenuCheckboxItem
-                    : itemType === 'radio'
+                    : options?.itemType === 'radio'
                       ? DropdownMenuRadioItem
                       : DropdownMenuItem
 
@@ -307,14 +320,18 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
                           {children}
                         </DropdownMenuSubTrigger>
                         <DropdownMenuPortal>
-                          <DropdownMenuSubContent>
+                          <DropdownMenuSubContent
+                            className={cn('w-[200px]', nestedClassName)}
+                            {...nestedProps}
+                          >
                             {groupedNestedOption?.map((nestedItem, idx) => {
                               return (
                                 <React.Fragment key={`nested-${idx}`}>
                                   {nestedItem.map((nestedItemInner, idx) => {
                                     const {
                                       children: nestedChildren,
-                                      action: nestedAction,
+                                      itemType: nestedItemType = 'label',
+                                      value: nestedValue,
                                       className: nestedClassName,
                                       ...nestedProps
                                     } = nestedItemInner
@@ -330,8 +347,16 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
                                       ...nestedCommandProps
                                     } = nestedItemInner.command ?? {}
 
+                                    const NestedComponent =
+                                      nestedData.itemType === 'checkbox'
+                                        ? DropdownMenuCheckboxItem
+                                        : nestedData.itemType === 'radio'
+                                          ? DropdownMenuRadioItem
+                                          : DropdownMenuItem
+
                                     return (
-                                      <DropdownMenuItem
+                                      <NestedComponent
+                                        value={value as string}
                                         key={`nested-item-${idx}`}
                                         className={cn('flex gap-2 items-center', nestedClassName)}
                                         {...nestedProps}
@@ -342,7 +367,7 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
                                             className={cn('h-4 w-4', nestedIconClassName)}
                                           />
                                         )}
-                                        {children}
+                                        {nestedChildren}
                                         {nestedItemInner.command && (
                                           <>
                                             <DropdownMenuShortcut
@@ -356,7 +381,7 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
                                             />
                                           </>
                                         )}
-                                      </DropdownMenuItem>
+                                      </NestedComponent>
                                     )
                                   })}
                                   {idx !== groupedNestedOption?.length - 1 && (

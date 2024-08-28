@@ -22,7 +22,7 @@ import { CommandListGroupDataType } from './command'
 import { DropdownMenuOptionsDataType, DropdownMenuOptionsType, DropdownMenuView } from './dropdown-menu'
 import { CaretSortIcon, MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { Badge } from './badge'
-import { ContextCustomView } from './context-menu'
+import { ContextCustomView, ContextMenuOptionsType } from './context-menu'
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
@@ -233,8 +233,8 @@ const TableHeaderActions = <
       },
       children: label ?? children,
       ...props,
-    } as DropdownMenuOptionsDataType<false>
-  }) as DropdownMenuOptionsDataType<false>[]
+    }
+  }) as DropdownMenuOptionsDataType<C, T>[]
 
   return (
     <>
@@ -278,7 +278,9 @@ const TableHeaderActions = <
                         setValue: setValue,
                       }
                     }
-                    content={filter?.content}
+                    content={{
+                      ...filter?.content!,
+                    }}
                   />
                 )
               })}
@@ -294,7 +296,7 @@ const TableHeaderActions = <
                   View
                 </>
               ),
-              className: 'ml-auto hidden [&>div]:h-8 h-8 w-[79px] lg:flex [&>div]:gap-0 text-xs',
+              className: 'ml-auto [&>div]:h-8 h-8 w-[79px] lg:flex [&>div]:gap-0 text-xs',
               label: {
                 children: 'Toggle columns',
                 showCommand: true,
@@ -307,12 +309,11 @@ const TableHeaderActions = <
               },
             }}
             content={{
-              className: 'w-[180px]',
-              itemType: 'checkbox',
               label: {
                 children: 'Toggle columns',
               },
               options: {
+                itemType: 'checkbox',
                 optionsData: optionsData,
               },
             }}
@@ -462,7 +463,8 @@ interface TableCustomBodyProps<
   selection: boolean
   selected: TableContentDataType<Y, C>[]
   setSelected: React.Dispatch<React.SetStateAction<TableContentDataType<Y, C>[]>>
-  options: DropdownMenuOptionsType<T>
+  dropdownMenu: DropdownMenuOptionsType<T>
+  contextMenu: ContextMenuOptionsType<T>
 }
 
 type TableDataFilteredType<T extends Record<string, any>> = {
@@ -480,7 +482,8 @@ const TableCustomBody = <
   selection,
   selected,
   setSelected,
-  options,
+  dropdownMenu,
+  contextMenu,
 }: TableCustomBodyProps<T, Y, C>) => {
   return (
     <TableBody>
@@ -522,7 +525,7 @@ const TableCustomBody = <
                               'items-center gap-2 flex w-full',
                               headers?.[idx]?.className,
                               className,
-                              idx === headersEntries.length - 1 && options && 'justify-between w-full'
+                              idx === headersEntries.length - 1 && dropdownMenu && 'justify-between w-full'
                             )}
                           >
                             {selection && idx === 0 && (
@@ -548,7 +551,7 @@ const TableCustomBody = <
                             )}
 
                             <span className="text-ellipsis overflow-hidden whitespace-nowrap">{children}</span>
-                            {idx === headersEntries.length - 1 && options && (
+                            {idx === headersEntries.length - 1 && dropdownMenu && (
                               <DropdownMenuView
                                 trigger={{
                                   className: 'flex h-8 w-8 p-0 data-[state=open]:bg-muted',
@@ -562,8 +565,7 @@ const TableCustomBody = <
                                 }}
                                 content={{
                                   align: 'end',
-                                  className: 'w-[160px]',
-                                  options,
+                                  options: dropdownMenu,
                                 }}
                               />
                             )}
@@ -576,9 +578,7 @@ const TableCustomBody = <
               ),
             }}
             content={{
-              options: {
-                optionsData: options?.optionsData,
-              },
+              options: contextMenu,
             }}
           ></ContextCustomView>
         )
@@ -791,7 +791,8 @@ export interface TableViewProps<
   pagination?: TablePaginationsType
   viewButton?: boolean
   tableSearch?: boolean
-  options: DropdownMenuOptionsType<T>
+  dropdownMenu?: DropdownMenuOptionsType<T>
+  contextMenu?: ContextMenuOptionsType<T>
 }
 
 const TableView = <
@@ -808,7 +809,8 @@ const TableView = <
   tableContentData,
   caption,
   table,
-  options,
+  dropdownMenu,
+  contextMenu,
   filters,
 }: TableViewProps<T, Y, C>) => {
   const { className: tableClassName, ...tableProps } = table! ?? {}
@@ -938,7 +940,8 @@ const TableView = <
               selection={selection ?? false}
               selected={selected}
               setSelected={setSelected}
-              options={options}
+              dropdownMenu={dropdownMenu ?? {}}
+              contextMenu={contextMenu ?? {}}
             />
           )}
           {footer?.columns && <TableCustomFooter {...footer} />}
