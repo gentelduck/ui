@@ -19,47 +19,53 @@ import {
 } from 'lucide-react'
 import { EyeNoneIcon } from '@radix-ui/react-icons'
 
-const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<HeaderColumns, TableDataType>>[] = [
-  {
-    action: ({ sortArray, setHeaders, setTableData, data, headers, idx }) => {
-      const { sortedData, updatedColumns } = sortArray(headers, data, Object.keys(data[0])[idx] as HeaderColumns, 'asc')
-      setHeaders(() => updatedColumns)
-      setTableData(() => (updatedColumns[idx].currentSort === 'asc' ? sortedData : data))
+const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<HeaderColumns, TableDataType>, false>[] =
+  [
+    {
+      action: ({ sortArray, setHeaders, setTableData, data, headers, idx }) => {
+        const { sortedData, updatedColumns } = sortArray(
+          headers,
+          data,
+          Object.keys(data[0])[idx]! as HeaderColumns,
+          'asc'
+        )
+        setHeaders(() => updatedColumns)
+        setTableData(() => (updatedColumns[idx].currentSort === 'asc' ? sortedData : data))
+      },
+      icon: {
+        icon: ArrowUpIcon,
+        className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
+      },
+      children: 'Asc',
     },
-    icon: {
-      icon: ArrowUpIcon,
-      className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
+    {
+      action: ({ sortArray, setHeaders, setTableData, data, headers, idx }) => {
+        const { sortedData, updatedColumns } = sortArray(
+          headers,
+          data,
+          Object.keys(data[0])[idx] as HeaderColumns,
+          'desc'
+        )
+        setHeaders(() => updatedColumns)
+        setTableData(() => (updatedColumns[idx].currentSort === 'desc' ? sortedData : data))
+      },
+      icon: {
+        icon: ArrowDownIcon,
+        className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
+      },
+      children: 'Desc',
     },
-    children: 'Asc',
-  },
-  {
-    action: ({ sortArray, setHeaders, setTableData, data, headers, idx }) => {
-      const { sortedData, updatedColumns } = sortArray(
-        headers,
-        data,
-        Object.keys(data[0])[idx] as HeaderColumns,
-        'desc'
-      )
-      setHeaders(() => updatedColumns)
-      setTableData(() => (updatedColumns[idx].currentSort === 'desc' ? sortedData : data))
+    {
+      action: ({ headers, column, setHeaders }) => {
+        setHeaders(headers.filter(sub => sub !== column))
+      },
+      icon: {
+        icon: EyeNoneIcon as LucideIcon,
+        className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
+      },
+      children: 'Hide',
     },
-    icon: {
-      icon: ArrowDownIcon,
-      className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
-    },
-    children: 'Desc',
-  },
-  {
-    action: ({ headers, column, setHeaders }) => {
-      setHeaders(headers.filter(sub => sub !== column))
-    },
-    icon: {
-      icon: EyeNoneIcon as LucideIcon,
-      className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
-    },
-    children: 'Hide',
-  },
-]
+  ]
 
 export type HeaderColumns = 'task' | 'title' | 'status' | 'label' | 'priority'
 const columns: TableHeaderColumns<true, HeaderColumns, TableDataType>[] = [
@@ -216,7 +222,7 @@ const filtersData = [
   } as ComboboxType<string, PriorityType>,
 ]
 
-const optionsData: DropdownMenuOptionsDataType<true, true>[] = [
+const optionsData: DropdownMenuOptionsDataType<TableHeaderOptionsType<HeaderColumns, TableDataType>, true>[] = [
   {
     children: 'Edit',
     onClick: () => console.log('edit'),

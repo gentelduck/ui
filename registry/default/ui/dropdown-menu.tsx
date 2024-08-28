@@ -174,20 +174,20 @@ const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTML
 DropdownMenuShortcut.displayName = 'DropdownMenuShortcut'
 
 type DropdownMenuOptionsDataType<T, Y extends boolean = true> = {
-  action: (args: T) => void
+  action?: (args: T) => void
   command?: React.ComponentPropsWithoutRef<typeof DropdownMenuShortcut> & CommandType
   nestedData?: Y extends true
-    ? Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuSubContent> & DropdownMenuOptionsType<T>>
+    ? Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuSubContent> & DropdownMenuOptionsType<T, Y>>
     : never
 } & Partial<Omit<ButtonProps, 'command'>> &
   Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuCheckboxItem>> &
   Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuItem>> &
   Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuRadioItem>>
 
-interface DropdownMenuOptionsType<T> {
+interface DropdownMenuOptionsType<T, Y extends boolean = true> {
   itemType?: 'checkbox' | 'radio' | 'label'
   actionsArgs?: T extends {} ? T : never
-  optionsData?: DropdownMenuOptionsDataType<T>[]
+  optionsData?: DropdownMenuOptionsDataType<T, Y>[]
   group?: number[]
 }
 
@@ -208,7 +208,7 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
 
   const groupedOption = groupArrays(options?.group ?? [options?.optionsData?.length || 1], options?.optionsData ?? [])
 
-  console.log(optionsClassName)
+  // console.log(optionsClassName)
 
   const [open, setOpen] = React.useState(false)
   return (

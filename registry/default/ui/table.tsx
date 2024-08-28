@@ -234,7 +234,7 @@ const TableHeaderActions = <
       children: label ?? children,
       ...props,
     }
-  }) as DropdownMenuOptionsDataType<C, T>[]
+  }) as DropdownMenuOptionsDataType<C>[]
 
   return (
     <>
@@ -791,8 +791,8 @@ export interface TableViewProps<
   pagination?: TablePaginationsType
   viewButton?: boolean
   tableSearch?: boolean
-  dropdownMenu?: DropdownMenuOptionsType<T>
-  contextMenu?: ContextMenuOptionsType<T>
+  dropdownMenu?: DropdownMenuOptionsType<C>
+  contextMenu?: ContextMenuOptionsType<TableHeaderOptionsType<Y, C>>
 }
 
 const TableView = <
