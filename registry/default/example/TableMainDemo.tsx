@@ -117,8 +117,8 @@ const filtersData = [
         side: 'top',
       },
       command: {
-        label: '⌘+bs',
-        key: 'bs',
+        label: '⌃+⇧+S',
+        key: 'ctrl+shift+s',
       },
     },
     content: {
@@ -183,8 +183,8 @@ const filtersData = [
         side: 'top',
       },
       command: {
-        label: '⌘+bh',
-        key: 'f1',
+        label: '⌃+⇧+M',
+        key: 'ctrl+shift+m',
       },
     },
     content: {
@@ -277,20 +277,20 @@ export default function DataTableMainDemo() {
   return (
     <>
       <TableView<true, HeaderColumns, TableDataType>
+        wrapper={{ className: 'w-[270px] m-auto' }}
         table={{
-          className: 'w-[650px] h-[342px]',
+          className: 'w-[270px]',
         }}
         header={columns}
         selection={true}
         filters={filtersData}
         tableContentData={[...tableData]}
-        // caption={{
-        //   children: 'A list of your recent invoices.',
-        // }}
+        caption={{
+          children: 'A list of your recent invoices.',
+        }}
         // footer={{
         //   children: 'Footer',
         // }}
-        // selection={true}
         viewButton={true}
         tableSearch={true}
         pagination={{

@@ -1,10 +1,6 @@
 import * as React from 'react'
 
-import { Checkbox } from './checkbox'
-
 import { cn, sortArray } from '@/lib/utils'
-import { Input, Pagination, PaginationContent, PaginationItem } from './ShadcnUI'
-import { Button, LabelType } from './button'
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -15,14 +11,18 @@ import {
   CirclePlus,
   Ellipsis,
 } from 'lucide-react'
-import { ScrollArea } from '@radix-ui/react-scroll-area'
-import { TooltipProvider } from './tooltip'
-import { Combobox, ComboboxType } from './combobox'
-import { CommandListGroupDataType } from './command'
-import { DropdownMenuOptionsDataType, DropdownMenuOptionsType, DropdownMenuView } from './dropdown-menu'
 import { CaretSortIcon, MixerHorizontalIcon } from '@radix-ui/react-icons'
+import { Checkbox } from './checkbox'
+import { ScrollArea, ScrollBar } from './ShadcnUI/scroll-area'
+import { Input, Pagination, PaginationContent, PaginationItem } from './ShadcnUI'
+import { Button, LabelType } from './button'
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from './tooltip'
+import { Combobox, ComboboxType } from './combobox'
+import { CommandListGroupDataType, CommandShortcut } from './command'
+import { DropdownMenuOptionsDataType, DropdownMenuOptionsType, DropdownMenuView } from './dropdown-menu'
 import { Badge } from './badge'
 import { ContextCustomView, ContextMenuOptionsType } from './context-menu'
+import { useDuckShortcut } from '@ahmedayob/duck-shortcut'
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
@@ -236,17 +236,44 @@ const TableHeaderActions = <
     }
   }) as DropdownMenuOptionsDataType<C>[]
 
+  const inputRef = React.useRef<HTMLInputElement>(null)
+  useDuckShortcut({
+    keys: ['ctrl+shift+f'],
+    onKeysPressed: () => {
+      if (inputRef.current) {
+        inputRef.current.focus()
+      }
+    },
+  })
+
   return (
     <>
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-between gap-2">
           {tableSearch && (
             <div className="flex flex-1 items-center space-x-2">
-              <Input
-                placeholder="Filter tasks..."
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => debouncedSearch(event.target.value)}
-                className="h-8 w-[150px] lg:w-[200px]"
-              />
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger>
+                  <Input
+                    ref={inputRef}
+                    placeholder="Filter tasks..."
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => debouncedSearch(event.target.value)}
+                    className="h-8 w-[150px] lg:w-[200px]"
+                  />
+                </TooltipTrigger>
+                <TooltipContent className="flex items-center gap-2 z-50 justify-start">
+                  <CommandShortcut className="text-[.8rem]">
+                    <Badge
+                      variant={'secondary'}
+                      size={'sm'}
+                      className="p-0 px-2"
+                    >
+                      ⌃+⇧+F
+                    </Badge>
+                  </CommandShortcut>
+                  <p className="text-sm">Filter tasks...</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
           )}
           {filter && (
@@ -304,8 +331,8 @@ const TableHeaderActions = <
                 side: 'top',
               },
               command: {
-                key: 'y',
-                label: '⌘+v',
+                key: 'ctrl+shift+v',
+                label: '⌃+⇧+V',
               },
             }}
             content={{
@@ -463,8 +490,8 @@ interface TableCustomBodyProps<
   selection: boolean
   selected: TableContentDataType<Y, C>[]
   setSelected: React.Dispatch<React.SetStateAction<TableContentDataType<Y, C>[]>>
-  dropdownMenu: DropdownMenuOptionsType<T>
-  contextMenu: ContextMenuOptionsType<T>
+  dropdownMenu: DropdownMenuOptionsType<TableHeaderOptionsType<Y, C>>
+  contextMenu: ContextMenuOptionsType<TableHeaderOptionsType<Y, C>>
 }
 
 type TableDataFilteredType<T extends Record<string, any>> = {
@@ -673,7 +700,7 @@ const TablePagination = <Y extends keyof C = string, C extends Record<string, an
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="grid sm:flex items-center sm:justify-between gap-4 sm:gap-0">
         <div className="flex items-center justify-between">
           {paginations?.showSelectCount && (
             <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
@@ -681,10 +708,10 @@ const TablePagination = <Y extends keyof C = string, C extends Record<string, an
             </span>
           )}
         </div>
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center sm:justify-between sm:gap-4">
           {paginations?.showGroup && (
             <div className="flex items-center gap-2">
-              <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <span className="max-sm:hidden flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
                 Rows per page
               </span>
               <TooltipProvider>
@@ -697,9 +724,16 @@ const TablePagination = <Y extends keyof C = string, C extends Record<string, an
                   }}
                   trigger={{
                     command: {
-                      key: 'm',
+                      key: 'ctrl+shift+c',
+                      label: '⌃+⇧+C',
                     },
-                    label: { children: 'Rows per page', showLabel: true, side: 'top', className: 'text-xs' },
+                    label: {
+                      children: 'Rows per page',
+                      showLabel: true,
+                      side: 'top',
+                      className: 'text-xs',
+                      showCommand: true,
+                    },
                     className: 'w-[4.5rem] h-[32px] gap-0',
                   }}
                   onSelect={{
@@ -711,7 +745,7 @@ const TablePagination = <Y extends keyof C = string, C extends Record<string, an
             </div>
           )}
           {paginations?.showPageCount && (
-            <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
+            <span className="max-sm:hidden flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
               Page {paginationState.activePage + 1} of {resultArrays.length}
             </span>
           )}
@@ -725,6 +759,17 @@ const TablePagination = <Y extends keyof C = string, C extends Record<string, an
                     size="icon"
                     className="w-[32px] h-[32px] p-0"
                     disabled={paginationState.activePage === 0}
+                    command={{
+                      key: 'ctrl+shift+left',
+                      label: '⌃+⇧+←',
+                      action: () => setPaginationState({ ...paginationState, activePage: 0 }),
+                    }}
+                    label={{
+                      showCommand: true,
+                      showLabel: true,
+                      side: 'top',
+                      children: 'First page',
+                    }}
                     onClick={() => setPaginationState({ ...paginationState, activePage: 0 })}
                   >
                     <ChevronsLeftIcon className="size-4" />
@@ -736,8 +781,26 @@ const TablePagination = <Y extends keyof C = string, C extends Record<string, an
                     size="icon"
                     className="w-[32px] h-[32px] p-0"
                     onClick={() =>
-                      setPaginationState({ ...paginationState, activePage: (paginationState.activePage ?? 1) - 1 })
+                      setPaginationState({
+                        ...paginationState,
+                        activePage: paginationState.activePage === 0 ? 0 : (paginationState.activePage ?? 1) - 1,
+                      })
                     }
+                    command={{
+                      key: 'ctrl+shift+down',
+                      label: '⌃+⇧+↓',
+                      action: () =>
+                        setPaginationState({
+                          ...paginationState,
+                          activePage: paginationState.activePage === 0 ? 0 : (paginationState.activePage ?? 1) - 1,
+                        }),
+                    }}
+                    label={{
+                      showCommand: true,
+                      showLabel: true,
+                      side: 'top',
+                      children: 'Previous page',
+                    }}
                     disabled={paginationState.activePage === 0}
                   >
                     <ChevronLeftIcon className="size-4" />
@@ -749,8 +812,32 @@ const TablePagination = <Y extends keyof C = string, C extends Record<string, an
                     size="icon"
                     className="w-[32px] h-[32px] p-0"
                     onClick={() =>
-                      setPaginationState({ ...paginationState, activePage: (paginationState.activePage ?? 1) + 1 })
+                      setPaginationState({
+                        ...paginationState,
+                        activePage:
+                          paginationState.activePage === resultArrays.length - 1
+                            ? resultArrays.length - 1
+                            : (paginationState.activePage ?? 1) + 1,
+                      })
                     }
+                    command={{
+                      key: 'ctrl+shift+up',
+                      label: '⌃+⇧+↑',
+                      action: () =>
+                        setPaginationState({
+                          ...paginationState,
+                          activePage:
+                            paginationState.activePage === resultArrays.length - 1
+                              ? resultArrays.length - 1
+                              : (paginationState.activePage ?? 1) + 1,
+                        }),
+                    }}
+                    label={{
+                      showCommand: true,
+                      showLabel: true,
+                      side: 'top',
+                      children: 'Next page',
+                    }}
                     disabled={paginationState.activePage === resultArrays.length - 1}
                   >
                     <ChevronRightIcon className="size-4" />
@@ -762,6 +849,17 @@ const TablePagination = <Y extends keyof C = string, C extends Record<string, an
                     size="icon"
                     className="w-[32px] h-[32px] p-0"
                     onClick={() => setPaginationState({ ...paginationState, activePage: resultArrays.length - 1 })}
+                    command={{
+                      key: 'ctrl+shift+right',
+                      label: '⌃+⇧+→',
+                      action: () => setPaginationState({ ...paginationState, activePage: resultArrays.length - 1 }),
+                    }}
+                    label={{
+                      showCommand: true,
+                      showLabel: true,
+                      side: 'top',
+                      children: 'Last page',
+                    }}
                     disabled={paginationState.activePage === resultArrays.length - 1}
                   >
                     <ChevronsRightIcon className="size-4" />
@@ -781,7 +879,8 @@ export interface TableViewProps<
   Y extends keyof C & string = string,
   C extends Record<string, any> = Record<string, string>,
 > {
-  filters: ComboboxType<string>[]
+  wrapper?: React.HTMLProps<HTMLDivElement>
+  filters?: ComboboxType<string>[]
   table?: TableType
   tableContentData: TableContentDataType<Y, C>[]
   selection?: boolean
@@ -791,7 +890,7 @@ export interface TableViewProps<
   pagination?: TablePaginationsType
   viewButton?: boolean
   tableSearch?: boolean
-  dropdownMenu?: DropdownMenuOptionsType<C>
+  dropdownMenu?: DropdownMenuOptionsType<TableHeaderOptionsType<Y, C>>
   contextMenu?: ContextMenuOptionsType<TableHeaderOptionsType<Y, C>>
 }
 
@@ -800,6 +899,7 @@ const TableView = <
   Y extends keyof C & string = string,
   C extends Record<string, any> = Record<string, string>,
 >({
+  wrapper,
   selection,
   pagination,
   viewButton,
@@ -813,6 +913,7 @@ const TableView = <
   contextMenu,
   filters,
 }: TableViewProps<T, Y, C>) => {
+  const { className: wrapperClassName, ...wrapperProps } = wrapper! ?? {}
   const { className: tableClassName, ...tableProps } = table! ?? {}
   const { children: captionChildren, className: captionClassName, ...captionProps } = caption! ?? []
   const [selected, setSelected] = React.useState<TableContentDataType<Y, C>[]>([])
@@ -898,7 +999,10 @@ const TableView = <
   const resultArrays = splitIntoChunks(filteredData, +value)
 
   return (
-    <div className="flex flex-col gap-4">
+    <div
+      className={cn(`flex flex-col gap-4`, wrapperClassName)}
+      {...wrapperProps}
+    >
       <TableHeaderActions<T, Y, C>
         search={{ searchValue: search, setSearchValue: setSearch }}
         viewButton={viewButton ?? false}
@@ -908,19 +1012,19 @@ const TableView = <
         headers={headers}
         setHeaders={setHeaders}
       />
-      <ScrollArea
-        className={cn(`border border-border rounded-lg overflow-auto`, tableClassName)}
-        {...tableProps}
-      >
-        <Table>
-          {caption && (
-            <TableCaption
-              className={cn('mb-4', captionClassName)}
-              {...captionProps}
-            >
-              {caption?.children}
-            </TableCaption>
-          )}
+      <Table>
+        {caption && (
+          <TableCaption
+            className={cn('mb-4', captionClassName)}
+            {...captionProps}
+          >
+            {caption?.children}
+          </TableCaption>
+        )}
+        <ScrollArea
+          className={cn('border border-border rounded-lg !overflow-visible', tableClassName)}
+          {...tableProps}
+        >
           {header && (
             <TableCustomHeader<T, Y, C>
               selection={selection ?? false}
@@ -944,9 +1048,10 @@ const TableView = <
               contextMenu={contextMenu ?? {}}
             />
           )}
-          {footer?.columns && <TableCustomFooter {...footer} />}
-        </Table>
-      </ScrollArea>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+        {footer?.columns && <TableCustomFooter {...footer} />}
+      </Table>
       {pagination && (
         <TablePagination<Y, C>
           selected={selected}

@@ -83,7 +83,16 @@ const Combobox = <T,>({ wrapper, title, trigger, content, onSelect, type }: Comb
                 type === 'combobox' ? 'w-[200px] [&_div]:w-[81%]' : 'rounded-lg border-dashed py-1 px-2 h-8',
                 triggerClassName
               )}
-              command={{ ...command, action: () => setOpen(!open), state: open } as CommandType}
+              command={
+                {
+                  ...command,
+                  action: () => {
+                    setOpen(!open)
+                    // return false
+                  },
+                  state: open,
+                } as CommandType
+              }
               {...triggerProps}
             >
               <span className="text-ellipsis overflow-hidden whitespace-nowrap">

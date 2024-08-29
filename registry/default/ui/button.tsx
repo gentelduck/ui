@@ -11,6 +11,7 @@ import { cva } from 'class-variance-authority'
 import { VariantProps } from 'class-variance-authority'
 import { Loader, LucideIcon } from 'lucide-react'
 import { IconProps } from '@radix-ui/react-icons/dist/types'
+import { useDuckShortcut } from '@ahmedayob/duck-shortcut'
 
 export type IconType = { icon: LucideIcon } & IconProps & React.RefAttributes<SVGSVGElement>
 export interface ButtonProps
@@ -100,20 +101,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const { icon: Icon, className: iconClassName, ...iconProps } = icon ?? {}
     const { icon: SecondIcon, className: secondIconClassName, ...secondIconProps } = secondIcon ?? {}
 
-    // Handle keyboard shortcuts
-    React.useEffect(() => {
-      if (command?.key) {
-        const handleKeyDown = (e: KeyboardEvent) => {
-          if (e.key === command.key && (e.metaKey || e.ctrlKey)) {
-            e.preventDefault()
-            command.action && command.action()
-          }
-        }
-
-        document.addEventListener('keydown', handleKeyDown)
-        return () => document.removeEventListener('keydown', handleKeyDown)
-      }
-    }, [command?.state])
+    const fn = () => console.log('NOTE: handling command shortcut without action')
+    //NOTE: handling command shortcut
+    useDuckShortcut(
+      {
+        keys: [command?.key ?? 'k'],
+        onKeysPressed: command?.action ?? fn,
+      },
+      [command?.state]
+    )
 
     // Handle keyboard shortcut Badge
     const CommandComponent = () => (
@@ -193,7 +189,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {(isCollapsed || showLabel) && (title || label) && (
           <TooltipContent
             {...labelProps}
-            className={cn('flex items-center gap-2 z-50 justify-start', className)}
+            className={cn('flex items-center gap-2 z-50 justify-start', labelClassName)}
             side={side || 'right'}
           >
             {title && title}

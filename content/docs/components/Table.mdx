@@ -1,7 +1,86 @@
 ---
 title: Table
-description: A data table component for React.
+description: A highly customizable, type-safe React table component offering dynamic structure, advanced features like multi-selection, filtering, and pagination, along with intuitive keyboard shortcuts and responsive design, all while allowing extensive styling and functionality customization.
+featured: true
 component: true
 ---
 
 <ComponentPreview name="TableMainDemo"  description="A simple example of a table component with basic usage."/>
+
+## **Features**
+
+- **Dynamic Structure**: A flexible, configurable React table component that supports custom rendering, styling, and seamless integration, making it adaptable to a wide range of use cases.
+
+- **Type Safety**: Ensures type safety, providing a robust and reliable development experience with customizable rendering, styling, and easy integration.
+
+- **Keyboard Shortcuts**: Includes intuitive keyboard shortcuts for efficient navigation. Additionally, it supports custom library creation for `vim`-like motions within any component.
+
+- **Multi-Selection**: Offers multi-selection capabilities for individual columns, with intermediate selection options available for all columns within the table.
+
+- **Built-In Pagination**: Comes with dynamic pagination that integrates seamlessly with features like search, filtering, and adjustable rows per page. Enable this feature by setting a simple boolean flag.
+
+- **Advanced Options**: Utilizes our `DropdownMenu` component to provide dynamic options for columns, with support for checkboxes, radio buttons, labels, and nested items. Options can be mixed and grouped for a fully customizable dropdown menu experience.
+
+- **Context Menu**: Extends the options feature to context menus, allowing for consistent behavior across both dropdowns and context menus. Easily enabled by filling out the `contextMenu` prop on the `TableView` component.
+
+- **Column Visibility**: Enables dynamic hiding and showing of columns, allowing users to control the table’s appearance while maintaining the original column order.
+
+- **Dynamic Filtering**: Provides multi-level dynamic filtering for table rows, with labels indicating the number of matching items. A reset button is included for easy filter management.
+
+- **Customizable Styling**: Every aspect of the table's styling is customizable. Users can apply their own styles via `className`, CSS, or any preferred styling method.
+
+- **Advanced Search**: Features a modern search function capable of handling complex data types, including `React.ReactNode` and other JSX elements, beyond simple text.
+
+- **Table Caption**: Includes a table caption feature, allowing you to describe the purpose of the table directly within its layout.
+
+- **Table Footer**: Provides a footer section to display additional information, such as totals or summaries, enhancing the table's utility.
+
+- **Responsive Design**: Built with a responsive design out of the box, ensuring optimal display across all devices, with customizable responsiveness options available.
+
+
+## Installation
+
+<Tabs defaultValue="cli">
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx duck-ui@latest add table 
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ComponentSource name="table" />
+
+<Step>The Combobox is built using a composition of the `<Combobox/>`, `<Input/>`, `<Pagination/>`,
+    `<ScrollArea/>`, `<DropdownMenu/>`, `<Command/>`, `<Button/>`, `<Checkbox/>`, `<Badge/>`,
+    `<ContextMenu/>` , and `<Tooltip/>` components.</Step>
+
+<Step>You will also need to install the [`Tooltip`](/docs/components/Tooltip#installation),
+    [`DropdownMenu`](/docs/components/DropdownMenu#installation), and
+    [`Command`](/docs/components/Command#installation), and
+    [`Button`](/docs/components/Button#installation),
+    [`Checkbox`](/docs/components/Checkbox#installation), and
+    [`Badge`](/docs/components/Badge#installation),
+    [`ContextMenu`](/docs/components/ContextMenu#installation), and
+    [`Tooltip`](/docs/components/Tooltip#installation), [`ScrollArea`](/docs/components/ScrollArea#installation),
+    and [`Pagination`](/docs/components/Pagination#installation), and [`Input`](/docs/components/Input#installation) component because some dependencies are inherited from it.</Step>
+
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</Tabs>
