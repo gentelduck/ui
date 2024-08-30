@@ -5,14 +5,13 @@ import * as React from 'react'
 import { type DialogProps } from '@radix-ui/react-dialog'
 import { Command as CommandPrimitive } from 'cmdk'
 import { Dialog, DialogContent } from './ShadcnUI/dialog'
-import { ScrollArea } from './ShadcnUI/scroll-area'
+import { ScrollArea } from './scroll-area'
 
 import { Check, Search } from 'lucide-react'
 import { cn, groupDataByNumbers } from '@/lib/utils'
 import { Checkbox } from './checkbox'
-import { Button, LabelType } from './button'
+import { Button } from './button'
 import { Separator } from './ShadcnUI'
-import { TypeOfExpression } from 'ts-morph'
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,

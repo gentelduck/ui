@@ -173,19 +173,27 @@ const DropdownMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTML
 }
 DropdownMenuShortcut.displayName = 'DropdownMenuShortcut'
 
-type DropdownMenuOptionsDataType<T, Y extends boolean = true> = {
+interface DropdownMenuOptionsDataType<T, Y extends boolean = true>
+  extends Partial<
+    Omit<ButtonProps, 'command'> &
+      React.ComponentPropsWithoutRef<typeof DropdownMenuCheckboxItem> &
+      React.ComponentPropsWithoutRef<typeof DropdownMenuItem> &
+      React.ComponentPropsWithoutRef<typeof DropdownMenuRadioItem>
+  > {
+  //FIX: you do not need this type
+  //INFO: think about a way of merging the whole object with onClick
+  onClick?: (event: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>, args?: T) => void
+
   action?: (args: T) => void
   command?: React.ComponentPropsWithoutRef<typeof DropdownMenuShortcut> & CommandType
   nestedData?: Y extends true
     ? Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuSubContent> & DropdownMenuOptionsType<T, Y>>
     : never
-} & Partial<Omit<ButtonProps, 'command'>> &
-  Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuCheckboxItem>> &
-  Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuItem>> &
-  Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuRadioItem>>
+}
 
 interface DropdownMenuOptionsType<T, Y extends boolean = true> {
   itemType?: 'checkbox' | 'radio' | 'label'
+  //FIX: you do not need this type
   actionsArgs?: T extends {} ? T : never
   optionsData?: DropdownMenuOptionsDataType<T, Y>[]
   group?: number[]
@@ -252,6 +260,7 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
             <React.Fragment key={`group-${idx}`}>
               {group.map((item, idx) => {
                 const { children, className, itemType = 'label', action, value, nestedData, key: _key, ...props } = item
+
                 const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
                 const {
                   className: commandClassName,

@@ -1,25 +1,16 @@
 import * as React from 'react'
 
 import { cn, sortArray } from '@/lib/utils'
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronsLeftIcon,
-  ChevronsRightIcon,
-  CirclePlus,
-  Ellipsis,
-} from 'lucide-react'
+import { ArrowDownIcon, ArrowUpIcon, CirclePlus, Ellipsis } from 'lucide-react'
 import { CaretSortIcon, MixerHorizontalIcon } from '@radix-ui/react-icons'
 import { Checkbox } from './checkbox'
 import { ScrollArea, ScrollBar } from './scroll-area'
-import { Pagination, PaginationContent, PaginationItem } from './pagination'
-import { Input, InputCustomView } from './input'
-import { Button, LabelType } from './button'
-import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from './tooltip'
+import { PaginationCustomView } from './pagination'
+import { InputCustomView } from './input'
+import { LabelType } from './button'
+import { TooltipProvider } from './tooltip'
 import { Combobox, ComboboxType } from './combobox'
-import { CommandListGroupDataType, CommandShortcut } from './command'
+import { CommandListGroupDataType } from './command'
 import { DropdownMenuOptionsDataType, DropdownMenuOptionsType, DropdownMenuView } from './dropdown-menu'
 import { Badge } from './badge'
 import { ContextCustomView, ContextMenuOptionsType } from './context-menu'
@@ -375,19 +366,41 @@ const TableCustomHeader = <
           {headers.map((column, idx) => {
             const { children, className, sortable, label, showLabel, dropdownMenuOptions, currentSort, ...props } =
               column
+
+            const actionsArgs = {
+              sortArray,
+              setTableData,
+              setHeaders,
+              column,
+              idx,
+              data: tableData,
+              headers,
+              tableData,
+            } as unknown as TableDropdownMenuOptions<Y, C>
+
+            //NOTE: passing the actionsArgs to the onClick function
+            const fullDropDownMenuOptions = dropdownMenuOptions?.map(item => {
+              return {
+                ...item,
+                onClick: (e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>) => {
+                  item.onClick?.(e, actionsArgs)
+                },
+              }
+            })
+
             return (
               headers.some(header => header.children === column.children) && (
                 <TableHead
                   key={idx}
-                  className="h-[40px]"
+                  className="h-[40px] py-2"
                   {...props}
                 >
                   {/*NOTE: Rendering Sorting else rendering label*/}
                   {!sortable ? (
                     <span
                       className={cn(
-                        'flex items-center gap-2 w-full h-8 data-[state=open]:bg-accent text-xs',
-                        idx === headers.length - 1 && 'justify-end',
+                        'flex items-center gap-2 w-full h-8 data-[state=open]:bg-accent text-xs capitalize',
+                        dropdownMenuOptions?.length && 'justify-end',
                         className
                       )}
                     >
@@ -410,7 +423,7 @@ const TableCustomHeader = <
                     </span>
                   ) : (
                     <div className={cn('flex items-center space-x-2', className)}>
-                      {
+                      {dropdownMenuOptions?.length && (
                         <DropdownMenuView<TableDropdownMenuOptions<Y, C>>
                           trigger={{
                             className: '-ml-3 h-8 data-[state=open]:bg-accent text-xs ',
@@ -451,13 +464,13 @@ const TableCustomHeader = <
                                 tableData,
                               } as unknown as TableDropdownMenuOptions<Y, C>,
                               group: [2, 1],
-                              optionsData: dropdownMenuOptions as
+                              optionsData: fullDropDownMenuOptions as
                                 | DropdownMenuOptionsDataType<TableDropdownMenuOptions<Y, C>>[]
                                 | undefined,
                             },
                           }}
                         />
-                      }
+                      )}
                     </div>
                   )}
                 </TableHead>
@@ -470,7 +483,7 @@ const TableCustomHeader = <
   )
 }
 
-interface TableCustomBodyProps<
+export interface TableCustomBodyProps<
   T extends boolean = false,
   Y extends keyof C & string = string,
   C extends Record<string, any> = Record<string, string>,
@@ -486,7 +499,7 @@ interface TableCustomBodyProps<
   filtersData: ComboboxType<string>[] | undefined
 }
 
-type TableDataFilteredType<T extends Record<string, any>> = {
+export type TableDataFilteredType<T extends Record<string, any>> = {
   [K in keyof T]: [K, T[K]]
 }[keyof T][]
 
@@ -576,24 +589,29 @@ const TableCustomBody = <
                               </Badge>
                             )}
 
-                            {/*NOTE: Getting Icons from Filter Data */}
-                            {filtersData?.length &&
-                              filtersData?.map(item => {
-                                return item?.content?.data.map(item => {
-                                  const { icon: Icon, ...props } = item?.element?.icon ?? {}
-                                  return item.label?.toLowerCase() === (children as string).toString().toLowerCase() ? (
-                                    <span className=" whitespace-nowrap">
-                                      {(Icon ? <Icon {...props} /> : '') as React.ReactNode}
-                                    </span>
-                                  ) : null
-                                })
-                              })}
+                            <div className="flex items-center gap-2 text-ellipsis overflow-hidden whitespace-nowrap">
+                              {/*NOTE: Getting Icons from Filter Data */}
+                              {filtersData?.length &&
+                                filtersData?.map(item => {
+                                  return item?.content?.data.map((item, idx) => {
+                                    const { icon: Icon, ...props } = item?.element?.icon ?? {}
+                                    return item.label?.toLowerCase() ===
+                                      (children as string).toString().toLowerCase() ? (
+                                      <span
+                                        className="whitespace-nowrap"
+                                        key={idx}
+                                      >
+                                        {(Icon ? <Icon {...props} /> : '') as React.ReactNode}
+                                      </span>
+                                    ) : null
+                                  })
+                                })}
 
-                            {/*NOTE: Rendering the row column childrend */}
-                            <span className="text-ellipsis overflow-hidden whitespace-nowrap">{children}</span>
-
+                              {/*NOTE: Rendering the row column childrend */}
+                              <span className="text-ellipsis overflow-hidden whitespace-nowrap">{children}</span>
+                            </div>
                             {/*NOTE: Dropdown Menu */}
-                            {idx === headersEntries.length - 1 && dropdownMenu && (
+                            {idx === headersEntries.length - 1 && dropdownMenu.optionsData?.length && (
                               <DropdownMenuView
                                 trigger={{
                                   className: 'flex h-8 w-8 p-0 data-[state=open]:bg-muted',
@@ -622,18 +640,18 @@ const TableCustomBody = <
             content={{
               options: contextMenu,
             }}
-          ></ContextCustomView>
+          />
         )
       })}
     </TableBody>
   )
 }
 
-interface TableCustomFooterColumns extends Partial<React.ComponentPropsWithoutRef<typeof TableFooter>> {
+export interface TableCustomFooterColumns extends Partial<React.ComponentPropsWithoutRef<typeof TableFooter>> {
   columns: FooterCoumnType[]
 }
 
-type FooterCoumnType = Partial<React.ComponentPropsWithoutRef<typeof TableCell>>
+export type FooterCoumnType = Partial<React.ComponentPropsWithoutRef<typeof TableCell>>
 
 const TableCustomFooter = ({ className, columns }: TableCustomFooterColumns) => {
   return (
@@ -655,17 +673,17 @@ const TableCustomFooter = ({ className, columns }: TableCustomFooterColumns) => 
   )
 }
 
-type TableContentDataType<Y extends keyof C = string, C extends Record<string, any> = Record<string, string>> = {
+export type TableContentDataType<Y extends keyof C = string, C extends Record<string, any> = Record<string, string>> = {
   [key in Y]: TableDataKey & { children: C[key] }
 }
 
-interface TableType extends Partial<React.ComponentPropsWithoutRef<typeof ScrollArea>> {}
-interface TableDataKey extends React.HTMLProps<HTMLTableCellElement> {
+export interface TableType extends Partial<React.ComponentPropsWithoutRef<typeof ScrollArea>> {}
+export interface TableDataKey extends React.HTMLProps<HTMLTableCellElement> {
   withLabel?: Omit<LabelType, 'showCommand' | 'showLabel'>
   withIcon?: React.ReactNode
 }
-interface TableCaptionType extends React.HTMLProps<HTMLTableCaptionElement> {}
-interface TablePaginationsType extends React.HTMLProps<HTMLDivElement> {
+export interface TableCaptionType extends React.HTMLProps<HTMLTableCaptionElement> {}
+export interface TablePaginationsType extends React.HTMLProps<HTMLDivElement> {
   groupSize: number
   activePage?: number
   showPageCount?: boolean
@@ -674,12 +692,15 @@ interface TablePaginationsType extends React.HTMLProps<HTMLDivElement> {
   showGroup?: boolean
 }
 
-interface PaginationState {
+export interface PaginationState {
   activePage: number
   groupSize: number
 }
 
-interface TablePaginationType<Y extends keyof C = string, C extends Record<string, any> = Record<string, string>> {
+export interface TablePaginationType<
+  Y extends keyof C = string,
+  C extends Record<string, any> = Record<string, string>,
+> {
   selected: TableContentDataType<Y, C>[]
   setValue: React.Dispatch<React.SetStateAction<string[]>>
   value: string[]
@@ -719,6 +740,7 @@ const TablePagination = <Y extends keyof C = string, C extends Record<string, an
     <>
       <div className="grid lg:flex items-center lg:justify-between gap-4 lg::gap-0">
         <div className="flex items-center justify-between">
+          {/*NOTE: Select Count */}
           {paginations?.showSelectCount && (
             <span className="flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
               {selected.length} of {tableData.length} row(s) selected.
@@ -726,6 +748,7 @@ const TablePagination = <Y extends keyof C = string, C extends Record<string, an
           )}
         </div>
         <div className="flex items-center lg:justify-between lg:gap-4">
+          {/*NOTE: Group Size */}
           {paginations?.showGroup && (
             <div className="flex items-center gap-2">
               <span className="max-2xl:hidden flex items-center justify-center text-sm font-medium text-muted-foreground whitespace-nowrap">
@@ -767,123 +790,92 @@ const TablePagination = <Y extends keyof C = string, C extends Record<string, an
             </span>
           )}
 
+          {/*NOTE: Navigation */}
           {paginations?.showNavigation && (
-            <Pagination className="justify-end">
-              <PaginationContent className="gap-2">
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="w-[32px] h-[32px] p-0"
-                    disabled={paginationState.activePage === 0}
-                    command={{
-                      key: 'ctrl+shift+left',
-                      label: '⌃+⇧+←',
-                      action: () => setPaginationState({ ...paginationState, activePage: 0 }),
-                    }}
-                    label={{
-                      showCommand: true,
-                      showLabel: true,
-                      side: 'top',
-                      children: 'First page',
-                    }}
-                    onClick={() => setPaginationState({ ...paginationState, activePage: 0 })}
-                  >
-                    <ChevronsLeftIcon className="size-4" />
-                  </Button>
-                </PaginationItem>
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="w-[32px] h-[32px] p-0"
-                    onClick={() =>
-                      setPaginationState({
-                        ...paginationState,
-                        activePage: paginationState.activePage === 0 ? 0 : (paginationState.activePage ?? 1) - 1,
-                      })
-                    }
-                    command={{
-                      key: 'ctrl+shift+down',
-                      label: '⌃+⇧+↓',
-                      action: () =>
-                        setPaginationState({
-                          ...paginationState,
-                          activePage: paginationState.activePage === 0 ? 0 : (paginationState.activePage ?? 1) - 1,
-                        }),
-                    }}
-                    label={{
-                      showCommand: true,
-                      showLabel: true,
-                      side: 'top',
-                      children: 'Previous page',
-                    }}
-                    disabled={paginationState.activePage === 0}
-                  >
-                    <ChevronLeftIcon className="size-4" />
-                  </Button>
-                </PaginationItem>
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="w-[32px] h-[32px] p-0"
-                    onClick={() =>
-                      setPaginationState({
-                        ...paginationState,
-                        activePage:
-                          paginationState.activePage === resultArrays.length - 1
-                            ? resultArrays.length - 1
-                            : (paginationState.activePage ?? 1) + 1,
-                      })
-                    }
-                    command={{
-                      key: 'ctrl+shift+up',
-                      label: '⌃+⇧+↑',
-                      action: () =>
-                        setPaginationState({
-                          ...paginationState,
-                          activePage:
-                            paginationState.activePage === resultArrays.length - 1
-                              ? resultArrays.length - 1
-                              : (paginationState.activePage ?? 1) + 1,
-                        }),
-                    }}
-                    label={{
-                      showCommand: true,
-                      showLabel: true,
-                      side: 'top',
-                      children: 'Next page',
-                    }}
-                    disabled={paginationState.activePage === resultArrays.length - 1}
-                  >
-                    <ChevronRightIcon className="size-4" />
-                  </Button>
-                </PaginationItem>
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="w-[32px] h-[32px] p-0"
-                    onClick={() => setPaginationState({ ...paginationState, activePage: resultArrays.length - 1 })}
-                    command={{
-                      key: 'ctrl+shift+right',
-                      label: '⌃+⇧+→',
-                      action: () => setPaginationState({ ...paginationState, activePage: resultArrays.length - 1 }),
-                    }}
-                    label={{
-                      showCommand: true,
-                      showLabel: true,
-                      side: 'top',
-                      children: 'Last page',
-                    }}
-                    disabled={paginationState.activePage === resultArrays.length - 1}
-                  >
-                    <ChevronsRightIcon className="size-4" />
-                  </Button>
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+            <PaginationCustomView
+              right={{
+                onClick: () =>
+                  setPaginationState({
+                    ...paginationState,
+                    activePage:
+                      paginationState.activePage === resultArrays.length - 1
+                        ? resultArrays.length - 1
+                        : (paginationState.activePage ?? 1) + 1,
+                  }),
+                command: {
+                  key: 'ctrl+shift+up',
+                  label: '⌃+⇧+↑',
+                  action: () =>
+                    setPaginationState({
+                      ...paginationState,
+                      activePage:
+                        paginationState.activePage === resultArrays.length - 1
+                          ? resultArrays.length - 1
+                          : (paginationState.activePage ?? 1) + 1,
+                    }),
+                },
+                label: {
+                  showCommand: true,
+                  showLabel: true,
+                  side: 'top',
+                  children: 'Next page',
+                },
+                disabled: paginationState.activePage === resultArrays.length - 1,
+              }}
+              maxRight={{
+                onClick: () => setPaginationState({ ...paginationState, activePage: resultArrays.length - 1 }),
+                command: {
+                  key: 'ctrl+shift+right',
+                  label: '⌃+⇧+→',
+                  action: () => setPaginationState({ ...paginationState, activePage: resultArrays.length - 1 }),
+                },
+                label: {
+                  showCommand: true,
+                  showLabel: true,
+                  side: 'top',
+                  children: 'Last page',
+                },
+                disabled: paginationState.activePage === resultArrays.length - 1,
+              }}
+              left={{
+                onClick: () =>
+                  setPaginationState({
+                    ...paginationState,
+                    activePage: paginationState.activePage === 0 ? 0 : (paginationState.activePage ?? 1) - 1,
+                  }),
+                command: {
+                  key: 'ctrl+shift+down',
+                  label: '⌃+⇧+↓',
+                  action: () =>
+                    setPaginationState({
+                      ...paginationState,
+                      activePage: paginationState.activePage === 0 ? 0 : (paginationState.activePage ?? 1) - 1,
+                    }),
+                },
+                label: {
+                  showCommand: true,
+                  showLabel: true,
+                  side: 'top',
+                  children: 'Previous page',
+                },
+                disabled: paginationState.activePage === 0,
+              }}
+              maxLeft={{
+                onClick: () => setPaginationState({ ...paginationState, activePage: 0 }),
+                command: {
+                  key: 'ctrl+shift+left',
+                  label: '⌃+⇧+←',
+                  action: () => setPaginationState({ ...paginationState, activePage: 0 }),
+                },
+                label: {
+                  showCommand: true,
+                  showLabel: true,
+                  side: 'top',
+                  children: 'First page',
+                },
+                disabled: paginationState.activePage === 0,
+              }}
+            />
           )}
         </div>
       </div>
@@ -937,14 +929,15 @@ const TableView = <
   const [tableData, setTableData] = React.useState<TableContentDataType<Y, C>[]>(tableContentData)
   const [paginationState, setPaginationState] = React.useState({
     activePage: pagination?.activePage ?? 0,
-    groupSize: pagination?.groupSize ?? tableData.length / 3,
+    groupSize: pagination?.groupSize ?? tableData.length,
   })
   const [headers, setHeaders] = React.useState<TableHeaderColumns<T, Y, C>[]>(header ?? [])
   const [search, setSearch] = React.useState<{ q: string; qBy: string[] }>({ q: '', qBy: [] })
   const [value, setValue] = React.useState<string[]>([paginationState.groupSize.toString()])
+
   const [filterLabels, setFilterLabels] = React.useState<{ [key: string]: number }>({})
 
-  // Function to split array into chunks
+  //NOTE: Function to split array into chunks
   const splitIntoChunks = (array: typeof tableData, chunkSize: number) => {
     const chunks = []
     for (let i = 0; i < array.length; i += chunkSize) {
@@ -954,7 +947,7 @@ const TableView = <
   }
 
   const filteredData = React.useMemo(() => {
-    // Step 1: Filter the data based on search.q and search.qBy
+    //NOTE: Step 1: Filter the data based on search.q and search.qBy
     const data = tableData.filter(item => {
       return !search.qBy.length
         ? Object.values(item).some(value => JSON.stringify(value).toLowerCase().includes(search.q.toLowerCase()))
@@ -963,7 +956,7 @@ const TableView = <
           )
     })
 
-    // Step 2: Calculate label counts based on the filtered data
+    //NOTE: Step 2: Calculate label counts based on the filtered data
     const labelCounts: { [key: string]: number } = {}
     data.forEach(item => {
       Object.values(item).forEach(value => {
@@ -982,13 +975,12 @@ const TableView = <
       })
     })
 
-    // Update the filterLabels state with the new counts
     setFilterLabels(labelCounts)
 
     return data
   }, [tableData, filters, search])
 
-  // Update the filters to display the count based on the filtered data
+  //NOTE: Step 3: Update the filters to display the count based on the filtered data
   const updatedFilters = React.useMemo(() => {
     return filters?.map(filter => {
       return {
@@ -1013,6 +1005,7 @@ const TableView = <
     })
   }, [filters, filterLabels])
 
+  //NOTE: Step 4: Split the data into chunks based on the groupSize
   const resultArrays = splitIntoChunks(filteredData, +value)
 
   return (
@@ -1029,19 +1022,11 @@ const TableView = <
         headers={headers}
         setHeaders={setHeaders}
       />
-      <Table>
-        {caption && (
-          <TableCaption
-            className={cn('mb-4', captionClassName)}
-            {...captionProps}
-          >
-            {caption?.children}
-          </TableCaption>
-        )}
-        <ScrollArea
-          className={cn('border border-border rounded-lg !overflow-visible', tableClassName)}
-          {...tableProps}
-        >
+      <ScrollArea
+        className={cn('border border-border rounded-lg !overflow-visible', tableClassName)}
+        {...tableProps}
+      >
+        <Table>
           {header && (
             <TableCustomHeader<T, Y, C>
               selection={selection ?? false}
@@ -1066,10 +1051,18 @@ const TableView = <
               contextMenu={contextMenu ?? {}}
             />
           )}
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
-        {footer?.columns && <TableCustomFooter {...footer} />}
-      </Table>
+          {footer?.columns && <TableCustomFooter {...footer} />}
+        </Table>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+      {caption && (
+        <div
+          className={cn('mb-4 text-sm text-muted-foreground text-center', captionClassName)}
+          {...captionProps}
+        >
+          {caption?.children}
+        </div>
+      )}
       {pagination && (
         <TablePagination<Y, C>
           selected={selected}
@@ -1086,20 +1079,4 @@ const TableView = <
   )
 }
 
-export {
-  Table,
-  TableHeader,
-  TableBody,
-  TableFooter,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableCaption,
-  TableView,
-  type TableHeaderColumns,
-  type TableViewProps as TableProps,
-  type TableContentDataType,
-  type TableDataKey,
-  type TableDropdownMenuOptions,
-  type FooterCoumnType,
-}
+export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption, TableView }

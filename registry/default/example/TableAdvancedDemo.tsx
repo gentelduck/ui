@@ -38,7 +38,7 @@ export type TableDataType = {
 const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<HeaderColumns, TableDataType>, false>[] =
   [
     {
-      action: ({ sortArray, setHeaders, setTableData, data, headers, idx }) => {
+      onClick: (e, { sortArray, setHeaders, setTableData, data, headers, idx }) => {
         const { sortedData, updatedColumns } = sortArray(
           headers,
           data,
@@ -72,7 +72,9 @@ const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<He
       children: 'Desc',
     },
     {
-      action: ({ headers, column, setHeaders }) => {
+      onClick: (e, { headers, column, setHeaders }) => {
+        console.log('hi form action 3')
+
         setHeaders(headers.filter(sub => sub !== column))
       },
       icon: {
@@ -307,7 +309,7 @@ export default function DataTableMainDemo() {
         }}
         table={{
           className: cn(
-            'lg:w-[632px] lig:w-[524px] w-[270px]',
+            'lg:w-[632px] lig:w-[524px] w-[270px]  h-[351px]',
             footerColumns.length && 'rounded-br-none rounded-bl-none border-b-[0]'
           ),
         }}

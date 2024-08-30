@@ -67,8 +67,8 @@ export function ThemeCustomizer() {
         <div className="ml-2 hidden items-center gap-0.5">
           {mounted ? (
             <>
-              {['zinc', 'rose', 'blue', 'green', 'orange'].map((color) => {
-                const theme = themes.find((theme) => theme.name === color)
+              {['zinc', 'rose', 'blue', 'green', 'orange'].map(color => {
+                const theme = themes.find(theme => theme.name === color)
                 const isActive = config.theme === color
 
                 if (!theme) {
@@ -87,7 +87,7 @@ export function ThemeCustomizer() {
                         }
                         className={cn(
                           'flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs',
-                          isActive ? 'border-[--theme-primary]' : 'border-transparent',
+                          isActive ? 'border-[--theme-primary]' : 'border-transparent'
                         )}
                         style={
                           {
@@ -232,7 +232,7 @@ function Customizer() {
         <div className="space-y-1.5">
           <Label className="text-xs">Color</Label>
           <div className="grid grid-cols-3 gap-2">
-            {themes.map((theme) => {
+            {themes.map(theme => {
               const isActive = config.theme === theme.name
 
               return mounted ? (
@@ -255,7 +255,7 @@ function Customizer() {
                 >
                   <span
                     className={cn(
-                      'mr-1 flex h-5 w-5 shrink-0 -translate-x-1 items-center justify-center rounded-full bg-[--theme-primary]',
+                      'mr-1 flex h-5 w-5 shrink-0 -translate-x-1 items-center justify-center rounded-full bg-[--theme-primary]'
                     )}
                   >
                     {isActive && <CheckIcon className="h-4 w-4 text-white" />}
@@ -274,7 +274,7 @@ function Customizer() {
         <div className="space-y-1.5">
           <Label className="text-xs">Radius</Label>
           <div className="grid grid-cols-5 gap-2">
-            {['0', '0.3', '0.5', '0.75', '1.0'].map((value) => {
+            {['0', '0.3', '0.5', '0.75', '1.0'].map(value => {
               return (
                 <Button
                   variant={'outline'}
@@ -333,7 +333,7 @@ function Customizer() {
 
 function CopyCodeButton({ className, ...props }: React.ComponentProps<typeof Button>) {
   const [config] = useConfig()
-  const activeTheme = themes.find((theme) => theme.name === config.theme)
+  const activeTheme = themes.find(theme => theme.name === config.theme)
   const [hasCopied, setHasCopied] = React.useState(false)
 
   React.useEffect(() => {
@@ -410,7 +410,7 @@ function CopyCodeButton({ className, ...props }: React.ComponentProps<typeof But
 
 function CustomizerCode() {
   const [config] = useConfig()
-  const activeTheme = themes.find((theme) => theme.name === config.theme)
+  const activeTheme = themes.find(theme => theme.name === config.theme)
 
   return (
     <ThemeWrapper
@@ -428,7 +428,7 @@ function CustomizerCode() {
             <span className="line text-white">
               &nbsp;&nbsp;&nbsp;&nbsp;--foreground: {activeTheme?.cssVars.light['foreground']};
             </span>
-            {['card', 'popover', 'primary', 'secondary', 'muted', 'accent', 'destructive'].map((prefix) => (
+            {['card', 'popover', 'primary', 'secondary', 'muted', 'accent', 'destructive'].map(prefix => (
               <>
                 <span className="line text-white">
                   &nbsp;&nbsp;&nbsp;&nbsp;--{prefix}:{' '}
@@ -450,7 +450,7 @@ function CustomizerCode() {
               &nbsp;&nbsp;&nbsp;&nbsp;--ring: {activeTheme?.cssVars.light['ring']};
             </span>
             <span className="line text-white">&nbsp;&nbsp;&nbsp;&nbsp;--radius: {config.radius}rem;</span>
-            {['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5'].map((prefix) => (
+            {['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5'].map(prefix => (
               <>
                 <span className="line text-white">
                   &nbsp;&nbsp;&nbsp;&nbsp;--{prefix}:{' '}
@@ -467,7 +467,7 @@ function CustomizerCode() {
             <span className="line text-white">
               &nbsp;&nbsp;&nbsp;&nbsp;--foreground: {activeTheme?.cssVars.dark['foreground']};
             </span>
-            {['card', 'popover', 'primary', 'secondary', 'muted', 'accent', 'destructive'].map((prefix) => (
+            {['card', 'popover', 'primary', 'secondary', 'muted', 'accent', 'destructive'].map(prefix => (
               <>
                 <span className="line text-white">
                   &nbsp;&nbsp;&nbsp;&nbsp;--{prefix}:{' '}
@@ -488,7 +488,7 @@ function CustomizerCode() {
             <span className="line text-white">
               &nbsp;&nbsp;&nbsp;&nbsp;--ring: {activeTheme?.cssVars.dark['ring']};
             </span>
-            {['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5'].map((prefix) => (
+            {['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5'].map(prefix => (
               <>
                 <span className="line text-white">
                   &nbsp;&nbsp;&nbsp;&nbsp;--{prefix}:{' '}

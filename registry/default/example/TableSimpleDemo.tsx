@@ -307,7 +307,7 @@ export default function DataTableMainDemo() {
         }}
         table={{
           className: cn(
-            'lg:w-[632px] lig:w-[524px] w-[270px]',
+            'lg:w-[632px] lig:w-[524px] w-[270px] ',
             footerColumns.length && 'rounded-br-none rounded-bl-none border-b-[0]'
           ),
         }}

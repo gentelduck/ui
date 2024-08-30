@@ -84,3 +84,304 @@ npx duck-ui@latest add table
 </TabsContent>
 
 </Tabs>
+
+## Usage
+
+```tsx
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui"
+```
+
+```tsx
+<Table>
+  <TableCaption>A list of your recent invoices.</TableCaption>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="w-[100px]">Invoice</TableHead>
+      <TableHead>Status</TableHead>
+      <TableHead>Method</TableHead>
+      <TableHead className="text-right">Amount</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell className="font-medium">INV001</TableCell>
+      <TableCell>Paid</TableCell>
+      <TableCell>Credit Card</TableCell>
+      <TableCell className="text-right">$250.00</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## Examples
+
+### Simple 
+
+<ComponentPreview name="TableSimpleDemo"  description="A simple example of a table component with basic usage."/>
+
+### Advanced 
+
+<ComponentPreview name="TableAdvancedDemo"  description="A simple example of a table component with basic usage."/>
+
+## TableViewProps
+
+`TableViewProps` is an interface that defines the properties that the `TableView` component can accept. It provides flexibility by allowing various customizations such as filters, table content, headers, footers, pagination, and more.
+
+### Key Properties:
+- **`wrapper`**: Optional property that allows you to customize the wrapper `div` element by passing standard HTML `div` properties.
+- **`filters`**: An optional array of filter objects that allow users to filter the table data.
+- **`table`**: Optional property that defines specific configurations for the table's structure.
+- **`tableContentData`**: Required array containing the data to be displayed in the table. Each item represents a row.
+- **`selection`**: Optional boolean to enable or disable row selection functionality.
+- **`header`**: Optional array of objects defining the headers for the table.
+- **`footer`**: Optional property defining the custom footer of the table.
+- **`caption`**: Optional property defining the caption for the table.
+- **`pagination`**: Optional property that enables pagination and defines its behavior.
+- **`viewButton`**: Optional boolean to control the visibility of a view button.
+- **`tableSearch`**: Optional boolean to enable or disable the search functionality within the table.
+- **`dropdownMenu`**: Optional configuration for dropdown menus in the table.
+- **`contextMenu`**: Optional configuration for context menus in the table.
+
+---
+
+## `TableContentDataType`
+
+`TableContentDataType` is a generic type that defines the structure of the data displayed in the table. It maps each key to a content object that will be rendered in the table's cells.
+
+### Key Properties:
+- **`Y`**: Represents the keys in the data, restricted to string literals, which map to table columns.
+- **`C`**: Represents the structure of the content data, which can hold any type of value.
+- **`children`**: The actual content for each cell, wrapped in a `children` object for rendering.
+
+### Example:
+If `Y` is a key like `"name"`, the type of `children` will be the value associated with that key in `C`.
+
+---
+
+## `TableType`
+
+`TableType` is an interface that extends `React.ComponentPropsWithoutRef` for the `ScrollArea` component. This allows the `TableType` interface to inherit all the properties of a `ScrollArea` while also providing flexibility for adding custom table-related properties.
+
+### Key Properties:
+- **`className`**: (Optional) Allows for custom CSS classes for the table.
+
+---
+
+## `TableDataKey`
+
+`TableDataKey` is an interface that extends `React.HTMLProps<HTMLTableCellElement>`, meaning it inherits all standard HTML properties available to a table cell element. Additionally, it provides options to include a label or icon.
+
+### Key Properties:
+- **`withLabel`**: (Optional) Contains label-related properties, excluding `showCommand` and `showLabel`.
+- **`withIcon`**: (Optional) Allows you to insert an icon as a `ReactNode` within the table cell.
+
+---
+
+## `TableCaptionType`
+
+`TableCaptionType` is an interface that extends `React.HTMLProps<HTMLTableCaptionElement>`. This means it inherits all standard HTML properties available to a table caption element.
+
+### Key Properties:
+- **`children`**: The content of the caption.
+- **`className`**: (Optional) Allows for custom CSS classes for the caption.
+
+---
+
+## `TablePaginationsType`
+
+`TablePaginationsType` is an interface that extends `React.HTMLProps<HTMLDivElement>`, meaning it can be applied to a `div` element with pagination-specific properties.
+
+### Key Properties:
+- **`groupSize`**: The size of each page or group of data displayed at one time.
+- **`activePage`**: (Optional) The current active page number.
+- **`showPageCount`**: (Optional) Boolean to control whether the total page count is displayed.
+- **`showSelectCount`**: (Optional) Boolean to control whether the option to select the number of items per page is displayed.
+- **`showNavigation`**: (Optional) Boolean to control whether navigation buttons are shown.
+- **`showGroup`**: (Optional) Boolean to control whether groups of pages are shown.
+
+---
+
+## `PaginationState`
+
+`PaginationState` is an interface that defines the state related to pagination. It tracks the active page and the group size for displaying paginated data.
+
+### Key Properties:
+- **`activePage`**: The current active page number.
+- **`groupSize`**: The size of each page or group of data displayed at one time.
+
+---
+
+## `TablePaginationType`
+
+`TablePaginationType` is a generic interface that defines the structure and behavior of the table's pagination system. It coordinates the various elements involved in paginating table data.
+
+### Key Properties:
+- **`selected`**: An array of `TableContentDataType` representing the selected rows of data.
+- **`setValue`**: A function to update the selected value, typically by dispatching a state action.
+- **`value`**: An array of strings representing the current selected values.
+- **`tableData`**: An array of `TableContentDataType` representing the data to be paginated.
+- **`paginations`**: (Optional) Configuration object of type `TablePaginationsType` that defines how pagination is handled.
+- **`resultArrays`**: An array of arrays of `TableContentDataType` representing the paginated data.
+- **`paginationState`**: An object of type `PaginationState` that tracks the active page and group size.
+- **`setPaginationState`**: A function to update the pagination state, typically by dispatching a state action.
+
+### Example Usage:
+This interface would be used in a component that needs to manage the pagination of table data, handling the display, selection, and interaction with paginated content.
+
+---
+
+## `TableCustomFooterColumns`
+
+`TableCustomFooterColumns` is an interface that defines the structure of the footer component for a table. It allows for customization of the footer's columns.
+
+### Key Properties:
+- **`columns`**: Specifies the columns to be displayed in the footer. Each column is defined by the `FooterCoumnType`.
+- **`className`**: An optional property inherited from `React.ComponentPropsWithoutRef<typeof TableFooter>`, which allows you to apply custom CSS classes to the footer.
+
+---
+
+## `FooterCoumnType`
+
+`FooterCoumnType` represents the properties of each column within the table footer. It extends the properties of `TableCell`.
+
+### Key Properties:
+- **`children`**: (Optional) Defines the content within the footer column.
+- **`className`**: (Optional) Allows for the application of custom CSS classes to the column.
+
+---
+
+## `TableCustomFooter`
+
+`TableCustomFooter` is a component that uses the `TableCustomFooterColumns` interface to render the table footer with customizable columns.
+
+---
+
+## `TableCustomBodyProps`
+
+`TableCustomBodyProps` is an interface that outlines the properties and behavior of the table's body. It manages table headers, pagination, row selection, and menu options.
+
+### Key Properties:
+- **`headers`**: An array of table headers, defined by `TableHeaderColumns<T, Y, C>`.
+- **`resultArrays`**: Represents paginated data for the table body, organized into arrays of `TableContentDataType<Y, C>`.
+- **`paginationState`**: Tracks the active page and group size with `PaginationState`.
+- **`selection`**: Indicates whether row selection is enabled.
+- **`selected`**: An array of currently selected rows.
+- **`setSelected`**: A function for updating the selected rows.
+- **`dropdownMenu`**: Represents options available in a dropdown menu for table headers.
+- **`contextMenu`**: Represents options available in a context menu for table headers.
+- **`filtersData`**: (Optional) Provides filter options for the table or is `undefined` if no filters are available.
+
+---
+
+## `TableDataFilteredType`
+
+`TableDataFilteredType` maps the properties of a record type `T` into key-value pairs, useful for data filtering and mapping within the table.
+
+### Key Properties:
+- **`K`**: Represents each key in the object `T`.
+- **`T[K]`**: Represents the value associated with each key `K`.
+
+---
+
+## `TableCustomBody`
+
+`TableCustomBody` is a component that renders the body of the table based on the properties defined in `TableCustomBodyProps`.
+
+---
+
+## `TableHeaderProps`
+
+`TableHeaderProps` defines the properties required by a component that manages the headers of a table. This interface is used for configuring the table header, including managing table data and selection states.
+
+### Key Properties:
+- **`headers`**: An array of table headers, defined by `TableHeaderColumns<T, Y, C>`. These headers describe the structure and content of the columns in the table.
+- **`setHeaders`**: A function to update the headers. It uses the `React.Dispatch<React.SetStateAction<TableHeaderColumns<T, Y, C>[]>>` type for managing state changes related to headers.
+- **`tableData`**: An array of table data, with each entry conforming to the `TableContentDataType<Y, C>` type. This represents the data displayed in the table rows.
+- **`setTableData`**: A function to update the table data. It uses the `React.Dispatch<React.SetStateAction<TableContentDataType<Y, C>[]>>` type for managing state changes related to table content.
+- **`selection`**: A boolean indicating whether row selection is enabled in the table.
+- **`selected`**: An array of selected rows, with each row conforming to the `TableContentDataType<Y, C>` type. This tracks which rows are currently selected.
+- **`setSelected`**: A function to update the selected rows. It uses the `React.Dispatch<React.SetStateAction<TableContentDataType<Y, C>[]>>` type for managing state changes related to row selection.
+
+---
+
+## `TableCustomHeader`
+
+`TableCustomHeader` is a component that renders the header of the table using the properties defined in `TableHeaderProps`. It handles the display and management of table headers, as well as row selection and data updates.
+
+---
+
+## `TableDropdownMenuOptions`
+
+`TableDropdownMenuOptions` defines the options for the dropdown menu in table headers, used for sorting and managing table data.
+
+### Key Properties:
+- **`sortArray`**: A reference to a sorting function or array used for sorting table data.
+- **`setHeaders`**: A function to update the headers of the table. It uses `React.Dispatch<React.SetStateAction<TableHeaderColumns[]>>` for managing state changes related to table headers.
+- **`headers`**: An array of table headers, defined by `TableHeaderColumns[]`. These headers describe the structure and content of the columns in the table.
+- **`tableData`**: An array of table data entries, defined by `TableContentDataType<Y, C>[]`. This represents the data displayed in the table rows.
+- **`setTableData`**: A function to update the table data. It uses `React.Dispatch<React.SetStateAction<TableContentDataType<Y, C>[]>>` for managing state changes related to table content.
+- **`data`**: An array of table data entries, defined by `TableContentDataType<Y, C>[]`.
+- **`idx`**: The index of the column for which the dropdown menu options are provided.
+- **`column`**: The column configuration, defined by `TableHeaderColumns`. This specifies the properties of the column, such as its label and sorting options.
+
+---
+
+## `TableHeaderColumns`
+
+`TableHeaderColumns` defines the properties for individual table headers. This includes configurations for sorting, displaying labels, and dropdown menu options.
+
+### Key Properties:
+- **`label`**: The label for the table header. It is defined as `Y` if it exists in `C`, otherwise as a generic `string`.
+- **`sortable`**: A boolean indicating whether the column is sortable.
+- **`showLabel`**: A boolean or generic type `T` indicating whether the column label should be shown.
+- **`currentSort`**: The current sorting direction for the column, which can be 'asc', 'desc', or 'not sorted'. This is only applicable if `T` extends `true`.
+- **`dropdownMenuOptions`**: An array of dropdown menu options for the column. This is only applicable if `T` extends `true`.
+
+---
+
+## `TableHeaderColumnsType`
+
+`TableHeaderColumnsType` provides the configuration for managing and displaying table headers, including search and filter options.
+
+### Key Properties:
+- **`header`**: An array of table headers, defined by `TableHeaderColumns<T, Y, C>[]`. These headers describe the structure and content of the columns in the table.
+- **`headers`**: An array of table headers, same as `header`, used for managing the table header state.
+- **`viewButton`**: A boolean indicating whether a view button should be displayed.
+- **`tableSearch`**: A boolean indicating whether table search functionality should be enabled.
+- **`setHeaders`**: A function to update the table headers. It uses `React.Dispatch<React.SetStateAction<TableHeaderColumns<T, Y, C>[]>>` for managing state changes related to headers.
+- **`search`**: An object containing search functionality. It includes:
+  - **`searchValue`**: An object with `q` (search query string) and `qBy` (array of search fields).
+  - **`setSearchValue`**: A function to update the search value. It uses `React.Dispatch<React.SetStateAction<{ q: string; qBy: string[] }>>`.
+- **`filter`**: An array of filters, defined by `ComboboxType<string>[]`. This is used for filtering table data based on user selections.
+
+---
+
+## `TableHeaderOptionsType`
+
+`TableHeaderOptionsType` specifies the options for managing and displaying table headers, including sorting and data updates.
+
+### Key Properties:
+- **`sortArray`**: A reference to a sorting function or array used for sorting table data.
+- **`setHeaders`**: A function to update the headers of the table. It uses `React.Dispatch<React.SetStateAction<TableHeaderColumns[]>>` for managing state changes related to table headers.
+- **`headers`**: An array of table headers, defined by `TableHeaderColumns[]`.
+- **`tableData`**: An array of table data entries, defined by `TableContentDataType<Y, C>[]`.
+- **`setTableData`**: A function to update the table data. It uses `React.Dispatch<React.SetStateAction<TableContentDataType<Y, C>[]>>`.
+- **`data`**: An array of table data entries, defined by `TableContentDataType<Y, C>[]`.
+- **`idx`**: The index of the column for which the options are provided.
+- **`column`**: The column configuration, defined by `TableHeaderColumns`.
+
+---
+
+## `TableHeaderActions`
+
+`TableHeaderActions` is a component that handles actions related to table headers, such as sorting, searching, and filtering.
+
+---

@@ -133,4 +133,16 @@ export const examples: Registry = [
     registryDependencies: ['table'],
     files: ['example/TableMainDemo.tsx'],
   },
+  {
+    name: 'TableSimpleDemo',
+    type: 'components:example',
+    registryDependencies: ['table'],
+    files: ['example/TableSimpleDemo.tsx'],
+  },
+  {
+    name: 'TableAdvancedDemo',
+    type: 'components:example',
+    registryDependencies: ['table'],
+    files: ['example/TableAdvancedDemo.tsx'],
+  },
 ]

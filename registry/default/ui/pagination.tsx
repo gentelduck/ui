@@ -1,8 +1,16 @@
 import * as React from 'react'
-import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
+import {
+  ChevronLeft,
+  ChevronLeftIcon,
+  ChevronRight,
+  ChevronRightIcon,
+  ChevronsLeftIcon,
+  ChevronsRightIcon,
+  MoreHorizontal,
+} from 'lucide-react'
 
 import { cn } from '@/lib/utils'
-import { ButtonProps, buttonVariants } from '@/registry/default/ui/'
+import { Button, ButtonProps, buttonVariants } from '@/registry/default/ui/'
 
 const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
   <nav
@@ -92,6 +100,94 @@ const PaginationEllipsis = ({ className, ...props }: React.ComponentProps<'span'
 )
 PaginationEllipsis.displayName = 'PaginationEllipsis'
 
+export interface PaginationCustomViewProps {
+  wrapper?: React.ComponentPropsWithoutRef<typeof Pagination>
+  content?: React.ComponentPropsWithoutRef<typeof PaginationContent>
+  item?: React.ComponentPropsWithoutRef<typeof PaginationItem>
+  right?: React.ComponentPropsWithoutRef<typeof Button>
+  maxRight?: React.ComponentPropsWithoutRef<typeof Button>
+  left?: React.ComponentPropsWithoutRef<typeof Button>
+  maxLeft?: React.ComponentPropsWithoutRef<typeof Button>
+}
+
+const PaginationCustomView = React.forwardRef<HTMLUListElement, PaginationCustomViewProps>(
+  ({ wrapper, content, item, right, maxRight, left, maxLeft }, ref) => {
+    const { className: wrapperClassName, ...wrapperProps } = wrapper ?? {}
+    const { className: contentClassName, ...contentProps } = content ?? {}
+    const { className: itemClassName, ...itemProps } = item ?? {}
+    const { className: rightClassName, ...rightProps } = right ?? {}
+    const { className: maxRightClassName, ...maxRightProps } = maxRight ?? {}
+    const { className: leftClassName, ...leftProps } = left ?? {}
+    const { className: maxLeftClassName, ...maxLeftProps } = maxLeft ?? {}
+
+    return (
+      <Pagination
+        ref={ref}
+        className={cn('justify-end', wrapperClassName)}
+        {...wrapperProps}
+      >
+        <PaginationContent
+          className={cn('gap-2', contentClassName)}
+          {...contentProps}
+        >
+          <PaginationItem
+            className={cn(itemClassName)}
+            {...itemProps}
+          >
+            <Button
+              variant="outline"
+              size="icon"
+              className={cn('w-[32px] h-[32px] p-0', maxLeftClassName)}
+              {...maxLeftProps}
+            >
+              <ChevronsLeftIcon className="size-4" />
+            </Button>
+          </PaginationItem>
+          <PaginationItem
+            className={cn(itemClassName)}
+            {...itemProps}
+          >
+            <Button
+              variant="outline"
+              size="icon"
+              className={cn('w-[32px] h-[32px] p-0', leftClassName)}
+              {...leftProps}
+            >
+              <ChevronLeftIcon className="size-4" />
+            </Button>
+          </PaginationItem>
+          <PaginationItem
+            className={cn(itemClassName)}
+            {...itemProps}
+          >
+            <Button
+              variant="outline"
+              size="icon"
+              className={cn('w-[32px] h-[32px] p-0', rightClassName)}
+              {...rightProps}
+            >
+              <ChevronRightIcon className="size-4" />
+            </Button>
+          </PaginationItem>
+          <PaginationItem
+            className={cn(itemClassName)}
+            {...itemProps}
+          >
+            <Button
+              variant="outline"
+              size="icon"
+              className={cn('w-[32px] h-[32px] p-0', maxRightClassName)}
+              {...maxRightProps}
+            >
+              <ChevronsRightIcon className="size-4" />
+            </Button>
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    )
+  }
+)
+
 export {
   Pagination,
   PaginationContent,
@@ -100,4 +196,5 @@ export {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  PaginationCustomView,
 }
