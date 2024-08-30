@@ -383,7 +383,7 @@ const TableCustomHeader = <
               return {
                 ...item,
                 onClick: (e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>) => {
-                  item.onClick?.(e, actionsArgs)
+                  item.action?.(e, actionsArgs)
                 },
               }
             })
@@ -453,16 +453,6 @@ const TableCustomHeader = <
                           content={{
                             align: 'start',
                             options: {
-                              actionsArgs: {
-                                sortArray,
-                                setTableData,
-                                setHeaders,
-                                column,
-                                idx,
-                                data: tableData,
-                                headers,
-                                tableData,
-                              } as unknown as TableDropdownMenuOptions<Y, C>,
                               group: [2, 1],
                               optionsData: fullDropDownMenuOptions as
                                 | DropdownMenuOptionsDataType<TableDropdownMenuOptions<Y, C>>[]

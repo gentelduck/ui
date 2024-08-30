@@ -180,11 +180,7 @@ interface DropdownMenuOptionsDataType<T, Y extends boolean = true>
       React.ComponentPropsWithoutRef<typeof DropdownMenuItem> &
       React.ComponentPropsWithoutRef<typeof DropdownMenuRadioItem>
   > {
-  //FIX: you do not need this type
-  //INFO: think about a way of merging the whole object with onClick
-  onClick?: (event: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>, args?: T) => void
-
-  action?: (args: T) => void
+  action?: (event: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>, args: T) => void
   command?: React.ComponentPropsWithoutRef<typeof DropdownMenuShortcut> & CommandType
   nestedData?: Y extends true
     ? Partial<React.ComponentPropsWithoutRef<typeof DropdownMenuSubContent> & DropdownMenuOptionsType<T, Y>>
@@ -193,8 +189,6 @@ interface DropdownMenuOptionsDataType<T, Y extends boolean = true>
 
 interface DropdownMenuOptionsType<T, Y extends boolean = true> {
   itemType?: 'checkbox' | 'radio' | 'label'
-  //FIX: you do not need this type
-  actionsArgs?: T extends {} ? T : never
   optionsData?: DropdownMenuOptionsDataType<T, Y>[]
   group?: number[]
 }
@@ -259,7 +253,7 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
           return (
             <React.Fragment key={`group-${idx}`}>
               {group.map((item, idx) => {
-                const { children, className, itemType = 'label', action, value, nestedData, key: _key, ...props } = item
+                const { children, className, itemType = 'label', value, nestedData, key: _key, ...props } = item
 
                 const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
                 const {

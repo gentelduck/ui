@@ -35,55 +35,54 @@ export type TableDataType = {
   priority: PriorityType
 }
 
-const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<HeaderColumns, TableDataType>, false>[] =
-  [
-    {
-      onClick: (e, { sortArray, setHeaders, setTableData, data, headers, idx }) => {
-        const { sortedData, updatedColumns } = sortArray(
-          headers,
-          data,
-          Object.keys(data[0])[idx]! as HeaderColumns,
-          'asc'
-        )
-        setHeaders(() => updatedColumns)
-        setTableData(() => (updatedColumns[idx].currentSort === 'asc' ? sortedData : data))
-      },
-      icon: {
-        icon: ArrowUpIcon,
-        className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
-      },
-      children: 'Asc',
+const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<HeaderColumns, TableDataType>, true>[] = [
+  {
+    action: (e, { sortArray, setHeaders, setTableData, data, headers, idx }) => {
+      const { sortedData, updatedColumns } = sortArray(
+        headers,
+        data,
+        Object.keys(data[0])[idx]! as HeaderColumns,
+        'asc'
+      )
+      setHeaders(() => updatedColumns)
+      setTableData(() => (updatedColumns[idx].currentSort === 'asc' ? sortedData : data))
     },
-    {
-      action: ({ sortArray, setHeaders, setTableData, data, headers, idx }) => {
-        const { sortedData, updatedColumns } = sortArray(
-          headers,
-          data,
-          Object.keys(data[0])[idx] as HeaderColumns,
-          'desc'
-        )
-        setHeaders(() => updatedColumns)
-        setTableData(() => (updatedColumns[idx].currentSort === 'desc' ? sortedData : data))
-      },
-      icon: {
-        icon: ArrowDownIcon,
-        className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
-      },
-      children: 'Desc',
+    icon: {
+      icon: ArrowUpIcon,
+      className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
     },
-    {
-      onClick: (e, { headers, column, setHeaders }) => {
-        console.log('hi form action 3')
+    children: 'Asc',
+  },
+  {
+    action: (e, { sortArray, setHeaders, setTableData, data, headers, idx }) => {
+      const { sortedData, updatedColumns } = sortArray(
+        headers,
+        data,
+        Object.keys(data[0])[idx] as HeaderColumns,
+        'desc'
+      )
+      setHeaders(() => updatedColumns)
+      setTableData(() => (updatedColumns[idx].currentSort === 'desc' ? sortedData : data))
+    },
+    icon: {
+      icon: ArrowDownIcon,
+      className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
+    },
+    children: 'Desc',
+  },
+  {
+    action: (e, { headers, column, setHeaders }) => {
+      console.log('hi form action 3')
 
-        setHeaders(headers.filter(sub => sub !== column))
-      },
-      icon: {
-        icon: EyeNoneIcon as LucideIcon,
-        className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
-      },
-      children: 'Hide',
+      setHeaders(headers.filter(sub => sub !== column))
     },
-  ]
+    icon: {
+      icon: EyeNoneIcon as LucideIcon,
+      className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
+    },
+    children: 'Hide',
+  },
+]
 
 export type HeaderColumns = 'task' | 'title' | 'status' | 'label' | 'priority'
 const columns: TableHeaderColumns<true, HeaderColumns, TableDataType>[] = [
@@ -291,15 +290,6 @@ const optionsData: DropdownMenuOptionsDataType<TableHeaderOptionsType<HeaderColu
   },
 ]
 
-const footerColumns: FooterCoumnType[] = [
-  // {
-  //   children: 'Total',
-  // },
-  // {
-  //   children: '50000$',
-  // },
-]
-
 export default function DataTableMainDemo() {
   return (
     <>
@@ -317,15 +307,6 @@ export default function DataTableMainDemo() {
         selection={true}
         filters={filtersData}
         tableContentData={[...tableData]}
-        caption={{
-          children: 'A list of your recent invoices.',
-        }}
-        // footer={{
-        //   className:
-        //     'flex items-center justify-between gap-4 [&_tr]:w-full [&_tr]:flex [&_tr]:items-center [&_tr]:justify-between rounded-bl-lg rounded-br-lg',
-        //   columns: footerColumns,
-        //   children: 'Footer',
-        // }}
         viewButton={true}
         tableSearch={true}
         pagination={{
