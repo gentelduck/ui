@@ -12,5 +12,8 @@ export * from './table'
 export * from './checkbox'
 export * from './dropdown-menu'
 export * from './context-menu'
+export * from './input'
+export * from './scroll-area'
+export * from './pagination'
 
 export * from './ShadcnUI'

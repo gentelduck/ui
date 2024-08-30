@@ -318,6 +318,12 @@ export default function DataTableMainDemo() {
         caption={{
           children: 'A list of your recent invoices.',
         }}
+        // footer={{
+        //   className:
+        //     'flex items-center justify-between gap-4 [&_tr]:w-full [&_tr]:flex [&_tr]:items-center [&_tr]:justify-between rounded-bl-lg rounded-br-lg',
+        //   columns: footerColumns,
+        //   children: 'Footer',
+        // }}
         viewButton={true}
         tableSearch={true}
         pagination={{
