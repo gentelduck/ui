@@ -56,7 +56,7 @@ export default function IndexPage() {
           </span>
           <CopyButton
             variant={'default'}
-            value="pnpm add @ahmedayob/duck-ui"
+            value="npx duck-ui@latest init"
             onClick={() => {
               toast.success('Copied to clipboard')
             }}
