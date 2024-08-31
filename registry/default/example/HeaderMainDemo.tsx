@@ -1,15 +1,15 @@
 import { ArrowRightFromLine, Calendar, Cloudy, Home, Mail, ServerCog } from 'lucide-react'
-import { Button, DuckSwitcher, Header, TooltipProvider } from '@/registry/default/ui'
+import { Button, ButtonProps, DuckSwitcher, Header, TooltipProvider } from '@/registry/default/ui'
 import { useAtom } from 'jotai'
 import { buttonVarieties } from '@/hooks/use-varieties'
 import { cn } from '@/lib'
 
-const data = [
+const data: ButtonProps[] = [
   {
     title: 'Home',
     route: '/home',
     children: 'Home',
-    icon: <Home />,
+    icon: { icon: Home },
     label: {
       children: '21',
     },
@@ -18,7 +18,7 @@ const data = [
     title: 'Calendar',
     route: '/calendar',
     children: 'Calendar',
-    icon: <Calendar />,
+    icon: { icon: Calendar },
     label: {
       children: '20',
     },
@@ -67,7 +67,7 @@ export default function HeaderMainDemo() {
             buttons: [
               <Button
                 isCollapsed={O}
-                icon={<ArrowRightFromLine />}
+                icon={{ icon: ArrowRightFromLine }}
                 className={cn('my-1 mx-2 justify-between', !O && 'w-[250px]', O && 'justify-center')}
                 title={'Collapse'}
                 variant={'secondary'}

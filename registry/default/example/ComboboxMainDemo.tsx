@@ -1,15 +1,20 @@
 import { Combobox, CommandListGroupDataType, TooltipProvider } from '@/registry/default/ui'
-import { ChevronsUpDown, Circle, CircleAlert, CircleCheck, CircleHelp, CircleMinus, CirclePlus } from 'lucide-react'
+import { Circle, CircleAlert, CircleCheck, CircleHelp, CircleMinus, CirclePlus } from 'lucide-react'
 import React from 'react'
 
-const linuxDistros: CommandListGroupDataType[] = [
+type DistrosType = 'Ubuntu' | 'Debian' | 'Fedora' | 'Arch Linux' | 'CentOS'
+const linuxDistros: CommandListGroupDataType<DistrosType>[] = [
   {
     label: 'Ubuntu',
     element: {
       label: {
         children: '19',
       },
-      icon: <CircleCheck className="size-4 stroke-[1.5]" />,
+      icon: {
+        icon: CircleCheck,
+        className: 'size-4 stroke-[1.5]',
+      },
+
       children: 'Ubuntu',
     },
   },
@@ -19,7 +24,10 @@ const linuxDistros: CommandListGroupDataType[] = [
       label: {
         children: '14',
       },
-      icon: <CircleHelp className="size-4 stroke-[1.5]" />,
+      icon: {
+        icon: CircleHelp,
+        className: 'size-4 stroke-[1.5]',
+      },
       children: 'Ubuntu',
     },
   },
@@ -29,7 +37,10 @@ const linuxDistros: CommandListGroupDataType[] = [
       label: {
         children: '26',
       },
-      icon: <CircleAlert className="size-4 stroke-[1.5]" />,
+      icon: {
+        icon: CircleAlert,
+        className: 'size-4 stroke-[1.5]',
+      },
       children: 'Ubuntu',
     },
   },
@@ -39,7 +50,11 @@ const linuxDistros: CommandListGroupDataType[] = [
       label: {
         children: '23',
       },
-      icon: <CircleMinus className="size-4 stroke-[1.5]" />,
+
+      icon: {
+        icon: CircleMinus,
+        className: 'size-4 stroke-[1.5]',
+      },
       children: 'Ubuntu',
     },
   },
@@ -49,28 +64,29 @@ const linuxDistros: CommandListGroupDataType[] = [
       label: {
         children: '42',
       },
-      icon: <Circle className="size-4 stroke-[1.5]" />,
+      icon: {
+        icon: Circle,
+        className: 'size-4 stroke-[1.5]',
+      },
       children: 'Ubuntu',
     },
   },
 ]
 
 export default function ComboboxMainDemo() {
-  const [value, setValue] = React.useState([])
+  const [value, setValue] = React.useState<DistrosType[]>([])
 
   return (
     <TooltipProvider>
-      <Combobox
+      <Combobox<string, DistrosType>
         type={'listbox'}
         trigger={{
           children: 'Status',
           className: '[&>div>span]:text-xs',
-          icon: (
-            <CirclePlus
-              size={14}
-              className="!size-4 stroke-[1.5]"
-            />
-          ),
+          icon: {
+            icon: CirclePlus,
+            className: '!size-4 stroke-[1.5]',
+          },
           label: {
             children: 'Select one',
             showLabel: true,

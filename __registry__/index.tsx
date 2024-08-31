@@ -368,6 +368,17 @@ export const Index: Record<string, any> = {
       subcategory: "undefined",
       chunks: []
     },
+    "TableMediumDemo": {
+      name: "TableMediumDemo",
+      type: "components:example",
+      registryDependencies: ["table"],
+      component: React.lazy(() => import("@/registry/default/example/TableMediumDemo")),
+      source: "",
+      files: ["registry/default/example/TableMediumDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
     "TableAdvancedDemo": {
       name: "TableAdvancedDemo",
       type: "components:example",

@@ -8,7 +8,7 @@ const data: ButtonProps[] = [
     title: 'Home',
     route: '/home',
     children: 'Home',
-    icon: <Home />,
+    icon: { icon: Home },
     label: {
       children: '21',
     },
@@ -17,7 +17,7 @@ const data: ButtonProps[] = [
     title: 'Calendar',
     route: '/calendar',
     children: 'Calendar',
-    icon: <Calendar />,
+    icon: { icon: Calendar },
     label: {
       children: '20',
     },
@@ -26,7 +26,7 @@ const data: ButtonProps[] = [
     title: 'Deals',
     route: '/deals',
     children: 'Deals',
-    icon: <HandshakeIcon />,
+    icon: { icon: HandshakeIcon },
     label: {
       children: '100',
     },
@@ -35,7 +35,7 @@ const data: ButtonProps[] = [
     title: 'Settings',
     route: '/settings',
     children: 'Settings',
-    icon: <Settings />,
+    icon: { icon: Settings },
     label: {
       children: '43',
     },

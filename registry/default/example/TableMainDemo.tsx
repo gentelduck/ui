@@ -1,111 +1,87 @@
-import { TableView, TableHeaderColumns, TableContentDataType, FooterCoumnType } from '../ui'
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/registry/default/ui'
 
-import { cn } from '@/lib'
-
-export type TableDataType = {
-  invoice: React.ReactNode | string
-  status: React.ReactNode | string
-  amount: React.ReactNode | string
-  method: React.ReactNode | string
-}
-
-export type HeaderColumns = 'invoice' | 'status' | 'amount' | 'method'
-const columns: TableHeaderColumns<true, TableDataType>[] = [
+const invoices = [
   {
-    label: 'invoice',
-    className: 'text-sm',
+    invoice: 'INV001',
+    paymentStatus: 'Paid',
+    totalAmount: '$250.00',
+    paymentMethod: 'Credit Card',
   },
   {
-    label: 'status',
-    className: 'w-[110px] text-sm',
+    invoice: 'INV002',
+    paymentStatus: 'Pending',
+    totalAmount: '$150.00',
+    paymentMethod: 'PayPal',
   },
   {
-    label: 'amount',
-    className: 'w-[90px] text-sm',
+    invoice: 'INV003',
+    paymentStatus: 'Unpaid',
+    totalAmount: '$350.00',
+    paymentMethod: 'Bank Transfer',
   },
   {
-    label: 'method',
-    className: 'w-[70px] text-sm',
+    invoice: 'INV004',
+    paymentStatus: 'Paid',
+    totalAmount: '$450.00',
+    paymentMethod: 'Credit Card',
+  },
+  {
+    invoice: 'INV005',
+    paymentStatus: 'Paid',
+    totalAmount: '$550.00',
+    paymentMethod: 'PayPal',
+  },
+  {
+    invoice: 'INV006',
+    paymentStatus: 'Pending',
+    totalAmount: '$200.00',
+    paymentMethod: 'Bank Transfer',
+  },
+  {
+    invoice: 'INV007',
+    paymentStatus: 'Unpaid',
+    totalAmount: '$300.00',
+    paymentMethod: 'Credit Card',
   },
 ]
 
-const footerColumns: FooterCoumnType[] = [
-  {
-    children: 'Total',
-    colSpan: 3,
-  },
-  {
-    children: '50000$',
-    className: 'w-[170px]',
-  },
-]
-
-export default function DataTableMainDemo() {
+export default function TableDemo() {
   return (
-    <>
-      <TableView<true, TableDataType>
-        wrapper={{
-          className: cn('xl:w-[642px] lg:w-[524px] w-[270px] m-auto '),
-        }}
-        table={{
-          className: cn('xl:w-[642px] lg:w-[524px] w-[270px]', footerColumns.length && 'rounded-none border-[0]'),
-        }}
-        footer={{
-          className: 'gap-4 border-t-0',
-          columns: footerColumns,
-          children: 'Footer',
-        }}
-        header={columns}
-        tableContentData={[...tableData]}
-        caption={{
-          children: 'A list of your recent invoices.',
-        }}
-      />
-    </>
+    <Table>
+      <TableCaption>A list of your recent invoices.</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[100px]">Invoice</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Method</TableHead>
+          <TableHead className="text-right">Amount</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {invoices.map(invoice => (
+          <TableRow key={invoice.invoice}>
+            <TableCell className="font-medium">{invoice.invoice}</TableCell>
+            <TableCell>{invoice.paymentStatus}</TableCell>
+            <TableCell>{invoice.paymentMethod}</TableCell>
+            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+          <TableCell colSpan={3}>Total</TableCell>
+          <TableCell className="text-right">$2,500.00</TableCell>
+        </TableRow>
+      </TableFooter>
+    </Table>
   )
 }
-
-export const tableData: TableContentDataType<TableDataType>[] = [
-  {
-    invoice: { children: 'INV001' },
-    status: { children: 'Paid' },
-    amount: { children: '$250.00' },
-    method: { children: 'Credit Card' },
-  },
-  {
-    invoice: { children: 'INV002' },
-    status: { children: 'Pending' },
-    amount: { children: '$150.00' },
-    method: { children: 'PayPal' },
-  },
-  {
-    invoice: { children: 'INV003' },
-    status: { children: 'Unpaid' },
-    amount: { children: '$350.00' },
-    method: { children: 'Bank Transfer' },
-  },
-  {
-    invoice: { children: 'INV004' },
-    status: { children: 'Paid' },
-    amount: { children: '$450.00' },
-    method: { children: 'Credit Card' },
-  },
-  {
-    invoice: { children: 'INV005' },
-    status: { children: 'Paid' },
-    amount: { children: '$550.00' },
-    method: { children: 'PayPal' },
-  },
-  {
-    invoice: { children: 'INV006' },
-    status: { children: 'Pending' },
-    amount: { children: '$200.00' },
-    method: { children: 'Bank Transfer' },
-  },
-  {
-    invoice: { children: 'INV007' },
-    status: { children: 'Unpaid' },
-    amount: { children: '$300.00' },
-    method: { children: 'Credit Card' },
-  },
-]

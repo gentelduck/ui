@@ -1,6 +1,6 @@
 import {
-  TableView,
-  TableHeaderColumns,
+  TableCustomView,
+  TableHeaderType,
   DropdownMenuOptionsDataType,
   ComboboxType,
   TableHeaderOptionsType,
@@ -78,7 +78,7 @@ const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<Ta
   },
 ]
 
-const columns: TableHeaderColumns<true, TableDataType>[] = [
+const columns: TableHeaderType<true, TableDataType>[] = [
   {
     label: 'task',
     sortable: false,
@@ -286,7 +286,7 @@ const optionsData: DropdownMenuOptionsDataType<TableHeaderOptionsType<TableDataT
 export default function DataTableMainDemo() {
   return (
     <>
-      <TableView<true, TableDataType, StatusType | PriorityType>
+      <TableCustomView<true, TableDataType, StatusType | PriorityType>
         wrapper={{
           className: cn('lg:w-[632px] ldg:w-[524px] w-[270px] m-auto'),
         }}

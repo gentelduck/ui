@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { TableContentDataType, TableHeaderColumns } from '@/registry/default/ui'
+import { TableContentDataType, TableHeaderType } from '@/registry/default/ui'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -50,7 +50,7 @@ export function groupArrays<T>(numbers: number[], headers: T[]): T[][] {
   return result
 }
 type Order = 'asc' | 'desc' | 'not sorted'
-export function sortArray<T>(columns: TableHeaderColumns[], array: T[], key?: keyof T, order: Order = 'desc') {
+export function sortArray<T>(columns: TableHeaderType[], array: T[], key?: keyof T, order: Order = 'desc') {
   const toggleSortOrder = (currentOrder: Order): Order => {
     if (currentOrder === 'not sorted') return order
     if (currentOrder === 'asc' && order === 'asc') return 'not sorted'

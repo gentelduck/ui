@@ -140,6 +140,12 @@ export const examples: Registry = [
     files: ['example/TableSimpleDemo.tsx'],
   },
   {
+    name: 'TableMediumDemo',
+    type: 'components:example',
+    registryDependencies: ['table'],
+    files: ['example/TableMediumDemo.tsx'],
+  },
+  {
     name: 'TableAdvancedDemo',
     type: 'components:example',
     registryDependencies: ['table'],

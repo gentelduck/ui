@@ -16,7 +16,7 @@ interface OnSelectType<T> {
   setValue: React.Dispatch<React.SetStateAction<T[]>>
 }
 
-type ComboboxType<T extends keyof Record<string, unknown>, Y extends keyof Record<string, unknown>> = {
+type ComboboxProps<T extends keyof Record<string, unknown>, Y extends keyof Record<string, unknown>> = {
   type: 'combobox' | 'listbox'
   onSelect?: OnSelectType<Y>
   wrapper?: React.HTMLProps<HTMLDivElement> & {}
@@ -36,7 +36,7 @@ const Combobox = <T extends keyof Record<string, unknown> = string, Y extends ke
   content,
   onSelect,
   type,
-}: ComboboxType<T, Y>) => {
+}: ComboboxProps<T, Y>) => {
   //NOTE: you can use state management lib instead of this local states to use it globally
   const [open, setOpen] = React.useState(false)
 
@@ -161,10 +161,10 @@ const Combobox = <T extends keyof Record<string, unknown> = string, Y extends ke
                     key: (value: string | undefined) => {
                       onSelect?.setValue(
                         type === 'combobox'
-                          ? [value as T]
-                          : onSelect?.value.includes(value as T)
+                          ? [value as Y]
+                          : onSelect?.value.includes(value as Y)
                             ? onSelect?.value.filter(i => i !== value)
-                            : [...onSelect?.value, value as T]
+                            : [...onSelect?.value, value as Y]
                       )
                     },
                     clear: () => {
@@ -183,4 +183,4 @@ const Combobox = <T extends keyof Record<string, unknown> = string, Y extends ke
 
 Combobox.displayName = 'Combobox'
 
-export { Combobox, type ComboboxType, type OnSelectType }
+export { Combobox, type ComboboxProps as ComboboxType, type OnSelectType }
