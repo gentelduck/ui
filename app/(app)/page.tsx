@@ -50,9 +50,9 @@ export default function IndexPage() {
         </PageHeader>
         <span className="flex flex-row items-center gap-3 text-primary text-md max-[800px]:mb-12 bg-secondary px-6 py-2 border border-solid border-border rounded-3xl">
           <span className="flex flex-row items-center gap-1.5 font-mono">
-            <span className="text-blue-500 font-semibold">pnpm</span>
-            <span className="text-red-500">add</span>
-            <span>@ahmedayob/duck-ui</span>
+            <span className="text-blue-500 font-semibold">npx</span>
+            <span className="text-red-500">duck-ui@latest</span>
+            <span>init</span>
           </span>
           <CopyButton
             variant={'default'}
