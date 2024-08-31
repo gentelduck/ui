@@ -144,7 +144,7 @@ const CommandShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanE
 }
 CommandShortcut.displayName = 'CommandShortcut'
 
-interface CommandListGroupDataType<T extends string = string> {
+interface CommandListGroupDataType<T extends keyof Record<string, unknown> = string> {
   label?: T
   element?: ListItemElementType
   onSelect?: OnSelectType

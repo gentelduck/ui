@@ -253,7 +253,7 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
           return (
             <React.Fragment key={`group-${idx}`}>
               {group.map((item, idx) => {
-                const { children, className, itemType = 'label', value, nestedData, key: _key, ...props } = item
+                const { children, className, itemType = 'label', value, action, nestedData, key: _key, ...props } = item
 
                 const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
                 const {

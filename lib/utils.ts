@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { TableHeaderColumns } from '@/registry/default/ui'
+import { TableContentDataType, TableHeaderColumns } from '@/registry/default/ui'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -49,31 +49,33 @@ export function groupArrays<T>(numbers: number[], headers: T[]): T[][] {
 
   return result
 }
-
-export function sortArray<T>(
-  columns: TableHeaderColumns[],
-  array: T[],
-  key?: keyof T,
-  order: 'asc' | 'desc' | 'not sorted' = 'desc'
-) {
-  const toggleSortOrder = (
-    order: 'asc' | 'desc' | 'not sorted',
-    currentOrder: 'asc' | 'desc' | 'not sorted'
-  ): 'asc' | 'desc' | 'not sorted' => (order === 'not sorted' ? currentOrder : 'not sorted')
+type Order = 'asc' | 'desc' | 'not sorted'
+export function sortArray<T>(columns: TableHeaderColumns[], array: T[], key?: keyof T, order: Order = 'desc') {
+  const toggleSortOrder = (currentOrder: Order): Order => {
+    if (currentOrder === 'not sorted') return order
+    if (currentOrder === 'asc' && order === 'asc') return 'not sorted'
+    if (currentOrder === 'asc' && order === 'desc') return 'desc'
+    if (currentOrder === 'desc' && order === 'desc') return 'not sorted'
+    if (currentOrder === 'desc' && order === 'asc') return 'asc'
+    return 'not sorted'
+  }
 
   const updatedColumns = columns.map(col => {
-    if (col.children === key) {
+    if (col.label === key) {
       return {
         ...col,
-        currentSort: toggleSortOrder(col.currentSort!, order),
+        currentSort: toggleSortOrder(col.currentSort ?? 'not sorted'),
       }
     }
     return col
   })
 
-  const sortedData = array.sort((a, b) => {
-    const valueA = key ? a[key] : a
-    const valueB = key ? b[key] : b
+  const sortedData = array.toSorted((a, b) => {
+    const valueA = key ? (a[key] as TableContentDataType).children : a
+
+    const valueB = key ? (a[key] as TableContentDataType).children : b
+
+    if (order === 'not sorted' || !key) return 0
 
     if (typeof valueA === 'string' && typeof valueB === 'string') {
       return order === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA)
@@ -83,5 +85,6 @@ export function sortArray<T>(
       return order === 'asc' ? (valueA > valueB ? 1 : -1) : valueA < valueB ? 1 : -1
     }
   })
+
   return { sortedData, updatedColumns }
 }

@@ -10,7 +10,7 @@ export type TableDataType = {
 }
 
 export type HeaderColumns = 'invoice' | 'status' | 'amount' | 'method'
-const columns: TableHeaderColumns<true, HeaderColumns, TableDataType>[] = [
+const columns: TableHeaderColumns<true, TableDataType>[] = [
   {
     label: 'invoice',
     className: 'text-sm',
@@ -43,7 +43,7 @@ const footerColumns: FooterCoumnType[] = [
 export default function DataTableMainDemo() {
   return (
     <>
-      <TableView<true, HeaderColumns, TableDataType>
+      <TableView<true, TableDataType>
         wrapper={{
           className: cn('xl:w-[642px] lg:w-[524px] w-[270px] m-auto '),
         }}
@@ -65,7 +65,7 @@ export default function DataTableMainDemo() {
   )
 }
 
-export const tableData: TableContentDataType<HeaderColumns, TableDataType>[] = [
+export const tableData: TableContentDataType<TableDataType>[] = [
   {
     invoice: { children: 'INV001' },
     status: { children: 'Paid' },

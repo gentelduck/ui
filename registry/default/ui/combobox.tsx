@@ -16,20 +16,27 @@ interface OnSelectType<T> {
   setValue: React.Dispatch<React.SetStateAction<T[]>>
 }
 
-type ComboboxType<T = string, C extends string = string> = {
+type ComboboxType<T extends keyof Record<string, unknown>, Y extends keyof Record<string, unknown>> = {
   type: 'combobox' | 'listbox'
-  onSelect?: OnSelectType<T>
+  onSelect?: OnSelectType<Y>
   wrapper?: React.HTMLProps<HTMLDivElement> & {}
   title?: Partial<React.ComponentPropsWithoutRef<typeof Label>> & {}
-  trigger?: Partial<React.ComponentPropsWithoutRef<typeof Button>> & {}
+  trigger?: Partial<React.ComponentPropsWithoutRef<typeof Button> & { children?: T }>
   content?: Partial<React.ComponentPropsWithoutRef<typeof PopoverContent>> & {
-    data: CommandListGroupDataType<C>[]
+    data: CommandListGroupDataType<Y>[]
     showSearchInput?: boolean
     groupheading?: string[]
   }
 }
 
-const Combobox = <T,>({ wrapper, title, trigger, content, onSelect, type }: ComboboxType<T>) => {
+const Combobox = <T extends keyof Record<string, unknown> = string, Y extends keyof Record<string, unknown> = string>({
+  wrapper,
+  title,
+  trigger,
+  content,
+  onSelect,
+  type,
+}: ComboboxType<T, Y>) => {
   //NOTE: you can use state management lib instead of this local states to use it globally
   const [open, setOpen] = React.useState(false)
 
@@ -96,7 +103,7 @@ const Combobox = <T,>({ wrapper, title, trigger, content, onSelect, type }: Comb
               {...triggerProps}
             >
               <span className="text-ellipsis overflow-hidden whitespace-nowrap">
-                {type === 'combobox' ? ((onSelect?.value[0] as string) ?? triggerChildren) : triggerChildren}
+                {type === 'combobox' ? (onSelect?.value[0] ?? triggerChildren) : triggerChildren}
               </span>
               {type === 'listbox' && filteredData?.length ? (
                 <Separator
@@ -113,7 +120,7 @@ const Combobox = <T,>({ wrapper, title, trigger, content, onSelect, type }: Comb
                         variant={'secondary'}
                         className="rounded-md text-xs px-1 font-normal"
                       >
-                        {item as string}
+                        {item}
                       </Badge>
                     ))
                   ) : (
@@ -147,7 +154,7 @@ const Combobox = <T,>({ wrapper, title, trigger, content, onSelect, type }: Comb
                 <CommandListGroup
                   type={type ?? 'combobox'}
                   data={data ?? []}
-                  selected={(onSelect?.value as string[]) ?? ([] as string[])}
+                  selected={onSelect?.value ?? []}
                   groupheading={groupheading || []}
                   checkabble={true}
                   onSelect={{
@@ -161,9 +168,7 @@ const Combobox = <T,>({ wrapper, title, trigger, content, onSelect, type }: Comb
                       )
                     },
                     clear: () => {
-                      onSelect?.setValue(
-                        onSelect?.value.filter(item => !data?.map(item => item.label).includes(item as string)) as T[]
-                      )
+                      onSelect?.setValue(onSelect?.value.filter(item => !data?.map(item => item.label).includes(item)))
                     },
                   }}
                 />

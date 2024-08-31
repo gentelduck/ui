@@ -4,7 +4,6 @@ import {
   DropdownMenuOptionsDataType,
   ComboboxType,
   TableHeaderOptionsType,
-  FooterCoumnType,
   TableContentDataType,
 } from '../ui'
 import {
@@ -35,20 +34,15 @@ export type TableDataType = {
   priority: PriorityType
 }
 
-const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<HeaderColumns, TableDataType>, true>[] = [
+const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<TableDataType>, true>[] = [
   {
     action: (e, { sortArray, setHeaders, setTableData, data, headers, idx }) => {
-      const { sortedData, updatedColumns } = sortArray(
-        headers,
-        data,
-        Object.keys(data[0])[idx]! as HeaderColumns,
-        'asc'
-      )
+      const { sortedData, updatedColumns } = sortArray(headers, data, headers[idx].label as keyof TableDataType, 'asc')
       setHeaders(() => updatedColumns)
       setTableData(() => (updatedColumns[idx].currentSort === 'asc' ? sortedData : data))
     },
     icon: {
-      icon: ArrowUpIcon,
+      icon: ArrowDownIcon,
       className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
     },
     children: 'Asc',
@@ -58,14 +52,14 @@ const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<He
       const { sortedData, updatedColumns } = sortArray(
         headers,
         data,
-        Object.keys(data[0])[idx] as HeaderColumns,
+        Object.keys(data[0])[idx] as keyof TableDataType,
         'desc'
       )
       setHeaders(() => updatedColumns)
       setTableData(() => (updatedColumns[idx].currentSort === 'desc' ? sortedData : data))
     },
     icon: {
-      icon: ArrowDownIcon,
+      icon: ArrowUpIcon,
       className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
     },
     children: 'Desc',
@@ -84,8 +78,7 @@ const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<He
   },
 ]
 
-export type HeaderColumns = 'task' | 'title' | 'status' | 'label' | 'priority'
-const columns: TableHeaderColumns<true, HeaderColumns, TableDataType>[] = [
+const columns: TableHeaderColumns<true, TableDataType>[] = [
   {
     label: 'task',
     sortable: false,
@@ -126,7 +119,7 @@ const filtersData = [
   {
     type: 'listbox',
     trigger: {
-      children: 'Status',
+      children: 'status',
       label: {
         children: 'Filter Status',
         showLabel: true,
@@ -188,11 +181,11 @@ const filtersData = [
         },
       ],
     },
-  } as ComboboxType<string, StatusType>,
+  } as ComboboxType<keyof TableDataType, StatusType>,
   {
     type: 'listbox',
     trigger: {
-      children: 'Method',
+      children: 'priority',
       label: {
         children: 'Filter Method',
         showLabel: true,
@@ -236,10 +229,10 @@ const filtersData = [
         },
       ],
     },
-  } as ComboboxType<string, PriorityType>,
+  } as ComboboxType<keyof TableDataType, PriorityType>,
 ]
 
-const optionsData: DropdownMenuOptionsDataType<TableHeaderOptionsType<HeaderColumns, TableDataType>, true>[] = [
+const optionsData: DropdownMenuOptionsDataType<TableHeaderOptionsType<TableDataType>, true>[] = [
   {
     children: 'Edit',
     onClick: () => console.log('edit'),
@@ -293,19 +286,16 @@ const optionsData: DropdownMenuOptionsDataType<TableHeaderOptionsType<HeaderColu
 export default function DataTableMainDemo() {
   return (
     <>
-      <TableView<true, HeaderColumns, TableDataType>
+      <TableView<true, TableDataType, StatusType | PriorityType>
         wrapper={{
           className: cn('lg:w-[632px] ldg:w-[524px] w-[270px] m-auto'),
         }}
         table={{
-          className: cn(
-            'lg:w-[632px] lig:w-[524px] w-[270px]  h-[351px]',
-            footerColumns.length && 'rounded-br-none rounded-bl-none border-b-[0]'
-          ),
+          className: cn('lg:w-[632px] lig:w-[524px] w-[270px]  h-[351px]'),
         }}
         header={columns}
         selection={true}
-        filters={filtersData}
+        filters={filtersData as ComboboxType<keyof TableDataType, StatusType | PriorityType>[]}
         tableContentData={[...tableData]}
         viewButton={true}
         tableSearch={true}
@@ -329,7 +319,7 @@ export default function DataTableMainDemo() {
   )
 }
 
-export const tableData: TableContentDataType<HeaderColumns, TableDataType>[] = [
+export const tableData: TableContentDataType<TableDataType>[] = [
   {
     task: { children: 'TASK-8782' },
     title: {
