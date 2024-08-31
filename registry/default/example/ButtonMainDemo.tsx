@@ -15,7 +15,9 @@ export default function ButtonMainDemo() {
       <TooltipProvider>
         <Button
           isCollapsed={open}
-          icon={<Inbox />}
+          icon={{
+            icon: Inbox,
+          }}
           title={title}
           variant={variant}
           size={size}

@@ -225,9 +225,9 @@ export function CommandMenu() {
 
 ***Key Properties***
 
-- **`key`** (`<T extends string>(arg?: T) => void`): Callback function triggered when an item is selected. Takes an optional argument `arg` of type `T` (a string) to specify the selected item.
+- **`key?`** (`<T extends string>(arg?: T) => void`): Callback function triggered when an item is selected. Takes an optional argument `arg` of type `T` (a string) to specify the selected item.
 
-- **`clear`** (`<T extends string>(arg?: T) => void`): Callback function triggered when an item is cleared or deselected. Takes an optional argument `arg` of type `T` (a string) to specify the cleared item.
+- **`clear?`** (`<T extends string>(arg?: T) => void`): Callback function triggered when an item is cleared or deselected. Takes an optional argument `arg` of type `T` (a string) to specify the cleared item.
 
 ### ListItemElementType
 
@@ -261,3 +261,80 @@ export function CommandMenu() {
 - **`checkabble`** (`boolean`, optional): When `true`, enables checkbox-like behavior for items in the list group, allowing multiple selections.
 
 ---
+
+**`Command` Component**
+
+The `Command` component wraps around `CommandPrimitive`, adding default styling.
+
+- **`className`** (`string`, optional): Custom CSS class names to apply to the `Command` component.
+- **`ref`** (`React.Ref<React.ElementRef<typeof CommandPrimitive>>`): Ref to the `CommandPrimitive` component.
+- **`...props`** (`React.ComponentPropsWithoutRef<typeof CommandPrimitive>`): Additional properties passed to `CommandPrimitive`.
+
+---
+
+**`CommandDialogProps` Interface**
+
+The `CommandDialogProps` interface extends the `DialogProps` for the `CommandDialog` component.
+
+- **`children`** (`React.ReactNode`): The content rendered inside the `CommandDialog`.
+- **`...props`** (`DialogProps`): Additional properties passed to the `Dialog` component.
+
+---
+
+**`CommandInput` Component**
+
+The `CommandInput` component provides an input field for searching within the command dialog.
+
+- **`className`** (`string`, optional): Custom CSS class names to apply to the `CommandInput` component.
+- **`ref`** (`React.Ref<React.ElementRef<typeof CommandPrimitive.Input>>`): Ref to the `CommandPrimitive.Input` component.
+- **`...props`** (`React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>`): Additional properties passed to `CommandPrimitive.Input`.
+
+---
+
+**`CommandList` Component**
+
+The `CommandList` component displays a list of command items.
+
+- **`className`** (`string`, optional): Custom CSS class names to apply to the `CommandList` component.
+- **`ref`** (`React.Ref<React.ElementRef<typeof CommandPrimitive.List>>`): Ref to the `CommandPrimitive.List` component.
+- **`...props`** (`React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>`): Additional properties passed to `CommandPrimitive.List`.
+
+---
+
+**`CommandEmpty` Component**
+
+The `CommandEmpty` component displays a message when there are no items to show in the command list.
+
+- **`ref`** (`React.Ref<React.ElementRef<typeof CommandPrimitive.Empty>>`): Ref to the `CommandPrimitive.Empty` component.
+- **`...props`** (`React.ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>`): Additional properties passed to `CommandPrimitive.Empty`.
+
+---
+
+**`CommandGroup` Component**
+
+The `CommandGroup` component groups related command items together.
+
+- **`className`** (`string`, optional): Custom CSS class names to apply to the `CommandGroup` component.
+- **`ref`** (`React.Ref<React.ElementRef<typeof CommandPrimitive.Group>>`): Ref to the `CommandPrimitive.Group` component.
+- **`...props`** (`React.ComponentPropsWithoutRef<typeof CommandPrimitive.Group>`): Additional properties passed to `CommandPrimitive.Group`.
+
+---
+
+**`CommandSeparator` Component**
+
+The `CommandSeparator` component provides a visual separator between command items.
+
+- **`className`** (`string`, optional): Custom CSS class names to apply to the `CommandSeparator` component.
+- **`ref`** (`React.Ref<React.ElementRef<typeof CommandPrimitive.Separator>>`): Ref to the `CommandPrimitive.Separator` component.
+- **`...props`** (`React.ComponentPropsWithoutRef<typeof CommandPrimitive.Separator>`): Additional properties passed to `CommandPrimitive.Separator`.
+
+---
+
+**`CommandItem` Component**
+
+The `CommandItem` component represents an individual command item.
+
+- **`className`** (`string`, optional): Custom CSS class names to apply to the `CommandItem` component.
+- **`ref`** (`React.Ref<React.ElementRef<typeof CommandPrimitive.Item>>`): Ref to the `CommandPrimitive.Item` component.
+- **`...props`** (`React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>`): Additional properties passed to `CommandPrimitive.Item`.
+

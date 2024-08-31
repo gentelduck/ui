@@ -15,6 +15,7 @@ import {
   Drawer,
   DrawerContent,
   DrawerTrigger,
+  OnSelectType,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -107,7 +108,9 @@ function StatusList({ setSelectedStatus }: { setSelectedStatus: (status: string 
           className="h-[166px]"
           groupheading={['Suggestions', 'Settings']}
           selected={['']}
-          onSelect={(value: string | undefined) => setSelectedStatus(value ?? '')}
+          onSelect={{
+            key: value => setSelectedStatus(value as string),
+          }}
         />
       </CommandList>
     </Command>

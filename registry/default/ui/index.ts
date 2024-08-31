@@ -5,11 +5,11 @@ export * from './header'
 export * from './drawer'
 export * from './command'
 export * from './combobox'
-
 export * from './button'
 export * from './badge'
-export * from './select-switcher'
 export * from './alert-dialog'
+
+export * from './select-switcher'
 export * from './checkbox'
 export * from './dropdown-menu'
 export * from './context-menu'

@@ -62,6 +62,18 @@ export const examples: Registry = [
     files: ['example/ComboboxMainDemo.tsx'],
   },
   {
+    name: 'ComboboxComboboxDemo',
+    type: 'components:example',
+    registryDependencies: ['combobox'],
+    files: ['example/ComboboxComboboxDemo.tsx'],
+  },
+  {
+    name: 'ComboboxListboxDemo',
+    type: 'components:example',
+    registryDependencies: ['combobox'],
+    files: ['example/ComboboxListboxDemo.tsx'],
+  },
+  {
     name: 'ComboboxDropdownDemo',
     type: 'components:example',
     registryDependencies: ['combobox'],

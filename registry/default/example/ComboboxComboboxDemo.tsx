@@ -1,5 +1,5 @@
 import { Combobox, CommandListGroupDataType, TooltipProvider } from '@/registry/default/ui'
-import { Circle, CircleAlert, CircleCheck, CircleHelp, CircleMinus, CirclePlus } from 'lucide-react'
+import { CirclePlus } from 'lucide-react'
 import React from 'react'
 
 type DistrosType = 'Ubuntu' | 'Debian' | 'Fedora' | 'Arch Linux' | 'CentOS'
@@ -57,8 +57,8 @@ export default function ComboboxMainDemo() {
             showCommand: true,
           },
           command: {
-            label: '⌃+m',
-            key: 'Ctrl+m',
+            label: '⌃+⇧+m',
+            key: 'Ctrl+shift+m',
           },
         }}
         onSelect={{

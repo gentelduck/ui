@@ -141,4 +141,86 @@ You can combine the `Dialog` and `Drawer` components to create a responsive dial
 
 - **`[data-vaul-no-drag]`** (`boolean`): No default, When applied to an element, prevents the drawer from being draggable when interacting with that element. This is useful for ensuring that specific interactions, such as clicking buttons or links, do not accidentally trigger the drawer's drag behavior.
 
+---
+
+**`DrawerTrigger` Component**
+
+The `DrawerTrigger` component is a direct export from `DrawerPrimitive.Trigger`.
+
+- **No additional props or ref forwarding.**
+
+---
+
+**`DrawerPortal` Component**
+
+The `DrawerPortal` component is a direct export from `DrawerPrimitive.Portal`.
+
+- **No additional props or ref forwarding.**
+
+---
+
+**`DrawerClose` Component**
+
+The `DrawerClose` component is a direct export from `DrawerPrimitive.Close`.
+
+- **No additional props or ref forwarding.**
+
+---
+
+**`DrawerOverlay` Component**
+
+The `DrawerOverlay` component renders an overlay with default styling.
+
+- **`className`** (`string`, optional): Custom CSS class names to apply to the `DrawerOverlay` component.
+- **`ref`** (`React.Ref<React.ElementRef<typeof DrawerPrimitive.Overlay>>`): Ref to the `DrawerPrimitive.Overlay` component.
+- **`...props`** (`React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay>`): Additional properties passed to `DrawerPrimitive.Overlay`.
+
+---
+
+**`DrawerContent` Component**
+
+The `DrawerContent` component wraps `DrawerPrimitive.Content` with additional styling and includes `DrawerOverlay`.
+
+- **`className`** (`string`, optional): Custom CSS class names to apply to the `DrawerContent` component.
+- **`children`** (`React.ReactNode`): Content rendered inside the `DrawerContent`.
+- **`ref`** (`React.Ref<React.ElementRef<typeof DrawerPrimitive.Content>>`): Ref to the `DrawerPrimitive.Content` component.
+- **`...props`** (`React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>`): Additional properties passed to `DrawerPrimitive.Content`.
+
+---
+
+**`DrawerHeader` Component**
+
+The `DrawerHeader` component renders a header section within the drawer.
+
+- **`className`** (`string`, optional): Custom CSS class names to apply to the `DrawerHeader` component.
+- **`...props`** (`React.HTMLAttributes<HTMLDivElement>`): Additional properties passed to the `DrawerHeader` component.
+
+---
+
+**`DrawerFooter` Component**
+
+The `DrawerFooter` component renders a footer section within the drawer.
+
+- **`className`** (`string`, optional): Custom CSS class names to apply to the `DrawerFooter` component.
+- **`...props`** (`React.HTMLAttributes<HTMLDivElement>`): Additional properties passed to the `DrawerFooter` component.
+
+---
+
+**`DrawerTitle` Component**
+
+The `DrawerTitle` component renders the title inside the drawer.
+
+- **`className`** (`string`, optional): Custom CSS class names to apply to the `DrawerTitle` component.
+- **`ref`** (`React.Ref<React.ElementRef<typeof DrawerPrimitive.Title>>`): Ref to the `DrawerPrimitive.Title` component.
+- **`...props`** (`React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>`): Additional properties passed to `DrawerPrimitive.Title`.
+
+---
+
+**`DrawerDescription` Component**
+
+The `DrawerDescription` component renders a description inside the drawer.
+
+- **`className`** (`string`, optional): Custom CSS class names to apply to the `DrawerDescription` component.
+- **`ref`** (`React.Ref<React.ElementRef<typeof DrawerPrimitive.Description>>`): Ref to the `DrawerPrimitive.Description` component.
+- **`...props`** (`React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Description>`): Additional properties passed to `DrawerPrimitive.Description`.
 

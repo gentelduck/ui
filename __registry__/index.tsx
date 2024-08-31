@@ -225,6 +225,28 @@ export const Index: Record<string, any> = {
       subcategory: "undefined",
       chunks: []
     },
+    "ComboboxComboboxDemo": {
+      name: "ComboboxComboboxDemo",
+      type: "components:example",
+      registryDependencies: ["combobox"],
+      component: React.lazy(() => import("@/registry/default/example/ComboboxComboboxDemo")),
+      source: "",
+      files: ["registry/default/example/ComboboxComboboxDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "ComboboxListboxDemo": {
+      name: "ComboboxListboxDemo",
+      type: "components:example",
+      registryDependencies: ["combobox"],
+      component: React.lazy(() => import("@/registry/default/example/ComboboxListboxDemo")),
+      source: "",
+      files: ["registry/default/example/ComboboxListboxDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
     "ComboboxDropdownDemo": {
       name: "ComboboxDropdownDemo",
       type: "components:example",

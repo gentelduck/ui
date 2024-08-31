@@ -94,8 +94,8 @@ export default function ComboboxMainDemo() {
             showCommand: true,
           },
           command: {
-            label: '⌘+m',
-            key: 'm',
+            label: '⌃+v',
+            key: 'ctrl+v',
           },
         }}
         onSelect={{

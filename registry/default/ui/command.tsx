@@ -151,8 +151,8 @@ interface CommandListGroupDataType<T extends keyof Record<string, unknown> = str
 }
 
 interface OnSelectType {
-  key: <T extends string>(arg?: T) => void
-  clear: <T extends string>(arg?: T) => void
+  key?: <T extends string>(arg?: T) => void
+  clear?: <T extends string>(arg?: T) => void
 }
 
 interface ListItemElementType
