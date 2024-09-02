@@ -67,6 +67,12 @@ export const docsConfig: DocsConfig = {
           label: 'new',
         },
         {
+          title: 'DropdowmMenu',
+          href: '/docs/components/dropdowm-menu',
+          items: [],
+          label: 'new',
+        },
+        {
           title: 'Drawer',
           href: '/docs/components/drawer',
           items: [],
