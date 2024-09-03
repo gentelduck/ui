@@ -64,7 +64,6 @@ const NavGroup = <T extends boolean>({ navigationKeys, nav, position }: NavGroup
                           position === 'top' && 'rounded-full',
                           key.className
                         )}
-                        onClick={() => console.log('hi')}
                         {...props}
                       >
                         {children}

@@ -25,6 +25,7 @@ import {
 } from 'lucide-react'
 import { EyeNoneIcon } from '@radix-ui/react-icons'
 import { cn } from '@/lib'
+import { log } from 'console'
 
 export type TableDataType = {
   task: React.ReactNode | string
@@ -38,6 +39,7 @@ const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<Ta
   {
     action: (e, { sortArray, setHeaders, setTableData, data, headers, idx }) => {
       const { sortedData, updatedColumns } = sortArray(headers, data, headers[idx].label as keyof TableDataType, 'asc')
+      // console.log(sortedData)
       setHeaders(() => updatedColumns)
       setTableData(() => (updatedColumns[idx].currentSort === 'asc' ? sortedData : data))
     },

@@ -184,6 +184,7 @@ const TableHeaderActions = <
       q: newValue,
     }))
   }, 500)
+  console.log(headers)
 
   //NOTE: Gen options for filteres with label values
   const optionsData = header.map((column, idx) => {
@@ -192,18 +193,24 @@ const TableHeaderActions = <
     return {
       key: idx,
       className: 'capitalize',
-      checked: headers.includes(column),
+      checked: headers.some(headerItem => headerItem.label === label),
       disabled: disabled,
       onCheckedChange: () => {
         setHeaders(prevHeaders => {
-          const exists = prevHeaders.includes(column)
+          const exists = prevHeaders.some(headerItem => headerItem.label === label)
+
           if (exists) {
-            return prevHeaders.filter(sub => sub !== column)
+            return prevHeaders.filter(headerItem => headerItem.label !== label)
           }
-          const originalIndex = header.indexOf(column)
+
+          const originalIndex = header.findIndex(headerItem => headerItem.label === label)
           const newHeaders = [...prevHeaders]
           newHeaders.splice(originalIndex, 0, column)
-          return newHeaders.sort((a, b) => header.indexOf(a) - header.indexOf(b))
+          return newHeaders.sort(
+            (a, b) =>
+              header.findIndex(headerItem => headerItem.label === a.label) -
+              header.findIndex(headerItem => headerItem.label === b.label)
+          )
         })
       },
       children: label ?? children,
@@ -369,7 +376,6 @@ const TableCustomViewHeader = <T extends boolean = false, C extends Record<strin
               return {
                 ...item,
                 onClick: (e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>) => {
-                  console.log(actionsArgs.tableData)
                   item.action?.(e, actionsArgs)
                 },
               }

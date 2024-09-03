@@ -72,8 +72,7 @@ export function sortArray<T>(columns: TableHeaderType[], array: T[], key?: keyof
 
   const sortedData = array.toSorted((a, b) => {
     const valueA = key ? (a[key] as TableContentDataType).children : a
-
-    const valueB = key ? (a[key] as TableContentDataType).children : b
+    const valueB = key ? (b[key] as TableContentDataType).children : b
 
     if (order === 'not sorted' || !key) return 0
 
