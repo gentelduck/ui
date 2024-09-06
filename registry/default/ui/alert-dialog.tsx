@@ -35,7 +35,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from './ShadcnUI/sheet'
+} from './sheet'
 
 //NOTE: Alert Dialog Primitive
 const AlertDialog = AlertDialogPrimitive.Root

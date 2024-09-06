@@ -1,63 +1,61 @@
 'use client'
 import { cn } from '@/lib'
 import {
+  AlertDialogCustom,
   Badge,
+  Button,
+  Checkbox,
   InitDataType,
   Kanban,
-  KanbanColumnHeaderProps,
+  KanbanColumnAddRowBodyArgs,
   KanbanColumnRowBodyContentArgs,
   KanbanColumnRowComponentArgs,
+  Separator,
 } from '../ui'
-import { EllipsisVertical } from 'lucide-react'
+import { EllipsisVertical, Plus } from 'lucide-react'
+import React from 'react'
 
 export const initData: InitDataType = {
   tasks: {
     'task-1': {
       id: 'task-1',
-      content: 'Take out the garbage',
-      avatar: 'https://dnd.hellopangea.com/static/media/jake-min.e1358fa8.png',
-    },
-    'task-2': {
-      id: 'task-2',
-      content: 'Watch my favorite show',
-      avatar: 'https://uploads.codesandbox.io/uploads/user/cf4b346c-70d1-4313-acb0-36ea4634ca74/VMSU-princess-min.png',
-    },
-    'task-3': {
-      id: 'task-3',
-      content: 'Charge my phone',
-      avatar: 'https://uploads.codesandbox.io/uploads/user/cf4b346c-70d1-4313-acb0-36ea4634ca74/GR8R-finn-min.png',
-    },
-    'task-4': {
-      id: 'task-4',
-      content: 'Cook dinner',
-      avatar: 'https://dnd.hellopangea.com/static/media/jake-min.e1358fa8.png',
-    },
-    'task-5': {
-      id: 'task-5',
-      content: 'Do laundry',
-      avatar: 'https://uploads.codesandbox.io/uploads/user/cf4b346c-70d1-4313-acb0-36ea4634ca74/GR8R-finn-min.png',
-    },
-    'task-6': {
-      id: 'task-6',
-      content: 'Mow the lawn',
-      avatar: 'https://dnd.hellopangea.com/static/media/jake-min.e1358fa8.png',
-    },
-    'task-7': {
-      id: 'task-7',
-      content: 'IDK Sucking some problems?? on leet code!!',
-      avatar: 'https://uploads.codesandbox.io/uploads/user/cf4b346c-70d1-4313-acb0-36ea4634ca74/VMSU-princess-min.png',
-    },
-    'task-8': {
-      id: 'task-8',
-      content: 'Maybe fucking around with some engs.',
-      avatar:
-        'https://i.seadn.io/gae/ntWWVYeTM2UtaELGWthKDjv0yOS3WX4Nim3NI_Kz50FvVIVvselU9YI48qmGdG0BOn3EvU862MX3SYTTqrgAgoQWSklD9m7dCpug?auto=format&dpr=1&w=1000',
-    },
-    'task-9': {
-      id: 'task-9',
-      content: 'Go to the gym',
-      avatar:
-        'https://w7.pngwing.com/pngs/272/789/png-transparent-adventure-time-angry-ice-king-cartoons-adventure-time-thumbnail.png',
+      title: 'Page "About" and "Contact" components',
+      description: "Page 'About' and 'Contact' components are not rendered because it is not the main page",
+      subtasks: [
+        {
+          id: 'subtask-1',
+          title: 'About page',
+        },
+        {
+          id: 'subtask-1',
+          title: 'Home data fetching',
+        },
+      ],
+      attachments: [{}],
+      links: [
+        {
+          id: 'link-1',
+          title: 'Link 1',
+        },
+      ],
+      comments: [
+        {
+          id: 'comment-1',
+          content: 'Comment 1',
+        },
+      ],
+      taggedUsers: [],
+      labels: [
+        {
+          id: 'label-1',
+          content: 'Design',
+        },
+        {
+          id: 'label-2',
+          content: 'Website',
+        },
+      ],
+      options: [{}],
     },
   },
 
@@ -65,17 +63,17 @@ export const initData: InitDataType = {
     'column-1': {
       id: 'column-1',
       title: 'To Do',
-      taskIds: ['task-1', 'task-2', 'task-9'],
+      taskIds: [],
     },
     'column-2': {
       id: 'column-2',
       title: 'In Progress',
-      taskIds: ['task-6', 'task-7', 'task-8'],
+      taskIds: [],
     },
     'column-3': {
       id: 'column-3',
       title: 'Done',
-      taskIds: ['task-3', 'task-4', 'task-5'],
+      taskIds: ['task-1'],
     },
   },
   columnOrder: ['column-1', 'column-2', 'column-3'],
@@ -87,6 +85,7 @@ export default function SwapyMainDemo() {
       <Kanban
         initData={initData}
         kanbanColumnHeader={{ children: KanbanColumnHeaderTemplate, className: 'bg-red-500' }}
+        kanbanColumnAddRow={{ children: KanbanColumnAddRowTemplate }}
         kanbanColumnRow={{
           children: KanbanColumnRowTemplate,
           options: {
@@ -95,6 +94,100 @@ export default function SwapyMainDemo() {
           },
         }}
       />
+    </div>
+  )
+}
+
+export const KanbanColumnAddRowTemplate: React.FC<KanbanColumnAddRowBodyArgs> = () => {
+  const [data, setData] = React.useState(['sdf'])
+  const [goal, setGoal] = React.useState(350)
+
+  function onClick(adjustment: number) {
+    setGoal(Math.max(200, Math.min(400, goal + adjustment)))
+  }
+
+  return (
+    <AlertDialogCustom
+      type="sheet"
+      // drawerData={data.length > 0}
+      header={{
+        head: 'Add Task',
+        description: 'Set your daily tasks here.',
+      }}
+      footer={{
+        className: 'flex w-full justify-between items-end',
+        submit: <Button variant="default">Submit</Button>,
+        cancel: <Button variant="outline">Cancel</Button>,
+      }}
+      state={goal}
+      trigger={{
+        children: (
+          <div className="flex items-center gap-2 mb-1rem px-4">
+            <Button
+              size={'default'}
+              variant={'secondary'}
+              className={cn('w-full')}
+            >
+              <Plus className={cn('size-5')} />
+            </Button>
+          </div>
+        ),
+      }}
+      content={{
+        className:
+          '[&>div]:flex [&>div]:flex-col [&>div]:place-content-center [&>div]:w-full [&>div]:place-self-center sm:max-w-[450px]',
+        children: (
+          <ContentComponent
+            goal={goal}
+            onClick={onClick}
+          />
+        ),
+      }}
+    />
+  )
+}
+export const ContentComponent = ({ goal, onClick }: { goal: number; onClick: (adjustment: number) => void }) => {
+  const [title, setTitle] = React.useState<string>('')
+  return (
+    <div className="w-full h-[84vh] flex items-start justify-center pt-4 pb-2">
+      <div className="p-4 pb-0">
+        <form className="w-full">
+          <div>
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="goal"
+              >
+                title
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="goal"
+                type="number"
+                placeholder="Goal"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="goal"
+              >
+                title
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="goal"
+                type="number"
+                placeholder="Goal"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+              />
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }
@@ -118,16 +211,53 @@ export const KanbanColumnHeaderTemplate: React.FC<KanbanColumnRowBodyContentArgs
 }
 
 export const KanbanColumnRowTemplate: React.FC<KanbanColumnRowComponentArgs> = ({ task }) => {
+  const { id, links, title, labels, options, comments, subtasks, attachments, description, taggedUsers } = task ?? {}
   return (
-    <>
-      <img
-        src={task.avatar}
-        alt={task.content}
-        width={40}
-        height={40}
-        className="rounded-full object-cover h-[40px] bg-white"
-      />
-      {task.content}
-    </>
+    <div className="w-full">
+      <div className={cn('flex items-center justify-between mb-[1rem]')}>
+        <div className={cn('flex items-center gap-2')}>
+          {labels.map((label, index) => (
+            <Badge
+              key={label.id}
+              className={cn('', label.className)}
+            >
+              {label.content}
+            </Badge>
+          ))}
+        </div>
+        <EllipsisVertical className={cn('size-5')} />
+      </div>
+      <div className={cn('flex flex-col items-center justify-between mb-[1rem] gap-2')}>
+        <h3 className={cn('text-lg font leading-none tracking-tight')}>{title}</h3>
+        <p className={cn('text-sm text-muted-foreground')}>{description}</p>
+      </div>
+      <div>
+        <div className={cn('flex flex-col gap-2 mb-3')}>
+          {subtasks.map(subtask => (
+            <div
+              key={subtask.id}
+              className={cn('flex items-center justify-start gap-2')}
+            >
+              <Checkbox
+                className={cn('w-4 h-4 rounded-full border-muted-foreground/80')}
+                // checked
+              />
+              <h3 className={cn('text-sm text-muted-foreground')}>{subtask.title}</h3>
+            </div>
+          ))}
+        </div>
+        <Separator className={cn('my-2 h-[1px] bg-muted-foreground/20')} />
+        <Button
+          variant="ghost"
+          // size="sm"
+          className="w-full hover:bg-muted-foreground/20 justify-start"
+          icon={{
+            icon: Plus,
+          }}
+        >
+          Add subtask
+        </Button>
+      </div>
+    </div>
   )
 }

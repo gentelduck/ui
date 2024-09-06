@@ -18,22 +18,81 @@ import { Button } from './button'
 import { EllipsisVertical, Plus } from 'lucide-react'
 import { ScrollArea } from './scroll-area'
 
-export interface TaskType {
-  id: string
-  content: string
-  avatar: string
-}
-
-export interface ColumnType {
+// Type for a Subtask
+interface Subtask {
   id: string
   title: string
-  taskIds: string[]
 }
 
+// Type for Attachments
+interface Attachment {
+  id?: string
+  filename?: string
+  url?: string
+}
+
+// Type for a Link (reference, URL, etc.)
+interface Link {
+  id: string
+  title: string
+  url?: string
+}
+
+// Type for a Comment
+interface Comment {
+  id: string
+  content: string
+  authorId?: string
+  createdAt?: string
+}
+
+// Type for a Tagged User
+interface TaggedUser {
+  id: string
+  name?: string
+  avatarUrl?: string
+}
+
+// Type for Labels (tags or categories)
+interface Label {
+  id: string
+  content: string
+  className?: string // Tailwind CSS class or custom class
+}
+
+// Type for Task Options (could be buttons or dropdowns, etc.)
+interface TaskOption {
+  id?: string
+  type?: string // Specify the type of option if needed
+  label?: string
+}
+
+// Main Task Type
+interface Task {
+  id: string
+  title: string
+  description: string
+  subtasks: Subtask[]
+  attachments: Attachment[]
+  links: Link[]
+  comments: Comment[]
+  taggedUsers: TaggedUser[]
+  labels: Label[]
+  options: TaskOption[]
+}
+
+// Type for a Column containing task IDs
+interface Column {
+  id: string
+  title: string
+  taskIds: string[] // Array of task IDs in the column
+}
+
+// Type for Initial Data containing tasks and columns
 export interface InitDataType {
-  tasks: Record<string, TaskType>
-  columns: Record<string, ColumnType>
-  columnOrder: string[]
+  tasks: Record<string, Task> // Key is the task ID
+  columns: Record<string, Column> // Key is the column ID
+  columnOrder: string[] // Array of column IDs
 }
 
 interface OnDragEndType {
@@ -54,7 +113,7 @@ const onDragEnd = ({ result, state, setState }: OnDragEndType) => {
   // Reordering within the same column
   if (sourceColumn === destinationColumn) {
     const newTaskIds = reorder(sourceColumn.taskIds, source.index, destination.index)
-    const newColumn: ColumnType = {
+    const newColumn: Column = {
       ...sourceColumn,
       taskIds: newTaskIds,
     }
@@ -116,7 +175,7 @@ export const move = (
   }
 }
 
-export const SwapyAddColumnRow = React.memo(() => {
+export const KanbanAddTaskRow = React.memo(() => {
   return (
     <div className="flex items-center gap-2 mb-1rem px-4">
       <Button
@@ -130,30 +189,8 @@ export const SwapyAddColumnRow = React.memo(() => {
   )
 })
 
-export const SwapyAddTaskRow = React.memo(() => {
-  return (
-    <div className="flex items-center gap-2 mb-1rem px-4">
-      <Button
-        size={'default'}
-        variant={'secondary'}
-        className={cn('w-full')}
-      >
-        <Plus className={cn('size-5')} />
-      </Button>
-    </div>
-  )
-})
-
-export const SwapyColumnBodyDraggable = React.memo(
-  ({
-    column,
-    tasks,
-    kanbanColumnRow,
-  }: {
-    column: ColumnType
-    tasks: TaskType[]
-    kanbanColumnRow: KanbanColumnBodyProps
-  }) => {
+export const KanbanColumnBodyDraggable = React.memo(
+  ({ column, tasks, kanbanColumnRow }: { column: Column; tasks: Task[]; kanbanColumnRow: KanbanColumnBodyProps }) => {
     return (
       <>
         <Droppable
@@ -161,7 +198,7 @@ export const SwapyColumnBodyDraggable = React.memo(
           droppableId={column.id}
         >
           {(provided, snapshot) => (
-            <SwapyColumnBody
+            <KanbanColumnBody
               kanbanColumnRow={kanbanColumnRow}
               provided={provided}
               snapshot={snapshot}
@@ -175,7 +212,7 @@ export const SwapyColumnBodyDraggable = React.memo(
   }
 )
 
-export const SwapyColumnBody = React.memo(
+export const KanbanColumnBody = React.memo(
   ({
     provided,
     snapshot,
@@ -185,15 +222,15 @@ export const SwapyColumnBody = React.memo(
   }: {
     provided: DroppableProvided
     snapshot: DroppableStateSnapshot
-    column: ColumnType
-    tasks: TaskType[]
+    column: Column
+    tasks: Task[]
     kanbanColumnRow: KanbanColumnBodyProps
   }) => {
     return (
       <div
         ref={provided.innerRef}
         className={cn(
-          'pt-2 border-[2px] border-dashed border-transparent rounded-md transition-all',
+          'pt-2 border-[2px] border-dashed border-transparent rounded-md transition-all w-full',
           snapshot.isDraggingOver && 'bg-green-100/5 border-green-400/30',
           column.taskIds.includes(snapshot.draggingFromThisWith ?? '') && 'bg-red-100/5 border-red-400/30',
           snapshot.draggingFromThisWith === snapshot.draggingOverWith &&
@@ -201,7 +238,6 @@ export const SwapyColumnBody = React.memo(
             'bg-sky-100/5 border-sky-400/30'
         )}
         style={{
-          width: 300,
           height: 500,
         }}
         // {...provided.droppableProps}
@@ -231,7 +267,7 @@ export const SwapyColumnRowDraggable = React.memo(
     columnSnapshot,
     kanbanColumnRow,
   }: {
-    task: TaskType
+    task: Task
     idx: number
     columnProvided: DroppableProvided
     columnSnapshot: DroppableStateSnapshot
@@ -257,9 +293,36 @@ export const SwapyColumnRowDraggable = React.memo(
   }
 )
 
+//NOTE: KanbanColumnAddRow
+
+export interface KanbanColumnAddRowBodyArgs {
+  column: Column
+}
+
+export interface KanbanAddColumnRowBodyProps extends Omit<React.HTMLProps<HTMLDivElement>, 'children'> {
+  children: React.FC<KanbanColumnAddRowBodyArgs>
+}
+
+export interface KanbanAddColumnRow {
+  column: Column
+  kanbanColumnAddRow: KanbanAddColumnRowBodyProps
+}
+
+export const KanbanColumnAddRow: React.FC<KanbanAddColumnRow> = React.memo(({ column, kanbanColumnAddRow }) => {
+  const { className, children: KanbanColumnAddRowBody, ...props } = kanbanColumnAddRow ?? {}
+  return (
+    <div
+      className={cn('', className)}
+      {...props}
+    >
+      <KanbanColumnAddRowBody column={column} />
+    </div>
+  )
+})
+
 //NOTE:  KanbanColumnHeader
 export type KanbanColumnRowBodyContentArgs = {
-  column: ColumnType
+  column: Column
 }
 
 export interface KanbanColumnHeaderBodyProps
@@ -270,7 +333,7 @@ export interface KanbanColumnHeaderBodyProps
 }
 
 export interface KanbanColumnHeaderProps extends Omit<React.HTMLProps<HTMLDivElement>, 'children'> {
-  column: ColumnType
+  column: Column
   dragHandlerProps?: DraggableProvidedDragHandleProps | null
   kanbanColumnHeader: KanbanColumnHeaderBodyProps
 }
@@ -305,7 +368,7 @@ export interface KanbanColumnBodyProps extends Omit<React.HTMLProps<HTMLDivEleme
 export interface KanbanColumnRowProps {
   provided: DraggableProvided
   snapshot: DraggableStateSnapshot
-  task: TaskType
+  task: Task
   columnProvided: DroppableProvided
   columnSnapshot: DroppableStateSnapshot
   kanbanColumnRow: KanbanColumnBodyProps
@@ -317,11 +380,11 @@ export const KanbanColumnRow = React.memo(
     const draggingToOrigin = (task.id === columnSnapshot.draggingOverWith && columnSnapshot.draggingOverWith) as boolean
     const draggingOverNoColumn = snapshot.isDragging && !snapshot.draggingOver
 
-    const { children: KanbanColumnRowBody, options } = kanbanColumnRow ?? {}
+    const { children: KanbanColumnRowBody, className, options } = kanbanColumnRow ?? {}
     const { draggingOutStyle, draggingOnOriginStyle, draggingOverNoColumnStyle } = options ?? {}
 
     const kanbanStyle = cn(
-      'select-none p-3 bg-secondary border-2 border-dashed border-transparent rounded-md flex items-center gap-3 mb-2 mx-2 z-10 relative',
+      'select-none p-4 bg-secondary border-2 border-dashed border-transparent rounded-md flex items-center gap-3 mb-2 mx-2 z-10 relative',
       draggingOut && (draggingOutStyle ? cn('border-red-400/30', draggingOutStyle) : 'border-red-400/30'),
       draggingToOrigin &&
         (draggingOnOriginStyle ? cn('border-sky-400/30', draggingOnOriginStyle) : 'border-sky-400/30'),
@@ -334,7 +397,7 @@ export const KanbanColumnRow = React.memo(
     return (
       <div className="relative">
         <div
-          className={kanbanStyle}
+          className={cn(kanbanStyle, className)}
           style={{ ...provided.draggableProps.style }}
           ref={provided.innerRef}
           {...provided.draggableProps}
@@ -352,10 +415,14 @@ interface KanbanType {
   initData: InitDataType
   kanbanColumnRow: KanbanColumnBodyProps
   kanbanColumnHeader: KanbanColumnHeaderBodyProps
+  kanbanColumnAddRow: KanbanAddColumnRowBodyProps
 }
 
 export const Kanban = React.forwardRef(
-  ({ initData, kanbanColumnRow, kanbanColumnHeader }: KanbanType, ref: React.ForwardedRef<HTMLDivElement>) => {
+  (
+    { initData, kanbanColumnRow, kanbanColumnHeader, kanbanColumnAddRow }: KanbanType,
+    ref: React.ForwardedRef<HTMLDivElement>
+  ) => {
     const [state, setState] = React.useState<InitDataType>(initData)
     const onDragEndd = React.useCallback((result: DropResult) => onDragEnd({ state, setState, result }), [state])
 
@@ -372,7 +439,7 @@ export const Kanban = React.forwardRef(
             {(provided, snapshot) => (
               <div
                 className={cn(
-                  'flex space-around bg-[#161617] p-4 rounded-lg border border-border border-solid gap-4  mr-4'
+                  'flex space-around bg-[#161617] p-4 rounded-lg border border-border border-solid gap-4 mr-4'
                 )}
                 {...provided.droppableProps}
                 ref={provided.innerRef}
@@ -389,7 +456,7 @@ export const Kanban = React.forwardRef(
                     >
                       {(provided, snapshot) => (
                         <div
-                          className="flex flex-col gap-2 bg-:w rounded-md py-2"
+                          className="flex flex-col gap-2 bg-:w rounded-md py-2  w-[350px]"
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                         >
@@ -398,8 +465,11 @@ export const Kanban = React.forwardRef(
                             kanbanColumnHeader={kanbanColumnHeader}
                             dragHandlerProps={provided.dragHandleProps}
                           />
-                          <SwapyAddColumnRow />
-                          <SwapyColumnBodyDraggable
+                          <KanbanColumnAddRow
+                            kanbanColumnAddRow={kanbanColumnAddRow}
+                            column={column}
+                          />
+                          <KanbanColumnBodyDraggable
                             kanbanColumnRow={kanbanColumnRow}
                             column={column}
                             tasks={tasks}

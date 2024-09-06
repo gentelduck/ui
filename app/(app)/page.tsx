@@ -6,7 +6,12 @@ import { PageActions, PageHeader, PageHeaderDescription, PageHeaderHeading } fro
 import { buttonVariants, Kanban } from '@/registry/default/ui/'
 import { CopyButton } from '@/components/copy-button'
 import { toast } from 'sonner'
-import { initData, KanbanColumnHeaderTemplate, KanbanColumnRowTemplate } from '@/registry/default/example/SwapyMainDemo'
+import {
+  initData,
+  KanbanColumnAddRowTemplate,
+  KanbanColumnHeaderTemplate,
+  KanbanColumnRowTemplate,
+} from '@/registry/default/example/SwapyMainDemo'
 // import { ThemeWrapper } from '@/components/theme-wrapper'
 // import { ThemeCustomizer } from '@/components/theme-customizer'
 // import { ThemesTabs } from './themes/tabs'
@@ -22,6 +27,7 @@ export default function IndexPage() {
             children: KanbanColumnHeaderTemplate,
             // className: 'bg-red-500'
           }}
+          kanbanColumnAddRow={{ children: KanbanColumnAddRowTemplate }}
           kanbanColumnRow={{
             children: KanbanColumnRowTemplate,
 

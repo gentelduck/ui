@@ -17,5 +17,6 @@ export * from './context-menu'
 export * from './input'
 export * from './scroll-area'
 export * from './pagination'
+export * from './sheet'
 
 export * from './ShadcnUI'

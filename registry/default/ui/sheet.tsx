@@ -113,6 +113,10 @@ const SheetDescription = React.forwardRef<
 ))
 SheetDescription.displayName = SheetPrimitive.Description.displayName
 
+const SheetCustomView = () => {
+  return <></>
+}
+
 export {
   Sheet,
   SheetPortal,
