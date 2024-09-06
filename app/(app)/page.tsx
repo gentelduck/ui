@@ -3,9 +3,10 @@ import Link from 'next/link'
 
 import { siteConfig } from '@/config/site'
 import { PageActions, PageHeader, PageHeaderDescription, PageHeaderHeading } from '@/components/page-header'
-import { buttonVariants, Swapy } from '@/registry/default/ui/'
+import { buttonVariants, Kanban } from '@/registry/default/ui/'
 import { CopyButton } from '@/components/copy-button'
 import { toast } from 'sonner'
+import { initData, KanbanColumnHeaderTemplate, KanbanColumnRowTemplate } from '@/registry/default/example/SwapyMainDemo'
 // import { ThemeWrapper } from '@/components/theme-wrapper'
 // import { ThemeCustomizer } from '@/components/theme-customizer'
 // import { ThemesTabs } from './themes/tabs'
@@ -15,7 +16,22 @@ export default function IndexPage() {
   return (
     <>
       <div className="flex items-start gap-4 p-4  select-none">
-        <Swapy />
+        <Kanban
+          initData={initData}
+          kanbanColumnHeader={{
+            children: KanbanColumnHeaderTemplate,
+            // className: 'bg-red-500'
+          }}
+          kanbanColumnRow={{
+            children: KanbanColumnRowTemplate,
+
+            options: {
+              // draggingOnOriginStyle: 'bg-red-500',
+              // draggingOutStyle: 'bg-green-500',
+              // draggingOverNoColumnStyle: 'bg-purple-500',
+            },
+          }}
+        />
       </div>
     </>
   )
