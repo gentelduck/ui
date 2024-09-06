@@ -115,6 +115,17 @@ export const Index: Record<string, any> = {
       subcategory: "undefined",
       chunks: []
     },
+    "swapy": {
+      name: "swapy",
+      type: "components:ui",
+      registryDependencies: undefined,
+      component: React.lazy(() => import("@/registry/default/ui/swapy")),
+      source: "",
+      files: ["registry/default/ui/swapy.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
     "ButtonMainDemo": {
       name: "ButtonMainDemo",
       type: "components:example",
@@ -408,6 +419,17 @@ export const Index: Record<string, any> = {
       component: React.lazy(() => import("@/registry/default/example/TableAdvancedDemo")),
       source: "",
       files: ["registry/default/example/TableAdvancedDemo.tsx"],
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "SwapyMainDemo": {
+      name: "SwapyMainDemo",
+      type: "components:example",
+      registryDependencies: ["swapy"],
+      component: React.lazy(() => import("@/registry/default/example/SwapyMainDemo")),
+      source: "",
+      files: ["registry/default/example/SwapyMainDemo.tsx"],
       category: "undefined",
       subcategory: "undefined",
       chunks: []

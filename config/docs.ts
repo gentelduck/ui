@@ -90,6 +90,12 @@ export const docsConfig: DocsConfig = {
           label: 'new',
         },
         {
+          title: 'Swapy',
+          href: '/docs/components/swapy',
+          label: 'new',
+          items: [],
+        },
+        {
           title: 'Tooltip',
           href: '/docs/components/tooltip',
           items: [],

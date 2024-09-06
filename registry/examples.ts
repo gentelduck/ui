@@ -163,4 +163,10 @@ export const examples: Registry = [
     registryDependencies: ['table'],
     files: ['example/TableAdvancedDemo.tsx'],
   },
+  {
+    name: 'SwapyMainDemo',
+    type: 'components:example',
+    registryDependencies: ['swapy'],
+    files: ['example/SwapyMainDemo.tsx'],
+  },
 ]

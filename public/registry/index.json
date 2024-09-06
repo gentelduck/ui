@@ -103,5 +103,13 @@
       "ui/table.tsx"
     ],
     "type": "components:ui"
+  },
+  {
+    "name": "swapy",
+    "dependencies": [],
+    "files": [
+      "ui/swapy.tsx"
+    ],
+    "type": "components:ui"
   }
 ]

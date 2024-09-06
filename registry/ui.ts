@@ -62,4 +62,10 @@ export const ui: Registry = [
     dependencies: [],
     files: ['ui/table.tsx'],
   },
+  {
+    name: 'swapy',
+    type: 'components:ui',
+    dependencies: [],
+    files: ['ui/swapy.tsx'],
+  },
 ]

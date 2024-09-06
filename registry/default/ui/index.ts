@@ -8,6 +8,7 @@ export * from './combobox'
 export * from './button'
 export * from './badge'
 export * from './alert-dialog'
+export * from './swapy'
 
 export * from './select-switcher'
 export * from './checkbox'
