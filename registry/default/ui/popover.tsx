@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 const Popover = PopoverPrimitive.Root
 
 const PopoverTrigger = PopoverPrimitive.Trigger
-
+const PopoverClose = PopoverPrimitive.Close
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
@@ -28,4 +28,33 @@ const PopoverContent = React.forwardRef<
 ))
 PopoverContent.displayName = PopoverPrimitive.Content.displayName
 
-export { Popover, PopoverTrigger, PopoverContent }
+// PopoverCustom Component
+export interface PopoverWrapperProps {
+  wrapper?: React.ComponentPropsWithoutRef<typeof Popover>
+  trigger?: React.ComponentPropsWithoutRef<typeof PopoverTrigger>
+  content?: React.ComponentPropsWithoutRef<typeof PopoverContent>
+}
+
+const PopoverWrapper: React.FC<PopoverWrapperProps> = ({ content, trigger, wrapper }) => {
+  const { className: triggerClassName, key: triggerKey, children: triggerChildren, ...triggerProps } = trigger ?? {}
+  const { className: contentClassName, key: contentKey, children: contentChildren, ...contentProps } = content ?? {}
+
+  return (
+    <Popover {...wrapper}>
+      <PopoverTrigger
+        className={cn('', triggerClassName)}
+        {...triggerProps}
+      >
+        {triggerChildren}
+      </PopoverTrigger>
+      <PopoverContent
+        className={cn('w-80', contentClassName)}
+        {...contentProps}
+      >
+        {contentChildren}
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+export { Popover, PopoverTrigger, PopoverContent, PopoverWrapper, PopoverClose }

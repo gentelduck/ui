@@ -2,7 +2,6 @@
 
 import * as React from 'react'
 import * as HoverCardPrimitive from '@radix-ui/react-hover-card'
-
 import { cn } from '@/lib/utils'
 
 const HoverCard = HoverCardPrimitive.Root
@@ -28,42 +27,32 @@ HoverCardContent.displayName = HoverCardPrimitive.Content.displayName
 
 // HoverCardCustomView
 export interface HoverCardCustomViewProps {
-  trigger?: React.HTMLProps<HTMLDivElement> & { triggerStyle?: string }
-  content?: React.HTMLProps<HTMLDivElement> & { contentStyle?: string }
+  wrapper?: React.ComponentPropsWithoutRef<typeof HoverCard>
+  trigger?: React.ComponentPropsWithoutRef<typeof HoverCardTrigger>
+  content?: React.ComponentPropsWithoutRef<typeof HoverCardContent>
 }
 
-const HoverCardCustomView = React.forwardRef<React.ElementRef<typeof HoverCard>, HoverCardCustomViewProps>(
-  ({ content, trigger }, ref) => {
-    const { className: triggerClassName, children: triggerChildren, triggerStyle, ...triggerProps } = trigger ?? {}
-    const { className: contentClassName, children: contentChildren, contentStyle, ...contentProps } = content ?? {}
+const HoverCardCustomView: React.FC<HoverCardCustomViewProps> = ({ content, trigger, wrapper }) => {
+  const { className: triggerClassName, key: triggerKey, children: triggerChildren, ...triggerProps } = trigger ?? {}
+  const { className: contentClassName, key: contentKey, children: contentChildren, ...contentProps } = content ?? {}
 
-    return (
-      <div ref={ref}>
-        <HoverCard>
-          <HoverCardTrigger
-            asChild
-            className={cn(triggerStyle)}
-          >
-            <div
-              className={cn('', triggerClassName)}
-              {...triggerProps}
-            >
-              {triggerChildren}
-            </div>
-          </HoverCardTrigger>
-          <HoverCardContent className={cn('w-80', contentStyle)}>
-            <div
-              className={cn('', contentClassName)}
-              {...contentProps}
-            >
-              {contentChildren}
-            </div>
-          </HoverCardContent>
-        </HoverCard>
-      </div>
-    )
-  }
-)
+  return (
+    <HoverCard {...wrapper}>
+      <HoverCardTrigger
+        className={cn('', triggerClassName)}
+        {...triggerProps}
+      >
+        {triggerChildren}
+      </HoverCardTrigger>
+      <HoverCardContent
+        className={cn('w-80', contentClassName)}
+        {...contentProps}
+      >
+        {contentChildren}
+      </HoverCardContent>
+    </HoverCard>
+  )
+}
 HoverCardCustomView.displayName = 'HoverCardCustomView'
 
 export { HoverCard, HoverCardTrigger, HoverCardContent, HoverCardCustomView }

@@ -30,6 +30,8 @@ interface Attachment {
   type?: string
   filename?: string
   url?: string
+  alt?: string
+  size?: string
 }
 
 // Type for a Link (reference, URL, etc.)
@@ -40,15 +42,22 @@ interface Link {
 }
 
 // Type for a Comment
-interface Comment {
+export interface CommentType {
   id: string
   content: string
   authorId?: string
   createdAt?: string
+  user: TaggedUserType
+  likes?: LikedType
+}
+
+export interface LikedType {
+  amount: number
+  users: TaggedUserType[]
 }
 
 // Type for a Tagged User
-interface TaggedUser {
+interface TaggedUserType {
   id: string
   name?: string
   avatarUrl?: string
@@ -76,8 +85,8 @@ interface Task {
   subtasks: Subtask[]
   attachments: Attachment[]
   links: Link[]
-  comments: Comment[]
-  taggedUsers: TaggedUser[]
+  comments: CommentType[]
+  taggedUsers: TaggedUserType[]
   labels: Label[]
   options: TaskOption[]
 }
@@ -232,11 +241,11 @@ export const KanbanColumnBody = React.memo(
         ref={provided.innerRef}
         className={cn(
           'pt-2 border-[2px] border-dashed border-transparent rounded-md transition-all w-full',
-          snapshot.isDraggingOver && 'bg-green-100/5 border-green-400/30',
-          column.taskIds.includes(snapshot.draggingFromThisWith ?? '') && 'bg-red-100/5 border-red-400/30',
+          snapshot.isDraggingOver && 'bg-green-100/30 border-green-400/30',
+          column.taskIds.includes(snapshot.draggingFromThisWith ?? '') && 'bg-red-100/30 border-red-400/30',
           snapshot.draggingFromThisWith === snapshot.draggingOverWith &&
             snapshot.draggingOverWith &&
-            'bg-sky-100/5 border-sky-400/30'
+            'bg-sky-100/30 border-sky-400/30'
         )}
         style={{
           height: 500,
@@ -385,20 +394,28 @@ export const KanbanColumnRow = React.memo(
     const { draggingOutStyle, draggingOnOriginStyle, draggingOverNoColumnStyle } = options ?? {}
 
     const kanbanStyle = cn(
-      'select-none p-4 bg-secondary border-2 border-dashed border-transparent rounded-md flex items-center gap-3 mb-2 mx-2 z-10 relative',
-      draggingOut && (draggingOutStyle ? cn('border-red-400/30', draggingOutStyle) : 'border-red-400/30'),
+      //FIX:
+      'select-none p-4 b-secondary border border-border  border-solid  rounded-md flex items-center gap-3 mb-2 mx-2 z-10 relative',
+      draggingOut &&
+        (draggingOutStyle
+          ? cn('border-red-400/30 border-dashed border-2', draggingOutStyle)
+          : 'border-red-400/30 border-dashed border-2'),
       draggingToOrigin &&
-        (draggingOnOriginStyle ? cn('border-sky-400/30', draggingOnOriginStyle) : 'border-sky-400/30'),
+        (draggingOnOriginStyle
+          ? cn('border-sky-400/30 border-dashed border-2', draggingOnOriginStyle)
+          : 'border-sky-400/30 border-dashed border-2'),
       //NOTE: you will have to add some outline animation here for deleting for
       //example
       draggingOverNoColumn &&
-        (draggingOverNoColumnStyle ? cn('border-purple-400/30', draggingOverNoColumnStyle) : 'border-purple-400/30')
+        (draggingOverNoColumnStyle
+          ? cn('border-purple-400/30 border-dashed border-2', draggingOverNoColumnStyle)
+          : 'border-purple-400/30 border-dashed border-2')
     )
 
     return (
       <div className="relative">
         <div
-          className={cn('overflow-hidden', kanbanStyle, className)}
+          className={cn('overflow-hidden  bg-background', kanbanStyle, className)}
           style={{ ...provided.draggableProps.style }}
           ref={provided.innerRef}
           {...provided.draggableProps}
@@ -428,7 +445,10 @@ export const Kanban = React.forwardRef(
     const onDragEndd = React.useCallback((result: DropResult) => onDragEnd({ state, setState, result }), [state])
 
     return (
-      <div ref={ref}>
+      <div
+        ref={ref}
+        className="w-full h-full"
+      >
         <DragDropContext onDragEnd={onDragEndd}>
           <Droppable
             droppableId="board"
@@ -440,7 +460,8 @@ export const Kanban = React.forwardRef(
             {(provided, snapshot) => (
               <div
                 className={cn(
-                  'flex space-around bg-[#161617] p-4 rounded-lg border border-border border-solid gap-4 mr-4'
+                  //FIX:
+                  'flex space-around bg-[161617] p-4 rounded-lg border border-border border-solid gap-4 mr-4'
                 )}
                 {...provided.droppableProps}
                 ref={provided.innerRef}

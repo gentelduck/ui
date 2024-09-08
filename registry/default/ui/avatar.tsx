@@ -5,7 +5,11 @@ import * as AvatarPrimitive from '@radix-ui/react-avatar'
 
 import { cn } from '@/lib/utils'
 import { Button } from './button'
+import { HoverCardCustomView } from './hover-card'
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
+import { CalendarDays } from 'lucide-react'
 
+// ForwardedRef Components
 const Avatar = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>
@@ -42,47 +46,122 @@ const AvatarFallback = React.forwardRef<
 ))
 AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName
 
+// AvatarCustom Component
+export interface AvatarCustomProps extends React.ComponentPropsWithoutRef<typeof Avatar> {
+  avatar_image: React.ComponentPropsWithoutRef<typeof AvatarImage>
+  fallback?: React.ComponentPropsWithoutRef<typeof AvatarFallback>
+  hover_card?: boolean
+  profile_button?: boolean
+}
+
+const AvatarCustom = React.forwardRef<HTMLSpanElement, AvatarCustomProps>(
+  ({ avatar_image, fallback, hover_card = true, profile_button, ...props }, ref) => {
+    const Trigger = ({ className }: { className?: string }) => (
+      <Avatar
+        {...props}
+        className={cn(props.className, className)}
+      >
+        <AvatarImage
+          {...avatar_image}
+          className={cn(avatar_image.className, 'object-cover')}
+        />
+        {fallback && <AvatarFallback {...fallback} />}
+      </Avatar>
+    )
+
+    return hover_card ? (
+      <HoverCardCustomView
+        wrapper={{ openDelay: 300, closeDelay: 200 }}
+        trigger={{ children: <Trigger /> }}
+        content={{
+          className: 'p-4',
+          children: (
+            <>
+              {profile_button ? (
+                'Profile'
+              ) : (
+                <div className="flex items-start gap-4">
+                  <Trigger className="w-12 h-12 m-0 border-none" />
+                  <div className="space-y-1">
+                    <h4 className="text-sm font-semibold">@{avatar_image.alt}</h4>
+                    <p className="text-sm">I'am a UI/UX Designer from Canada.</p>
+                    <div className="flex items-center pt-2">
+                      <CalendarDays className="mr-2 h-4 w-4 opacity-70" />
+                      <span className="text-xs text-muted-foreground">Joined December 2021</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
+          ),
+        }}
+      />
+    ) : null
+  }
+)
+
+AvatarCustom.displayName = 'AvatarCustom'
+
+// AvatarGroup Component
 interface UserType {
   id: string
   name?: string
   avatarUrl?: string
 }
 
-export interface AvatarGroupProps {
+export interface AvatarGroupProps extends React.HTMLProps<HTMLDivElement> {
   users: UserType[]
+  max_users?: number
 }
 
-const AvatarGroup = React.forwardRef(({ users }: AvatarGroupProps, ref: React.ForwardedRef<HTMLDivElement>) => {
-  return (
-    <div ref={ref}>
-      {users.map(
-        (taggedUser, idx) =>
-          idx < 3 && (
-            <Avatar
-              key={taggedUser.id}
-              className={cn('border-zinc-900/80 border-[3px]', 'mr-[-8%]')}
-            >
-              <AvatarImage
-                className={cn('rounded-md object-cover w-18 h-18')}
-                src={taggedUser.avatarUrl}
-                alt={taggedUser.name}
-              />
-              <AvatarFallback className={'bg-zinc-900/80'}>{taggedUser.name?.slice(0, 1)}</AvatarFallback>
-            </Avatar>
-          )
-      )}
-      {users.length > 3 && (
-        <Button
-          variant="ghost"
-          className={cn(
-            'w-8 h-8 rounded-md bg-zinc-700/80 flex items-center justify-center font-medium hover:bg-muted-foreground/20'
-          )}
-        >
-          +{users.length - 3}
-        </Button>
-      )}
-    </div>
-  )
-})
+const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
+  ({ max_users, users, className, ...props }, ref) => {
+    const max = max_users ?? users.length
+    return (
+      <div
+        className={cn('flex items-center', className)}
+        {...props}
+        ref={ref}
+      >
+        {users.slice(0, max).map(user => (
+          <AvatarCustom
+            key={user.id}
+            className={cn('border-muted-foreground/80 border-[2px]', 'mr-[-1.2rem]')}
+            avatar_image={{
+              src: user.avatarUrl,
+              alt: user.name,
+              className: cn('rounded-md object-cover w-18 h-18'),
+            }}
+            fallback={{
+              children: user.name?.[0],
+              className: 'bg-zinc-900/80',
+            }}
+          />
+        ))}
+        {users.length > max && (
+          <Tooltip>
+            <TooltipTrigger>
+              <div className="relative w-[37px] h-[37px] rounded-full bg-primary flex items-center justify-center font-medium cursor-pointer text-background text-sm z-[3]">
+                +{users.length - max}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className={cn('w-42 flex flex-col justify-between px-2')}>
+              {users.slice(max, users.length).map((user, idx) => (
+                <p
+                  key={idx}
+                  className="text-sm"
+                >
+                  {user.name}
+                </p>
+              ))}
+            </TooltipContent>
+          </Tooltip>
+        )}
+      </div>
+    )
+  }
+)
 
-export { Avatar, AvatarImage, AvatarFallback, AvatarGroup }
+AvatarGroup.displayName = 'AvatarGroup'
+
+export { Avatar, AvatarImage, AvatarFallback, AvatarGroup, AvatarCustom }

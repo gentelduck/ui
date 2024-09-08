@@ -3,7 +3,7 @@ import React from 'react'
 
 import { Button, CommandType } from './button'
 import { Label } from './ShadcnUI/label'
-import { Popover, PopoverContent, PopoverTrigger } from './ShadcnUI/popover'
+import { Popover, PopoverContent, PopoverTrigger } from './popover'
 import { Command, CommandInput, CommandListGroup, CommandListGroupDataType } from './command'
 
 import { cn } from '@/lib'

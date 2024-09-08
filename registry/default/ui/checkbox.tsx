@@ -35,15 +35,23 @@ export interface CheckboxWithLabelProps extends React.HTMLProps<HTMLDivElement> 
 }
 
 const CheckboxWithLabel = React.forwardRef<React.ElementRef<'div'>, CheckboxWithLabelProps>(
-  ({ checkbox, checkbox_label, className, ...props }, ref) => {
+  ({ id, checkbox, checkbox_label, className, ...props }, ref) => {
+    const { className: labelClassName, ...labelProps } = checkbox_label
     return (
       <div
         ref={ref}
         className={cn('flex items-center justify-start gap-2', className)}
         {...props}
       >
-        <Checkbox {...checkbox} />
-        <Label {...checkbox_label} />
+        <Checkbox
+          id={id}
+          {...checkbox}
+        />
+        <Label
+          htmlFor={id}
+          className={cn('curosor-pointer', labelClassName)}
+          {...labelProps}
+        />
       </div>
     )
   }
@@ -78,8 +86,9 @@ const CheckboxGroup = React.forwardRef<React.ElementRef<'div'>, CheckboxGroupPro
                 className={cn('flex items-center justify-start gap-2', className)}
               >
                 <CheckboxWithLabel
-                  checkbox={{ ...checkbox }}
-                  checkbox_label={{ ...checkbox_label, title: title }}
+                  id={id}
+                  checkbox={{ ...checkbox, className: 'w-4 h-4 rounded-full border-muted-foreground/80' }}
+                  checkbox_label={{ ...checkbox_label, children: title }}
                 />
               </div>
             )

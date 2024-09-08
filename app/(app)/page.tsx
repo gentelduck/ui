@@ -20,7 +20,7 @@ import {
 export default function IndexPage() {
   return (
     <>
-      <div className="flex items-start gap-4 p-4  select-none">
+      <div className="flex items-start gap-4 p-4  select-none container mt-12">
         <Kanban
           initData={initData}
           kanbanColumnHeader={{
