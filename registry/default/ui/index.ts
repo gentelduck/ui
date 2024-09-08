@@ -18,5 +18,8 @@ export * from './input'
 export * from './scroll-area'
 export * from './pagination'
 export * from './sheet'
+export * from './avatar'
+export * from './image'
+export * from './hover-card'
 
 export * from './ShadcnUI'

@@ -1,8 +1,14 @@
 import * as React from 'react'
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
-import { cn } from '@/lib'
-import { Check } from 'lucide-react'
+import * as LabelPrimitive from '@radix-ui/react-label'
 
+import { Check } from 'lucide-react'
+import { Label, labelVariants } from './ShadcnUI/label'
+
+import { cn } from '@/lib'
+import { VariantProps } from 'class-variance-authority'
+
+// Checkbox
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
@@ -22,4 +28,66 @@ const Checkbox = React.forwardRef<
 ))
 Checkbox.displayName = CheckboxPrimitive.Root.displayName
 
-export { Checkbox }
+// CheckboxWithLabel
+export interface CheckboxWithLabelProps extends React.HTMLProps<HTMLDivElement> {
+  checkbox: React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
+  checkbox_label: React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & VariantProps<typeof labelVariants>
+}
+
+const CheckboxWithLabel = React.forwardRef<React.ElementRef<'div'>, CheckboxWithLabelProps>(
+  ({ checkbox, checkbox_label, className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn('flex items-center justify-start gap-2', className)}
+        {...props}
+      >
+        <Checkbox {...checkbox} />
+        <Label {...checkbox_label} />
+      </div>
+    )
+  }
+)
+
+// CheckboxGroup
+export interface CheckboxProps extends React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> {
+  id: string
+  title: string
+}
+
+export interface CheckboxGroupProps extends React.HTMLProps<HTMLDivElement> {
+  subtasks: CheckboxProps[]
+  subtasks_default_values?: CheckboxWithLabelProps
+}
+
+const CheckboxGroup = React.forwardRef<React.ElementRef<'div'>, CheckboxGroupProps>(
+  ({ subtasks, subtasks_default_values, ...props }, ref) => {
+    const { checkbox, checkbox_label } = subtasks_default_values || {}
+    return (
+      <>
+        <div
+          className={cn('flex flex-col w-full gap-2 mb-3')}
+          {...props}
+          ref={ref}
+        >
+          {subtasks.map(subtask => {
+            const { id, title, className } = subtask
+            return (
+              <div
+                key={id}
+                className={cn('flex items-center justify-start gap-2', className)}
+              >
+                <CheckboxWithLabel
+                  checkbox={{ ...checkbox }}
+                  checkbox_label={{ ...checkbox_label, title: title }}
+                />
+              </div>
+            )
+          })}
+        </div>
+      </>
+    )
+  }
+)
+
+export { Checkbox, CheckboxGroup, CheckboxWithLabel }

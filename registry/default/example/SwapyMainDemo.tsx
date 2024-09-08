@@ -2,9 +2,15 @@
 import { cn } from '@/lib'
 import {
   AlertDialogCustom,
+  Avatar,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarImage,
   Badge,
   Button,
   Checkbox,
+  CheckboxGroup,
+  ImageGroup,
   InitDataType,
   Kanban,
   KanbanColumnAddRowBodyArgs,
@@ -27,11 +33,72 @@ export const initData: InitDataType = {
           title: 'About page',
         },
         {
-          id: 'subtask-1',
+          id: 'subtask-2',
           title: 'Home data fetching',
         },
       ],
-      attachments: [{}],
+      attachments: [
+        {
+          id: 'attachment-1',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/princess-min.d694ac37.png',
+        },
+        {
+          id: 'attachment-2',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/jake-min.e1358fa8.png',
+        },
+        {
+          id: 'attachment-3',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/bmo-min.b4f5c828.png',
+        },
+        {
+          id: 'attachment-4',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/finn-min.008b490d.png',
+        },
+        {
+          id: 'attachment-5',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/jake-min.e1358fa8.png',
+        },
+        {
+          id: 'attachment-6',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/bmo-min.b4f5c828.png',
+        },
+        {
+          id: 'attachment-7',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/princess-min.d694ac37.png',
+        },
+        {
+          id: 'attachment-8',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/jake-min.e1358fa8.png',
+        },
+        {
+          id: 'attachment-9',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/princess-min.d694ac37.png',
+        },
+        {
+          id: 'attachment-10',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/bmo-min.b4f5c828.png',
+        },
+      ],
       links: [
         {
           id: 'link-1',
@@ -44,7 +111,26 @@ export const initData: InitDataType = {
           content: 'Comment 1',
         },
       ],
-      taggedUsers: [],
+      taggedUsers: [
+        {
+          id: 'user-1',
+          name: 'John Doe',
+          avatarUrl:
+            'https://images.unsplash.com/photo-1598550880863-4e8aa3d0edb4?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        },
+        {
+          id: 'user-2',
+          name: 'Jane Doe',
+          avatarUrl:
+            'https://images.unsplash.com/photo-1723200166097-4eed8c141f03?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        },
+        {
+          id: 'user-3',
+          name: 'John Smith',
+          avatarUrl:
+            'https://images.unsplash.com/photo-1659857279356-0a8d7d23b653?q=80&w=2126&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        },
+      ],
       labels: [
         {
           id: 'label-1',
@@ -63,7 +149,7 @@ export const initData: InitDataType = {
     'column-1': {
       id: 'column-1',
       title: 'To Do',
-      taskIds: [],
+      taskIds: ['task-1'],
     },
     'column-2': {
       id: 'column-2',
@@ -73,7 +159,7 @@ export const initData: InitDataType = {
     'column-3': {
       id: 'column-3',
       title: 'Done',
-      taskIds: ['task-1'],
+      taskIds: [],
     },
   },
   columnOrder: ['column-1', 'column-2', 'column-3'],
@@ -231,25 +317,11 @@ export const KanbanColumnRowTemplate: React.FC<KanbanColumnRowComponentArgs> = (
         <h3 className={cn('text-lg font leading-none tracking-tight')}>{title}</h3>
         <p className={cn('text-sm text-muted-foreground')}>{description}</p>
       </div>
-      <div>
-        <div className={cn('flex flex-col gap-2 mb-3')}>
-          {subtasks.map(subtask => (
-            <div
-              key={subtask.id}
-              className={cn('flex items-center justify-start gap-2')}
-            >
-              <Checkbox
-                className={cn('w-4 h-4 rounded-full border-muted-foreground/80')}
-                // checked
-              />
-              <h3 className={cn('text-sm text-muted-foreground')}>{subtask.title}</h3>
-            </div>
-          ))}
-        </div>
+      <div className={cn('flex flex-col items-center justify-between mb-[1rem]')}>
+        <CheckboxGroup subtasks={subtasks} />
         <Separator className={cn('my-2 h-[1px] bg-muted-foreground/20')} />
         <Button
           variant="ghost"
-          // size="sm"
           className="w-full hover:bg-muted-foreground/20 justify-start"
           icon={{
             icon: Plus,
@@ -257,6 +329,22 @@ export const KanbanColumnRowTemplate: React.FC<KanbanColumnRowComponentArgs> = (
         >
           Add subtask
         </Button>
+      </div>
+      <div className="flex items-center justify-start gap-2 mb-3">
+        <ImageGroup
+          imgs={attachments}
+          max_imgs={6}
+        />
+      </div>
+      <div className={cn('relative pt-4 overflow')}>
+        <div
+          className={cn(
+            'flex items-center justify-start gap-2 shrink-0',
+            'after:content-[""] after:w-[150%] after:h-[3px] after:bg-muted-foreground/20 after:absolute after:top-0 after:-translate-x-1/2 after:left-1/2 after:bg-zinc-900 relative pt-3'
+          )}
+        >
+          <AvatarGroup users={taggedUsers} />
+        </div>
       </div>
     </div>
   )

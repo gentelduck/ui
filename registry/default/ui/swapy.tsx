@@ -27,6 +27,7 @@ interface Subtask {
 // Type for Attachments
 interface Attachment {
   id?: string
+  type?: string
   filename?: string
   url?: string
 }
@@ -397,7 +398,7 @@ export const KanbanColumnRow = React.memo(
     return (
       <div className="relative">
         <div
-          className={cn(kanbanStyle, className)}
+          className={cn('overflow-hidden', kanbanStyle, className)}
           style={{ ...provided.draggableProps.style }}
           ref={provided.innerRef}
           {...provided.draggableProps}
