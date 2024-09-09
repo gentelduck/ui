@@ -110,37 +110,36 @@ export const MDXMinimalTextEditor = ({
       content,
       autofocus: true,
       onUpdate: ({ editor }) => {
-        const html = editor.getHTML()
+        // const html = editor.getHTML()
         // console.log(editor.getText())
-        onChangeText(editor.getText())
-
-        editorContentRef && (editorContentRef.current = html)
+        // onChangeText(editor.getText())
+        // editorContentRef && (editorContentRef.current = html)
       },
     },
     [valid, name]
   )
 
-  const updateEditorContent = useDebounceCallback((html: string) => {
-    return (
-      setEditorContent &&
-      setEditorContent({ replyContent: type === 'reply' && html, aditSubject: type !== 'reply' && html })
-    )
-  }, 300)
-
-  React.useEffect(() => {
-    if (editor) {
-      updateEditorContent(content ?? '')
-    }
-  }, [])
-
-  React.useEffect(() => {
-    if (editor) {
-      editor.on('update', ({ editor }) => {
-        const html = editor.getHTML()
-        updateEditorContent(html)
-      })
-    }
-  }, [editor, type, updateEditorContent])
+  // const updateEditorContent = useDebounceCallback((html: string) => {
+  //   return (
+  //     setEditorContent &&
+  //     setEditorContent({ replyContent: type === 'reply' && html, aditSubject: type !== 'reply' && html })
+  //   )
+  // }, 300)
+  //
+  // React.useEffect(() => {
+  //   if (editor) {
+  //     updateEditorContent(content ?? '')
+  //   }
+  // }, [])
+  //
+  // React.useEffect(() => {
+  //   if (editor) {
+  //     editor.on('update', ({ editor }) => {
+  //       const html = editor.getHTML()
+  //       updateEditorContent(html)
+  //     })
+  //   }
+  // }, [editor, type, updateEditorContent])
 
   if (!editor) {
     return null

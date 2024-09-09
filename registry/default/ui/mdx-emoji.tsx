@@ -1,7 +1,37 @@
 import { escapeForRegEx, mergeAttributes, Node } from '@tiptap/core'
+import { ReactNodeViewRenderer } from '@tiptap/react'
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
 import { init } from 'emoji-mart'
 import data from '@emoji-mart/data'
-// import { Tooltip, TooltipTrigger, TooltipContent } from 'your-tooltip-library' // Replace with actual import
+
+// EmojiTooltip.js
+import React from 'react'
+import { NodeViewWrapper, NodeViewContent } from '@tiptap/react'
+import localFont from 'next/font/local'
+import { cn } from '@/lib'
+
+const EmojiFont = localFont({ src: '../../../assets/fonts/font.ttf' })
+const EmojiTooltip = ({ node }: any) => {
+  const emoji = node.attrs.emoji || ''
+  const shortcode = node.attrs.shortcode || ''
+
+  return (
+    <NodeViewWrapper className={cn('inline-flex', EmojiFont.className)}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="text-lg h-fit leading-none">{emoji}</span>
+        </TooltipTrigger>
+        <TooltipContent>
+          <div className="flex items-center gap-1">
+            <p className="!text-lg leading-none">{emoji}</p>
+            <p className="text-muted-foreground font-semibold font-mono">{shortcode}</p>
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </NodeViewWrapper>
+  )
+  // <NodeViewContent />
+}
 
 type InputRuleOptions = { find: string; replace: string }
 export type EmojiReplacerOptions = {
@@ -10,7 +40,6 @@ export type EmojiReplacerOptions = {
   shouldUseExtraReplacementSpace: boolean
 }
 
-// Define a custom Emoji node to render the emoji inside a tooltip
 export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
   name: 'emojiReplacer',
 
@@ -46,25 +75,16 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
-    // Ensure the emoji and shortcode attributes are present
-    const emoji = HTMLAttributes.emoji || ''
-    const shortcode = HTMLAttributes.shortcode || ''
-
+    // Render HTML attributes, but the actual emoji rendering is handled by the React component
     return [
       'span',
-      mergeAttributes(HTMLAttributes, { 'data-emoji': emoji, class: 'emoji' }),
-      [
-        'span',
-
-        { style: 'position: relative;' },
-        ['span', { class: 'tooltip-trigger' }, emoji],
-        [
-          'div',
-          { class: 'tooltip' },
-          ['div', { class: 'tooltip-content' }, ['p', {}, `${emoji}`], ['p', {}, `${shortcode}`]],
-        ],
-      ],
+      { ...HTMLAttributes, 'data-emoji': HTMLAttributes.emoji },
+      // The actual rendering of the emoji and tooltip is handled in the React component
     ]
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(EmojiTooltip)
   },
 
   addInputRules() {
@@ -81,7 +101,7 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
       const basePattern = escapeForRegEx(`${inputRule.find.trim()}${lookupSpace}`)
       return {
         find: new RegExp(`${basePattern}$`),
-        handler: ({ state, range }) => {
+        handler: ({ state, range }: any) => {
           const { tr } = state
           const emoji = inputRule.replace.trim()
 

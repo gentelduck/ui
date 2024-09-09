@@ -543,7 +543,7 @@ export const Comment: React.FC<CommentProps> = ({ comment, className, ...props }
   return (
     <div
       className={cn(
-        'flex items-start justify-start gap-2 bg-secondary/40 p-4 rounded-md hover:bg-secondary/60',
+        'flex items-start justify-start gap-2 bg-secondary/40 p-4 rounded-md hover:bg-secondary/70',
         className
       )}
       {...props}
@@ -566,7 +566,7 @@ export const Comment: React.FC<CommentProps> = ({ comment, className, ...props }
               {daysDifference > 1 ? format(commentDate, 'PP') : formatDistanceToNow(commentDate, { addSuffix: true })}
             </p>
           </div>
-          <div className="flex items-end justify-center gap-2">
+          <div className="flex items-center justify-center gap-2">
             <LikeButton likes={comment.likes} />
             <Separator
               orientation="vertical"
