@@ -12,6 +12,11 @@ import { ThemeSwitcher } from '@/components/theme-switcher'
 import { Toaster as DefaultSonner, ScrollArea } from '@/registry/default/ui/'
 // import { Toaster as NewYorkToaster } from '@/registry/default/ui/'
 
+import localFont from 'next/font/local'
+
+// Font files can be colocated inside of `pages`
+const EmojiFont = localFont({ src: '../assets/fonts/font.ttf' })
+
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,

@@ -1,7 +1,9 @@
 'use client'
 import { cn } from '@/lib'
 import { IoIosHeart, IoMdHeartEmpty } from 'react-icons/io'
-import EmojiPicker from 'emoji-picker-react'
+import data from '@emoji-mart/data'
+import { init, SearchIndex } from 'emoji-mart'
+import Picker from '@emoji-mart/react'
 import {
   AlertDialogCustom,
   AvatarGroup,
@@ -22,6 +24,8 @@ import {
   PopoverClose,
   Input,
   Textarea,
+  ScrollArea,
+  MDXMinimalTextEditor,
 } from '../ui'
 import {
   ArrowBigUp,
@@ -39,6 +43,8 @@ import {
 import React from 'react'
 import { differenceInDays, format, formatDistanceToNow } from 'date-fns'
 import { HeartFilledIcon } from '@radix-ui/react-icons'
+import { z } from 'zod'
+import localFont from 'next/font/local'
 
 export const initData: InitDataType = {
   tasks: {
@@ -486,7 +492,7 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
                 />
               ))}
             </div>
-            <div className="flex items-center justify-between py-2 px-4 bg-secondary/30">
+            <div className="flex items-center justify-between py-2 px-4 bg-secondary/30 gap-2">
               <div className="flex items-center gap-2">
                 <AvatarCustom
                   className="w-8 h-8 border-none"
@@ -497,11 +503,8 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
                     className: 'w-8 h-8 bg-secondary/20',
                   }}
                 />
-                <Input
-                  className="w-full h-8 font-medium"
-                  placeholder="Add a comment..."
-                />
               </div>
+              <AdvancedInput />
 
               <div className="flex items-center justify-center gap-2">
                 <Button
@@ -572,18 +575,148 @@ export const Comment: React.FC<CommentProps> = ({ comment, className, ...props }
             <ReplyButton />
           </div>
         </div>
-        <p className="text-sm">{comment.content}</p>
+        <p className={cn('text-sm', EmojiFont.className)}>{comment.content}</p>
         {
-          // FIX:
+          // FIX: idk what the fuck to fix but it's a red line to break the code <3
+          // TODO: you have to make some magic here :D
         }
-        <EmojiPicker
-          // open={emojiOpen}
-          getEmojiUrl={emoji => console.log(emoji)}
-          reactionsDefaultOpen={true}
-          emojiStyle={'native'}
-          theme={'dark'}
-        />
+        <div className=""></div>
       </div>
+    </div>
+  )
+}
+//     <Picker
+// data={data}
+// onEmojiSelect={console.log}
+//     />
+
+// Define the emojiShortcodeSchema to validate shortcodes
+const emojiShortcodeSchema = z
+  .string()
+  .min(2)
+  .regex(/^[a-zA-Z0-9_]+$/)
+
+interface SearchEmojiArgs {
+  value: string
+  setData: React.Dispatch<React.SetStateAction<DataState>>
+}
+
+type DataState = { data: Emoji[]; q: string }
+
+interface Skin {
+  unified: string
+  native: string
+  shortcodes: string
+}
+
+interface Emoji {
+  id: string
+  name: string
+  keywords: string[]
+  skins: Skin[]
+  version: number
+  search: string
+}
+
+// Mocked search function for demo purposes
+async function searchEmoji({ value, setData }: SearchEmojiArgs) {
+  init({ data })
+  const searchResults = await SearchIndex.search(value ?? '')
+  setData({ data: searchResults || [], q: value })
+}
+
+// Font files can be colocated inside of `pages`
+const EmojiFont = localFont({ src: '../../../assets/fonts/font.ttf' })
+
+// Advanced Input component
+const AdvancedInput = () => {
+  const [data, setData] = React.useState<DataState>({ data: [], q: '' })
+  const [inputValue, setInputValue] = React.useState<string>('')
+
+  React.useEffect(() => {
+    // Optional: Add any effect that should trigger based on input value change
+  }, [inputValue])
+
+  // Function to handle input change and detect emoji shortcodes
+  // const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = async (value: string) => {
+    // const value = e.currentTarget.value
+    setInputValue(value)
+
+    // Check if the input ends with ':' and clear the data if so
+    if (value.endsWith(':')) {
+      setData({ data: [], q: '' })
+      return
+    }
+
+    // Validate emoji shortcode that starts with ':' and is followed by at least 2 characters,
+    // or space followed by ':' and at least 2 characters
+    const match = value.match(/(?:\s|^):([a-zA-Z0-9_]{2,})$/) // Match space or start followed by ':' and at least 2 characters
+    if (match) {
+      const shortcode = match[1] // Capture the shortcode without the leading ':'
+      if (emojiShortcodeSchema.safeParse(shortcode).success) {
+        // Search for the emoji using the shortcode
+        await searchEmoji({ value: shortcode, setData })
+      }
+    }
+  }
+
+  // Function to handle Enter key press and replace shortcode with emoji native value
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const match = inputValue.match(/:([a-zA-Z0-9_]+):?$/)
+      if (match) {
+        const shortcode = match[1]
+        const emoji = data.data.find(emoji => emoji.skins.some(skin => skin.shortcodes.includes(shortcode)))
+        if (emoji) {
+          // Replace shortcode with the native emoji
+          const newValue = inputValue.replace(`:${shortcode}`, emoji.skins[0].native)
+          console.log(emoji)
+          setInputValue(newValue)
+          // Clear the search results as the emoji has been inserted
+          setData({ data: [], q: '' })
+        }
+      }
+    }
+  }
+
+  //     <Input
+  // className={cn('w-full h-8 font-medium', EmojiFont.className)}
+  // placeholder="Add a comment..."
+  // value={inputValue}
+  // onChange={handleInputChange}
+  // onKeyDown={handleKeyDown}
+  //     />
+  return (
+    <div className="relative w-full">
+      <MDXMinimalTextEditor
+        className={cn('w-full font-medium h-42', EmojiFont.className)}
+        name="comment"
+        valid={true}
+        onChangeText={handleInputChange}
+        onKeyDown={handleKeyDown}
+      />
+      {data?.q !== '' && (
+        <div className="absolute bottom-[110%] left-1/2 -translate-x-1/2 flex items-start justify-start gap-2 bg-background rounded-md px-2 py-2 flex-col w-[300px]">
+          <h5 className="text-sm font-medium">
+            EMOJI MATCHING <span className="text-sky-500">:{data.q}</span>
+          </h5>
+          <ScrollArea className="w-full max-h-32 overflow-auto">
+            <div className="flex flex-col items-start justify-start gap-2">
+              {data?.data.length > 0 &&
+                data.data.map(emoji => (
+                  <div
+                    key={emoji.id}
+                    className="flex justify-start gap-2 whitespace-nowrap"
+                  >
+                    <span className={cn('text-xl pl-2', EmojiFont.className)}>{emoji.skins[0].native}</span>
+                    <span className="text-muted-foreground">{emoji.skins[0].shortcodes}</span>
+                  </div>
+                ))}
+            </div>
+          </ScrollArea>
+        </div>
+      )}
     </div>
   )
 }

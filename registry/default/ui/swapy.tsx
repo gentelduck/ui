@@ -45,10 +45,10 @@ interface Link {
 export interface CommentType {
   id: string
   content: string
-  authorId?: string
-  createdAt?: string
+  authorId: string
+  createdAt: string
   user: TaggedUserType
-  likes?: LikedType
+  likes: LikedType
 }
 
 export interface LikedType {

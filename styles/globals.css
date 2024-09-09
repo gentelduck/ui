@@ -139,3 +139,103 @@
         -webkit-line-clamp: 1;
     }
 }
+
+/*NOTE: MINITMAL EDITOR */
+@layer components {
+    .mdx__minimal__text__editor {
+        @apply grid border border-input overflow-visible;
+
+        .disabled {
+            @apply pointer-events-none;
+        }
+
+        * {
+            @apply transition-all duration-300 ease-in-out;
+
+            &:focus-visible {
+                outline: none !important;
+            }
+        }
+
+        /* Scroll area viewport styling */
+        div[data-radix-scroll-area-viewport] {
+            @apply rounded-none !overflow-visible;
+        }
+
+        .tiptap.ProseMirror {
+            /* Apply transition to all elements */
+
+            /* Placeholder for empty paragraph */
+            p.is-editor-empty:first-child::before {
+                @apply text-gray-400 text-sm pointer-events-none;
+                content: attr(data-placeholder);
+                float: left;
+                height: 0;
+            }
+
+            /* Preformatted text background */
+            >pre {
+                @apply bg-accent/40;
+            }
+
+            /* Code block styling */
+            code {
+                @apply rounded-sm;
+            }
+
+            /* Paragraph font size */
+            p {
+                @apply text-sm;
+
+                &:focus-visible {
+                    outline: none !important;
+                }
+            }
+
+            /* Heading styles */
+            h1 {
+                @apply text-2xl my-2;
+            }
+
+            h2 {
+                @apply text-xl my-2;
+            }
+
+            h3 {
+                @apply text-lg my-2;
+            }
+
+            h4 {
+                @apply text-base;
+            }
+
+            h5 {
+                @apply text-sm;
+            }
+
+            h6 {
+                @apply text-xs;
+            }
+        }
+    }
+
+    .tooltip-trigger:hover+.tooltip>.tooltip-content {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .tooltip-content {
+        @apply z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md;
+        font-family: 'CustomEmojiFont', sans-serif;
+        display: flex;
+        align-items: center;
+        position: absolute;
+        top: -181%;
+        transform: translateX(-50%) translateY(3px);
+        opacity: 0;
+        left: 50%;
+        border-radius: 0.5rem;
+        gap: 0.25rem;
+    }
+}
