@@ -149,7 +149,7 @@ export const MDXMinimalTextEditor = ({
   return (
     <ScrollArea
       className={cn(
-        'mdx__minimal__text__editor h-8 rounded-sm text-[0.7rem] py-[5px] px-2 overflow-visible',
+        'mdx__minimal__text__editor max-h-[4.5rem] max-w-[13rem] rounded-sm text-[0.7rem] py-[5px] px-2 overflow-scroll',
         valid && 'disabled'
       )}
     >

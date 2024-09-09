@@ -52,25 +52,16 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
 
     return [
       'span',
-      mergeAttributes(HTMLAttributes, {
-        'data-emoji': emoji,
-        style: 'font-family: "CustomEmojiFont", sans-serif; display: inline-flex; align-items: center;',
-      }),
-      // Using 'TooltipTrigger' and 'TooltipContent' as placeholders for actual tooltip implementation
+      mergeAttributes(HTMLAttributes, { 'data-emoji': emoji, class: 'emoji' }),
       [
         'span',
 
         { style: 'position: relative;' },
-        ['span', { class: 'tooltip-trigger' }, emoji], // Emoji element
+        ['span', { class: 'tooltip-trigger' }, emoji],
         [
           'div',
           { class: 'tooltip' },
-          [
-            'div',
-            { class: 'tooltip-content' },
-            ['p', { style: `font-size: .8rem;` }, `${emoji}`],
-            ['p', { style: `font-size: .8rem; color: hsl(var(--muted-foreground));` }, `${shortcode}`],
-          ],
+          ['div', { class: 'tooltip-content' }, ['p', {}, `${emoji}`], ['p', {}, `${shortcode}`]],
         ],
       ],
     ]

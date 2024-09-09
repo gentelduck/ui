@@ -566,7 +566,7 @@ export const Comment: React.FC<CommentProps> = ({ comment, className, ...props }
               {daysDifference > 1 ? format(commentDate, 'PP') : formatDistanceToNow(commentDate, { addSuffix: true })}
             </p>
           </div>
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-end justify-center gap-2">
             <LikeButton likes={comment.likes} />
             <Separator
               orientation="vertical"
@@ -690,7 +690,7 @@ const AdvancedInput = () => {
   return (
     <div className="relative w-full">
       <MDXMinimalTextEditor
-        className={cn('w-full font-medium h-42', EmojiFont.className)}
+        className={cn('w-full font-medium h-42')}
         name="comment"
         valid={true}
         onChangeText={handleInputChange}

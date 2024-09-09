@@ -219,23 +219,37 @@
         }
     }
 
-    .tooltip-trigger:hover+.tooltip>.tooltip-content {
-        transform: translateX(-50%) translateY(0);
-        opacity: 1;
-        transition: all 0.2s ease-in-out;
-    }
-
-    .tooltip-content {
-        @apply z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md;
+    .emoji {
         font-family: 'CustomEmojiFont', sans-serif;
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        position: absolute;
-        top: -181%;
-        transform: translateX(-50%) translateY(3px);
-        opacity: 0;
-        left: 50%;
-        border-radius: 0.5rem;
-        gap: 0.25rem;
+
+        .tooltip-trigger:hover+.tooltip>.tooltip-content {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .tooltip-content {
+            @apply z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md;
+            font-family: 'CustomEmojiFont', sans-serif;
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: -181%;
+            transform: translateX(-50%) translateY(3px);
+            opacity: 0;
+            left: 50%;
+            border-radius: 0.5rem;
+            gap: 0.25rem;
+
+            p:first-child {
+                @apply text-sm;
+            }
+
+            p:last-child {
+                @apply text-xs text-muted-foreground;
+            }
+        }
     }
 }
