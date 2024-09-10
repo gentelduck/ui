@@ -688,7 +688,7 @@ const AdvancedInput = () => {
   // onKeyDown={handleKeyDown}
   //     />
   return (
-    <div className="relative w-full">
+    <div className="relative w-full overflow-hidden">
       <MDXMinimalTextEditor
         className={cn('w-full font-medium h-42')}
         name="comment"

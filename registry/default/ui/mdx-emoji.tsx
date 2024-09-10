@@ -98,7 +98,11 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
     const replacementSpace = this.options.shouldUseExtraReplacementSpace ? ' ' : ''
 
     const createRule = (inputRule: InputRuleOptions) => {
-      const basePattern = escapeForRegEx(`${inputRule.find.trim()}${lookupSpace}`)
+      // Adjust to add the lookup space either before or after based on the option
+      const basePattern = this.options.shouldUseExtraLookupSpace
+        ? `${lookupSpace}${escapeForRegEx(inputRule.find.trim())}`
+        : `${escapeForRegEx(inputRule.find.trim())}${lookupSpace}`
+
       return {
         find: new RegExp(`${basePattern}$`),
         handler: ({ state, range }: any) => {
@@ -115,11 +119,15 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
             })
           )
 
-          // Insert a space text node directly after the emoji if needed
+          // Insert the replacement space either before or after the emoji node, based on the option
           const newPos = tr.selection.from
           if (replacementSpace && newPos <= tr.doc.content.size) {
-            const textNode = state.schema.text(' ')
-            tr.insert(newPos, textNode)
+            const spaceTextNode = state.schema.text(replacementSpace)
+            if (this.options.shouldUseExtraReplacementSpace) {
+              tr.insert(newPos, spaceTextNode)
+            } else {
+              tr.insert(newPos - 1, spaceTextNode) // Insert before the emoji
+            }
           }
 
           return tr
@@ -157,10 +165,14 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
           const pos = $from.pos - nodeBefore.nodeSize
           const tr = state.tr.delete(pos, $from.pos)
 
-          // Optionally insert a space text node after deleting the emoji
+          // Optionally insert the replacement space before or after the emoji
           if (this.options.shouldUseExtraReplacementSpace) {
             const spaceTextNode = state.schema.text(' ')
-            tr.insert($from.pos - nodeBefore.nodeSize, spaceTextNode)
+            if (this.options.shouldUseExtraReplacementSpace) {
+              tr.insert($from.pos - nodeBefore.nodeSize, spaceTextNode)
+            } else {
+              tr.insert($from.pos, spaceTextNode)
+            }
           }
 
           // Apply the transaction

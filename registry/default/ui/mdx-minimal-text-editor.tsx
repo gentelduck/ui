@@ -33,7 +33,7 @@ import { highlightButtons, useTextmenuCommands, useTextmenuContentTypes, useText
 import { AlignRight, CircleOff, Highlighter, LucideProps } from 'lucide-react'
 import { Separator } from './ShadcnUI'
 import { Button } from './button'
-import { Emoji, EmojiReplacer } from './mdx-emoji'
+import { EmojiReplacer } from './mdx-emoji'
 
 import { init, SearchIndex } from 'emoji-mart'
 import { SpaceNode } from './space-node'
@@ -96,7 +96,7 @@ export const MDXMinimalTextEditor = ({
           shouldUseExtraLookupSpace: false,
 
           // adds an extra space at the end of the `replace` option
-          shouldUseExtraReplacementSpace: true,
+          shouldUseExtraReplacementSpace: false,
         }),
       ],
       editorProps: {
@@ -148,13 +148,13 @@ export const MDXMinimalTextEditor = ({
   return (
     <ScrollArea
       className={cn(
-        'mdx__minimal__text__editor max-h-[4.5rem] max-w-[13rem] rounded-sm text-[0.7rem] py-[5px] px-2 overflow-scroll',
+        'mdx__minimal__text__editor max-h-[4.5rem] max-w-[13rem] rounded-sm text-[0.7rem] py-[5px] px-2 overflow-y-scroll',
         valid && 'disabled'
       )}
     >
       <NotionMinimalTextEditorToolbar editor={editor} />
       <EditorContent
-        className="overflow-initial"
+        className=""
         editor={editor}
         onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
           if (onKeyDown) {
