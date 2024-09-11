@@ -31,13 +31,46 @@ import {
 } from './Notion'
 import { highlightButtons, useTextmenuCommands, useTextmenuContentTypes, useTextmenuStates } from './Notion/mdx-editor'
 import { AlignRight, CircleOff, Highlighter, LucideProps } from 'lucide-react'
-import { Separator } from './ShadcnUI'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, Separator } from './ShadcnUI'
 import { Button } from './button'
-import { EmojiReplacer } from './mdx-emoji'
+import { EmojiFont, EmojiReplacer } from './mdx-emoji'
 
 import { init, SearchIndex } from 'emoji-mart'
 import { SpaceNode } from './space-node'
+import { z } from 'zod'
+import { Popover, PopoverContent, PopoverTrigger } from './popover'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from './dropdown-menu'
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
+
+const emojiShortcodeSchema = z
+  .string()
+  .min(2)
+  .regex(/^[a-zA-Z0-9_]+$/)
+
+interface SearchEmojiArgs {
+  value: string
+  setData: React.Dispatch<React.SetStateAction<DataState>>
+}
+
+type DataState = { data: Emoji[]; q: string }
+
+interface Emoji {
+  id: string
+  skins: Skin[]
+}
+
+interface Skin {
+  unified: string
+  native: string
+  shortcodes: string
+}
+
+// Mocked search function for demo purposes
+async function searchEmoji({ value, setData }: SearchEmojiArgs) {
+  init({ data })
+  const searchResults = await SearchIndex.search(value ?? '')
+  setData({ data: searchResults || [], q: value })
+}
 
 export type MDXMinimalTextEditorProps = {
   valid: boolean
@@ -65,6 +98,10 @@ export const MDXMinimalTextEditor = ({
   onChangeText,
   // onChange,
 }: MDXMinimalTextEditorProps) => {
+  const [data, setData] = React.useState<DataState>({ data: [], q: '' })
+  const [inputValue, setInputValue] = React.useState<string>('')
+  const [selectedIndex, setSelectedIndex] = React.useState<number>(0) // For arrow key navigation
+
   const editor = useEditor(
     {
       extensions: [
@@ -110,36 +147,64 @@ export const MDXMinimalTextEditor = ({
       content,
       autofocus: true,
       onUpdate: ({ editor }) => {
-        // const html = editor.getHTML()
+        const text = editor.getText()
         // console.log(editor.getText())
         // onChangeText(editor.getText())
         // editorContentRef && (editorContentRef.current = html)
+        handleInputChange(text)
       },
     },
     [valid, name]
   )
 
-  // const updateEditorContent = useDebounceCallback((html: string) => {
-  //   return (
-  //     setEditorContent &&
-  //     setEditorContent({ replyContent: type === 'reply' && html, aditSubject: type !== 'reply' && html })
-  //   )
-  // }, 300)
-  //
-  // React.useEffect(() => {
-  //   if (editor) {
-  //     updateEditorContent(content ?? '')
-  //   }
-  // }, [])
-  //
-  // React.useEffect(() => {
-  //   if (editor) {
-  //     editor.on('update', ({ editor }) => {
-  //       const html = editor.getHTML()
-  //       updateEditorContent(html)
-  //     })
-  //   }
-  // }, [editor, type, updateEditorContent])
+  const handleInputChange = useDebounceCallback(async (value: string) => {
+    setInputValue(value)
+
+    if (value.trim() === '') {
+      setData({ data: [], q: '' })
+      return
+    }
+
+    const match = value.match(/(?:\s|^):([a-zA-Z0-9_]{2,})$/)
+    if (match) {
+      const shortcode = match[1]
+      if (emojiShortcodeSchema.safeParse(shortcode).success) {
+        await searchEmoji({ value: shortcode, setData })
+        setSelectedIndex(0) // Reset selection when a new search is triggered
+      }
+    } else {
+      setData({ data: [], q: '' })
+    }
+  }, 300)
+
+  const handleKeyDown = React.useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        const selectedEmoji = data.data[selectedIndex]
+        if (selectedEmoji) {
+          const newValue = inputValue.replace(/:[a-zA-Z0-9_]+$/, selectedEmoji.skins[0].native)
+          editor?.commands.setContent(newValue)
+          setInputValue(newValue)
+          setData({ data: [], q: '' })
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        setSelectedIndex(prev => (prev > 0 ? prev - 1 : data.data.length - 1))
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        setSelectedIndex(prev => (prev < data.data.length - 1 ? prev + 1 : 0))
+      }
+    },
+    [inputValue, data, selectedIndex, editor]
+  )
+
+  const handleEmojiClick = (emoji: Emoji) => {
+    const newValue = inputValue.replace(/:[a-zA-Z0-9_]+$/, emoji.skins[0].native)
+    editor?.commands.setContent(newValue)
+    setInputValue(newValue)
+    setData({ data: [], q: '' })
+  }
 
   if (!editor) {
     return null
@@ -151,21 +216,43 @@ export const MDXMinimalTextEditor = ({
         'mdx__minimal__text__editor max-h-[4.5rem] max-w-[13rem] rounded-sm text-[0.7rem] py-[5px] px-2 overflow-y-scroll',
         valid && 'disabled'
       )}
+      onKeyDown={handleKeyDown}
     >
-      <NotionMinimalTextEditorToolbar editor={editor} />
-      <EditorContent
-        className=""
-        editor={editor}
-        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-          if (onKeyDown) {
-            onKeyDown(e)
-          }
-        }}
-      />
+      <Tooltip open={data?.data.length > 0}>
+        <TooltipTrigger className="sr-only"></TooltipTrigger>
+        <TooltipContent
+          className="w-fit py-2 pr-2"
+          side="top"
+          align="center"
+        >
+          <div className="flex items-start justify-start gap-1 bg-background rounded-md flex-col">
+            <div className="text-sm font-medium">
+              EMOJI MATCHING <span className="text-sky-500">:{data.q}</span>
+            </div>
+            <Separator />
+            <div className="flex flex-col gap-2 h-[200px] overflow-y-scroll pr-1">
+              {data?.data.length > 0 &&
+                data.data.map((emoji, index) => (
+                  <div
+                    key={emoji.id}
+                    className={cn(
+                      'flex justify-start gap-2 whitespace-nowrap cursor-pointer p-1',
+                      selectedIndex === index ? 'bg-sky-500 text-white' : ''
+                    )}
+                    onClick={() => handleEmojiClick(emoji)}
+                  >
+                    <span className={cn('text-xl', EmojiFont.className)}>{emoji.skins[0].native}</span>
+                    <span className="text-muted-foreground">{emoji.skins[0].shortcodes}</span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </TooltipContent>
+      </Tooltip>
+      <EditorContent editor={editor} />
     </ScrollArea>
   )
 }
-
 export type NotionMinimalTextEditorToolbarProps = {
   editor: Editor
 }
