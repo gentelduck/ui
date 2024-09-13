@@ -1,4 +1,4 @@
-import { escapeForRegEx, mergeAttributes, Node } from '@tiptap/core'
+import { escapeForRegEx, Node } from '@tiptap/core'
 import { NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react'
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
 import { init } from 'emoji-mart'
@@ -8,18 +8,23 @@ import localFont from 'next/font/local'
 
 export const EmojiFont = localFont({ src: '../../../assets/fonts/font.ttf' })
 const EmojiTooltip = ({ node }: any) => {
-  const emoji = node.attrs.emoji || ''
   const shortcode = node.attrs.shortcode || ''
 
   return (
     <NodeViewWrapper className={cn('inline-flex', EmojiFont.className)}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="text-lg h-fit leading-none">{emoji}</span>
+          <span className="text-lg h-fit leading-none">
+            {/* @ts-ignore */}
+            <em-emoji shortcodes={shortcode} />
+          </span>
         </TooltipTrigger>
         <TooltipContent>
           <div className="flex items-center gap-1">
-            <p className="!text-lg leading-none">{emoji}</p>
+            <span className="!text-lg leading-none">
+              {/* @ts-ignore */}
+              <em-emoji shortcodes={shortcode} />
+            </span>
             <p className="text-muted-foreground font-semibold font-mono">{shortcode}</p>
           </div>
         </TooltipContent>
@@ -80,7 +85,9 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
   addInputRules() {
     init({ data })
 
+    // @ts-ignore
     const emojis_native = Object.values(data.emojis).map(emoji => {
+      // @ts-ignore
       return { find: emoji.skins[0].shortcodes, replace: emoji.skins[0].native }
     })
 
@@ -164,6 +171,48 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
 
         return false
       },
+    }
+  },
+
+  // @ts-ignore
+  addCommands() {
+    return {
+      insertEmoji:
+        (emoji: string, shortcode: string) =>
+        // @ts-ignore
+        ({ commands }) => {
+          return commands.insertContent({
+            type: this.name,
+            attrs: { emoji, shortcode },
+          })
+        },
+      // Insert emoji without a new line
+      insertEmojiInline:
+        (emoji: string, shortcode: string) =>
+        ({ commands, state, dispatch }: any) => {
+          const { tr } = state
+
+          // Insert the emoji inline at the current selection point
+          const emojiNode = this.type.create({
+            emoji: emoji,
+            shortcode: shortcode,
+          })
+
+          // Replace any selected content (such as the matched shortcode) with the emoji
+          tr.replaceSelectionWith(emojiNode)
+
+          // Ensure no new line is added after the emoji
+          const { selection } = tr
+          const pos = selection.$from.pos
+
+          if (pos < tr.doc.content.size && tr.doc.textBetween(pos, pos + 1) === '\n') {
+            // Remove the newline if it exists
+            tr.delete(pos, pos + 1)
+          }
+
+          dispatch(tr)
+          return true
+        },
     }
   },
 

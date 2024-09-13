@@ -30,17 +30,24 @@ import {
   ToolBarToggleButtons,
 } from './Notion'
 import { highlightButtons, useTextmenuCommands, useTextmenuContentTypes, useTextmenuStates } from './Notion/mdx-editor'
-import { AlignRight, CircleOff, Highlighter, LucideProps } from 'lucide-react'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, Separator } from './ShadcnUI'
+import { AlignRight, Check, CircleOff, Highlighter, LucideProps } from 'lucide-react'
 import { Button } from './button'
 import { EmojiFont, EmojiReplacer } from './mdx-emoji'
 
 import { init, SearchIndex } from 'emoji-mart'
 import { SpaceNode } from './space-node'
 import { z } from 'zod'
-import { Popover, PopoverContent, PopoverTrigger } from './popover'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from './dropdown-menu'
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
+import { Separator } from './ShadcnUI'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandListGroup,
+} from './command'
 
 const emojiShortcodeSchema = z
   .string()
@@ -180,31 +187,48 @@ export const MDXMinimalTextEditor = ({
   const handleKeyDown = React.useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (e.key === 'Enter') {
-        e.preventDefault()
-        const selectedEmoji = data.data[selectedIndex]
+        e.preventDefault() // Prevent default Enter behavior
+
+        const regex = /:[a-zA-Z0-9_]+$/ // Match the emoji shortcode pattern
+        const selectedEmoji = data.data[selectedIndex] // Get selected emoji from the list
+
         if (selectedEmoji) {
-          const newValue = inputValue.replace(/:[a-zA-Z0-9_]+$/, selectedEmoji.skins[0].native)
-          editor?.commands.setContent(newValue)
+          const emojiNative = selectedEmoji.skins[0].native // Get emoji character
+          const shortcode = selectedEmoji.skins[0].shortcodes // Get emoji shortcode
+
+          // Replace the shortcode in the inputValue state with the emoji character
+          const newValue = inputValue.replace(regex, emojiNative)
+
+          if (editor) {
+            // Use the new insertEmojiInline command to insert the emoji inline
+            // @ts-ignore: Custom insertEmojiInline command
+            editor.chain().focus().insertEmojiInline(emojiNative, shortcode).run()
+          }
+
+          // Update the input field value with the emoji character
           setInputValue(newValue)
+
+          // Reset the suggestions dropdown after the emoji is inserted
           setData({ data: [], q: '' })
         }
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault()
-        setSelectedIndex(prev => (prev > 0 ? prev - 1 : data.data.length - 1))
-      } else if (e.key === 'ArrowDown') {
-        e.preventDefault()
-        setSelectedIndex(prev => (prev < data.data.length - 1 ? prev + 1 : 0))
       }
     },
     [inputValue, data, selectedIndex, editor]
   )
 
-  const handleEmojiClick = (emoji: Emoji) => {
-    const newValue = inputValue.replace(/:[a-zA-Z0-9_]+$/, emoji.skins[0].native)
-    editor?.commands.setContent(newValue)
-    setInputValue(newValue)
-    setData({ data: [], q: '' })
-  }
+  const handleEmojiClick = React.useCallback(
+    (emoji: Emoji) => {
+      const regex = /:[a-zA-Z0-9_]+$/
+      const newValue = inputValue.replace(regex, emoji.skins[0].native)
+      if (editor) {
+        // @ts-ignore
+        editor.chain().focus().insertEmoji(emoji.skins[0].native, emoji.skins[0].shortcodes).run()
+      }
+      setInputValue(newValue)
+      setData({ data: [], q: '' })
+    },
+    [editor, inputValue, editor, data]
+  )
 
   if (!editor) {
     return null
@@ -218,41 +242,37 @@ export const MDXMinimalTextEditor = ({
       )}
       onKeyDown={handleKeyDown}
     >
-      <Tooltip open={data?.data.length > 0}>
-        <TooltipTrigger className="sr-only"></TooltipTrigger>
-        <TooltipContent
-          className="w-fit py-2 pr-2"
-          side="top"
-          align="center"
-        >
-          <div className="flex items-start justify-start gap-1 bg-background rounded-md flex-col">
-            <div className="text-sm font-medium">
-              EMOJI MATCHING <span className="text-sky-500">:{data.q}</span>
-            </div>
-            <Separator />
-            <div className="flex flex-col gap-2 h-[200px] overflow-y-scroll pr-1">
-              {data?.data.length > 0 &&
-                data.data.map((emoji, index) => (
-                  <div
-                    key={emoji.id}
-                    className={cn(
-                      'flex justify-start gap-2 whitespace-nowrap cursor-pointer p-1',
-                      selectedIndex === index ? 'bg-sky-500 text-white' : ''
-                    )}
-                    onClick={() => handleEmojiClick(emoji)}
-                  >
-                    <span className={cn('text-xl', EmojiFont.className)}>{emoji.skins[0].native}</span>
-                    <span className="text-muted-foreground">{emoji.skins[0].shortcodes}</span>
-                  </div>
-                ))}
-            </div>
+      {data?.data.length > 0 && (
+        <Command className="fixed bottom-[50px] left-0 right-0 w-[221px] h-auto">
+          <div className="text-sm font-medium px-3 pt-2 pb-1">
+            EMOJI MATCHING <span className="text-sky-500">:{data.q}</span>
           </div>
-        </TooltipContent>
-      </Tooltip>
+          <Separator />
+          <CommandList>
+            <CommandGroup>
+              {data?.data.map(emoji => (
+                <CommandItem
+                  key={emoji.id}
+                  value={emoji.skins[0].native}
+                  onSelect={_ => {
+                    handleEmojiClick(emoji)
+                  }}
+                  className="flex items-center justify-start gap-1"
+                >
+                  <span className={cn('text-xl', EmojiFont.className)}>{emoji.skins[0].native}</span>
+                  <span className="text-muted-foreground">{emoji.skins[0].shortcodes}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      )}
+
       <EditorContent editor={editor} />
     </ScrollArea>
   )
 }
+
 export type NotionMinimalTextEditorToolbarProps = {
   editor: Editor
 }
