@@ -184,38 +184,6 @@ export const MDXMinimalTextEditor = ({
     }
   }, 300)
 
-  const handleKeyDown = React.useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === 'Enter') {
-        e.preventDefault() // Prevent default Enter behavior
-
-        const regex = /:[a-zA-Z0-9_]+$/ // Match the emoji shortcode pattern
-        const selectedEmoji = data.data[selectedIndex] // Get selected emoji from the list
-
-        if (selectedEmoji) {
-          const emojiNative = selectedEmoji.skins[0].native // Get emoji character
-          const shortcode = selectedEmoji.skins[0].shortcodes // Get emoji shortcode
-
-          // Replace the shortcode in the inputValue state with the emoji character
-          const newValue = inputValue.replace(regex, emojiNative)
-
-          if (editor) {
-            // Use the new insertEmojiInline command to insert the emoji inline
-            // @ts-ignore: Custom insertEmojiInline command
-            editor.chain().focus().insertEmojiInline(emojiNative, shortcode).run()
-          }
-
-          // Update the input field value with the emoji character
-          setInputValue(newValue)
-
-          // Reset the suggestions dropdown after the emoji is inserted
-          setData({ data: [], q: '' })
-        }
-      }
-    },
-    [inputValue, data, selectedIndex, editor]
-  )
-
   const handleEmojiClick = React.useCallback(
     (emoji: Emoji) => {
       const regex = /:[a-zA-Z0-9_]+$/
@@ -240,7 +208,6 @@ export const MDXMinimalTextEditor = ({
         'mdx__minimal__text__editor max-h-[4.5rem] max-w-[13rem] rounded-sm text-[0.7rem] py-[5px] px-2 overflow-y-scroll',
         valid && 'disabled'
       )}
-      onKeyDown={handleKeyDown}
     >
       {data?.data.length > 0 && (
         <Command className="fixed bottom-[50px] left-0 right-0 w-[221px] h-auto">

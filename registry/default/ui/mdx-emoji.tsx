@@ -1,12 +1,29 @@
 import { escapeForRegEx, Node } from '@tiptap/core'
 import { NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react'
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
-import { init } from 'emoji-mart'
+import { init, SearchIndex } from 'emoji-mart'
 import data from '@emoji-mart/data'
 import { cn } from '@/lib'
 import localFont from 'next/font/local'
 
+type SearchEmojiArgs = {
+  value: string
+}
+
+async function searchEmoji({ value }: SearchEmojiArgs) {
+  // Initialize emoji-mart with the provided data
+  init({ data })
+
+  // Perform the search using SearchIndex
+  const searchResults = await SearchIndex.search(value)
+  console.log(searchResults, value)
+
+  // Return the search results
+  return searchResults
+}
+
 export const EmojiFont = localFont({ src: '../../../assets/fonts/font.ttf' })
+
 const EmojiTooltip = ({ node }: any) => {
   const shortcode = node.attrs.shortcode || ''
 
@@ -134,8 +151,63 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
     return rules
   },
 
+  // @ts-ignore
   addKeyboardShortcuts() {
     return {
+      Enter: async ({ editor }) => {
+        const { state, view } = editor
+        const { $from, $to } = state.selection
+
+        const cursorPos = $from.pos
+
+        // Extract the text before the cursor position
+        const lookBehindLength = 10 // Large enough value to cover typical shortcodes
+        const startPos = Math.max(cursorPos - lookBehindLength, 0)
+        const nodeText = state.doc.textBetween(startPos, cursorPos, ' ')
+
+        // Find the position of the last `:` in the extracted text
+        const lastColonIndex = nodeText.lastIndexOf(':')
+
+        // Check if there's a `:` character
+        if (lastColonIndex !== -1) {
+          // Extract the text after the last `:`
+          const shortcodeText = nodeText.substring(lastColonIndex + 1).trim()
+
+          if (shortcodeText) {
+            // Search for the emoji
+            const searchResults = await searchEmoji({ value: shortcodeText })
+
+            if (searchResults.length > 0) {
+              const emoji = searchResults[0].skins[0].native // Get the native emoji
+              const emojiShortcode = searchResults[0].skins[0].shortcodes // Get the shortcode
+
+              // Calculate the actual positions in the document
+              const shortcodeStart = startPos + lastColonIndex
+              const shortcodeEnd = cursorPos
+
+              // Ensure positions are within valid ranges
+              if (shortcodeStart >= 0 && shortcodeEnd > shortcodeStart && shortcodeEnd <= state.doc.content.size) {
+                // Create a transaction to replace the shortcode with the native emoji
+                const tr = state.tr.replaceRangeWith(
+                  shortcodeStart,
+                  shortcodeEnd,
+                  this.type.create({
+                    emoji: emoji,
+                    shortcode: emojiShortcode,
+                  })
+                )
+
+                // Dispatch the transaction to update the editor state
+                view.dispatch(tr)
+
+                return true // Action completed successfully
+              }
+            }
+          }
+        }
+
+        return false // Default behavior if conditions are not met
+      },
       Backspace: ({ editor }) => {
         const { state, view } = editor
         const { selection } = state
@@ -185,33 +257,6 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
             type: this.name,
             attrs: { emoji, shortcode },
           })
-        },
-      // Insert emoji without a new line
-      insertEmojiInline:
-        (emoji: string, shortcode: string) =>
-        ({ commands, state, dispatch }: any) => {
-          const { tr } = state
-
-          // Insert the emoji inline at the current selection point
-          const emojiNode = this.type.create({
-            emoji: emoji,
-            shortcode: shortcode,
-          })
-
-          // Replace any selected content (such as the matched shortcode) with the emoji
-          tr.replaceSelectionWith(emojiNode)
-
-          // Ensure no new line is added after the emoji
-          const { selection } = tr
-          const pos = selection.$from.pos
-
-          if (pos < tr.doc.content.size && tr.doc.textBetween(pos, pos + 1) === '\n') {
-            // Remove the newline if it exists
-            tr.delete(pos, pos + 1)
-          }
-
-          dispatch(tr)
-          return true
         },
     }
   },
