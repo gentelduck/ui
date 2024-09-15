@@ -504,7 +504,14 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
                   }}
                 />
               </div>
-              <AdvancedInput />
+
+              <div className="relative w-full">
+                <MDXMinimalTextEditor
+                  className={cn('w-full font-medium h-42')}
+                  name="comment"
+                  valid={true}
+                />
+              </div>
 
               <div className="flex items-center justify-center gap-2">
                 <Button
@@ -512,7 +519,7 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
                   variant={'outline'}
                   className="rounded-full h-8 w-8 bg-secondary/20"
                   icon={{
-                    icon: Plus,
+                    children: Plus,
                   }}
                 />
                 <Button
@@ -520,7 +527,7 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
                   variant={'outline'}
                   className="rounded-full h-8 w-8 bg-secondary/20"
                   icon={{
-                    icon: ArrowBigUp,
+                    children: ArrowBigUp,
                   }}
                 />
               </div>
@@ -585,120 +592,9 @@ export const Comment: React.FC<CommentProps> = ({ comment, className, ...props }
     </div>
   )
 }
-//     <Picker
-// data={data}
-// onEmojiSelect={console.log}
-//     />
-
-// Define the emojiShortcodeSchema to validate shortcodes
-const emojiShortcodeSchema = z
-  .string()
-  .min(2)
-  .regex(/^[a-zA-Z0-9_]+$/)
-
-interface SearchEmojiArgs {
-  value: string
-  setData: React.Dispatch<React.SetStateAction<DataState>>
-}
-
-type DataState = { data: Emoji[]; q: string }
-
-interface Skin {
-  unified: string
-  native: string
-  shortcodes: string
-}
-
-interface Emoji {
-  id: string
-  name: string
-  keywords: string[]
-  skins: Skin[]
-  version: number
-  search: string
-}
-
-// Mocked search function for demo purposes
-async function searchEmoji({ value, setData }: SearchEmojiArgs) {
-  init({ data })
-  const searchResults = await SearchIndex.search(value ?? '')
-  setData({ data: searchResults || [], q: value })
-}
 
 // Font files can be colocated inside of `pages`
 const EmojiFont = localFont({ src: '../../../assets/fonts/font.ttf' })
-
-// Advanced Input component
-const AdvancedInput = () => {
-  const [data, setData] = React.useState<DataState>({ data: [], q: '' })
-  const [inputValue, setInputValue] = React.useState<string>('')
-
-  React.useEffect(() => {
-    // Optional: Add any effect that should trigger based on input value change
-  }, [inputValue])
-
-  // Function to handle input change and detect emoji shortcodes
-  // const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  const handleInputChange = async (value: string) => {
-    // const value = e.currentTarget.value
-    setInputValue(value)
-
-    // Check if the input ends with ':' and clear the data if so
-    if (value.endsWith(':')) {
-      setData({ data: [], q: '' })
-      return
-    }
-
-    // Validate emoji shortcode that starts with ':' and is followed by at least 2 characters,
-    // or space followed by ':' and at least 2 characters
-    const match = value.match(/(?:\s|^):([a-zA-Z0-9_]{2,})$/) // Match space or start followed by ':' and at least 2 characters
-    if (match) {
-      const shortcode = match[1] // Capture the shortcode without the leading ':'
-      if (emojiShortcodeSchema.safeParse(shortcode).success) {
-        // Search for the emoji using the shortcode
-        await searchEmoji({ value: shortcode, setData })
-      }
-    }
-  }
-
-  // Function to handle Enter key press and replace shortcode with emoji native value
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      const match = inputValue.match(/:([a-zA-Z0-9_]+):?$/)
-      if (match) {
-        const shortcode = match[1]
-        const emoji = data.data.find(emoji => emoji.skins.some(skin => skin.shortcodes.includes(shortcode)))
-        if (emoji) {
-          // Replace shortcode with the native emoji
-          const newValue = inputValue.replace(`:${shortcode}`, emoji.skins[0].native)
-          console.log(emoji)
-          setInputValue(newValue)
-          // Clear the search results as the emoji has been inserted
-          setData({ data: [], q: '' })
-        }
-      }
-    }
-  }
-
-  //     <Input
-  // className={cn('w-full h-8 font-medium', EmojiFont.className)}
-  // placeholder="Add a comment..."
-  // value={inputValue}
-  // onChange={handleInputChange}
-  // onKeyDown={handleKeyDown}
-  //     />
-  return (
-    <div className="relative w-full">
-      <MDXMinimalTextEditor
-        className={cn('w-full font-medium h-42')}
-        name="comment"
-        valid={true}
-        onChangeText={handleInputChange}
-        onKeyDown={handleKeyDown}
-      />
-    </div>
-  )
-}
 
 export interface LikeButtonProps extends React.HTMLProps<HTMLDivElement> {
   likes: LikedType
@@ -728,7 +624,7 @@ export const ReplyButton = () => {
   return (
     <div className="flex items-center justify-center gap-2">
       <Button
-        size={'icon'}
+        // size={'icon'}
         variant={'ghost'}
         className="w-5 h-5 p-3"
         icon={{

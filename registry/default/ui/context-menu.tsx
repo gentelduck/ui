@@ -230,7 +230,7 @@ const ContextCustomView = <T,>({ content, trigger, wrapper }: ContextCustomViewP
               <React.Fragment key={`group-${idx}`}>
                 {group.map((item, idx) => {
                   const { children, className, value, nestedData, ...props } = item
-                  const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
+                  const { children: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
                   const {
                     className: commandClassName,
                     label: commandLabel,
@@ -312,7 +312,7 @@ const ContextCustomView = <T,>({ content, trigger, wrapper }: ContextCustomViewP
                                         ...nestedProps
                                       } = nestedItemInner
                                       const {
-                                        icon: NestedIcon,
+                                        children: NestedIcon,
                                         className: nestedIconClassName,
                                         ...nestedIconProps
                                       } = nestedItemInner.icon ?? {}

@@ -93,6 +93,37 @@ const DialogDescription = React.forwardRef<
 ))
 DialogDescription.displayName = DialogPrimitive.Description.displayName
 
+// DialogWrapper Component
+export interface DialogWrapperProps {
+  wrapper?: React.ComponentPropsWithoutRef<typeof Dialog>
+  trigger?: React.ComponentPropsWithoutRef<typeof DialogTrigger>
+  content?: React.ComponentPropsWithoutRef<typeof DialogContent>
+}
+
+const DialogWrapper: React.FC<DialogWrapperProps> = ({ content, trigger, wrapper }) => {
+  const { className: triggerClassName, key: triggerKey, children: triggerChildren, ...triggerProps } = trigger ?? {}
+  const { className: contentClassName, key: contentKey, children: contentChildren, ...contentProps } = content ?? {}
+
+  return (
+    <Dialog {...wrapper}>
+      <DialogTrigger
+        className={cn('', triggerClassName)}
+        {...triggerProps}
+      >
+        {triggerChildren}
+      </DialogTrigger>
+      <DialogContent
+        className={cn('w-80', contentClassName)}
+        {...contentProps}
+      >
+        {contentChildren}
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+DialogWrapper.displayName = 'DialogWrapper'
+
 export {
   Dialog,
   DialogPortal,
@@ -104,4 +135,5 @@ export {
   DialogFooter,
   DialogTitle,
   DialogDescription,
+  DialogWrapper,
 }

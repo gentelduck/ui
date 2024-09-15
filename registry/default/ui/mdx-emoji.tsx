@@ -162,17 +162,15 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
         const cursorPos = $from.pos
 
         // Extract the text before the cursor position
-        const lookBehindLength = 10 // Large enough value to cover typical shortcodes
-        const startPos = Math.max(cursorPos - lookBehindLength, 0)
-        const nodeText = state.doc.textBetween(startPos, cursorPos, ' ')
+        const nodeText = state.doc.textBetween($from.before(), cursorPos, ' ')
 
-        // Find the position of the last `:` in the extracted text
-        const lastColonIndex = nodeText.lastIndexOf(':')
+        // Define your pattern and use it to find the shortcode
+        const basePattern = ':[a-zA-Z0-9_]+$' // Adjust this pattern as needed
+        const regex = new RegExp(`${basePattern}$`)
+        const match = nodeText.match(regex)
 
-        // Check if there's a `:` character
-        if (lastColonIndex !== -1) {
-          // Extract the text after the last `:`
-          const shortcodeText = nodeText.substring(lastColonIndex + 1).trim()
+        if (match) {
+          const shortcodeText = match[0].slice(1).trim() // Remove the leading `:` and trim
 
           if (shortcodeText) {
             // Search for the emoji
@@ -183,33 +181,47 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
               const emojiShortcode = searchResults[0].skins[0].shortcodes // Get the shortcode
 
               // Calculate the actual positions in the document
-              const shortcodeStart = startPos + lastColonIndex
+              const shortcodeStart = cursorPos - (nodeText.length - match.index! ?? ''.length)
               const shortcodeEnd = cursorPos
 
               // Ensure positions are within valid ranges
-              if (shortcodeStart >= 0 && shortcodeEnd > shortcodeStart && shortcodeEnd <= state.doc.content.size) {
-                // Create a transaction to replace the shortcode with the native emoji
-                const tr = state.tr.replaceRangeWith(
-                  shortcodeStart,
-                  shortcodeEnd,
-                  schema.nodes.emoji.create({
-                    emoji: emoji,
-                    shortcode: emojiShortcode,
-                  })
-                )
-
-                // Apply the transaction
-                view.dispatch(tr)
-
-                // Move the cursor to the end of the emoji node
-                const newPos = tr.mapping.map(cursorPos)
-                view.dispatch(view.state.tr.setSelection(TextSelection.create(view.state.doc, newPos)))
-
-                // Scroll to the new position
-                view.someProp('handleScrollToSelection', f => f(view))
-
-                return true // Action completed successfully
+              if (shortcodeStart < 0 || shortcodeEnd <= shortcodeStart || shortcodeEnd > state.doc.content.size) {
+                return false // Invalid range, do nothing
               }
+
+              // Create a transaction to replace the shortcode with the native emoji
+              const tr = state.tr.replaceRangeWith(
+                shortcodeStart,
+                shortcodeEnd,
+                this.type.create({
+                  emoji: emoji,
+                  shortcode: emojiShortcode,
+                })
+              )
+
+              // Optionally handle extra replacement space
+              const replacementSpace = ' ' // Adjust as needed
+              if (replacementSpace && this.options.shouldUseExtraReplacementSpace) {
+                const newPos = tr.selection.from
+                const spaceTextNode = state.schema.text(replacementSpace)
+                if (this.options.shouldUseExtraReplacementSpace) {
+                  tr.insert(newPos, spaceTextNode)
+                } else {
+                  tr.insert(newPos - 1, spaceTextNode)
+                }
+              }
+
+              // Apply the transaction
+              view.dispatch(tr)
+
+              // Move the cursor to the end of the emoji node
+              const newPos = tr.mapping.map(cursorPos)
+              view.dispatch(view.state.tr.setSelection(TextSelection.create(view.state.doc, newPos)))
+
+              // Scroll to the new position
+              view.someProp('handleScrollToSelection', f => f(view))
+
+              return true // Action completed successfully
             }
           }
         }
@@ -284,15 +296,47 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
   },
 
   // New method to allow external emoji insertion
+
   insertEmoji(editor: any, emoji: string, shortcode: string) {
     const { state, view } = editor
+    const { schema, selection } = state
+    const { $from } = selection
+    const cursorPos = $from.pos
     const { tr } = state
-    tr.replaceSelectionWith(
+
+    // Get the current selection
+    const { from, to } = state.selection
+
+    // Create a transaction to replace the selection with the emoji
+    tr.replaceRangeWith(
+      from,
+      to,
       this.type.create({
         emoji,
         shortcode,
       })
     )
+
+    // // Optionally handle extra replacement space
+    // const replacementSpace = ' ' // Adjust as needed
+    // if (replacementSpace) {
+    //   const newPos = to
+    //   const spaceTextNode = schema.text(replacementSpace)
+    //   if (this.options.shouldUseExtraReplacementSpace) {
+    //     tr.insert(newPos, spaceTextNode)
+    //   } else {
+    //     tr.insert(newPos - 1, spaceTextNode)
+    //   }
+    // }
+
+    // Apply the transaction
     view.dispatch(tr)
+
+    // Optionally move the cursor to the end of the inserted emoji
+    const newPos = tr.mapping.map(to + (this.options.shouldUseExtraReplacementSpace ? replacementSpace.length : 0))
+    view.dispatch(view.state.tr.setSelection(TextSelection.create(view.state.doc, newPos)))
+
+    // Scroll to the new position
+    view.someProp('handleScrollToSelection', f => f(view))
   },
 })

@@ -295,4 +295,9 @@ section#id {
             }
         }
     }
+
+    #tippy-1 {
+        position: fixed !important;
+        inset: auto auto 41px -78px !important;
+    }
 }

@@ -28,7 +28,7 @@ const PopoverContent = React.forwardRef<
 ))
 PopoverContent.displayName = PopoverPrimitive.Content.displayName
 
-// PopoverCustom Component
+// PopoverWrapper Component
 export interface PopoverWrapperProps {
   wrapper?: React.ComponentPropsWithoutRef<typeof Popover>
   trigger?: React.ComponentPropsWithoutRef<typeof PopoverTrigger>
@@ -56,5 +56,7 @@ const PopoverWrapper: React.FC<PopoverWrapperProps> = ({ content, trigger, wrapp
     </Popover>
   )
 }
+
+PopoverWrapper.displayName = 'PopoverWrapper'
 
 export { Popover, PopoverTrigger, PopoverContent, PopoverWrapper, PopoverClose }

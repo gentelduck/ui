@@ -255,7 +255,7 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
               {group.map((item, idx) => {
                 const { children, className, itemType = 'label', value, action, nestedData, key: _key, ...props } = item
 
-                const { icon: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
+                const { children: Icon, className: iconClassName, ...iconProps } = item.icon ?? {}
                 const {
                   className: commandClassName,
                   label: commandLabel,
@@ -338,7 +338,7 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
                                       ...nestedProps
                                     } = nestedItemInner
                                     const {
-                                      icon: NestedIcon,
+                                      children: NestedIcon,
                                       className: nestedIconClassName,
                                       ...nestedIconProps
                                     } = nestedItemInner.icon ?? {}

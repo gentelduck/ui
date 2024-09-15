@@ -35,7 +35,7 @@ export const highlightButtons: HighlightButtons[] = [
     value: 'currentColor',
     action: 'onChangeColor',
     icon: null,
-    label: 'red',
+    label: 'Green',
     style: 'bg-green-500 border-green-700',
     color: 'rgb(34 197 94 / 1)',
   },
@@ -43,7 +43,7 @@ export const highlightButtons: HighlightButtons[] = [
     value: 'currentColor',
     action: 'onChangeColor',
     icon: null,
-    label: 'red',
+    label: 'Blue',
     style: 'border-blue-700 bg-blue-500',
     color: 'rgb(59 130 246 / 1)',
   },
@@ -51,7 +51,7 @@ export const highlightButtons: HighlightButtons[] = [
     value: 'currentColor',
     action: 'onChangeColor',
     icon: null,
-    label: 'red',
+    label: 'Red',
     style: 'border-red-700 bg-red-500',
     color: 'rgb(239 68 68 / 1)',
   },
@@ -59,7 +59,7 @@ export const highlightButtons: HighlightButtons[] = [
     value: 'currentColor',
     action: 'onChangeColor',
     icon: null,
-    label: 'red',
+    label: 'Purple',
     style: 'border-purple-800 bg-purple-500',
     color: 'rgb(168 85 247 / 1)',
   },
@@ -68,7 +68,7 @@ export const highlightButtons: HighlightButtons[] = [
 export type EmailToolbarEditorType = {
   action: keyof ReturnType<typeof useTextmenuCommands>
   value: keyof ReturnType<typeof useTextmenuStates>
-  icon: LucideIcon
+  icon: LucideIcon | null
   label: string
 }
 
