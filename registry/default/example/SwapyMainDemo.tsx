@@ -688,7 +688,7 @@ const AdvancedInput = () => {
   // onKeyDown={handleKeyDown}
   //     />
   return (
-    <div className="relative w-full overflow-hidden">
+    <div className="relative w-full">
       <MDXMinimalTextEditor
         className={cn('w-full font-medium h-42')}
         name="comment"
@@ -696,27 +696,6 @@ const AdvancedInput = () => {
         onChangeText={handleInputChange}
         onKeyDown={handleKeyDown}
       />
-      {data?.q !== '' && (
-        <div className="absolute bottom-[110%] left-1/2 -translate-x-1/2 flex items-start justify-start gap-2 bg-background rounded-md px-2 py-2 flex-col w-[300px] z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2">
-          <h5 className="text-sm font-medium">
-            EMOJI MATCHING <span className="text-sky-500">:{data.q}</span>
-          </h5>
-          <ScrollArea className="w-full max-h-32 overflow-auto">
-            <div className="flex flex-col items-start justify-start gap-2">
-              {data?.data.length > 0 &&
-                data.data.map(emoji => (
-                  <div
-                    key={emoji.id}
-                    className="flex justify-start gap-2 whitespace-nowrap"
-                  >
-                    <span className={cn('text-xl pl-2', EmojiFont.className)}>{emoji.skins[0].native}</span>
-                    <span className="text-muted-foreground">{emoji.skins[0].shortcodes}</span>
-                  </div>
-                ))}
-            </div>
-          </ScrollArea>
-        </div>
-      )}
     </div>
   )
 }
@@ -736,7 +715,7 @@ export const LikeButton: React.FC<LikeButtonProps> = ({ likes, className, ...pro
         className="rounded-full h-auto w-auto"
         onClick={() => setLikes(nlikes + 1)}
         icon={{
-          icon: (nlikes > 0 ? IoIosHeart : IoMdHeartEmpty) as LucideIcon,
+          children: (nlikes > 0 ? IoIosHeart : IoMdHeartEmpty) as LucideIcon,
         }}
       >
         {nlikes}
@@ -753,7 +732,7 @@ export const ReplyButton = () => {
         variant={'ghost'}
         className="w-5 h-5 p-3"
         icon={{
-          icon: Reply,
+          children: Reply,
         }}
       />
     </div>
