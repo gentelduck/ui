@@ -83,6 +83,7 @@ export const MDXMinimalTextEditor = ({
 }: MDXMinimalTextEditorProps) => {
   const [data, setData] = React.useState<DataState>({ data: [], q: '' })
   const [inputValue, setInputValue] = React.useState<string>('')
+  console.log(editorContentRef)
 
   const editor = useEditor(
     {
@@ -104,7 +105,7 @@ export const MDXMinimalTextEditor = ({
           types: ['heading', 'paragraph'],
         }),
         Placeholder.configure({
-          placeholder: `Reply to ${name}....`,
+          placeholder: editorContentRef?.current ?? 'Type something...',
         }),
         Image,
         SpaceNode,
@@ -125,6 +126,8 @@ export const MDXMinimalTextEditor = ({
       autofocus: true,
       onUpdate: ({ editor }) => {
         const text = editor.getText()
+        const html = editor.getHTML()
+        editorContentRef && (editorContentRef.current = html)
         handleInputChange(text)
       },
     },

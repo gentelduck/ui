@@ -307,6 +307,9 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
     // Get the current selection
     const { from, to } = state.selection
 
+    console.log('hi')
+    console.log(from, to)
+
     // Create a transaction to replace the selection with the emoji
     tr.replaceRangeWith(
       from,

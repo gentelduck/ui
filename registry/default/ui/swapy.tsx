@@ -45,7 +45,6 @@ interface Link {
 export interface CommentType {
   id: string
   content: string
-  authorId: string
   createdAt: string
   user: TaggedUserType
   likes: LikedType
@@ -57,7 +56,7 @@ export interface LikedType {
 }
 
 // Type for a Tagged User
-interface TaggedUserType {
+export interface TaggedUserType {
   id: string
   name?: string
   avatarUrl?: string

@@ -1,6 +1,7 @@
 'use client'
 import { cn } from '@/lib'
 import { IoIosHeart, IoMdHeartEmpty } from 'react-icons/io'
+import { uuidv7 } from 'uuidv7'
 import data from '@emoji-mart/data'
 import { init, SearchIndex } from 'emoji-mart'
 import Picker from '@emoji-mart/react'
@@ -26,6 +27,7 @@ import {
   Textarea,
   ScrollArea,
   MDXMinimalTextEditor,
+  TaggedUserType,
 } from '../ui'
 import {
   ArrowBigUp,
@@ -45,6 +47,22 @@ import { differenceInDays, format, formatDistanceToNow } from 'date-fns'
 import { HeartFilledIcon } from '@radix-ui/react-icons'
 import { z } from 'zod'
 import localFont from 'next/font/local'
+import { ChatBottom, CommentTest } from '../ui/comment'
+
+export const users: TaggedUserType[] = [
+  {
+    id: 'user-1',
+    name: 'stephany davis',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1598550880863-4e8aa3d0edb4?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  },
+  {
+    id: 'user-2',
+    name: 'wildduck',
+    avatarUrl:
+      'https://media.licdn.com/dms/image/v2/D4D03AQGLX-Gb_qm3Rw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1725258661460?e=2147483647&v=beta&t=sajP4AdQ68WfKRPPirMnLXbn4J1oIOSDBfGnuwqZ6SQ',
+  },
+]
 
 export const initData: InitDataType = {
   tasks: {
@@ -153,12 +171,7 @@ export const initData: InitDataType = {
       comments: [
         {
           id: 'comment-1',
-          user: {
-            id: 'user-1',
-            name: 'stephany davis',
-            avatarUrl:
-              'https://images.unsplash.com/photo-1598550880863-4e8aa3d0edb4?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-          },
+          user: users[0],
           content: 'BTW Ahemd, you have to finished this task today! we are on a deadline. 💀',
           createdAt: '2021-01-01T00:00:00.000Z',
           likes: {
@@ -168,12 +181,7 @@ export const initData: InitDataType = {
         },
         {
           id: 'comment-2',
-          user: {
-            id: 'user-2',
-            name: 'wildduck',
-            avatarUrl:
-              'https://media.licdn.com/dms/image/v2/D4D03AQGLX-Gb_qm3Rw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1725258661460?e=2147483647&v=beta&t=sajP4AdQ68WfKRPPirMnLXbn4J1oIOSDBfGnuwqZ6SQ',
-          },
+          user: users[1],
           content:
             'Okay Lol. I am going to finish this task. not today. 😎, and I use arch, vim and Rust BTW, forgot to mention Elixir...girl.',
           createdAt: '2021-01-01T00:00:00.000Z',
@@ -183,26 +191,7 @@ export const initData: InitDataType = {
           },
         },
       ],
-      taggedUsers: [
-        {
-          id: 'user-1',
-          name: 'John Doe',
-          avatarUrl:
-            'https://images.unsplash.com/photo-1598550880863-4e8aa3d0edb4?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        },
-        {
-          id: 'user-2',
-          name: 'Jane Doe',
-          avatarUrl:
-            'https://images.unsplash.com/photo-1723200166097-4eed8c141f03?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        },
-        {
-          id: 'user-3',
-          name: 'John Smith',
-          avatarUrl:
-            'https://images.unsplash.com/photo-1659857279356-0a8d7d23b653?q=80&w=2126&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        },
-      ],
+      taggedUsers: users,
       labels: [
         {
           id: 'label-1',
@@ -426,7 +415,7 @@ export const KanbanColumnRowTemplate: React.FC<KanbanColumnRowComponentArgs> = (
             variant={'ghost'}
             size={'icon'}
             icon={{
-              icon: Paperclip,
+              children: Paperclip,
             }}
             label={{
               children: 'Attachment',
@@ -447,6 +436,8 @@ export interface CommentsLayoutProps {
 }
 
 export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
+  const [commentsArr, setCommentsArr] = React.useState<CommentType[]>(comments || [])
+  const editorContentRef = React.useRef<string>('')
   return (
     <PopoverWrapper
       wrapper={{
@@ -460,7 +451,7 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
             variant={'ghost'}
             size={'icon'}
             icon={{
-              icon: MessageSquare,
+              children: MessageSquare,
             }}
             label={{
               children: 'Comments',
@@ -484,14 +475,13 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
               </PopoverClose>
             </div>
 
-            <div className="flex flex-col gap-2 p-4">
-              {comments.map(comment => (
-                <Comment
-                  key={comment.id}
-                  comment={comment}
-                />
-              ))}
-            </div>
+            {
+              <CommentTest
+                comments={commentsArr}
+                user={users[1]}
+              />
+            }
+
             <div className="flex items-center justify-between py-2 px-4 bg-secondary/30 gap-2">
               <div className="flex items-center gap-2">
                 <AvatarCustom
@@ -508,29 +498,16 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
               <div className="relative w-full">
                 <MDXMinimalTextEditor
                   className={cn('w-full font-medium h-42')}
+                  editorContentRef={editorContentRef}
                   name="comment"
                   valid={true}
                 />
               </div>
-
-              <div className="flex items-center justify-center gap-2">
-                <Button
-                  size={'icon'}
-                  variant={'outline'}
-                  className="rounded-full h-8 w-8 bg-secondary/20"
-                  icon={{
-                    children: Plus,
-                  }}
-                />
-                <Button
-                  size={'icon'}
-                  variant={'outline'}
-                  className="rounded-full h-8 w-8 bg-secondary/20"
-                  icon={{
-                    children: ArrowBigUp,
-                  }}
-                />
-              </div>
+              <ChatBottom
+                editorContentRef={editorContentRef}
+                comments={commentsArr}
+                setComments={setCommentsArr}
+              />
             </div>
           </div>
         ),
@@ -538,63 +515,6 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
     />
   )
 }
-
-export interface CommentProps extends React.HTMLProps<HTMLDivElement> {
-  comment: CommentType
-}
-
-export const Comment: React.FC<CommentProps> = ({ comment, className, ...props }) => {
-  const commentDate = new Date(comment.createdAt!)
-  const daysDifference = differenceInDays(new Date(), commentDate)
-
-  return (
-    <div
-      className={cn(
-        'flex items-start justify-start gap-2 bg-secondary/40 p-4 rounded-md hover:bg-secondary/70',
-        className
-      )}
-      {...props}
-    >
-      <AvatarCustom
-        className="w-8 h-8"
-        avatar_image={{
-          // ...comment.user,
-          src: comment.user.avatarUrl,
-        }}
-        fallback={{
-          className: 'w-8 h-8',
-        }}
-      />
-      <div className="flex flex-col items-start justify-start gap-2 w-full">
-        <div className="flex items-center justify-start w-full gap-2">
-          <div className="flex items-center justify-start w-full gap-2">
-            <p className="text-sm font-medium">{comment.user.name}</p>
-            <p className="text-sm text-muted-foreground">
-              {daysDifference > 1 ? format(commentDate, 'PP') : formatDistanceToNow(commentDate, { addSuffix: true })}
-            </p>
-          </div>
-          <div className="flex items-center justify-center gap-2">
-            <LikeButton likes={comment.likes} />
-            <Separator
-              orientation="vertical"
-              className="h-4 bg-muted-foreground/80"
-            />
-            <ReplyButton />
-          </div>
-        </div>
-        <p className={cn('text-sm', EmojiFont.className)}>{comment.content}</p>
-        {
-          // FIX: idk what the fuck to fix but it's a red line to break the code <3
-          // TODO: you have to make some magic here :D
-        }
-        <div className=""></div>
-      </div>
-    </div>
-  )
-}
-
-// Font files can be colocated inside of `pages`
-const EmojiFont = localFont({ src: '../../../assets/fonts/font.ttf' })
 
 export interface LikeButtonProps extends React.HTMLProps<HTMLDivElement> {
   likes: LikedType
