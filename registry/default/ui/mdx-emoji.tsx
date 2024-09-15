@@ -5,6 +5,7 @@ import { init, SearchIndex } from 'emoji-mart'
 import data from '@emoji-mart/data'
 import { cn } from '@/lib'
 import localFont from 'next/font/local'
+import { TextSelection } from '@tiptap/pm/state'
 
 type SearchEmojiArgs = {
   value: string
@@ -156,8 +157,8 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
     return {
       Enter: async ({ editor }) => {
         const { state, view } = editor
-        const { $from, $to } = state.selection
-
+        const { schema, selection } = state
+        const { $from } = selection
         const cursorPos = $from.pos
 
         // Extract the text before the cursor position
@@ -191,14 +192,21 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
                 const tr = state.tr.replaceRangeWith(
                   shortcodeStart,
                   shortcodeEnd,
-                  this.type.create({
+                  schema.nodes.emoji.create({
                     emoji: emoji,
                     shortcode: emojiShortcode,
                   })
                 )
 
-                // Dispatch the transaction to update the editor state
+                // Apply the transaction
                 view.dispatch(tr)
+
+                // Move the cursor to the end of the emoji node
+                const newPos = tr.mapping.map(cursorPos)
+                view.dispatch(view.state.tr.setSelection(TextSelection.create(view.state.doc, newPos)))
+
+                // Scroll to the new position
+                view.someProp('handleScrollToSelection', f => f(view))
 
                 return true // Action completed successfully
               }
@@ -206,7 +214,21 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
           }
         }
 
-        return false // Default behavior if conditions are not met
+        // Default behavior: insert a new paragraph and move the cursor to it
+        const paragraph = schema.nodes.paragraph.create()
+        const tr = state.tr.insert($from.pos, paragraph)
+
+        // Apply the transaction
+        view.dispatch(tr)
+
+        // Move the cursor to the end of the newly created paragraph
+        const newPos = $from.pos + paragraph.nodeSize
+        view.dispatch(view.state.tr.setSelection(TextSelection.create(view.state.doc, newPos)))
+
+        // Scroll to the new position
+        view.someProp('handleScrollToSelection', f => f(view))
+
+        return true // Return true to indicate that the Enter key action has been handled
       },
       Backspace: ({ editor }) => {
         const { state, view } = editor

@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 
-import { BubbleMenu, Editor, EditorContent, useEditor } from '@tiptap/react'
+import { EditorContent, useEditor } from '@tiptap/react'
 import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
@@ -19,35 +19,13 @@ import data from '@emoji-mart/data'
 import { useDebounceCallback } from '@/hooks'
 import { cn } from '@/lib'
 import { ScrollArea } from './scroll-area'
-import {
-  NotionEditoerAlignPicker,
-  NotionEditorButtonPickerWrapper,
-  NotionEditorColorPicker,
-  NotionEditorHeadingPickerWrapper,
-  NotionEditorLinkManager,
-  NotionMinimalTextEditorToolbarPick,
-  ToggleToolTipButtonWrapper,
-  ToolBarToggleButtons,
-} from './Notion'
-import { highlightButtons, useTextmenuCommands, useTextmenuContentTypes, useTextmenuStates } from './Notion/mdx-editor'
-import { AlignRight, Check, CircleOff, Highlighter, LucideProps } from 'lucide-react'
-import { Button } from './button'
 import { EmojiFont, EmojiReplacer } from './mdx-emoji'
-
 import { init, SearchIndex } from 'emoji-mart'
 import { SpaceNode } from './space-node'
 import { z } from 'zod'
-import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
 import { Separator } from './ShadcnUI'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandListGroup,
-} from './command'
+import { Command, CommandGroup, CommandItem, CommandList } from './command'
+import { NotionMinimalTextEditorToolbar } from './mdx-toolbar'
 
 const emojiShortcodeSchema = z
   .string()
@@ -155,9 +133,6 @@ export const MDXMinimalTextEditor = ({
       autofocus: true,
       onUpdate: ({ editor }) => {
         const text = editor.getText()
-        // console.log(editor.getText())
-        // onChangeText(editor.getText())
-        // editorContentRef && (editorContentRef.current = html)
         handleInputChange(text)
       },
     },
@@ -203,119 +178,53 @@ export const MDXMinimalTextEditor = ({
   }
 
   return (
-    <ScrollArea
-      className={cn(
-        'mdx__minimal__text__editor max-h-[4.5rem] max-w-[13rem] rounded-sm text-[0.7rem] py-[5px] px-2 overflow-y-scroll',
-        valid && 'disabled'
-      )}
-    >
-      {data?.data.length > 0 && (
-        <Command className="fixed bottom-[50px] left-0 right-0 w-[221px] h-auto">
-          <div className="text-sm font-medium px-3 pt-2 pb-1">
-            EMOJI MATCHING <span className="text-sky-500">:{data.q}</span>
-          </div>
-          <Separator />
-          <CommandList>
-            <CommandGroup>
-              {data?.data.map(emoji => (
-                <CommandItem
-                  key={emoji.id}
-                  value={emoji.skins[0].native}
-                  onSelect={_ => {
-                    handleEmojiClick(emoji)
-                  }}
-                  className="flex items-center justify-start gap-1"
-                >
-                  <span className={cn('text-xl', EmojiFont.className)}>{emoji.skins[0].native}</span>
-                  <span className="text-muted-foreground">{emoji.skins[0].shortcodes}</span>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      )}
-
-      <EditorContent editor={editor} />
-    </ScrollArea>
-  )
-}
-
-export type NotionMinimalTextEditorToolbarProps = {
-  editor: Editor
-}
-
-export type NotionMinimalTextEditorToolbarHighlightType = {
-  activeItem: string
-  currentHighlight: boolean
-  tip: string
-  commands: ReturnType<typeof useTextmenuCommands>
-}
-
-export const NotionMinimalTextEditorToolbarHighlight = ({
-  currentHighlight,
-  activeItem,
-  tip,
-  commands,
-}: NotionMinimalTextEditorToolbarHighlightType) => {
-  return (
     <>
-      <NotionMinimalTextEditorToolbarPick
-        trigger={
-          <ToggleToolTipButtonWrapper
-            tip={tip}
-            value={currentHighlight}
-            children={<Highlighter />}
-          />
-        }
-        content={
-          <div className="notion__minimal__text__editor__toolbar__pick__content__highlight">
-            <NotionEditorButtonPickerWrapper
-              description="Highlight"
-              title="Highlight"
-              onClick={commands.onChangeHighlight}
-              trigger={<ColorWeelIcon className="opacity-60" />}
-            />
+      <NotionMinimalTextEditorToolbar editor={editor} />
+      <ScrollArea
+        className={cn(
+          'mdx__minimal__text__editor max-h-[4.5rem] max-w-[13rem] rounded-sm text-[0.7rem] py-[5px] px-2 verflow-y-scroll overflow-visible',
+          valid && 'disabled'
+        )}
+      >
+        {data?.data.length > 0 && (
+          <Command className="fixed bottom-[50px] left-0 right-0 w-[221px] h-auto">
+            <div className="text-sm font-medium px-3 pt-2 pb-1">
+              EMOJI MATCHING <span className="text-sky-500">:{data.q}</span>
+            </div>
+            <Separator />
+            <CommandList>
+              <CommandGroup>
+                {data?.data.map(emoji => (
+                  <CommandItem
+                    key={emoji.id}
+                    value={emoji.skins[0].native}
+                    onSelect={_ => {
+                      handleEmojiClick(emoji)
+                    }}
+                    className="flex items-center justify-start gap-1"
+                  >
+                    <span className={cn('text-xl', EmojiFont.className)}>{emoji.skins[0].native}</span>
+                    <span className="text-muted-foreground">{emoji.skins[0].shortcodes}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        )}
 
-            {highlightButtons.map((item, idx) => (
-              <Button
-                key={idx}
-                variant="ghost"
-                className={cn(
-                  'notion__minimal__text__editor__toolbar__pick__content__button',
-                  item.label === activeItem && 'active'
-                )}
-                onClick={() => commands.onChangeHighlight(item.color)}
-              >
-                <span className={cn('border border-solid', item.style)} />
-              </Button>
-            ))}
-            <Separator
-              orientation="vertical"
-              className="h-[26px]"
-            />
-            <Button
-              variant="ghost"
-              className={cn('notion__minimal__text__editor__toolbar__pick__content__button')}
-              onClick={() => commands.onClearHighlight()}
-            >
-              <CircleOff className="opacity-60" />
-            </Button>
-          </div>
-        }
-      />
+        <EditorContent editor={editor} />
+      </ScrollArea>
     </>
   )
 }
 
-export const ColorWeelIcon = (args: LucideProps) => (
+export const ColorWeelIcon = ({ className }: { className: string }) => (
   <svg
-    width="202"
-    height="202"
     viewBox="0 0 202 202"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
-    {...args}
+    className={cn('!stroke-none', className)}
   >
     <rect
       width="202"
@@ -343,85 +252,3 @@ export const ColorWeelIcon = (args: LucideProps) => (
     </defs>
   </svg>
 )
-
-//NOTE: We memorize the button so each button is not rerendered
-// on every editor state change
-const ToolBarToggleButtonsMemo = React.memo(ToolBarToggleButtons)
-const MDXEditorHeadingPickerMemo = React.memo(NotionEditorHeadingPickerWrapper)
-const MDXMinimalTextEditorToolbarHighlightMemo = React.memo(NotionMinimalTextEditorToolbarHighlight)
-const MDXEditorColorPickerMemo = React.memo(NotionEditorColorPicker)
-const MDXEditorLinkManagerMemo = React.memo(NotionEditorLinkManager)
-const MDXEditoerAlignPickerMemo = React.memo(NotionEditoerAlignPicker)
-
-export const NotionMinimalTextEditorToolbar = ({ editor }: NotionMinimalTextEditorToolbarProps) => {
-  const commands = useTextmenuCommands(editor)
-  const states = useTextmenuStates(editor)
-  const blockOptions = useTextmenuContentTypes(editor)
-
-  const activeItem = React.useMemo(
-    () => blockOptions.find(option => option.type === 'option' && option.isActive()),
-    [blockOptions]
-  )
-
-  //
-  return (
-    <BubbleMenu
-      editor={editor}
-      tippyOptions={{ duration: 100 }}
-      className="bubble__menu"
-    >
-      {
-        // <MemoContentTypePicker options={blockOptions} />
-        // <MemoFontFamilyPicker
-        //   onChange={commands.onSetFont}
-        //   value={states.currentFont || ''}
-        // />
-        // <MemoFontSizePicker
-        //   onChange={commands.onSetFontSize}
-        //   value={states.currentSize || ''}
-        // />
-      }
-      <div className="bubble__menu__wrapper">
-        <MDXEditoerAlignPickerMemo
-          tip="Align"
-          commands={commands}
-          states={states}
-        />
-        <MDXEditorHeadingPickerMemo
-          trigger={<AlignRight />}
-          activeItem={activeItem?.label || ''}
-          commands={commands}
-        />
-        <Separator
-          orientation="vertical"
-          className="h-[26px]"
-        />
-        <ToolBarToggleButtonsMemo
-          commands={commands}
-          states={states}
-        />
-        <Separator
-          orientation="vertical"
-          className="h-[26px]"
-        />
-        <MDXEditorLinkManagerMemo
-          editor={editor}
-          commands={commands}
-          states={states}
-        />
-        <MDXMinimalTextEditorToolbarHighlightMemo
-          tip="Highlight"
-          currentHighlight={states.currentHighlight}
-          commands={commands}
-          activeItem={activeItem?.label}
-        />
-        <MDXEditorColorPickerMemo
-          tip="Color"
-          currentColor={states.currentColor}
-          commands={commands}
-          activeItem={activeItem?.label}
-        />
-      </div>
-    </BubbleMenu>
-  )
-}

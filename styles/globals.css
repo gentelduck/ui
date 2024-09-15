@@ -263,3 +263,36 @@
 section#id {
     background: red;
 }
+
+/* NOTE: minimal editor */
+@layer components {
+    .editor_button {
+        @apply grid items-center justify-center text-[.77rem] gap-[.2rem] text-start !p-0 whitespace-nowrap !w-[1.85rem] !h-[1.85rem] place-content-center;
+
+        svg {
+            @apply w-[1.1rem] h-[1.1rem] transition-all ease-in-out;
+        }
+
+        &:hover {
+            button {
+                @apply border-foreground/60;
+            }
+
+            svg {
+                @apply stroke-foreground/60;
+            }
+        }
+
+        &.disabled svg {
+            @apply stroke-current;
+        }
+
+        &.active {
+            @apply bg-foreground/10;
+
+            svg {
+                @apply stroke-current;
+            }
+        }
+    }
+}

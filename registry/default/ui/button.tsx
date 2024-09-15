@@ -13,7 +13,8 @@ import { Loader, LucideIcon } from 'lucide-react'
 import { IconProps } from '@radix-ui/react-icons/dist/types'
 import { useDuckShortcut } from '@ahmedayob/duck-shortcut'
 
-export type IconType = { icon: LucideIcon } & IconProps & React.RefAttributes<SVGSVGElement>
+export type IconType = { children: LucideIcon } & Omit<IconProps, 'children'> &
+  Omit<React.RefAttributes<SVGSVGElement>, 'children'>
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
@@ -99,8 +100,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ...labelProps
     } = label || {}
     const Component = asChild ? Slot : 'button'
-    const { icon: Icon, className: iconClassName, ...iconProps } = icon ?? {}
-    const { icon: SecondIcon, className: secondIconClassName, ...secondIconProps } = secondIcon ?? {}
+    const { children: Icon, className: iconClassName, ...iconProps } = icon ?? {}
+    const { children: SecondIcon, className: secondIconClassName, ...secondIconProps } = secondIcon ?? {}
 
     const fn = () => console.log('NOTE: handling command shortcut without action')
     //NOTE: handling command shortcut
