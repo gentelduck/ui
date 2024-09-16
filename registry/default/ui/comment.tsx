@@ -8,15 +8,18 @@ import { Separator } from './ShadcnUI'
 import localFont from 'next/font/local'
 import { ScrollArea } from './scroll-area'
 import { Button } from './button'
-import { ArrowBigUp, Plus } from 'lucide-react'
+import { ArrowBigUp, Bug, Ellipsis, Pencil, Plus, Share2, Star, Trash2, Twitch, Twitter } from 'lucide-react'
 import { uuidv7 } from 'uuidv7'
+import { DropdownMenuOptionsDataType, DropdownMenuView } from './dropdown-menu'
 
 export const CommentTest = ({
   comments,
   user,
   setEditorFocus,
+  setComments,
 }: {
   setEditorFocus?: React.Dispatch<React.SetStateAction<boolean>>
+  setComments: React.Dispatch<React.SetStateAction<CommentType[]>>
   comments: CommentType[]
   user: TaggedUserType
 }) => {
@@ -28,7 +31,7 @@ export const CommentTest = ({
 
   return (
     <ScrollArea className={cn('h-80 p-4 pb-0', comments.length > 2 && 'grid place-content-end')}>
-      <div className="flex flex-col justify-end gap-2 ">
+      <div className="flex flex-col justify-end">
         {comments.map((comment, idx) => {
           const mine = user.id == comment.user.id
           return (
@@ -39,6 +42,7 @@ export const CommentTest = ({
               setEditorFocus={setEditorFocus}
               comment={comment}
               showNestedShapes={comments.length === idx + 1 ? false : true}
+              setComments={setComments}
             />
           )
         })}
@@ -56,11 +60,13 @@ export interface CommentProps extends React.HTMLProps<HTMLDivElement> {
   mine: boolean
   comment: CommentType
   setEditorFocus?: React.Dispatch<React.SetStateAction<boolean>>
+  setComments: React.Dispatch<React.SetStateAction<CommentType[]>>
   showNestedShapes?: boolean
 }
 
 export const Comment: React.FC<CommentProps> = ({
   setEditorFocus,
+  setComments,
   showNestedShapes,
   mine,
   comment,
@@ -70,61 +76,117 @@ export const Comment: React.FC<CommentProps> = ({
   const commentDate = new Date(comment.createdAt!)
   const daysDifference = differenceInDays(new Date(), commentDate)
   const hoursDifference = differenceInHours(new Date(), commentDate)
-  // items-start justify-start gap-2 bg-secondary/40 p-4 py-o rounded-md hover:bg-secondary/70'
+
   return (
-    <div
-      className={cn('flex ', className)}
-      {...props}
-    >
-      <div className="flex flex-col flex-shrink-0 basis-[40px] flex-grow-0 items-center mr-2">
-        <AvatarCustom
-          className="w-8 h-8"
-          hover_card={comment.user}
-          avatar_image={{
-            src: comment.user.avatarUrl,
-          }}
-          fallback={{
-            className: 'w-8 h-8',
-          }}
-        />
-        {showNestedShapes && (
-          <div className="w-[2px] h0 bg-red-500 flex-grow border-border border flex basis-auto flex-col items-stretch mt-1"></div>
-        )}
-      </div>
-      <div className="flex flex-col items-start justify-start w-full">
-        <div className="flex items-center justify-start w-full gap-2 mb-2">
-          <div className="flex items-center justify-start w-full gap-2">
-            <p className="text-sm font-medium">{comment.user.name}</p>
-            <p className="text-sm text-muted-foreground">
-              {daysDifference > 1
-                ? format(commentDate, 'PP')
-                : hoursDifference > 1
-                  ? format(commentDate, 'p')
-                  : formatDistance(commentDate, new Date(), { addSuffix: false, includeSeconds: true })}
-            </p>
-          </div>
-          <LikeButton
-            likes={comment.likes}
-            user={comment.user}
+    <>
+      <div
+        className={cn('flex mt-1', className)}
+        {...props}
+      >
+        <div
+          className={cn(
+            'flex flex-col flex-shrink-0 basis-[40px] flex-grow-0 items-center mr-2',
+            !showNestedShapes && '-mt-4'
+          )}
+        >
+          {!showNestedShapes && (
+            <div className="w-[2px] max-h-2 bg-border flex-grow border-border border flex basis-auto flex-col items-stretch my-1"></div>
+          )}
+          <AvatarCustom
+            className="w-8 h-8"
+            hover_card={comment.user}
+            avatar_image={{
+              src: comment.user.avatarUrl,
+            }}
+            fallback={{
+              className: 'w-8 h-8',
+            }}
           />
+          {showNestedShapes && (
+            <div className="w-[2px] bg-border flex-grow border-border border flex basis-auto flex-col items-stretch mt-1"></div>
+          )}
         </div>
-        <p
-          className={cn('text-sm')}
-          dangerouslySetInnerHTML={{ __html: comment.content }}
-        ></p>
-        <div className="flex items-center justify-center gap-2">
-          <Button
-            size={'sm'}
-            variant={'ghost'}
-            className="h-7 w-14 mt-2 text-foreground/70 text-xs"
-            onClick={() => setEditorFocus && setEditorFocus(prev => !prev)}
-          >
-            Reply
-          </Button>
+        <div className="flex flex-col items-start justify-start w-full">
+          <div className="flex items-center justify-start w-full gap-2 mb-2">
+            <div className="flex items-center justify-start w-full gap-2">
+              <p className="text-sm font-medium">{comment.user.name}</p>
+              <p className="text-sm text-muted-foreground">
+                {daysDifference > 1
+                  ? format(commentDate, 'PP')
+                  : hoursDifference > 1
+                    ? format(commentDate, 'p')
+                    : formatDistance(commentDate, new Date(), { addSuffix: false, includeSeconds: true })}
+              </p>
+            </div>
+            <LikeButton
+              likes={comment.likes}
+              user={comment.user}
+            />
+          </div>
+          <p
+            className={cn('text-sm')}
+            dangerouslySetInnerHTML={{ __html: comment.content }}
+          ></p>
+          <div className="flex items-center justify-center gap-2  mt-1 mb-2">
+            <Button
+              size={'sm'}
+              variant={'ghost'}
+              className="h-7 w-14 text-foreground/70 text-xs"
+              onClick={() => setEditorFocus && setEditorFocus(prev => !prev)}
+            >
+              Reply
+            </Button>
+
+            <DropdownMenuView
+              trigger={{
+                icon: { children: Ellipsis, className: 'h-4 w-4 rounded' },
+                variant: 'ghost',
+                size: 'icon',
+                className: 'h-4 w-6',
+              }}
+              content={{
+                options: {
+                  itemType: 'label',
+                  optionsData: optionsData({ setComments, currentComment: comment }),
+                },
+              }}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
+}
+
+const optionsData = ({
+  setComments,
+  currentComment,
+}: {
+  setComments: React.Dispatch<React.SetStateAction<CommentType[]>>
+  currentComment: CommentType
+}) => {
+  return [
+    {
+      children: 'Edit',
+      onClick: () => console.log('edit'),
+      icon: { children: Pencil },
+    },
+    {
+      children: 'Report',
+      icon: {
+        children: Bug,
+      },
+    },
+    {
+      children: 'Delete',
+      command: { label: '⌘⌫', key: 'a' },
+      icon: {
+        children: Trash2,
+      },
+      className: '[&_span]:text-red-500 text-red-500 [&_span]:hover:text-primary',
+      onClick: () => setComments(prev => prev.filter(c => c.id !== currentComment.id)),
+    },
+  ] as DropdownMenuOptionsDataType<string, true>[]
 }
 
 export const ChatBottom = ({

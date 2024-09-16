@@ -30,7 +30,7 @@ const MentionTooltip = ({ node }: any) => {
 
   return (
     <NodeViewWrapper className="inline-flex">
-      <span className="font-medium bg-foreground/10 px-1 rounded text-sm hover:bg-foreground/20 transition cursor-pointer text-primary/60">
+      <span className="font-medium bg-foreground/10 px-1 rounded text-sm hover:bg-foreground/20 transition cursor-pointer text-primary/80">
         @{label}
       </span>
     </NodeViewWrapper>
@@ -361,9 +361,9 @@ export const CustomSuggestion = {
       onUpdate(props) {
         component.updateProps({
           ...props,
-          customClass: 'mention-list-updated', // Updated class if needed
+          customClass: '', // Updated class if needed
           renderItem: item => (
-            <div className="mention-updated">
+            <div className="">
               <span>{item}</span>
             </div>
           ),

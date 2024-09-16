@@ -439,7 +439,6 @@ export interface CommentsLayoutProps {
 export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
   const [commentsArr, setCommentsArr] = React.useState<CommentType[]>(comments || [])
   const editorContentRef = React.useRef<string>('')
-  const [editorContent, setEditorContent] = React.useState<string>('')
   const [editorFocus, setEditorFocus] = React.useState<boolean>(false)
   return (
     <PopoverWrapper
@@ -482,6 +481,7 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
               <CommentTest
                 comments={commentsArr}
                 setEditorFocus={setEditorFocus}
+                setComments={setCommentsArr}
                 user={users[1]}
               />
             }
@@ -497,31 +497,58 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
                     className: 'w-8 h-8 bg-secondary/20',
                   }}
                 />
-              </div>
-
-              <div className="relative w-full">
-                <MDXMinimalTextEditor
-                  className={cn('w-full font-medium h-42')}
+                <CommentsLeft
                   editorContentRef={editorContentRef}
-                  setEditorContent={setEditorContent}
+                  commentsArr={commentsArr}
                   editorFocus={editorFocus}
-                  content={editorContent}
-                  name="comment"
-                  valid={true}
+                  setEditorFocus={setEditorFocus}
+                  setCommentsArr={setCommentsArr}
                 />
               </div>
-              <ChatBottom
-                editorContentRef={editorContentRef}
-                setEditorContent={setEditorContent}
-                setEditorFocus={setEditorFocus}
-                comments={commentsArr}
-                setComments={setCommentsArr}
-              />
             </div>
           </div>
         ),
       }}
     />
+  )
+}
+
+const CommentsLeft = ({
+  editorContentRef,
+  commentsArr,
+  editorFocus,
+  setEditorFocus,
+  setCommentsArr,
+}: {
+  editorContentRef: React.MutableRefObject<string>
+  commentsArr: CommentType[]
+  editorFocus: boolean
+  setEditorContent?: React.Dispatch<React.SetStateAction<string>>
+  setEditorFocus?: React.Dispatch<React.SetStateAction<boolean>>
+  setCommentsArr?: React.Dispatch<React.SetStateAction<CommentType[]>>
+}) => {
+  const [editorContent, setEditorContent] = React.useState<string>('')
+  return (
+    <>
+      <div className="relative w-full">
+        <MDXMinimalTextEditor
+          className={cn('w-full font-medium h-42')}
+          editorContentRef={editorContentRef}
+          setEditorContent={setEditorContent}
+          editorFocus={editorFocus}
+          content={editorContent}
+          name="comment"
+          valid={true}
+        />
+      </div>
+      <ChatBottom
+        editorContentRef={editorContentRef}
+        setEditorContent={setEditorContent}
+        setEditorFocus={setEditorFocus}
+        comments={commentsArr}
+        setComments={setCommentsArr}
+      />
+    </>
   )
 }
 
@@ -567,6 +594,7 @@ export const LikeButton: React.FC<LikeButtonProps> = ({ user, likes, className, 
         onClick={handleLikeToggle}
         icon={{
           children: (likeState.hasLiked ? IoIosHeart : IoMdHeartEmpty) as LucideIcon, // Display filled or empty heart
+          className: 'text-red-500',
         }}
       >
         <div

@@ -298,11 +298,13 @@ function DropdownMenuView<T>({ content, trigger }: DropdownMenuViewProps<T>) {
                         {children}
                         {item.command && (
                           <>
-                            <DropdownMenuShortcut
-                              children={commandLabel}
-                              {...commandProps}
-                              key={`command-${idx}`}
-                            />
+                            {commandLabel && (
+                              <DropdownMenuShortcut
+                                children={commandLabel}
+                                {...commandProps}
+                                key={`command-${idx}`}
+                              />
+                            )}
                             <Button
                               command={item.command}
                               className="sr-only hidden"
