@@ -8,6 +8,7 @@ import { Button } from './button'
 import { HoverCardCustomView } from './hover-card'
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
 import { CalendarDays } from 'lucide-react'
+import { TaggedUserType } from './swapy'
 
 // ForwardedRef Components
 const Avatar = React.forwardRef<
@@ -50,12 +51,12 @@ AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName
 export interface AvatarCustomProps extends React.ComponentPropsWithoutRef<typeof Avatar> {
   avatar_image: React.ComponentPropsWithoutRef<typeof AvatarImage>
   fallback?: React.ComponentPropsWithoutRef<typeof AvatarFallback>
-  hover_card?: boolean
+  hover_card?: TaggedUserType
   profile_button?: boolean
 }
 
 const AvatarCustom = React.forwardRef<HTMLSpanElement, AvatarCustomProps>(
-  ({ avatar_image, fallback, hover_card = true, profile_button, ...props }, ref) => {
+  ({ avatar_image, fallback, hover_card, profile_button, ...props }, ref) => {
     const Trigger = ({ className }: { className?: string }) => (
       <Avatar
         {...props}
@@ -83,7 +84,7 @@ const AvatarCustom = React.forwardRef<HTMLSpanElement, AvatarCustomProps>(
                 <div className="flex items-start gap-4">
                   <Trigger className="w-12 h-12 m-0 border-none" />
                   <div className="space-y-1">
-                    <h4 className="text-sm font-semibold">@{avatar_image.alt}</h4>
+                    <h4 className="text-sm font-semibold">@{hover_card.name}</h4>
                     <p className="text-sm">I'am a UI/UX Designer from Canada.</p>
                     <div className="flex items-center pt-2">
                       <CalendarDays className="mr-2 h-4 w-4 opacity-70" />
@@ -96,7 +97,9 @@ const AvatarCustom = React.forwardRef<HTMLSpanElement, AvatarCustomProps>(
           ),
         }}
       />
-    ) : null
+    ) : (
+      <Trigger />
+    )
   }
 )
 

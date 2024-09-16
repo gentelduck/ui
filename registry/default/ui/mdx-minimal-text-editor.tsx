@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 
-import { Editor, EditorContent, useEditor } from '@tiptap/react'
+import { Editor, EditorContent, mergeAttributes, useEditor } from '@tiptap/react'
 import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
@@ -13,7 +13,9 @@ import { Color } from '@tiptap/extension-color'
 import Image from '@tiptap/extension-image'
 import TextStyle from '@tiptap/extension-text-style'
 import StarterKit from '@tiptap/starter-kit'
+// import Mention from '@tiptap/extension-mention'
 // import Ai from '@tiptap-pro/extension-ai'
+import { Mention, CustomSuggestion } from './mdx-mention'
 
 import data from '@emoji-mart/data'
 import { useDebounceCallback } from '@/hooks'
@@ -117,8 +119,41 @@ export const MDXMinimalTextEditor = ({
           shouldUseExtraLookupSpace: false,
           shouldUseExtraReplacementSpace: false,
         }),
+        Mention.configure({
+          HTMLAttributes: {
+            class: 'mention',
+          },
+          suggestion: {
+            ...CustomSuggestion,
+            items: ({ query }) => {
+              return [
+                'duckasdf asdf',
+                'Lea Thompson',
+                'Cory House',
+                'Marisa Solace',
+                'Huck Finn',
+                'Bugs Bunny',
+                'LeBron James',
+                'Kobe Bryant',
+                'Michael Jordan',
+                'Cyndi Lauper',
+                'Tom Cruise',
+                'Madonna',
+                // more items...
+              ]
+                .filter(item => item.toLowerCase().startsWith(query.toLowerCase()))
+                .slice(0, 5)
+            },
+          },
+        }),
       ],
-      content,
+      content: `
+    <p>Hi everyone! Don’t forget the daily stand up at 8 AM.</p>
+        <p><span data-type="mention" data-id="Jennifer Grey"></span> Would you mind to share what you’ve been working on lately? We fear not much happened since Dirty Dancing.
+        <p><span data-type="mention" data-id="Winona Ryder"></span> <span data-type="mention" data-id="Axl Rose"></span> Let’s go through your most important points quickly.</p>
+        <p>I have a meeting with <span data-type="mention" data-id="Christina Applegate"></span> and don’t want to come late.</p>
+        <p>– Thanks, your big boss</p>
+`,
       editorProps: {
         attributes: {
           autocomplete: 'on',
@@ -138,7 +173,6 @@ export const MDXMinimalTextEditor = ({
   React.useEffect(() => {
     if (editor && content === '') {
       editor.commands.clearContent()
-      // editor.commands.setContent(content ?? 'Type something...')
     }
   }, [content])
 

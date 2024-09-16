@@ -29,15 +29,16 @@ export const CommentTest = ({
   return (
     <ScrollArea className={cn('h-80 p-4 pb-0', comments.length > 2 && 'grid place-content-end')}>
       <div className="flex flex-col justify-end gap-2 ">
-        {comments.map(comment => {
+        {comments.map((comment, idx) => {
           const mine = user.id == comment.user.id
           return (
             <Comment
               key={comment.id}
               mine={mine}
-              className={cn(mine && 'bg-primary/15')}
+              className={cn(mine && '')}
               setEditorFocus={setEditorFocus}
               comment={comment}
+              showNestedShapes={comments.length === idx + 1 ? false : true}
             />
           )
         })}
@@ -55,35 +56,43 @@ export interface CommentProps extends React.HTMLProps<HTMLDivElement> {
   mine: boolean
   comment: CommentType
   setEditorFocus?: React.Dispatch<React.SetStateAction<boolean>>
+  showNestedShapes?: boolean
 }
 
-// Font files can be colocated inside of `pages`
-const EmojiFont = localFont({ src: '../../../assets/fonts/font.ttf' })
-export const Comment: React.FC<CommentProps> = ({ setEditorFocus, mine, comment, className, ...props }) => {
+export const Comment: React.FC<CommentProps> = ({
+  setEditorFocus,
+  showNestedShapes,
+  mine,
+  comment,
+  className,
+  ...props
+}) => {
   const commentDate = new Date(comment.createdAt!)
   const daysDifference = differenceInDays(new Date(), commentDate)
   const hoursDifference = differenceInHours(new Date(), commentDate)
-
+  // items-start justify-start gap-2 bg-secondary/40 p-4 py-o rounded-md hover:bg-secondary/70'
   return (
     <div
-      className={cn(
-        'flex items-start justify-start gap-2 bg-secondary/40 p-4 py-o rounded-md hover:bg-secondary/70',
-        className
-      )}
+      className={cn('flex ', className)}
       {...props}
     >
-      <AvatarCustom
-        className="w-8 h-8"
-        avatar_image={{
-          // ...comment.user,
-          src: comment.user.avatarUrl,
-        }}
-        fallback={{
-          className: 'w-8 h-8',
-        }}
-      />
+      <div className="flex flex-col flex-shrink-0 basis-[40px] flex-grow-0 items-center mr-2">
+        <AvatarCustom
+          className="w-8 h-8"
+          hover_card={comment.user}
+          avatar_image={{
+            src: comment.user.avatarUrl,
+          }}
+          fallback={{
+            className: 'w-8 h-8',
+          }}
+        />
+        {showNestedShapes && (
+          <div className="w-[2px] h0 bg-red-500 flex-grow border-border border flex basis-auto flex-col items-stretch mt-1"></div>
+        )}
+      </div>
       <div className="flex flex-col items-start justify-start w-full">
-        <div className="flex items-center justify-start w-full gap-2">
+        <div className="flex items-center justify-start w-full gap-2 mb-2">
           <div className="flex items-center justify-start w-full gap-2">
             <p className="text-sm font-medium">{comment.user.name}</p>
             <p className="text-sm text-muted-foreground">
@@ -94,7 +103,10 @@ export const Comment: React.FC<CommentProps> = ({ setEditorFocus, mine, comment,
                   : formatDistance(commentDate, new Date(), { addSuffix: false, includeSeconds: true })}
             </p>
           </div>
-          <LikeButton likes={comment.likes} />
+          <LikeButton
+            likes={comment.likes}
+            user={comment.user}
+          />
         </div>
         <p
           className={cn('text-sm')}

@@ -526,24 +526,60 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
 }
 
 export interface LikeButtonProps extends React.HTMLProps<HTMLDivElement> {
+  user: TaggedUserType
   likes: LikedType
 }
-export const LikeButton: React.FC<LikeButtonProps> = ({ likes, className, ...props }) => {
-  const { users, amount } = likes
-  const [nlikes, setLikes] = React.useState(amount)
+
+export const LikeButton: React.FC<LikeButtonProps> = ({ user, likes, className, ...props }) => {
+  const { amount } = likes
+
+  // Initialize state
+  const [likeState, setLikeState] = React.useState({
+    current: amount, // Current number of likes
+    prev: amount, // Previous number of likes
+    scrollTo: null as 'up' | 'down' | null, // Scroll direction
+    hasLiked: false, // Track if the current user has liked
+  })
+
+  // Toggle like status
+  const handleLikeToggle = () => {
+    setLikeState(prevState => {
+      const newLikes = prevState.hasLiked ? prevState.current - 1 : prevState.current + 1
+      return {
+        ...prevState,
+        prev: prevState.current, // Save the current likes as previous
+        current: newLikes, // Update to the new number of likes
+        scrollTo: prevState.hasLiked ? 'down' : 'up', // Determine scroll direction
+        hasLiked: !prevState.hasLiked, // Toggle the like status
+      }
+    })
+  }
 
   return (
-    <div className={cn('flex items-center justify-center gap-2', className)}>
+    <div
+      className={cn('flex items-center justify-center gap-2', className)}
+      {...props}
+    >
       <Button
-        size={'icon'}
-        variant={'nothing'}
+        size="icon"
+        variant="nothing"
         className="rounded-full h-auto w-auto"
-        onClick={() => setLikes(nlikes + 1)}
+        onClick={handleLikeToggle}
         icon={{
-          children: (nlikes > 0 ? IoIosHeart : IoMdHeartEmpty) as LucideIcon,
+          children: (likeState.hasLiked ? IoIosHeart : IoMdHeartEmpty) as LucideIcon, // Display filled or empty heart
         }}
       >
-        {nlikes}
+        <div
+          key={Math.random()}
+          className={cn(
+            'relative grid place-content-center h-4 overflow-hidden leading-4 transition',
+            likeState.scrollTo
+          )}
+          style={{ width: `${Math.min(48, Math.max(24, String(likeState.current).length * 12))}px` }}
+        >
+          <span className="absolute top-0 left-0">{likeState.current}</span>
+          <span className="absolute top-0 left-0">{likeState.prev}</span>
+        </div>
       </Button>
     </div>
   )

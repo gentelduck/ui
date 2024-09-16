@@ -88,6 +88,7 @@
         "@tiptap/extension-link": "^2.5.7",
         "@tiptap/extension-list-item": "^2.5.7",
         "@tiptap/extension-list-keymap": "^2.5.7",
+        "@tiptap/extension-mention": "^2.6.6",
         "@tiptap/extension-ordered-list": "^2.5.7",
         "@tiptap/extension-paragraph": "^2.5.7",
         "@tiptap/extension-placeholder": "^2.5.7",

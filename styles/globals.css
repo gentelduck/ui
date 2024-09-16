@@ -300,6 +300,64 @@ section#id {
         position: fixed !important;
         inset: auto auto 41px -78px !important;
     }
+
+    @layer components {
+        .up span:first-of-type {
+            animation: up-first 0.3s forwards;
+        }
+
+        .up span:last-of-type {
+            animation: up-last 0.3s forwards;
+        }
+
+        .down span:first-of-type {
+            animation: down-first 0.3s forwards;
+        }
+
+        .down span:last-of-type {
+            animation: down-last 0.3s forwards;
+        }
+    }
+
+    @keyframes down-first {
+        0% {
+            transform: translateY(-100%);
+        }
+
+        100% {
+            transform: translateY(0%);
+        }
+    }
+
+    @keyframes down-last {
+        0% {
+            transform: translateY(0%);
+        }
+
+        100% {
+            transform: translateY(100%);
+        }
+    }
+
+    @keyframes up-first {
+        0% {
+            transform: translateY(100%);
+        }
+
+        100% {
+            transform: translateY(0%);
+        }
+    }
+
+    @keyframes up-last {
+        0% {
+            transform: translateY(0%);
+        }
+
+        100% {
+            transform: translateY(-100%);
+        }
+    }
 }
 
 :root {
