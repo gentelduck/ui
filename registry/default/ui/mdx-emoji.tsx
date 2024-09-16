@@ -17,7 +17,6 @@ async function searchEmoji({ value }: SearchEmojiArgs) {
 
   // Perform the search using SearchIndex
   const searchResults = await SearchIndex.search(value)
-  console.log(searchResults, value)
 
   // Return the search results
   return searchResults
@@ -34,14 +33,14 @@ const EmojiTooltip = ({ node }: any) => {
         <TooltipTrigger asChild>
           <span className="text-lg h-fit leading-none">
             {/* @ts-ignore */}
-            <em-emoji shortcodes={shortcode} />
+            <span> {node.attrs.emoji} </span>
           </span>
         </TooltipTrigger>
         <TooltipContent>
           <div className="flex items-center gap-1">
             <span className="!text-lg leading-none">
               {/* @ts-ignore */}
-              <em-emoji shortcodes={shortcode} />
+              <span> {node.attrs.emoji} </span>
             </span>
             <p className="text-muted-foreground font-semibold font-mono">{shortcode}</p>
           </div>
@@ -92,10 +91,22 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
     ]
   },
 
+  // renderHTML({ HTMLAttributes }) {
+  //   return ['span', { ...HTMLAttributes, 'data-emoji': HTMLAttributes.emoji }]
+  // },
+  //
   renderHTML({ HTMLAttributes }) {
-    return ['span', { ...HTMLAttributes, 'data-emoji': HTMLAttributes.emoji }]
+    // Ensure HTMLAttributes.emoji is properly formatted or replaced
+    return [
+      'span',
+      {
+        ...HTMLAttributes,
+        'data-emoji': HTMLAttributes.emoji,
+        class: cn('inline-flex text-lg leading-none', EmojiFont.className), // You can add classes for styling
+      },
+      HTMLAttributes.emoji, // Directly output the emoji character or HTML
+    ]
   },
-
   addNodeView() {
     return ReactNodeViewRenderer(EmojiTooltip)
   },

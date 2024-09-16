@@ -509,3 +509,4 @@ export const Kanban = React.forwardRef(
     )
   }
 )
+// https://chatgpt.com/share/66e80c4a-ebfc-8009-aa04-d56fd753c19f

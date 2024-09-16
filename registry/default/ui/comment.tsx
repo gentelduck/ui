@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { CommentType, TaggedUserType } from './swapy'
-import { differenceInDays, format, formatDistanceToNow } from 'date-fns'
+import { differenceInDays, differenceInHours, format, formatDistance, formatDistanceToNow } from 'date-fns'
 import { cn } from '@/lib'
 import { AvatarCustom } from './avatar'
 import { LikeButton, ReplyButton } from '../example/SwapyMainDemo'
@@ -9,8 +9,17 @@ import localFont from 'next/font/local'
 import { ScrollArea } from './scroll-area'
 import { Button } from './button'
 import { ArrowBigUp, Plus } from 'lucide-react'
+import { uuidv7 } from 'uuidv7'
 
-export const CommentTest = ({ comments, user }: { comments: CommentType[]; user: TaggedUserType }) => {
+export const CommentTest = ({
+  comments,
+  user,
+  setEditorFocus,
+}: {
+  setEditorFocus?: React.Dispatch<React.SetStateAction<boolean>>
+  comments: CommentType[]
+  user: TaggedUserType
+}) => {
   const bottomRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
@@ -18,7 +27,7 @@ export const CommentTest = ({ comments, user }: { comments: CommentType[]; user:
   }, [comments])
 
   return (
-    <ScrollArea className={cn('h-80 p-4', comments.length > 2 && 'grid place-content-end')}>
+    <ScrollArea className={cn('h-80 p-4 pb-0', comments.length > 2 && 'grid place-content-end')}>
       <div className="flex flex-col justify-end gap-2 ">
         {comments.map(comment => {
           const mine = user.id == comment.user.id
@@ -27,13 +36,17 @@ export const CommentTest = ({ comments, user }: { comments: CommentType[]; user:
               key={comment.id}
               mine={mine}
               className={cn(mine && 'bg-primary/15')}
+              setEditorFocus={setEditorFocus}
               comment={comment}
             />
           )
         })}
       </div>
 
-      <div ref={bottomRef} />
+      <div
+        ref={bottomRef}
+        className="h-4"
+      />
     </ScrollArea>
   )
 }
@@ -41,18 +54,20 @@ export const CommentTest = ({ comments, user }: { comments: CommentType[]; user:
 export interface CommentProps extends React.HTMLProps<HTMLDivElement> {
   mine: boolean
   comment: CommentType
+  setEditorFocus?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 // Font files can be colocated inside of `pages`
 const EmojiFont = localFont({ src: '../../../assets/fonts/font.ttf' })
-export const Comment: React.FC<CommentProps> = ({ mine, comment, className, ...props }) => {
+export const Comment: React.FC<CommentProps> = ({ setEditorFocus, mine, comment, className, ...props }) => {
   const commentDate = new Date(comment.createdAt!)
   const daysDifference = differenceInDays(new Date(), commentDate)
+  const hoursDifference = differenceInHours(new Date(), commentDate)
 
   return (
     <div
       className={cn(
-        'flex items-start justify-start gap-2 bg-secondary/40 p-4 rounded-md hover:bg-secondary/70',
+        'flex items-start justify-start gap-2 bg-secondary/40 p-4 py-o rounded-md hover:bg-secondary/70',
         className
       )}
       {...props}
@@ -67,43 +82,51 @@ export const Comment: React.FC<CommentProps> = ({ mine, comment, className, ...p
           className: 'w-8 h-8',
         }}
       />
-      <div className="flex flex-col items-start justify-start gap-2 w-full">
+      <div className="flex flex-col items-start justify-start w-full">
         <div className="flex items-center justify-start w-full gap-2">
           <div className="flex items-center justify-start w-full gap-2">
             <p className="text-sm font-medium">{comment.user.name}</p>
             <p className="text-sm text-muted-foreground">
-              {daysDifference > 1 ? format(commentDate, 'PP') : formatDistanceToNow(commentDate, { addSuffix: true })}
+              {daysDifference > 1
+                ? format(commentDate, 'PP')
+                : hoursDifference > 1
+                  ? format(commentDate, 'p')
+                  : formatDistance(commentDate, new Date(), { addSuffix: false, includeSeconds: true })}
             </p>
           </div>
-          <div className="flex items-center justify-center gap-2">
-            <LikeButton likes={comment.likes} />
-            <Separator
-              orientation="vertical"
-              className="h-4 bg-muted-foreground/80"
-            />
-            <ReplyButton />
-          </div>
-          {mine ? <></> : <></>}
+          <LikeButton likes={comment.likes} />
         </div>
-        <p className={cn('text-sm', EmojiFont.className)}>{comment.content}</p>
-        {
-          // FIX: idk what the fuck to fix but it's a red line to break the code <3
-          // TODO: you have to make some magic here :D
-        }
-        <div className=""></div>
+        <p
+          className={cn('text-sm')}
+          dangerouslySetInnerHTML={{ __html: comment.content }}
+        ></p>
+        <div className="flex items-center justify-center gap-2">
+          <Button
+            size={'sm'}
+            variant={'ghost'}
+            className="h-7 w-14 mt-2 text-foreground/70 text-xs"
+            onClick={() => setEditorFocus && setEditorFocus(prev => !prev)}
+          >
+            Reply
+          </Button>
+        </div>
       </div>
     </div>
   )
 }
 
 export const ChatBottom = ({
+  setEditorContent,
   editorContentRef,
+  setEditorFocus,
   comments,
   setComments,
 }: {
   editorContentRef: React.MutableRefObject<string>
+  setEditorContent?: React.Dispatch<React.SetStateAction<string>>
+  setEditorFocus?: React.Dispatch<React.SetStateAction<boolean>>
   comments: CommentType[]
-  setComments: React.Dispatch<React.SetStateAction<CommentType[]>>
+  setComments?: React.Dispatch<React.SetStateAction<CommentType[]>>
 }) => {
   return (
     <div className="flex items-center justify-center gap-2">
@@ -118,22 +141,34 @@ export const ChatBottom = ({
       <Button
         size={'icon'}
         variant={'outline'}
-        className="rounded-full h-8 w-8 bg-secondary/20"
+        className={cn('rounded-full h-8 w-8 bg-secondary/20')}
+        disabled={editorContentRef.current.length == 0}
         onClick={() => {
-          setComments([
-            ...comments,
-            {
-              ...comments[0],
-              content: editorContentRef.current,
-              user: {
-                id: 'user-2',
-                name: 'wildduck',
-                avatarUrl:
-                  'https://media.licdn.com/dms/image/v2/D4D03AQGLX-Gb_qm3Rw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1725258661460?e=2147483647&v=beta&t=sajP4AdQ68WfKRPPirMnLXbn4J1oIOSDBfGnuwqZ6SQ',
+          setComments &&
+            setComments([
+              ...comments,
+              {
+                ...comments[0],
+                id: uuidv7(),
+                content: editorContentRef.current,
+                likes: {
+                  amount: 0,
+                  users: [],
+                },
+                createdAt: new Date().toString(),
+                user: {
+                  id: 'user-2',
+                  name: 'wildduck',
+                  avatarUrl:
+                    'https://media.licdn.com/dms/image/v2/D4D03AQGLX-Gb_qm3Rw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1725258661460?e=2147483647&v=beta&t=sajP4AdQ68WfKRPPirMnLXbn4J1oIOSDBfGnuwqZ6SQ',
+                },
               },
-            },
-          ])
+            ])
+
           editorContentRef.current = ''
+          // console.log(editorContent)
+          setEditorContent && setEditorContent('')
+          setEditorFocus && setEditorFocus(false)
         }}
         icon={{
           children: ArrowBigUp,

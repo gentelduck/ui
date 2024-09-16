@@ -172,7 +172,8 @@ export const initData: InitDataType = {
         {
           id: 'comment-1',
           user: users[0],
-          content: 'BTW Ahemd, you have to finished this task today! we are on a deadline. 💀',
+          content:
+            'BTW Ahemd, you have to finished this task today! we are on a deadline.  <span emoji="💀" shortcode=":sunglasses:" data-emoji="💀" class="inline-flex text-lg leading-none __className_aef5f5">💀</span>',
           createdAt: '2021-01-01T00:00:00.000Z',
           likes: {
             amount: 4,
@@ -183,7 +184,7 @@ export const initData: InitDataType = {
           id: 'comment-2',
           user: users[1],
           content:
-            'Okay Lol. I am going to finish this task. not today. 😎, and I use arch, vim and Rust BTW, forgot to mention Elixir...girl.',
+            '<p>Okay Lol. I am going to finish this task. not today. <span emoji="😎" shortcode=":sunglasses:" data-emoji="😎" class="inline-flex text-lg leading-none __className_aef5f5">😎</span>, and I use arch, vim and Rust BTW, forgot to mention Elixir...girl.</p>',
           createdAt: '2021-01-01T00:00:00.000Z',
           likes: {
             amount: 4089,
@@ -438,6 +439,8 @@ export interface CommentsLayoutProps {
 export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
   const [commentsArr, setCommentsArr] = React.useState<CommentType[]>(comments || [])
   const editorContentRef = React.useRef<string>('')
+  const [editorContent, setEditorContent] = React.useState<string>('')
+  const [editorFocus, setEditorFocus] = React.useState<boolean>(false)
   return (
     <PopoverWrapper
       wrapper={{
@@ -465,7 +468,7 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
       }}
       content={{
         side: 'top',
-        className: 'p-0 w-96 mb-2',
+        className: 'p-0 w-[400px] mb-2',
         children: (
           <div>
             <div className="flex items-center justify-between pt-4 px-4">
@@ -478,6 +481,7 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
             {
               <CommentTest
                 comments={commentsArr}
+                setEditorFocus={setEditorFocus}
                 user={users[1]}
               />
             }
@@ -499,12 +503,17 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
                 <MDXMinimalTextEditor
                   className={cn('w-full font-medium h-42')}
                   editorContentRef={editorContentRef}
+                  setEditorContent={setEditorContent}
+                  editorFocus={editorFocus}
+                  content={editorContent}
                   name="comment"
                   valid={true}
                 />
               </div>
               <ChatBottom
                 editorContentRef={editorContentRef}
+                setEditorContent={setEditorContent}
+                setEditorFocus={setEditorFocus}
                 comments={commentsArr}
                 setComments={setCommentsArr}
               />

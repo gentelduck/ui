@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 
-import { EditorContent, useEditor } from '@tiptap/react'
+import { Editor, EditorContent, useEditor } from '@tiptap/react'
 import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
@@ -26,6 +26,7 @@ import { z } from 'zod'
 import { Separator } from './ShadcnUI'
 import { Command, CommandGroup, CommandItem, CommandList } from './command'
 import { MDXTextEditorToolbar } from './mdx-toolbar'
+import { count } from 'console'
 
 const emojiShortcodeSchema = z
   .string()
@@ -66,8 +67,10 @@ export type MDXMinimalTextEditorProps = {
   //FIX: TYPE ANY
   setEditorContent?: React.Dispatch<React.SetStateAction<any>>
   editorContentRef?: React.MutableRefObject<string>
+  editorFocus?: boolean
   onChange?: (html: string) => void
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
+  cb?: (editor: Editor) => void
 }
 
 export const MDXMinimalTextEditor = ({
@@ -78,12 +81,13 @@ export const MDXMinimalTextEditor = ({
   type,
   editorContentRef,
   setEditorContent,
+  editorFocus,
   onKeyDown,
   onChange,
+  cb,
 }: MDXMinimalTextEditorProps) => {
   const [data, setData] = React.useState<DataState>({ data: [], q: '' })
   const [inputValue, setInputValue] = React.useState<string>('')
-  console.log(editorContentRef)
 
   const editor = useEditor(
     {
@@ -105,7 +109,7 @@ export const MDXMinimalTextEditor = ({
           types: ['heading', 'paragraph'],
         }),
         Placeholder.configure({
-          placeholder: editorContentRef?.current ?? 'Type something...',
+          placeholder: 'Type something...',
         }),
         Image,
         SpaceNode,
@@ -114,6 +118,7 @@ export const MDXMinimalTextEditor = ({
           shouldUseExtraReplacementSpace: false,
         }),
       ],
+      content,
       editorProps: {
         attributes: {
           autocomplete: 'on',
@@ -122,17 +127,38 @@ export const MDXMinimalTextEditor = ({
           class: cn(!valid && 'opacity-50 pointer-events-none', className),
         },
       },
-      content,
-      autofocus: true,
-      onUpdate: ({ editor }) => {
+    },
+    [valid, name]
+  )
+
+  const updateEditorContent = useDebounceCallback((html: string) => {
+    return setEditorContent && setEditorContent(html)
+  }, 300)
+
+  React.useEffect(() => {
+    if (editor && content === '') {
+      editor.commands.clearContent()
+      // editor.commands.setContent(content ?? 'Type something...')
+    }
+  }, [content])
+
+  React.useEffect(() => {
+    if (editor) {
+      editor.commands.focus()
+    }
+  }, [editorFocus])
+
+  React.useEffect(() => {
+    if (editor) {
+      editor.on('update', ({ editor }) => {
         const text = editor.getText()
         const html = editor.getHTML()
         editorContentRef && (editorContentRef.current = html)
         handleInputChange(text)
-      },
-    },
-    [valid, name]
-  )
+        updateEditorContent(html)
+      })
+    }
+  }, [editor, type, updateEditorContent])
 
   const handleInputChange = useDebounceCallback(async (value: string) => {
     setInputValue(value)
