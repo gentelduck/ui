@@ -12,6 +12,8 @@ import { ArrowBigUp, Bug, Ellipsis, Pencil, Plus, Share2, Star, Trash2, Twitch, 
 import { uuidv7 } from 'uuidv7'
 import { DropdownMenuOptionsDataType, DropdownMenuView } from './dropdown-menu'
 
+import 'highlight.js/styles/tokyo-night-dark.css'
+
 export const CommentTest = ({
   comments,
   user,
@@ -123,10 +125,12 @@ export const Comment: React.FC<CommentProps> = ({
               user={comment.user}
             />
           </div>
-          <p
-            className={cn('text-sm')}
-            dangerouslySetInnerHTML={{ __html: comment.content }}
-          ></p>
+          <div className="mdx__minimal__text__editor border-none">
+            <p
+              className={cn('text-sm  tiptap ProseMirror')}
+              dangerouslySetInnerHTML={{ __html: comment.content }}
+            ></p>
+          </div>
           <div className="flex items-center justify-center gap-2  mt-1 mb-2">
             <Button
               size={'sm'}

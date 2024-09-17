@@ -353,6 +353,12 @@ export const bubbleMenuIconsData: BubbleMenuIconsDataType[] = [
     label: 'Code',
     icon: Code,
   },
+  {
+    value: 'isCodeBlock',
+    action: 'onCodeBlock',
+    label: 'CodeBlock',
+    icon: Code,
+  },
 ]
 
 export const useTextmenuCommands = (editor: Editor) => {
@@ -628,18 +634,19 @@ export const useTextmenuStates = (editor: Editor) => {
     isHeading4: editor.isActive('heading', { level: 4 }),
     isHeading5: editor.isActive('heading', { level: 5 }),
     isHeading6: editor.isActive('heading', { level: 6 }),
-    isTaskList: editor.isActive('taskList'),
-    isBulletList: editor.isActive('bulletList'),
-    isDetailList: editor.isActive('detailList'),
-    isNumberedList: editor.isActive('orderedList'),
-    isLink: editor.isActive('link'),
-    //
+    isCodeBlock: editor.isActive('codeBlock'),
     isBold: editor.isActive('bold'),
     isItalic: editor.isActive('italic'),
     isStrike: editor.isActive('strike'),
     isUnderline: editor.isActive('underline'),
-    isCodeBlock: editor.isActive('codeBlock'),
     isCode: editor.isActive('code'),
+    isLink: editor.isActive('link'),
+
+    isTaskList: editor.isActive('taskList'),
+    isBulletList: editor.isActive('bulletList'),
+    isDetailList: editor.isActive('detailList'),
+    isNumberedList: editor.isActive('orderedList'),
+    //
     isSubscript: editor.isActive('subscript'),
     isSuperscript: editor.isActive('superscript'),
     isAlignLeft: editor.isActive({ textAlign: 'left' }),

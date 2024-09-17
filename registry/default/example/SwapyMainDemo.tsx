@@ -356,7 +356,6 @@ export const KanbanColumnHeaderTemplate: React.FC<KanbanColumnRowBodyContentArgs
     </>
   )
 }
-
 export const KanbanColumnRowTemplate: React.FC<KanbanColumnRowComponentArgs> = ({ task }) => {
   const { id, links, title, labels, options, comments, subtasks, attachments, description, taggedUsers } = task ?? {}
   return (
@@ -385,7 +384,7 @@ export const KanbanColumnRowTemplate: React.FC<KanbanColumnRowComponentArgs> = (
           variant="outline"
           className="w-full hover:bg-muted-foreground/20 justify-start"
           icon={{
-            icon: Plus,
+            children: Plus,
           }}
         >
           Add subtask
@@ -530,7 +529,7 @@ const CommentsLeft = ({
   const [editorContent, setEditorContent] = React.useState<string>('')
   return (
     <>
-      <div className="relative w-full">
+      <div className="relative w-[248.8px]">
         <MDXMinimalTextEditor
           className={cn('w-full font-medium h-42')}
           editorContentRef={editorContentRef}
@@ -556,7 +555,8 @@ export interface LikeButtonProps extends React.HTMLProps<HTMLDivElement> {
   user: TaggedUserType
   likes: LikedType
 }
-
+import { IoHeart } from 'react-icons/io5'
+import { all, createLowlight } from 'lowlight'
 export const LikeButton: React.FC<LikeButtonProps> = ({ user, likes, className, ...props }) => {
   const { amount } = likes
 
@@ -590,11 +590,11 @@ export const LikeButton: React.FC<LikeButtonProps> = ({ user, likes, className, 
       <Button
         size="icon"
         variant="nothing"
-        className="rounded-full h-auto w-auto"
+        className={cn('rounded-full h-auto w-auto', likeState.hasLiked && 'btn-love')}
         onClick={handleLikeToggle}
         icon={{
-          children: (likeState.hasLiked ? IoIosHeart : IoMdHeartEmpty) as LucideIcon, // Display filled or empty heart
-          className: 'text-red-500',
+          children: (likeState.hasLiked ? IoHeart : IoMdHeartEmpty) as LucideIcon,
+          className: 'text-[#e2264d]',
         }}
       >
         <div

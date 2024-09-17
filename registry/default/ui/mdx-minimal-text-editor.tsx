@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 
-import { Editor, EditorContent, mergeAttributes, useEditor } from '@tiptap/react'
+import { Editor, EditorContent, useEditor } from '@tiptap/react'
 import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
@@ -13,9 +13,9 @@ import { Color } from '@tiptap/extension-color'
 import Image from '@tiptap/extension-image'
 import TextStyle from '@tiptap/extension-text-style'
 import StarterKit from '@tiptap/starter-kit'
-// import Mention from '@tiptap/extension-mention'
 // import Ai from '@tiptap-pro/extension-ai'
 import { Mention, CustomSuggestion } from './mdx-mention'
+import { all, createLowlight } from 'lowlight'
 
 import data from '@emoji-mart/data'
 import { useDebounceCallback } from '@/hooks'
@@ -28,7 +28,17 @@ import { z } from 'zod'
 import { Separator } from './ShadcnUI'
 import { Command, CommandGroup, CommandItem, CommandList } from './command'
 import { MDXTextEditorToolbar } from './mdx-toolbar'
-import { count } from 'console'
+import css from 'highlight.js/lib/languages/css'
+import js from 'highlight.js/lib/languages/javascript'
+import ts from 'highlight.js/lib/languages/typescript'
+import html from 'highlight.js/lib/languages/xml'
+import { CodeBlockLowlight, getHTMLFromFragment } from './mdx-code-block-lowlight'
+
+const lowlight = createLowlight(all)
+lowlight.register('html', html)
+lowlight.register('css', css)
+lowlight.register('js', js)
+lowlight.register('ts', ts)
 
 const emojiShortcodeSchema = z
   .string()
@@ -98,8 +108,15 @@ export const MDXMinimalTextEditor = ({
         Color.configure({
           types: ['textStyle'],
         }),
+        CodeBlockLowlight.configure({
+          defaultLanguage: 'typescript',
+          lowlight,
+        }),
         Highlight.configure({ multicolor: true }),
-        StarterKit.configure({}),
+        StarterKit.configure({
+          code: false,
+          codeBlock: false,
+        }),
         Link.configure({
           openOnClick: true,
           autolink: true,
@@ -126,34 +143,19 @@ export const MDXMinimalTextEditor = ({
           suggestion: {
             ...CustomSuggestion,
             items: ({ query }) => {
-              return [
-                'duckasdf asdf',
-                'Lea Thompson',
-                'Cory House',
-                'Marisa Solace',
-                'Huck Finn',
-                'Bugs Bunny',
-                'LeBron James',
-                'Kobe Bryant',
-                'Michael Jordan',
-                'Cyndi Lauper',
-                'Tom Cruise',
-                'Madonna',
-                // more items...
-              ]
+              return ['wildduck', 'Lea Thompson', 'Cory House', 'Marisa Solace', 'Huck Finn', 'Bugs Bunny']
                 .filter(item => item.toLowerCase().startsWith(query.toLowerCase()))
                 .slice(0, 5)
             },
           },
         }),
       ],
-      content: `
-    <p>Hi everyone! Don’t forget the daily stand up at 8 AM.</p>
-        <p><span data-type="mention" data-id="Jennifer Grey"></span> Would you mind to share what you’ve been working on lately? We fear not much happened since Dirty Dancing.
-        <p><span data-type="mention" data-id="Winona Ryder"></span> <span data-type="mention" data-id="Axl Rose"></span> Let’s go through your most important points quickly.</p>
-        <p>I have a meeting with <span data-type="mention" data-id="Christina Applegate"></span> and don’t want to come late.</p>
-        <p>– Thanks, your big boss</p>
-`,
+      //   content: `
+      // <p>Hi everyone! Don’t forget the daily stand up at 8 AM.</p>
+      //     <p><span data-type="mention" data-id="Jennifer Grey"></span> Would you mind to share what you’ve been working on lately? We fear not much happened since Dirty Dancing.
+      //     <p><span data-type="mention" data-id="Winona Ryder"></span> <span data-type="mention" data-id="Axl Rose"></span> Let’s go through your most important points quickly.</p>
+      //     <p>I have a meeting with <span data-type="mention" data-id="Christina Applegate"></span> and don’t want to come late.</p>
+      //     <p>– Thanks, your big boss</p>`,
       editorProps: {
         attributes: {
           autocomplete: 'on',
@@ -162,6 +164,8 @@ export const MDXMinimalTextEditor = ({
           class: cn(!valid && 'opacity-50 pointer-events-none', className),
         },
       },
+      immediatelyRender: true,
+      shouldRerenderOnTransaction: true,
     },
     [valid, name]
   )
@@ -173,6 +177,7 @@ export const MDXMinimalTextEditor = ({
   React.useEffect(() => {
     if (editor && content === '') {
       editor.commands.clearContent()
+      // editor.commands.setContent()
     }
   }, [content])
 
@@ -187,6 +192,7 @@ export const MDXMinimalTextEditor = ({
       editor.on('update', ({ editor }) => {
         const text = editor.getText()
         const html = editor.getHTML()
+        console.log(html)
         editorContentRef && (editorContentRef.current = html)
         handleInputChange(text)
         updateEditorContent(html)
@@ -271,3 +277,26 @@ export const MDXMinimalTextEditor = ({
     </>
   )
 }
+
+//
+// <p> </p>
+//
+//         <pre><code class="language-javascript">for (var i=1; i <= 20; i++)
+// {
+//   if (i % 15 == 0)
+//     console.log("FizzBuzz");
+//   else if (i % 3 == 0)
+//     console.log("Fizz");
+//   else if (i % 5 == 0)
+//     console.log("Buzz");
+//   else
+//     console.log(i);
+// }</code></pre>
+//         <p>
+//           Press Command/Ctrl + Enter to leave the fenced code block and continue typing in boring paragraphs.
+//         </p>
+//     <p>Hi everyone! Don’t forget the daily stand up at 8 AM.</p>
+//         <p><span data-type="mention" data-id="Jennifer Grey"></span> Would you mind to share what you’ve been working on lately? We fear not much happened since Dirty Dancing.
+//         <p><span data-type="mention" data-id="Winona Ryder"></span> <span data-type="mention" data-id="Axl Rose"></span> Let’s go through your most important points quickly.</p>
+//         <p>I have a meeting with <span data-type="mention" data-id="Christina Applegate"></span> and don’t want to come late.</p>
+//         <p>– Thanks, your big boss</p>
