@@ -30,7 +30,7 @@ const MentionTooltip = ({ node }: any) => {
 
   return (
     <NodeViewWrapper className="inline-flex">
-      <span className="font-medium bg-foreground/10 px-1 rounded text-sm hover:bg-foreground/20 transition cursor-pointer text-primary/80">
+      <span className="font-medium bg-foreground/10 px-1 my-[2px] rounded text-sm hover:bg-foreground/20 transition cursor-pointer text-primary/60">
         @{label}
       </span>
     </NodeViewWrapper>
@@ -91,6 +91,35 @@ export const Mention = Node.create<MentionOptions>({
           return allow
         },
       },
+    }
+  },
+
+  addCommands() {
+    return {
+      // Custom command for inserting mentions
+      insertMentions:
+        content =>
+        ({ commands, editor }) => {
+          const range = editor.state.selection
+          const nodeAfter = editor.view.state.selection.$to.nodeAfter
+          const overrideSpace = nodeAfter?.text?.startsWith(' ')
+
+          if (overrideSpace) {
+            range.to += 1
+          }
+
+          // Insert mention content
+          return commands.insertContentAt(range, [
+            {
+              type: this.name,
+              attrs: content, // Provide content with id/label
+            },
+            {
+              type: 'text',
+              text: ' ',
+            },
+          ])
+        },
     }
   },
 

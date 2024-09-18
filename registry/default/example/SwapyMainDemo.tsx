@@ -1,634 +1,609 @@
 'use client'
 import { cn } from '@/lib'
-import { IoIosHeart, IoMdHeartEmpty } from 'react-icons/io'
-import { uuidv7 } from 'uuidv7'
-import data from '@emoji-mart/data'
-import { init, SearchIndex } from 'emoji-mart'
-import Picker from '@emoji-mart/react'
+import { IoMdHeartEmpty } from 'react-icons/io'
+
 import {
-    AlertDialogCustom,
-    AvatarGroup,
-    Badge,
-    type LikedType,
-    type CommentType,
-    Button,
-    CheckboxGroup,
-    ImageGroup,
-    InitDataType,
-    Kanban,
-    KanbanColumnAddRowBodyArgs,
-    KanbanColumnRowBodyContentArgs,
-    KanbanColumnRowComponentArgs,
-    PopoverWrapper,
-    Separator,
-    AvatarCustom,
-    PopoverClose,
-    Input,
-    Textarea,
-    ScrollArea,
-    MDXMinimalTextEditor,
-    TaggedUserType,
+  AlertDialogCustom,
+  AvatarGroup,
+  Badge,
+  type LikedType,
+  type CommentType,
+  Button,
+  CheckboxGroup,
+  ImageGroup,
+  InitDataType,
+  Kanban,
+  KanbanColumnAddRowBodyArgs,
+  KanbanColumnRowBodyContentArgs,
+  KanbanColumnRowComponentArgs,
+  PopoverWrapper,
+  Separator,
+  AvatarCustom,
+  PopoverClose,
+  MDXMinimalTextEditor,
+  TaggedUserType,
 } from '../ui'
-import {
-    ArrowBigUp,
-    EllipsisVertical,
-    Heart,
-    LucideIcon,
-    MessageCircle,
-    MessageSquare,
-    Paperclip,
-    Plus,
-    Reply,
-    SendHorizontal,
-    X,
-} from 'lucide-react'
+import { EllipsisVertical, LucideIcon, MessageSquare, Paperclip, Plus, Reply, X } from 'lucide-react'
 import React from 'react'
-import { differenceInDays, format, formatDistanceToNow } from 'date-fns'
-import { HeartFilledIcon } from '@radix-ui/react-icons'
-import { z } from 'zod'
-import localFont from 'next/font/local'
 import { ChatBottom, CommentTest } from '../ui/comment'
 
 export const users: TaggedUserType[] = [
-    {
-        id: 'user-1',
-        name: 'stephany davis',
-        avatarUrl:
-            'https://images.unsplash.com/photo-1598550880863-4e8aa3d0edb4?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-        id: 'user-2',
-        name: 'wildduck',
-        avatarUrl:
-            'https://media.licdn.com/dms/image/v2/D4D03AQGLX-Gb_qm3Rw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1725258661460?e=2147483647&v=beta&t=sajP4AdQ68WfKRPPirMnLXbn4J1oIOSDBfGnuwqZ6SQ',
-    },
+  {
+    id: 'user-1',
+    name: 'stephany davis',
+    avatarUrl:
+      'https://images.unsplash.com/photo-1598550880863-4e8aa3d0edb4?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  },
+  {
+    id: 'user-2',
+    name: 'wildduck',
+    avatarUrl:
+      'https://media.licdn.com/dms/image/v2/D4D03AQGLX-Gb_qm3Rw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1725258661460?e=2147483647&v=beta&t=sajP4AdQ68WfKRPPirMnLXbn4J1oIOSDBfGnuwqZ6SQ',
+  },
 ]
 
 export const initData: InitDataType = {
-    tasks: {
-        'task-1': {
-            id: 'task-1',
-            title: 'Page "About" and "Contact" components',
-            description: "Page 'About' and 'Contact' components are not rendered because it is not the main page",
-            subtasks: [
-                {
-                    id: 'subtask-1',
-                    title: 'About page',
-                },
-                {
-                    id: 'subtask-2',
-                    title: 'Home data fetching',
-                },
-            ],
-            attachments: [
-                {
-                    id: 'attachment-1',
-                    type: 'image',
-                    filename: 'image.png',
-                    url: 'https://dnd.hellopangea.com/static/media/princess-min.d694ac37.png',
-                    alt: 'Princess Bubblegum',
-                    size: '10KB',
-                },
-                {
-                    id: 'attachment-2',
-                    type: 'image',
-                    filename: 'image.png',
-                    url: 'https://dnd.hellopangea.com/static/media/jake-min.e1358fa8.png',
-                    alt: 'Jake Bubblegum',
-                    size: '10KB',
-                },
-                {
-                    id: 'attachment-3',
-                    type: 'image',
-                    filename: 'image.png',
-                    url: 'https://dnd.hellopangea.com/static/media/bmo-min.b4f5c828.png',
-                    alt: 'BMO Bubblegum',
-                    size: '10KB',
-                },
-                {
-                    id: 'attachment-4',
-                    type: 'image',
-                    filename: 'image.png',
-                    url: 'https://dnd.hellopangea.com/static/media/finn-min.008b490d.png',
-                    alt: 'Finn Bubblegum',
-                    size: '10KB',
-                },
-                {
-                    id: 'attachment-5',
-                    type: 'image',
-                    filename: 'image.png',
-                    url: 'https://dnd.hellopangea.com/static/media/jake-min.e1358fa8.png',
-                    alt: 'Jake Bubblegum',
-                    size: '10KB',
-                },
-                {
-                    id: 'attachment-6',
-                    type: 'image',
-                    filename: 'image.png',
-                    url: 'https://dnd.hellopangea.com/static/media/bmo-min.b4f5c828.png',
-                    alt: 'BMO Bubblegum',
-                    size: '10KB',
-                },
-                {
-                    id: 'attachment-7',
-                    type: 'image',
-                    filename: 'image.png',
-                    url: 'https://dnd.hellopangea.com/static/media/princess-min.d694ac37.png',
-                    alt: 'Princess Bubblegum',
-                    size: '10KB',
-                },
-                {
-                    id: 'attachment-8',
-                    type: 'image',
-                    filename: 'image.png',
-                    url: 'https://dnd.hellopangea.com/static/media/jake-min.e1358fa8.png',
-                    alt: 'Jake Bubblegum',
-                    size: '10KB',
-                },
-                {
-                    id: 'attachment-9',
-                    type: 'image',
-                    filename: 'image.png',
-                    url: 'https://dnd.hellopangea.com/static/media/princess-min.d694ac37.png',
-                    alt: 'Princess Bubblegum',
-                    size: '10KB',
-                },
-                {
-                    id: 'attachment-10',
-                    type: 'image',
-                    filename: 'image.png',
-                    url: 'https://dnd.hellopangea.com/static/media/bmo-min.b4f5c828.png',
-                    alt: 'BMO Bubblegum',
-                    size: '10KB',
-                },
-            ],
-            links: [
-                {
-                    id: 'link-1',
-                    title: 'Link 1',
-                },
-            ],
-            comments: [
-                {
-                    id: 'comment-1',
-                    user: users[0],
-                    content:
-                        'BTW Ahemd, you have to finished this task today! we are on a deadline.  <span emoji="💀" shortcode=":sunglasses:" data-emoji="💀" class="inline-flex text-lg leading-none __className_aef5f5">💀</span>',
-                    createdAt: '2021-01-01T00:00:00.000Z',
-                    likes: {
-                        amount: 4,
-                        users: [],
-                    },
-                },
-                {
-                    id: 'comment-2',
-                    user: users[1],
-                    content:
-                        '<p>Okay Lol. I am going to finish this task. not today. <span emoji="😎" shortcode=":sunglasses:" data-emoji="😎" class="inline-flex text-lg leading-none __className_aef5f5">😎</span>, and I use arch, vim and Rust BTW, forgot to mention Elixir...girl.</p>',
-                    createdAt: '2021-01-01T00:00:00.000Z',
-                    likes: {
-                        amount: 4089,
-                        users: [],
-                    },
-                },
-            ],
-            taggedUsers: users,
-            labels: [
-                {
-                    id: 'label-1',
-                    content: 'Design',
-                },
-                {
-                    id: 'label-2',
-                    content: 'Website',
-                },
-            ],
-            options: [{}],
+  tasks: {
+    'task-1': {
+      id: 'task-1',
+      title: 'Page "About" and "Contact" components',
+      description: "Page 'About' and 'Contact' components are not rendered because it is not the main page",
+      subtasks: [
+        {
+          id: 'subtask-1',
+          title: 'About page',
         },
+        {
+          id: 'subtask-2',
+          title: 'Home data fetching',
+        },
+      ],
+      attachments: [
+        {
+          id: 'attachment-1',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/princess-min.d694ac37.png',
+          alt: 'Princess Bubblegum',
+          size: '10KB',
+        },
+        {
+          id: 'attachment-2',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/jake-min.e1358fa8.png',
+          alt: 'Jake Bubblegum',
+          size: '10KB',
+        },
+        {
+          id: 'attachment-3',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/bmo-min.b4f5c828.png',
+          alt: 'BMO Bubblegum',
+          size: '10KB',
+        },
+        {
+          id: 'attachment-4',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/finn-min.008b490d.png',
+          alt: 'Finn Bubblegum',
+          size: '10KB',
+        },
+        {
+          id: 'attachment-5',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/jake-min.e1358fa8.png',
+          alt: 'Jake Bubblegum',
+          size: '10KB',
+        },
+        {
+          id: 'attachment-6',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/bmo-min.b4f5c828.png',
+          alt: 'BMO Bubblegum',
+          size: '10KB',
+        },
+        {
+          id: 'attachment-7',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/princess-min.d694ac37.png',
+          alt: 'Princess Bubblegum',
+          size: '10KB',
+        },
+        {
+          id: 'attachment-8',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/jake-min.e1358fa8.png',
+          alt: 'Jake Bubblegum',
+          size: '10KB',
+        },
+        {
+          id: 'attachment-9',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/princess-min.d694ac37.png',
+          alt: 'Princess Bubblegum',
+          size: '10KB',
+        },
+        {
+          id: 'attachment-10',
+          type: 'image',
+          filename: 'image.png',
+          url: 'https://dnd.hellopangea.com/static/media/bmo-min.b4f5c828.png',
+          alt: 'BMO Bubblegum',
+          size: '10KB',
+        },
+      ],
+      links: [
+        {
+          id: 'link-1',
+          title: 'Link 1',
+        },
+      ],
+      comments: [
+        {
+          id: 'comment-1',
+          user: users[0],
+          content:
+            'BTW Ahemd, you have to finished this task today! we are on a deadline.  <span emoji="💀" shortcode=":sunglasses:" data-emoji="💀" class="inline-flex text-lg leading-none __className_aef5f5">💀</span>',
+          createdAt: '2021-01-01T00:00:00.000Z',
+          likes: {
+            amount: 4,
+            users: [],
+          },
+        },
+        {
+          id: 'comment-2',
+          user: users[1],
+          content:
+            '<p>Okay Lol. I am going to finish this task. not today. <span emoji="😎" shortcode=":sunglasses:" data-emoji="😎" class="inline-flex text-lg leading-none __className_aef5f5">😎</span>, and I use arch, vim and Rust BTW, forgot to mention Elixir...girl.</p>',
+          createdAt: '2021-01-01T00:00:00.000Z',
+          likes: {
+            amount: 4089,
+            users: [],
+          },
+        },
+      ],
+      taggedUsers: users,
+      labels: [
+        {
+          id: 'label-1',
+          content: 'Design',
+        },
+        {
+          id: 'label-2',
+          content: 'Website',
+        },
+      ],
+      options: [{}],
     },
+  },
 
-    columns: {
-        'column-1': {
-            id: 'column-1',
-            title: 'To Do',
-            taskIds: ['task-1'],
-        },
-        'column-2': {
-            id: 'column-2',
-            title: 'In Progress',
-            taskIds: [],
-        },
-        'column-3': {
-            id: 'column-3',
-            title: 'Done',
-            taskIds: [],
-        },
+  columns: {
+    'column-1': {
+      id: 'column-1',
+      title: 'To Do',
+      taskIds: ['task-1'],
     },
-    columnOrder: ['column-1', 'column-2', 'column-3'],
+    'column-2': {
+      id: 'column-2',
+      title: 'In Progress',
+      taskIds: [],
+    },
+    'column-3': {
+      id: 'column-3',
+      title: 'Done',
+      taskIds: [],
+    },
+  },
+  columnOrder: ['column-1', 'column-2', 'column-3'],
 }
 
 export default function SwapyMainDemo() {
-    return (
-        <div className="flex items-start gap-4 p-4  select-none">
-            <Kanban
-                initData={initData}
-                kanbanColumnHeader={{ children: KanbanColumnHeaderTemplate, className: 'bg-red-500' }}
-                kanbanColumnAddRow={{ children: KanbanColumnAddRowTemplate }}
-                kanbanColumnRow={{
-                    children: KanbanColumnRowTemplate,
-                    options: {
-                        draggingOnOriginStyle: 'hidden',
-                        draggingOutStyle: 'sdfsdfsdf',
-                    },
-                }}
-            />
-        </div>
-    )
+  return (
+    <div className="flex items-start gap-4 p-4  select-none">
+      <Kanban
+        initData={initData}
+        kanbanColumnHeader={{ children: KanbanColumnHeaderTemplate, className: 'bg-red-500' }}
+        kanbanColumnAddRow={{ children: KanbanColumnAddRowTemplate }}
+        kanbanColumnRow={{
+          children: KanbanColumnRowTemplate,
+          options: {
+            draggingOnOriginStyle: 'hidden',
+            draggingOutStyle: 'sdfsdfsdf',
+          },
+        }}
+      />
+    </div>
+  )
 }
 
 export const KanbanColumnAddRowTemplate: React.FC<KanbanColumnAddRowBodyArgs> = () => {
-    const [data, setData] = React.useState(['sdf'])
-    const [goal, setGoal] = React.useState(350)
+  const [data, setData] = React.useState(['sdf'])
+  const [goal, setGoal] = React.useState(350)
 
-    function onClick(adjustment: number) {
-        setGoal(Math.max(200, Math.min(400, goal + adjustment)))
-    }
+  function onClick(adjustment: number) {
+    setGoal(Math.max(200, Math.min(400, goal + adjustment)))
+  }
 
-    return (
-        <AlertDialogCustom
-            type="sheet"
-            // drawerData={data.length > 0}
-            header={{
-                head: 'Add Task',
-                description: 'Set your daily tasks here.',
-            }}
-            footer={{
-                className: 'flex w-full justify-between items-end',
-                submit: <Button variant="default">Submit</Button>,
-                cancel: <Button variant="outline">Cancel</Button>,
-            }}
-            state={goal}
-            trigger={{
-                children: (
-                    <div className="flex items-center gap-2 mb-1rem mx-2 border-1 border-transparent">
-                        <Button
-                            // variant={'secondary'}
-                            className={cn('w-full')}
-                        >
-                            <Plus className={cn('size-6')} />
-                        </Button>
-                    </div>
-                ),
-            }}
-            content={{
-                className:
-                    '[&>div]:flex [&>div]:flex-col [&>div]:place-content-center [&>div]:w-full [&>div]:place-self-center sm:max-w-[450px]',
-                children: (
-                    <ContentComponent
-                        goal={goal}
-                        onClick={onClick}
-                    />
-                ),
-            }}
-        />
-    )
+  return (
+    <AlertDialogCustom
+      type="sheet"
+      // drawerData={data.length > 0}
+      header={{
+        head: 'Add Task',
+        description: 'Set your daily tasks here.',
+      }}
+      footer={{
+        className: 'flex w-full justify-between items-end',
+        submit: <Button variant="default">Submit</Button>,
+        cancel: <Button variant="outline">Cancel</Button>,
+      }}
+      state={goal}
+      trigger={{
+        children: (
+          <div className="flex items-center gap-2 mb-1rem mx-2 border-1 border-transparent">
+            <Button
+              // variant={'secondary'}
+              className={cn('w-full')}
+            >
+              <Plus className={cn('size-6')} />
+            </Button>
+          </div>
+        ),
+      }}
+      content={{
+        className:
+          '[&>div]:flex [&>div]:flex-col [&>div]:place-content-center [&>div]:w-full [&>div]:place-self-center sm:max-w-[450px]',
+        children: (
+          <ContentComponent
+            goal={goal}
+            onClick={onClick}
+          />
+        ),
+      }}
+    />
+  )
 }
 export const ContentComponent = ({ goal, onClick }: { goal: number; onClick: (adjustment: number) => void }) => {
-    const [title, setTitle] = React.useState<string>('')
-    return (
-        <div className="w-full h-[84vh] flex items-start justify-center pt-4 pb-2">
-            <div className="p-4 pb-0">
-                <form className="w-full">
-                    <div>
-                        <div className="mb-4">
-                            <label
-                                className="block text-gray-700 text-sm font-bold mb-2"
-                                htmlFor="goal"
-                            >
-                                title
-                            </label>
-                            <input
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="goal"
-                                type="number"
-                                placeholder="Goal"
-                                value={title}
-                                onChange={e => setTitle(e.target.value)}
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label
-                                className="block text-gray-700 text-sm font-bold mb-2"
-                                htmlFor="goal"
-                            >
-                                title
-                            </label>
-                            <input
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="goal"
-                                type="number"
-                                placeholder="Goal"
-                                value={title}
-                                onChange={e => setTitle(e.target.value)}
-                            />
-                        </div>
-                    </div>
-                </form>
+  const [title, setTitle] = React.useState<string>('')
+  return (
+    <div className="w-full h-[84vh] flex items-start justify-center pt-4 pb-2">
+      <div className="p-4 pb-0">
+        <form className="w-full">
+          <div>
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="goal"
+              >
+                title
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="goal"
+                type="number"
+                placeholder="Goal"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+              />
             </div>
-        </div>
-    )
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="goal"
+              >
+                title
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="goal"
+                type="number"
+                placeholder="Goal"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
 }
 
 export const KanbanColumnHeaderTemplate: React.FC<KanbanColumnRowBodyContentArgs> = ({ column }) => {
-    return (
-        <>
-            <div className={cn('flex items-center gap-2')}>
-                <Badge
-                    size={'icon'}
-                    className={cn('size-[9px] bg-red-500')}
-                />
-                <h3>{column.title}</h3>
-                <span>{column.taskIds.length}</span>
-            </div>
-            <div>
-                <EllipsisVertical className={cn('size-5')} />
-            </div>
-        </>
-    )
+  return (
+    <>
+      <div className={cn('flex items-center gap-2')}>
+        <Badge
+          size={'icon'}
+          className={cn('size-[9px] bg-red-500')}
+        />
+        <h3>{column.title}</h3>
+        <span>{column.taskIds.length}</span>
+      </div>
+      <div>
+        <EllipsisVertical className={cn('size-5')} />
+      </div>
+    </>
+  )
 }
 export const KanbanColumnRowTemplate: React.FC<KanbanColumnRowComponentArgs> = ({ task }) => {
-    const { id, links, title, labels, options, comments, subtasks, attachments, description, taggedUsers } = task ?? {}
-    return (
-        <div className="w-full">
-            <div className={cn('flex items-center justify-between mb-[1rem]')}>
-                <div className={cn('flex items-center gap-2')}>
-                    {labels.map((label, index) => (
-                        <Badge
-                            key={label.id}
-                            className={cn('', label.className)}
-                        >
-                            {label.content}
-                        </Badge>
-                    ))}
-                </div>
-                <EllipsisVertical className={cn('size-5')} />
-            </div>
-            <div className={cn('flex flex-col items-center justify-between mb-[1rem] gap-2')}>
-                <h3 className={cn('text-lg font leading-none tracking-tight')}>{title}</h3>
-                <p className={cn('text-sm text-muted-foreground')}>{description}</p>
-            </div>
-            <div className={cn('flex flex-col items-center justify-between mb-[1rem]')}>
-                <CheckboxGroup subtasks={subtasks} />
-                <Separator className={cn('my-2 h-[1px] bg-muted-foreground/20')} />
-                <Button
-                    variant="outline"
-                    className="w-full hover:bg-muted-foreground/20 justify-start"
-                    icon={{
-                        children: Plus,
-                    }}
-                >
-                    Add subtask
-                </Button>
-            </div>
-            <div className="flex items-center justify-start gap-2 mb-3">
-                <ImageGroup
-                    imgs={attachments.map(attachment => ({
-                        image: {
-                            ...attachment,
-                        },
-                    }))}
-                    max_imgs={6}
-                />
-            </div>
-            <Separator className={cn('my-2 h-[1px]')} />
-            <div className={cn('relative overflow flex items-center justify-between')}>
-                <div className={cn('flex items-center justify-start gap-2 shrink-0')}>
-                    <AvatarGroup
-                        users={taggedUsers}
-                        max_users={2}
-                    />
-                </div>
-                <div className={cn('flex items-center justify-start gap-1 shrink-0')}>
-                    <CommentsLayout comments={comments} />
-                    <Button
-                        className="p-0"
-                        variant={'ghost'}
-                        size={'icon'}
-                        icon={{
-                            children: Paperclip,
-                        }}
-                        label={{
-                            children: 'Attachment',
-                            showLabel: true,
-                            showCommand: true,
-                            side: 'top',
-                            className: 'text-xs',
-                        }}
-                    />
-                </div>
-            </div>
+  const { id, links, title, labels, options, comments, subtasks, attachments, description, taggedUsers } = task ?? {}
+  return (
+    <div className="w-full">
+      <div className={cn('flex items-center justify-between mb-[1rem]')}>
+        <div className={cn('flex items-center gap-2')}>
+          {labels.map((label, index) => (
+            <Badge
+              key={label.id}
+              className={cn('', label.className)}
+            >
+              {label.content}
+            </Badge>
+          ))}
         </div>
-    )
+        <EllipsisVertical className={cn('size-5')} />
+      </div>
+      <div className={cn('flex flex-col items-center justify-between mb-[1rem] gap-2')}>
+        <h3 className={cn('text-lg font leading-none tracking-tight')}>{title}</h3>
+        <p className={cn('text-sm text-muted-foreground')}>{description}</p>
+      </div>
+      <div className={cn('flex flex-col items-center justify-between mb-[1rem]')}>
+        <CheckboxGroup subtasks={subtasks} />
+        <Separator className={cn('my-2 h-[1px] bg-muted-foreground/20')} />
+        <Button
+          variant="outline"
+          className="w-full hover:bg-muted-foreground/20 justify-start"
+          icon={{
+            children: Plus,
+          }}
+        >
+          Add subtask
+        </Button>
+      </div>
+      <div className="flex items-center justify-start gap-2 mb-3">
+        <ImageGroup
+          imgs={attachments.map(attachment => ({
+            image: {
+              ...attachment,
+            },
+          }))}
+          max_imgs={6}
+        />
+      </div>
+      <Separator className={cn('my-2 h-[1px]')} />
+      <div className={cn('relative overflow flex items-center justify-between')}>
+        <div className={cn('flex items-center justify-start gap-2 shrink-0')}>
+          <AvatarGroup
+            users={taggedUsers}
+            max_users={2}
+          />
+        </div>
+        <div className={cn('flex items-center justify-start gap-1 shrink-0')}>
+          <CommentsLayout comments={comments} />
+          <Button
+            className="p-0"
+            variant={'ghost'}
+            size={'icon'}
+            icon={{
+              children: Paperclip,
+            }}
+            label={{
+              children: 'Attachment',
+              showLabel: true,
+              showCommand: true,
+              side: 'top',
+              className: 'text-xs',
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  )
 }
-//NOTE: YOU have to fix the mention
-//NOTE: you have to fix the parsing for the code block
-//NOTE: some style with the moeji and code block
-//FIX: rerenders
-//NOTE: HI FIRST DAY IN GITHUB
 
 export interface CommentsLayoutProps {
-    comments: CommentType[]
+  comments: CommentType[]
 }
 
 export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
-    const [commentsArr, setCommentsArr] = React.useState<CommentType[]>(comments || [])
-    const editorContentRef = React.useRef<string>('')
-    const [editorFocus, setEditorFocus] = React.useState<boolean>(false)
-    return (
-        <PopoverWrapper
-            wrapper={{
-                open: true,
-            }}
-            trigger={{
-                asChild: true,
-                children: (
-                    <Button
-                        className="p-0"
-                        variant={'ghost'}
-                        size={'icon'}
-                        icon={{
-                            children: MessageSquare,
-                        }}
-                        label={{
-                            children: 'Comments',
-                            showLabel: true,
-                            showCommand: true,
-                            side: 'top',
-                            className: 'text-xs',
-                        }}
-                    />
-                ),
-            }}
-            content={{
+  const [commentsArr, setCommentsArr] = React.useState<CommentType[]>(comments || [])
+  const editorMention = React.useRef<TaggedUserType | null>(null)
+  const [editorFocus, setEditorFocus] = React.useState<boolean>(false)
+
+  return (
+    <MDXProvider>
+      <PopoverWrapper
+        wrapper={{
+          open: true,
+        }}
+        trigger={{
+          asChild: true,
+          children: (
+            <Button
+              className="p-0"
+              variant={'ghost'}
+              size={'icon'}
+              icon={{
+                children: MessageSquare,
+              }}
+              label={{
+                children: 'Comments',
+                showLabel: true,
+                showCommand: true,
                 side: 'top',
-                className: 'p-0 w-[400px] mb-2',
-                children: (
-                    <div>
-                        <div className="flex items-center justify-between pt-4 px-4">
-                            <h3 className="text-lg font-medium leading-none tracking-tight">Comments</h3>
-                            <PopoverClose className="size-4 rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1">
-                                <X className="size-4" />
-                            </PopoverClose>
-                        </div>
+                className: 'text-xs',
+              }}
+            />
+          ),
+        }}
+        content={{
+          side: 'top',
+          className: 'p-0 w-[400px] mb-2',
+          children: (
+            <div>
+              <div className="flex items-center justify-between pt-4 px-4">
+                <h3 className="text-lg font-medium leading-none tracking-tight">Comments</h3>
+                <PopoverClose className="size-4 rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1">
+                  <X className="size-4" />
+                </PopoverClose>
+              </div>
 
-                        {
-                            <CommentTest
-                                comments={commentsArr}
-                                setEditorFocus={setEditorFocus}
-                                setComments={setCommentsArr}
-                                user={users[1]}
-                            />
-                        }
+              {
+                <CommentTest
+                  comments={comments}
+                  user={users[1]}
+                />
+              }
 
-                        <div className="flex items-center justify-between py-2 px-4 bg-secondary/30 gap-2">
-                            <div className="flex items-center gap-2">
-                                <AvatarCustom
-                                    className="w-8 h-8 border-none"
-                                    avatar_image={{
-                                        src: 'https://media.licdn.com/dms/image/v2/D4D03AQGLX-Gb_qm3Rw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1725258661460?e=2147483647&v=beta&t=sajP4AdQ68WfKRPPirMnLXbn4J1oIOSDBfGnuwqZ6SQ',
-                                    }}
-                                    fallback={{
-                                        className: 'w-8 h-8 bg-secondary/20',
-                                    }}
-                                />
-                                <CommentsLeft
-                                    editorContentRef={editorContentRef}
-                                    commentsArr={commentsArr}
-                                    editorFocus={editorFocus}
-                                    setEditorFocus={setEditorFocus}
-                                    setCommentsArr={setCommentsArr}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                ),
-            }}
-        />
-    )
+              <div className="flex items-center justify-between py-2 px-4 bg-secondary/30 gap-2">
+                <div className="flex items-center gap-2">
+                  <AvatarCustom
+                    className="w-8 h-8 border-none"
+                    avatar_image={{
+                      src: 'https://media.licdn.com/dms/image/v2/D4D03AQGLX-Gb_qm3Rw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1725258661460?e=2147483647&v=beta&t=sajP4AdQ68WfKRPPirMnLXbn4J1oIOSDBfGnuwqZ6SQ',
+                    }}
+                    fallback={{
+                      className: 'w-8 h-8 bg-secondary/20',
+                    }}
+                  />
+                  <CommentsLeft
+                    editorMention={editorMention}
+                    commentsArr={commentsArr}
+                    editorFocus={editorFocus}
+                    setEditorFocus={setEditorFocus}
+                    setCommentsArr={setCommentsArr}
+                  />
+                </div>
+              </div>
+            </div>
+          ),
+        }}
+      />
+    </MDXProvider>
+  )
 }
 
 const CommentsLeft = ({
-    editorContentRef,
-    commentsArr,
-    editorFocus,
-    setEditorFocus,
-    setCommentsArr,
+  editorMention,
+  commentsArr,
+  editorFocus,
+  setEditorFocus,
+  setCommentsArr,
 }: {
-    editorContentRef: React.MutableRefObject<string>
-    commentsArr: CommentType[]
-    editorFocus: boolean
-    setEditorContent?: React.Dispatch<React.SetStateAction<string>>
-    setEditorFocus?: React.Dispatch<React.SetStateAction<boolean>>
-    setCommentsArr?: React.Dispatch<React.SetStateAction<CommentType[]>>
+  editorMention: React.MutableRefObject<TaggedUserType | null>
+  commentsArr: CommentType[]
+  editorFocus: boolean
+  setEditorContent?: React.Dispatch<React.SetStateAction<string>>
+  setEditorFocus?: React.Dispatch<React.SetStateAction<boolean>>
+  setCommentsArr?: React.Dispatch<React.SetStateAction<CommentType[]>>
 }) => {
-    const [editorContent, setEditorContent] = React.useState<string>('')
-    return (
-        <>
-            <div className="relative w-[248.8px]">
-                <MDXMinimalTextEditor
-                    className={cn('w-full font-medium h-42')}
-                    editorContentRef={editorContentRef}
-                    setEditorContent={setEditorContent}
-                    editorFocus={editorFocus}
-                    content={editorContent}
-                    name="comment"
-                    valid={true}
-                />
-            </div>
-            <ChatBottom
-                editorContentRef={editorContentRef}
-                setEditorContent={setEditorContent}
-                setEditorFocus={setEditorFocus}
-                comments={commentsArr}
-                setComments={setCommentsArr}
-            />
-        </>
-    )
+  const [editorContent, setEditorContent] = React.useState<string>('')
+  return (
+    <>
+      <div className="relative w-[248.8px]">
+        <MDXMinimalTextEditor
+          className={cn('w-full font-medium h-42')}
+          editorMention={editorMention}
+          setEditorContent={setEditorContent}
+          editorFocus={editorFocus}
+          content={editorContent}
+          name="comment"
+          valid={true}
+        />
+      </div>
+      <ChatBottom
+        editorContent={editorContent}
+        setEditorContent={setEditorContent}
+        setEditorFocus={setEditorFocus}
+        comments={commentsArr}
+        setComments={setCommentsArr}
+      />
+    </>
+  )
 }
 
 export interface LikeButtonProps extends React.HTMLProps<HTMLDivElement> {
-    user: TaggedUserType
-    likes: LikedType
+  user: TaggedUserType
+  likes: LikedType
 }
 import { IoHeart } from 'react-icons/io5'
-import { all, createLowlight } from 'lowlight'
+import MDXProvider from './mdx-context-provider'
+
 export const LikeButton: React.FC<LikeButtonProps> = ({ user, likes, className, ...props }) => {
-    const { amount } = likes
+  const { amount } = likes
 
-    // Initialize state
-    const [likeState, setLikeState] = React.useState({
-        current: amount, // Current number of likes
-        prev: amount, // Previous number of likes
-        scrollTo: null as 'up' | 'down' | null, // Scroll direction
-        hasLiked: false, // Track if the current user has liked
+  // Initialize state
+  const [likeState, setLikeState] = React.useState({
+    current: amount, // Current number of likes
+    prev: amount, // Previous number of likes
+    scrollTo: null as 'up' | 'down' | null, // Scroll direction
+    hasLiked: false, // Track if the current user has liked
+  })
+
+  // Toggle like status
+  const handleLikeToggle = () => {
+    setLikeState(prevState => {
+      const newLikes = prevState.hasLiked ? prevState.current - 1 : prevState.current + 1
+      return {
+        ...prevState,
+        prev: prevState.current, // Save the current likes as previous
+        current: newLikes, // Update to the new number of likes
+        scrollTo: prevState.hasLiked ? 'down' : 'up', // Determine scroll direction
+        hasLiked: !prevState.hasLiked, // Toggle the like status
+      }
     })
+  }
 
-    // Toggle like status
-    const handleLikeToggle = () => {
-        setLikeState(prevState => {
-            const newLikes = prevState.hasLiked ? prevState.current - 1 : prevState.current + 1
-            return {
-                ...prevState,
-                prev: prevState.current, // Save the current likes as previous
-                current: newLikes, // Update to the new number of likes
-                scrollTo: prevState.hasLiked ? 'down' : 'up', // Determine scroll direction
-                hasLiked: !prevState.hasLiked, // Toggle the like status
-            }
-        })
-    }
-
-    return (
+  return (
+    <div
+      className={cn('flex items-center justify-center gap-2', className)}
+      {...props}
+    >
+      <Button
+        size="icon"
+        variant="nothing"
+        className={cn('rounded-full h-auto w-auto', likeState.hasLiked && 'btn-love')}
+        onClick={handleLikeToggle}
+        icon={{
+          children: (likeState.hasLiked ? IoHeart : IoMdHeartEmpty) as LucideIcon,
+          className: 'text-[#e2264d]',
+        }}
+      >
         <div
-            className={cn('flex items-center justify-center gap-2', className)}
-            {...props}
+          key={Math.random()}
+          className={cn(
+            'relative grid place-content-center h-4 overflow-hidden leading-4 transition',
+            likeState.scrollTo
+          )}
+          style={{ width: `${Math.min(48, Math.max(24, String(likeState.current).length * 12))}px` }}
         >
-            <Button
-                size="icon"
-                variant="nothing"
-                className={cn('rounded-full h-auto w-auto', likeState.hasLiked && 'btn-love')}
-                onClick={handleLikeToggle}
-                icon={{
-                    children: (likeState.hasLiked ? IoHeart : IoMdHeartEmpty) as LucideIcon,
-                    className: 'text-[#e2264d]',
-                }}
-            >
-                <div
-                    key={Math.random()}
-                    className={cn(
-                        'relative grid place-content-center h-4 overflow-hidden leading-4 transition',
-                        likeState.scrollTo
-                    )}
-                    style={{ width: `${Math.min(48, Math.max(24, String(likeState.current).length * 12))}px` }}
-                >
-                    <span className="absolute top-0 left-0">{likeState.current}</span>
-                    <span className="absolute top-0 left-0">{likeState.prev}</span>
-                </div>
-            </Button>
+          <span className="absolute top-0 left-0">{likeState.current}</span>
+          <span className="absolute top-0 left-0">{likeState.prev}</span>
         </div>
-    )
+      </Button>
+    </div>
+  )
 }
 
 export const ReplyButton = () => {
-    return (
-        <div className="flex items-center justify-center gap-2">
-            <Button
-                // size={'icon'}
-                variant={'ghost'}
-                className="w-5 h-5 p-3"
-                icon={{
-                    children: Reply,
-                }}
-            />
-        </div>
-    )
+  return (
+    <div className="flex items-center justify-center gap-2">
+      <Button
+        // size={'icon'}
+        variant={'ghost'}
+        className="w-5 h-5 p-3"
+        icon={{
+          children: Reply,
+        }}
+      />
+    </div>
+  )
 }

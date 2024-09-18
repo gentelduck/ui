@@ -32,7 +32,9 @@ import css from 'highlight.js/lib/languages/css'
 import js from 'highlight.js/lib/languages/javascript'
 import ts from 'highlight.js/lib/languages/typescript'
 import html from 'highlight.js/lib/languages/xml'
-import { CodeBlockLowlight, getHTMLFromFragment } from './mdx-code-block-lowlight'
+import { CodeBlockLowlight } from './mdx-code-block-lowlight'
+import { TaggedUserType } from './swapy'
+import { MDXContext } from '../example/mdx-context-provider'
 
 const lowlight = createLowlight(all)
 lowlight.register('html', html)
@@ -78,7 +80,7 @@ export type MDXMinimalTextEditorProps = {
   type?: string
   //FIX: TYPE ANY
   setEditorContent?: React.Dispatch<React.SetStateAction<any>>
-  editorContentRef?: React.MutableRefObject<string>
+  editorMention: React.MutableRefObject<TaggedUserType | null>
   editorFocus?: boolean
   onChange?: (html: string) => void
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
@@ -91,7 +93,7 @@ export const MDXMinimalTextEditor = ({
   className,
   content,
   type,
-  editorContentRef,
+  editorMention,
   setEditorContent,
   editorFocus,
   onKeyDown,
@@ -170,35 +172,36 @@ export const MDXMinimalTextEditor = ({
     [valid, name]
   )
 
+  const { mention, editContent, mdxContent, setMdxContent } = React.useContext(MDXContext)
+  React.useEffect(() => {
+    if (editor && mdxContent === '') {
+      editor.commands.clearContent()
+    }
+  }, [mdxContent])
+
   const updateEditorContent = useDebounceCallback((html: string) => {
-    return setEditorContent && setEditorContent(html)
+    return setMdxContent && setMdxContent(html)
   }, 300)
 
   React.useEffect(() => {
-    if (editor && content === '') {
-      editor.commands.clearContent()
-      // editor.commands.setContent()
-    }
-  }, [content])
-
-  React.useEffect(() => {
     if (editor) {
-      editor.commands.focus()
-    }
-  }, [editorFocus])
+      if (mention) {
+        // @ts-ignore
+        editor.chain().focus().insertMentions({ id: mention?.id, label: mention?.name }).run()
+      }
+      if (editContent) {
+        editor.commands.setContent(editContent?.content)
+      }
 
-  React.useEffect(() => {
-    if (editor) {
       editor.on('update', ({ editor }) => {
         const text = editor.getText()
         const html = editor.getHTML()
-        console.log(html)
-        editorContentRef && (editorContentRef.current = html)
-        handleInputChange(text)
+
         updateEditorContent(html)
+        handleInputChange(text)
       })
     }
-  }, [editor, type, updateEditorContent])
+  }, [editor, editContent, mention, mdxContent])
 
   const handleInputChange = useDebounceCallback(async (value: string) => {
     setInputValue(value)
