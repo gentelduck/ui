@@ -225,7 +225,6 @@ export default function SwapyMainDemo() {
 }
 
 export const KanbanColumnAddRowTemplate: React.FC<KanbanColumnAddRowBodyArgs> = () => {
-  const [data, setData] = React.useState(['sdf'])
   const [goal, setGoal] = React.useState(350)
 
   function onClick(adjustment: number) {
@@ -419,75 +418,75 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
   const [editorFocus, setEditorFocus] = React.useState<boolean>(false)
 
   return (
-    <MDXProvider>
-      <PopoverWrapper
-        wrapper={{
-          open: true,
-        }}
-        trigger={{
-          asChild: true,
-          children: (
-            <Button
-              className="p-0"
-              variant={'ghost'}
-              size={'icon'}
-              icon={{
-                children: MessageSquare,
-              }}
-              label={{
-                children: 'Comments',
-                showLabel: true,
-                showCommand: true,
-                side: 'top',
-                className: 'text-xs',
-              }}
-            />
-          ),
-        }}
-        content={{
-          side: 'top',
-          className: 'p-0 w-[400px] mb-2',
-          children: (
-            <div>
-              <div className="flex items-center justify-between pt-4 px-4">
-                <h3 className="text-lg font-medium leading-none tracking-tight">Comments</h3>
-                <PopoverClose className="size-4 rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1">
-                  <X className="size-4" />
-                </PopoverClose>
-              </div>
+    <CommentsProvider>
+      <MDXProvider>
+        <PopoverWrapper
+          wrapper={{
+            open: true,
+          }}
+          trigger={{
+            asChild: true,
+            children: (
+              <Button
+                className="p-0"
+                variant={'ghost'}
+                size={'icon'}
+                icon={{
+                  children: MessageSquare,
+                }}
+                label={{
+                  children: 'Comments',
+                  showLabel: true,
+                  showCommand: true,
+                  side: 'top',
+                  className: 'text-xs',
+                }}
+              />
+            ),
+          }}
+          content={{
+            side: 'top',
+            className: 'p-0 w-[400px] mb-2',
+            children: (
+              <div>
+                <div className="flex items-center justify-between pt-4 px-4">
+                  <h3 className="text-lg font-medium leading-none tracking-tight">Comments</h3>
+                  <PopoverClose className="size-4 rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1">
+                    <X className="size-4" />
+                  </PopoverClose>
+                </div>
 
-              {
-                <CommentTest
-                  comments={comments}
-                  user={users[1]}
-                />
-              }
+                {
+                  <CommentTest
+                    comments={comments}
+                    user={users[1]}
+                  />
+                }
 
-              <div className="flex items-center justify-between py-2 px-4 bg-secondary/30 gap-2">
-                <div className="flex items-center gap-2">
-                  <AvatarCustom
-                    className="w-8 h-8 border-none"
-                    avatar_image={{
-                      src: 'https://media.licdn.com/dms/image/v2/D4D03AQGLX-Gb_qm3Rw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1725258661460?e=2147483647&v=beta&t=sajP4AdQ68WfKRPPirMnLXbn4J1oIOSDBfGnuwqZ6SQ',
-                    }}
-                    fallback={{
-                      className: 'w-8 h-8 bg-secondary/20',
-                    }}
-                  />
-                  <CommentsLeft
-                    editorMention={editorMention}
-                    commentsArr={commentsArr}
-                    editorFocus={editorFocus}
-                    setEditorFocus={setEditorFocus}
-                    setCommentsArr={setCommentsArr}
-                  />
+                <div className="flex items-center justify-between py-2 px-4 bg-secondary/30 gap-2">
+                  <div className="flex items-center gap-2">
+                    <AvatarCustom
+                      className="w-8 h-8 border-none"
+                      avatar_image={{
+                        src: 'https://media.licdn.com/dms/image/v2/D4D03AQGLX-Gb_qm3Rw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1725258661460?e=2147483647&v=beta&t=sajP4AdQ68WfKRPPirMnLXbn4J1oIOSDBfGnuwqZ6SQ',
+                      }}
+                      fallback={{
+                        className: 'w-8 h-8 bg-secondary/20',
+                      }}
+                    />
+                    <CommentsLeft
+                      editorMention={editorMention}
+                      commentsArr={commentsArr}
+                      editorFocus={editorFocus}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ),
-        }}
-      />
-    </MDXProvider>
+            ),
+          }}
+        />
+      </MDXProvider>
+    </CommentsProvider>
   )
 }
 
@@ -495,15 +494,10 @@ const CommentsLeft = ({
   editorMention,
   commentsArr,
   editorFocus,
-  setEditorFocus,
-  setCommentsArr,
 }: {
   editorMention: React.MutableRefObject<TaggedUserType | null>
   commentsArr: CommentType[]
   editorFocus: boolean
-  setEditorContent?: React.Dispatch<React.SetStateAction<string>>
-  setEditorFocus?: React.Dispatch<React.SetStateAction<boolean>>
-  setCommentsArr?: React.Dispatch<React.SetStateAction<CommentType[]>>
 }) => {
   const [editorContent, setEditorContent] = React.useState<string>('')
   return (
@@ -519,13 +513,7 @@ const CommentsLeft = ({
           valid={true}
         />
       </div>
-      <ChatBottom
-        editorContent={editorContent}
-        setEditorContent={setEditorContent}
-        setEditorFocus={setEditorFocus}
-        comments={commentsArr}
-        setComments={setCommentsArr}
-      />
+      <ChatBottom comments={commentsArr} />
     </>
   )
 }
@@ -535,7 +523,7 @@ export interface LikeButtonProps extends React.HTMLProps<HTMLDivElement> {
   likes: LikedType
 }
 import { IoHeart } from 'react-icons/io5'
-import MDXProvider from './mdx-context-provider'
+import { MDXProvider, CommentsProvider } from './mdx-context-provider'
 
 export const LikeButton: React.FC<LikeButtonProps> = ({ user, likes, className, ...props }) => {
   const { amount } = likes

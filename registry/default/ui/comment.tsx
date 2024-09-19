@@ -11,22 +11,13 @@ import { uuidv7 } from 'uuidv7'
 import { DropdownMenuOptionsDataType, DropdownMenuView } from './dropdown-menu'
 
 import 'highlight.js/styles/tokyo-night-dark.css'
-import { MDXContext } from '../example/mdx-context-provider'
+import { MDXContext, CommentsContext } from '../example/mdx-context-provider'
 
 export const CommentTest = ({ user, comments }: { user: TaggedUserType; comments: CommentType[] }) => {
-  const bottomRef = React.useRef<HTMLDivElement>(null)
-  const { comments: newComments, setComments } = React.useContext(MDXContext)
-  const fullComments: CommentType[] = newComments.length === 0 ? comments : newComments
-  console.log(fullComments)
-
-  React.useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [comments])
-
   return (
     <ScrollArea className={cn('h-80 p-4 pb-0', comments.length > 2 && 'grid place-content-end')}>
       <div className="flex flex-col justify-end">
-        {fullComments.map((comment, idx) => {
+        {comments.map((comment, idx) => {
           const mine = user.id == comment.user.id
           return (
             <Comment
@@ -35,17 +26,50 @@ export const CommentTest = ({ user, comments }: { user: TaggedUserType; comments
               className={cn(mine && '')}
               comment={comment}
               showNestedShapes={comments.length === idx + 1 ? false : true}
-              setComments={setComments}
             />
           )
         })}
+        <CommentsPlaceholder user={user} />
       </div>
-
-      <div
-        ref={bottomRef}
-        className="h-4"
-      />
+      <CommentScrollDiv />
     </ScrollArea>
+  )
+}
+
+export const CommentScrollDiv = () => {
+  const { comments } = React.useContext(CommentsContext)
+
+  React.useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [comments])
+
+  const bottomRef = React.useRef<HTMLDivElement>(null)
+  return (
+    <div
+      ref={bottomRef}
+      className="h-4"
+    />
+  )
+}
+
+export const CommentsPlaceholder = ({ user }: { user: TaggedUserType }) => {
+  const { comments: newComments } = React.useContext(CommentsContext)
+  return (
+    <>
+      {newComments.map((comment, idx) => {
+        const mine = user.id == comment.user.id
+        return (
+          <Comment
+            key={comment.id}
+            mine={mine}
+            className={cn(mine && '')}
+            comment={comment}
+            showNestedShapes={newComments.length === idx + 1 ? false : true}
+            idx={idx}
+          />
+        )
+      })}
+    </>
   )
 }
 
@@ -53,17 +77,10 @@ export interface CommentProps extends React.HTMLProps<HTMLDivElement> {
   mine: boolean
   comment: CommentType
   showNestedShapes?: boolean
-  setComments: React.Dispatch<React.SetStateAction<CommentType[]>>
+  idx: number
 }
 
-export const Comment: React.FC<CommentProps> = ({
-  setComments,
-  showNestedShapes,
-  mine,
-  comment,
-  className,
-  ...props
-}) => {
+export const Comment: React.FC<CommentProps> = ({ idx, showNestedShapes, mine, comment, className, ...props }) => {
   const commentDate = new Date(comment.createdAt!)
   const daysDifference = differenceInDays(new Date(), commentDate)
   const hoursDifference = differenceInHours(new Date(), commentDate)
@@ -80,9 +97,7 @@ export const Comment: React.FC<CommentProps> = ({
             !showNestedShapes && '-mt-4'
           )}
         >
-          {!showNestedShapes && (
-            <div className="w-[2px] max-h-2 bg-border flex-grow border-border border flex basis-auto flex-col items-stretch my-1"></div>
-          )}
+          <div className="w-[2px] max-h-2 bg-border flex-grow border-border border flex basis-auto flex-col items-stretch my-1"></div>
           <AvatarCustom
             className="w-8 h-8"
             hover_card={comment.user}
@@ -93,9 +108,7 @@ export const Comment: React.FC<CommentProps> = ({
               className: 'w-8 h-8',
             }}
           />
-          {showNestedShapes && (
-            <div className="w-[2px] bg-border flex-grow border-border border flex basis-auto flex-col items-stretch mt-1"></div>
-          )}
+          <div className="w-[2px] bg-border flex-grow border-border border flex basis-auto flex-col items-stretch mt-1"></div>
         </div>
         <div className="flex flex-col items-start justify-start w-full">
           <div className="flex items-center justify-start w-full gap-2 mb-2">
@@ -120,23 +133,14 @@ export const Comment: React.FC<CommentProps> = ({
               dangerouslySetInnerHTML={{ __html: comment.content }}
             ></p>
           </div>
-          <CommentBottom
-            setComments={setComments}
-            comment={comment}
-          />
+          <CommentBottom comment={comment} />
         </div>
       </div>
     </>
   )
 }
 
-export const CommentBottom = ({
-  setComments,
-  comment,
-}: {
-  setComments: React.Dispatch<React.SetStateAction<CommentType[]>>
-  comment: CommentType
-}) => {
+export const CommentBottom = ({ comment }: { comment: CommentType }) => {
   const { mention, setMention } = React.useContext(MDXContext)
 
   return (
@@ -163,7 +167,7 @@ export const CommentBottom = ({
         content={{
           options: {
             itemType: 'label',
-            optionsData: optionsData({ setComments, currentComment: comment }),
+            optionsData: optionsData({ currentComment: comment }),
           },
         }}
       />
@@ -171,20 +175,15 @@ export const CommentBottom = ({
   )
 }
 
-const optionsData = ({
-  setComments,
-  currentComment,
-}: {
-  setComments: React.Dispatch<React.SetStateAction<CommentType[]>>
-  currentComment: CommentType
-}) => {
+const optionsData = ({ currentComment }: { currentComment: CommentType }) => {
   const { setEditContent } = React.useContext(MDXContext)
+  const { setComments } = React.useContext(CommentsContext)
+
   return [
     {
       children: 'Edit',
       onClick: () => {
         setEditContent(currentComment)
-        // editorMention.current = {}
       },
     },
     {
@@ -205,19 +204,9 @@ const optionsData = ({
   ] as DropdownMenuOptionsDataType<string, true>[]
 }
 
-export const ChatBottom = ({
-  comments,
-  setComments,
-}: {
-  editorContent: string
-  setEditorContent?: React.Dispatch<React.SetStateAction<string>>
-  setEditorFocus?: React.Dispatch<React.SetStateAction<boolean>>
-  comments: CommentType[]
-  setComments?: React.Dispatch<React.SetStateAction<CommentType[]>>
-}) => {
+export const ChatBottom = ({ comments }: { comments: CommentType[] }) => {
   const { mention, editContent, mdxContent, setMdxContent } = React.useContext(MDXContext)
-
-  console.log(mdxContent)
+  const { setComments } = React.useContext(CommentsContext)
 
   return (
     <div className="flex items-center justify-center gap-2">
@@ -246,15 +235,15 @@ export const ChatBottom = ({
             createdAt: new Date().toString(),
           }
 
-          console.log(newComment)
           setComments &&
             setComments(prev => {
               return [...prev, newComment]
-              //               if (mdxContent) {
-              // } else if (editContent) {
-              //   return [editContent]
-              // }
             })
+
+          //               if (mdxContent) {
+          // } else if (editContent) {
+          //   return [editContent]
+          // }
 
           setMdxContent('')
         }}

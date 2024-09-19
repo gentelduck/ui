@@ -34,7 +34,7 @@ import ts from 'highlight.js/lib/languages/typescript'
 import html from 'highlight.js/lib/languages/xml'
 import { CodeBlockLowlight } from './mdx-code-block-lowlight'
 import { TaggedUserType } from './swapy'
-import { MDXContext } from '../example/mdx-context-provider'
+import { MDXContext, CommentsContext } from '../example/mdx-context-provider'
 
 const lowlight = createLowlight(all)
 lowlight.register('html', html)
@@ -189,9 +189,14 @@ export const MDXMinimalTextEditor = ({
         // @ts-ignore
         editor.chain().focus().insertMentions({ id: mention?.id, label: mention?.name }).run()
       }
-      if (editContent) {
-        editor.commands.setContent(editContent?.content)
-      }
+    }
+  }, [mention, editor])
+
+  React.useEffect(() => {
+    if (editor) {
+      // if (editContent) {
+      //   editor.commands.setContent(editContent?.content)
+      // }
 
       editor.on('update', ({ editor }) => {
         const text = editor.getText()
