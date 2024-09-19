@@ -15,8 +15,8 @@ import { MDXContext, CommentsContext } from '../example/mdx-context-provider'
 
 export const CommentTest = ({ user, comments }: { user: TaggedUserType; comments: CommentType[] }) => {
   return (
-    <ScrollArea className={cn('h-80 p-4 pb-0', comments.length > 2 && 'grid place-content-end')}>
-      <div className="flex flex-col justify-end">
+    <ScrollArea className={cn('h-80 px-4 pt-2 pb-0', comments.length > 2 && 'grid place-content-end')}>
+      <div className="comments flex flex-col justify-end">
         {comments.map((comment, idx) => {
           const mine = user.id == comment.user.id
           return (
@@ -65,7 +65,6 @@ export const CommentsPlaceholder = ({ user }: { user: TaggedUserType }) => {
             className={cn(mine && '')}
             comment={comment}
             showNestedShapes={newComments.length === idx + 1 ? false : true}
-            idx={idx}
           />
         )
       })}
@@ -77,10 +76,9 @@ export interface CommentProps extends React.HTMLProps<HTMLDivElement> {
   mine: boolean
   comment: CommentType
   showNestedShapes?: boolean
-  idx: number
 }
 
-export const Comment: React.FC<CommentProps> = ({ idx, showNestedShapes, mine, comment, className, ...props }) => {
+export const Comment: React.FC<CommentProps> = ({ showNestedShapes, mine, comment, className, ...props }) => {
   const commentDate = new Date(comment.createdAt!)
   const daysDifference = differenceInDays(new Date(), commentDate)
   const hoursDifference = differenceInHours(new Date(), commentDate)
@@ -88,16 +86,11 @@ export const Comment: React.FC<CommentProps> = ({ idx, showNestedShapes, mine, c
   return (
     <>
       <div
-        className={cn('flex mt-1', className)}
+        className={cn('comment flex mt-1', className)}
         {...props}
       >
-        <div
-          className={cn(
-            'flex flex-col flex-shrink-0 basis-[40px] flex-grow-0 items-center mr-2',
-            !showNestedShapes && '-mt-4'
-          )}
-        >
-          <div className="w-[2px] max-h-2 bg-border flex-grow border-border border flex basis-auto flex-col items-stretch my-1"></div>
+        <div className={cn('flex flex-col flex-shrink-0 basis-[40px] flex-grow-0 items-center mr-2')}>
+          <div className="top-shape w-[2px] max-h-2 bg-border flex-grow border-border border flex basis-auto flex-col items-stretch my-1"></div>
           <AvatarCustom
             className="w-8 h-8"
             hover_card={comment.user}
@@ -108,13 +101,13 @@ export const Comment: React.FC<CommentProps> = ({ idx, showNestedShapes, mine, c
               className: 'w-8 h-8',
             }}
           />
-          <div className="w-[2px] bg-border flex-grow border-border border flex basis-auto flex-col items-stretch mt-1"></div>
+          <div className="bottom-shape w-[2px] bg-border flex-grow border-border border flex basis-auto flex-col items-stretch mt-1"></div>
         </div>
         <div className="flex flex-col items-start justify-start w-full">
           <div className="flex items-center justify-start w-full gap-2 mb-2">
             <div className="flex items-center justify-start w-full gap-2">
               <p className="text-sm font-medium">{comment.user.name}</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 {daysDifference > 1
                   ? format(commentDate, 'PP')
                   : hoursDifference > 1
@@ -144,7 +137,7 @@ export const CommentBottom = ({ comment }: { comment: CommentType }) => {
   const { mention, setMention } = React.useContext(MDXContext)
 
   return (
-    <div className="flex items-center justify-center gap-2  mt-1 mb-2">
+    <div className="flex items-center justify-center gap-2  mt-1 mb-1">
       <Button
         size={'sm'}
         variant={'ghost'}
@@ -237,13 +230,14 @@ export const ChatBottom = ({ comments }: { comments: CommentType[] }) => {
 
           setComments &&
             setComments(prev => {
-              return [...prev, newComment]
-            })
+              if (mdxContent) {
+                return [...prev, newComment]
+              } else if (editContent) {
+                return [editContent]
+              }
 
-          //               if (mdxContent) {
-          // } else if (editContent) {
-          //   return [editContent]
-          // }
+              return prev
+            })
 
           setMdxContent('')
         }}

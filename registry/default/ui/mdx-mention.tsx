@@ -30,7 +30,7 @@ const MentionTooltip = ({ node }: any) => {
 
   return (
     <NodeViewWrapper className="inline-flex">
-      <span className="font-medium bg-foreground/10 px-1 my-[2px] rounded text-sm hover:bg-foreground/20 transition cursor-pointer text-primary/60">
+      <span className="font-medium bg-foreground/10 px-1 !my-[0px] rounded text-sm hover:bg-foreground/20 transition cursor-pointer text-primary/60">
         @{label}
       </span>
     </NodeViewWrapper>
@@ -313,19 +313,19 @@ export const MentionList = React.forwardRef((props, ref) => {
   return (
     <div
       className={cn(
-        'bg-background border border-border shadow-sm p-2 rounded-md flex flex-col gap-1 min-w-[200px]',
+        'bg-background border border-border shadow-sm p-2 rounded-md flex flex-col gap-1 w-full',
         props.customClass
       )}
     >
       <h4 className="text-xs font-medium text-muted-foreground">Suggestions</h4>
       <Separator />
-      <div className={cn('flex flex-col')}>
+      <div className={cn('flex flex-col items-start gap-[2px]')}>
         {props.items.length ? (
           props.items.map((item, index) => (
             <Button
               variant="ghost"
               size="sm"
-              className={cn('h-7', index === selectedIndex ? 'bg-primary/20' : '')}
+              className={cn('h-7 w-full justify-start', index === selectedIndex ? 'bg-primary/20' : '')}
               key={index}
               onClick={() => selectItem(index)}
             >

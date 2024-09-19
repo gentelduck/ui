@@ -80,7 +80,7 @@ export type MDXMinimalTextEditorProps = {
   type?: string
   //FIX: TYPE ANY
   setEditorContent?: React.Dispatch<React.SetStateAction<any>>
-  editorMention: React.MutableRefObject<TaggedUserType | null>
+  editorMention?: React.MutableRefObject<TaggedUserType | null>
   editorFocus?: boolean
   onChange?: (html: string) => void
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void

@@ -474,11 +474,7 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
                         className: 'w-8 h-8 bg-secondary/20',
                       }}
                     />
-                    <CommentsLeft
-                      editorMention={editorMention}
-                      commentsArr={commentsArr}
-                      editorFocus={editorFocus}
-                    />
+                    <CommentsLeft commentsArr={commentsArr} />
                   </div>
                 </div>
               </div>
@@ -490,25 +486,12 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
   )
 }
 
-const CommentsLeft = ({
-  editorMention,
-  commentsArr,
-  editorFocus,
-}: {
-  editorMention: React.MutableRefObject<TaggedUserType | null>
-  commentsArr: CommentType[]
-  editorFocus: boolean
-}) => {
-  const [editorContent, setEditorContent] = React.useState<string>('')
+const CommentsLeft = ({ commentsArr }: { commentsArr: CommentType[] }) => {
   return (
     <>
       <div className="relative w-[248.8px]">
         <MDXMinimalTextEditor
           className={cn('w-full font-medium h-42')}
-          editorMention={editorMention}
-          setEditorContent={setEditorContent}
-          editorFocus={editorFocus}
-          content={editorContent}
           name="comment"
           valid={true}
         />
@@ -523,17 +506,17 @@ export interface LikeButtonProps extends React.HTMLProps<HTMLDivElement> {
   likes: LikedType
 }
 import { IoHeart } from 'react-icons/io5'
-import { MDXProvider, CommentsProvider } from './mdx-context-provider'
+import { MDXProvider, CommentsProvider, MDXContext } from './mdx-context-provider'
 
 export const LikeButton: React.FC<LikeButtonProps> = ({ user, likes, className, ...props }) => {
   const { amount } = likes
 
   // Initialize state
   const [likeState, setLikeState] = React.useState({
-    current: amount, // Current number of likes
-    prev: amount, // Previous number of likes
-    scrollTo: null as 'up' | 'down' | null, // Scroll direction
-    hasLiked: false, // Track if the current user has liked
+    current: amount,
+    prev: amount,
+    scrollTo: null as 'up' | 'down' | null,
+    hasLiked: false,
   })
 
   // Toggle like status
@@ -542,10 +525,10 @@ export const LikeButton: React.FC<LikeButtonProps> = ({ user, likes, className, 
       const newLikes = prevState.hasLiked ? prevState.current - 1 : prevState.current + 1
       return {
         ...prevState,
-        prev: prevState.current, // Save the current likes as previous
-        current: newLikes, // Update to the new number of likes
-        scrollTo: prevState.hasLiked ? 'down' : 'up', // Determine scroll direction
-        hasLiked: !prevState.hasLiked, // Toggle the like status
+        prev: prevState.current,
+        current: newLikes,
+        scrollTo: prevState.hasLiked ? 'down' : 'up',
+        hasLiked: !prevState.hasLiked,
       }
     })
   }

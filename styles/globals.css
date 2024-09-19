@@ -527,4 +527,45 @@ section#id {
     }
 }
 
-/* g */
+/* COMMENTS */
+.comments {
+    .comment:first-child {
+        @apply mt-4;
+
+        &>div {
+            &>div.top-shape {
+                @apply hidden;
+            }
+        }
+    }
+
+    .comment {
+        &>div {
+            &>div.top-shape {
+                @apply flex -mt-2;
+            }
+        }
+    }
+
+    .bottom-shape,
+    .top-shape {
+        @apply transition;
+    }
+
+    .comment:last-child {
+        &>div {
+            &>div.top-shape {
+                @apply flex -mt-2;
+            }
+
+            &>div.bottom-shape {
+                @apply opacity-0;
+            }
+        }
+    }
+}
+
+/* MENTION */
+.mention {
+    @apply font-medium bg-foreground/10 px-1 !my-[0px] rounded text-sm hover:bg-foreground/20 transition cursor-pointer text-primary/60 py-[2px];
+}
