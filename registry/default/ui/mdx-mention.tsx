@@ -4,7 +4,6 @@ import { PluginKey } from '@tiptap/pm/state'
 import Suggestion, { SuggestionOptions } from '@tiptap/suggestion'
 import { NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react'
 import React from 'react'
-import { HoverCardCustomView } from './hover-card'
 
 // MentionNodeAttrs Interface
 export interface MentionNodeAttrs {
@@ -27,6 +26,7 @@ export const MentionPluginKey = new PluginKey('mention')
 // MentionTooltip Component
 const MentionTooltip = ({ node }: any) => {
   const label = node.attrs.label || node.attrs.id || ''
+  console.log(label)
 
   return (
     <NodeViewWrapper className="inline-flex">
@@ -94,32 +94,37 @@ export const Mention = Node.create<MentionOptions>({
     }
   },
 
+  // @ts-ignore
   addCommands() {
     return {
       // Custom command for inserting mentions
       insertMentions:
-        content =>
-        ({ commands, editor }) => {
-          const range = editor.state.selection
-          const nodeAfter = editor.view.state.selection.$to.nodeAfter
-          const overrideSpace = nodeAfter?.text?.startsWith(' ')
+        // @ts-ignore
 
-          if (overrideSpace) {
-            range.to += 1
-          }
 
-          // Insert mention content
-          return commands.insertContentAt(range, [
-            {
-              type: this.name,
-              attrs: content, // Provide content with id/label
-            },
-            {
-              type: 'text',
-              text: ' ',
-            },
-          ])
-        },
+          content =>
+          // @ts-ignore
+          ({ commands, editor }) => {
+            const range = editor.state.selection
+            const nodeAfter = editor.view.state.selection.$to.nodeAfter
+            const overrideSpace = nodeAfter?.text?.startsWith(' ')
+
+            if (overrideSpace) {
+              range.to += 1
+            }
+
+            // Insert mention content
+            return commands.insertContentAt(range, [
+              {
+                type: this.name,
+                attrs: content, // Provide content with id/label
+              },
+              {
+                type: 'text',
+                text: ' ',
+              },
+            ])
+          },
     }
   },
 
@@ -172,11 +177,13 @@ export const Mention = Node.create<MentionOptions>({
   },
 
   renderHTML({ node, HTMLAttributes }) {
+    // @ts-ignore
     if (this.options.renderLabel !== undefined) {
       console.warn('renderLabel is deprecated use renderText and renderHTML instead')
       return [
         'span',
         mergeAttributes({ 'data-type': this.name }, this.options.HTMLAttributes, HTMLAttributes),
+        // @ts-ignore
         this.options.renderLabel({
           options: this.options,
           node,
@@ -202,8 +209,10 @@ export const Mention = Node.create<MentionOptions>({
   },
 
   renderText({ node }) {
+    // @ts-ignore
     if (this.options.renderLabel !== undefined) {
       console.warn('renderLabel is deprecated use renderText and renderHTML instead')
+      // @ts-ignore
       return this.options.renderLabel({
         options: this.options,
         node,
@@ -271,18 +280,23 @@ import { ScrollArea } from './scroll-area'
 export const MentionList = React.forwardRef((props, ref) => {
   const [selectedIndex, setSelectedIndex] = React.useState(0)
 
+  // @ts-ignore
   const selectItem = index => {
+    // @ts-ignore
     const item = props.items[index]
     if (item) {
+      // @ts-ignore
       props.command({ id: item })
     }
   }
 
   const upHandler = () => {
+    // @ts-ignore
     setSelectedIndex((selectedIndex + props.items.length - 1) % props.items.length)
   }
 
   const downHandler = () => {
+    // @ts-ignore
     setSelectedIndex((selectedIndex + 1) % props.items.length)
   }
 
@@ -290,9 +304,11 @@ export const MentionList = React.forwardRef((props, ref) => {
     selectItem(selectedIndex)
   }
 
+  // @ts-ignore
   React.useEffect(() => setSelectedIndex(0), [props.items])
 
   React.useImperativeHandle(ref, () => ({
+    // @ts-ignore
     onKeyDown: ({ event }) => {
       if (event.key === 'ArrowUp') {
         upHandler()
@@ -314,13 +330,16 @@ export const MentionList = React.forwardRef((props, ref) => {
     <div
       className={cn(
         'bg-background border border-border shadow-sm p-2 rounded-md flex flex-col gap-1 w-full',
+        // @ts-ignore
         props.customClass
       )}
     >
       <h4 className="text-xs font-medium text-muted-foreground">Suggestions</h4>
       <Separator />
       <div className={cn('flex flex-col items-start gap-[2px]')}>
+        {/* @ts-ignore */}
         {props.items.length ? (
+          // @ts-ignore
           props.items.map((item, index) => (
             <Button
               variant="ghost"
@@ -329,7 +348,8 @@ export const MentionList = React.forwardRef((props, ref) => {
               key={index}
               onClick={() => selectItem(index)}
             >
-              {/* Render a custom React component for each item */}
+              {/* Render a custom React component for each item 
+        // @ts-ignore*/}
               {props.renderItem ? props.renderItem(item) : item}
             </Button>
           ))
@@ -342,6 +362,7 @@ export const MentionList = React.forwardRef((props, ref) => {
 })
 
 export const CustomSuggestion = {
+  // @ts-ignore
   items: ({ query }) => {
     return [
       'Lea Thompson',
@@ -363,10 +384,13 @@ export const CustomSuggestion = {
   },
 
   render: () => {
+    // @ts-ignore
     let component
+    // @ts-ignore
     let popup
 
     return {
+      // @ts-ignore
       onStart: props => {
         component = new ReactRenderer(MentionList, {
           props,
@@ -387,10 +411,13 @@ export const CustomSuggestion = {
           placement: 'bottom-start',
         })
       },
+      // @ts-ignore
       onUpdate(props) {
+        // @ts-ignore
         component.updateProps({
           ...props,
           customClass: '', // Updated class if needed
+          // @ts-ignore
           renderItem: item => (
             <div className="">
               <span>{item}</span>
@@ -402,21 +429,27 @@ export const CustomSuggestion = {
           return
         }
 
+        // @ts-ignore
         popup[0].setProps({
           getReferenceClientRect: props.clientRect,
         })
       },
 
+      // @ts-ignore
       onKeyDown(props) {
         if (props.event.key === 'Escape') {
+          // @ts-ignore
           popup[0].hide()
           return true
         }
+        // @ts-ignore
         return component.ref?.onKeyDown(props)
       },
 
       onExit() {
+        // @ts-ignore
         popup[0].destroy()
+        // @ts-ignore
         component.destroy()
       },
     }

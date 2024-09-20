@@ -78,28 +78,9 @@ export type MDXMinimalTextEditorProps = {
   className?: string
   content?: string
   type?: string
-  //FIX: TYPE ANY
-  setEditorContent?: React.Dispatch<React.SetStateAction<any>>
-  editorMention?: React.MutableRefObject<TaggedUserType | null>
-  editorFocus?: boolean
-  onChange?: (html: string) => void
-  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
-  cb?: (editor: Editor) => void
 }
 
-export const MDXMinimalTextEditor = ({
-  valid,
-  name,
-  className,
-  content,
-  type,
-  editorMention,
-  setEditorContent,
-  editorFocus,
-  onKeyDown,
-  onChange,
-  cb,
-}: MDXMinimalTextEditorProps) => {
+export const MDXMinimalTextEditor = ({ valid, name, className, content, type }: MDXMinimalTextEditorProps) => {
   const [data, setData] = React.useState<DataState>({ data: [], q: '' })
   const [inputValue, setInputValue] = React.useState<string>('')
 
@@ -172,10 +153,11 @@ export const MDXMinimalTextEditor = ({
     [valid, name]
   )
 
-  const { mention, editContent, mdxContent, setMdxContent } = React.useContext(MDXContext)
+  const { mention, editContent, mdxContent, setMention, setMdxContent } = React.useContext(MDXContext)
   React.useEffect(() => {
     if (editor && mdxContent === '') {
       editor.commands.clearContent()
+      setMention(null)
     }
   }, [mdxContent])
 
@@ -194,10 +176,6 @@ export const MDXMinimalTextEditor = ({
 
   React.useEffect(() => {
     if (editor) {
-      // if (editContent) {
-      //   editor.commands.setContent(editContent?.content)
-      // }
-
       editor.on('update', ({ editor }) => {
         const text = editor.getText()
         const html = editor.getHTML()
