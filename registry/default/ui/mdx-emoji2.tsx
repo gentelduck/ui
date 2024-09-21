@@ -9,6 +9,10 @@ import { ReactRenderer } from '@tiptap/react'
 import { cn } from '@/lib'
 import { Button } from './button'
 import { Separator } from './ShadcnUI'
+import { init, SearchIndex } from 'emoji-mart'
+import data from '@emoji-mart/data'
+import localFont from 'next/font/local'
+import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
 
 // MentionNodeAttrs Interface
 export interface MentionNodeAttrs {
@@ -29,21 +33,36 @@ export type MentionOptions<SuggestionItem = any, Attrs extends Record<string, an
 export const MentionPluginKey = new PluginKey('mention')
 
 // MentionTooltip Component
-const MentionTooltip = ({ node }: any) => {
-  const label = node.attrs.label || node.attrs.id || ''
-  console.log(label)
+export const EmojiFont = localFont({ src: '../../../assets/fonts/font.ttf' })
+
+const EmojiTooltip = ({ node }: any) => {
+  const shortcode = node.attrs.shortcode || ''
 
   return (
-    <NodeViewWrapper className="inline-flex">
-      <span className="font-medium bg-foreground/10 px-1 !my-[0px] rounded text-sm hover:bg-foreground/20 transition cursor-pointer text-primary/60">
-        @{label}
-      </span>
+    <NodeViewWrapper className={cn('inline-flex', EmojiFont.className)}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="text-lg h-fit leading-none">
+            {/* @ts-ignore */}
+            <span> {node.attrs.emoji} </span>
+          </span>
+        </TooltipTrigger>
+        <TooltipContent>
+          <div className="flex items-center gap-1">
+            <span className="!text-lg leading-none">
+              {/* @ts-ignore */}
+              <span> {node.attrs.emoji} </span>
+            </span>
+            <p className="text-muted-foreground font-semibold font-mono">{shortcode}</p>
+          </div>
+        </TooltipContent>
+      </Tooltip>
     </NodeViewWrapper>
   )
 }
 
 // Mention Node Definition
-export const Mention = Node.create<MentionOptions>({
+export const Emoji2 = Node.create<MentionOptions>({
   name: 'mention',
 
   addOptions() {
@@ -61,7 +80,7 @@ export const Mention = Node.create<MentionOptions>({
         ]
       },
       suggestion: {
-        char: '@',
+        char: ':',
         pluginKey: MentionPluginKey,
         command: ({ editor, range, props }) => {
           const nodeAfter = editor.view.state.selection.$to.nodeAfter
@@ -269,7 +288,7 @@ export const Mention = Node.create<MentionOptions>({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(MentionTooltip)
+    return ReactNodeViewRenderer(EmojiTooltip)
   },
 })
 
@@ -337,19 +356,29 @@ export const MentionList = React.forwardRef((props, ref) => {
         {/* @ts-ignore */}
         {props.items.length ? (
           // @ts-ignore
-          props.items.map((item, index) => (
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn('h-7 w-full justify-start', index === selectedIndex ? 'bg-primary/20' : '')}
-              key={index}
-              onClick={() => selectItem(index)}
-            >
-              {/* Render a custom React component for each item 
+          props.items.map((item, index) => {
+            console.log(props.renderItem)
+            return (
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn('h-7 w-full justify-start', index === selectedIndex ? 'bg-primary/20' : '')}
+                key={index}
+                onClick={() => selectItem(index)}
+              >
+                {/* Render a custom React component for each item 
         // @ts-ignore*/}
-              {props.renderItem ? props.renderItem(item) : item}
-            </Button>
-          ))
+                <span className="text-lg h-fit leading-none">
+                  {/* @ts-ignore */}
+                  <span> {item.skins[0].native} </span>
+                </span>
+
+                {
+                  // props.renderItem ? props.renderItem(item) : item
+                }
+              </Button>
+            )
+          })
         ) : (
           <div className="text-sm text-muted-foreground text-center">No result</div>
         )}
@@ -361,23 +390,14 @@ export const MentionList = React.forwardRef((props, ref) => {
 export const CustomSuggestion = {
   // @ts-ignore
   items: ({ query }) => {
-    return [
-      'Lea Thompson',
-      'Cory House',
-      'Marisa Solace',
-      'Huck Finn',
-      'Bugs Bunny',
-      'LeBron James',
-      'Kobe Bryant',
-      'Michael Jordan',
-      'Cyndi Lauper',
-      'Tom Cruise',
-      'Madonna',
+    init({ data })
+    // console.log(Object.values(data.emojis))
 
-      // more items...
-    ]
-      .filter(item => item.toLowerCase().startsWith(query.toLowerCase()))
-      .slice(0, 5)
+    return (
+      Object.values(data.emojis)
+        // .filter(item => item.toLowerCase().startsWith(query.toLowerCase()))
+        .slice(0, 5)
+    )
   },
 
   render: () => {
@@ -415,11 +435,14 @@ export const CustomSuggestion = {
           ...props,
           customClass: '', // Updated class if needed
           // @ts-ignore
-          renderItem: item => (
-            <div className="">
-              <span>{item}</span>
-            </div>
-          ),
+          renderItem: item => {
+            console.log(item)
+            return (
+              <div className="">
+                <span>{item}</span>
+              </div>
+            )
+          },
         })
 
         if (!props.clientRect) {

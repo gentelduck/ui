@@ -14,27 +14,23 @@ import Image from '@tiptap/extension-image'
 import TextStyle from '@tiptap/extension-text-style'
 import StarterKit from '@tiptap/starter-kit'
 // import Ai from '@tiptap-pro/extension-ai'
-import { Mention, CustomSuggestion } from './mdx-mention'
 import { all, createLowlight } from 'lowlight'
 
 import data from '@emoji-mart/data'
 import { useDebounceCallback } from '@/hooks'
 import { cn } from '@/lib'
 import { ScrollArea } from './scroll-area'
-import { EmojiFont, EmojiReplacer } from './mdx-emoji'
 import { init, SearchIndex } from 'emoji-mart'
 import { SpaceNode } from './space-node'
 import { z } from 'zod'
-import { Separator } from './ShadcnUI'
-import { Command, CommandGroup, CommandItem, CommandList } from './command'
 import { MDXTextEditorToolbar } from './mdx-toolbar'
 import css from 'highlight.js/lib/languages/css'
 import js from 'highlight.js/lib/languages/javascript'
 import ts from 'highlight.js/lib/languages/typescript'
 import html from 'highlight.js/lib/languages/xml'
 import { CodeBlockLowlight } from './mdx-code-block-lowlight'
-import { TaggedUserType } from './swapy'
-import { MDXContext, CommentsContext } from '../example/mdx-context-provider'
+import { MDXContext } from '../example/mdx-context-provider'
+import { CustomSuggestion, Emoji2 } from './mdx-emoji2'
 
 const lowlight = createLowlight(all)
 lowlight.register('html', html)
@@ -115,23 +111,36 @@ export const MDXMinimalTextEditor = ({ valid, name, className, content, type }: 
         }),
         Image,
         SpaceNode,
-        EmojiReplacer.configure({
-          shouldUseExtraLookupSpace: false,
-          shouldUseExtraReplacementSpace: false,
-        }),
-        Mention.configure({
+        Emoji2.configure({
           HTMLAttributes: {
             class: 'mention',
           },
           suggestion: {
             ...CustomSuggestion,
-            items: ({ query }) => {
-              return ['wildduck', 'Lea Thompson', 'Cory House', 'Marisa Solace', 'Huck Finn', 'Bugs Bunny']
-                .filter(item => item.toLowerCase().startsWith(query.toLowerCase()))
-                .slice(0, 5)
-            },
+            //   items: ({ query }) => {
+            //     return data
+            //     // .filter(item => item.toLowerCase().startsWith(query.toLowerCase()))
+            //     // .slice(0, 5)
+            //   },
           },
         }),
+        // EmojiReplacer.configure({
+        //   shouldUseExtraLookupSpace: false,
+        //   shouldUseExtraReplacementSpace: false,
+        // }),
+        // Mention.configure({
+        //   HTMLAttributes: {
+        //     class: 'mention',
+        //   },
+        //   suggestion: {
+        //     ...CustomSuggestion,
+        //     items: ({ query }) => {
+        //       return ['wildduck', 'Lea Thompson', 'Cory House', 'Marisa Solace', 'Huck Finn', 'Bugs Bunny']
+        //         .filter(item => item.toLowerCase().startsWith(query.toLowerCase()))
+        //         .slice(0, 5)
+        //     },
+        //   },
+        // }),
       ],
       //   content: `
       // <p>Hi everyone! Don’t forget the daily stand up at 8 AM.</p>
@@ -223,6 +232,31 @@ export const MDXMinimalTextEditor = ({ valid, name, className, content, type }: 
     return null
   }
 
+  // {data?.data.length > 0 && (
+  //         <Command className="fixed bottom-[50px] left-0 right-0 w-[221px] h-auto">
+  //             <div className="text-sm font-medium px-3 pt-2 pb-1">
+  //             EMOJI MATCHING <span className="text-sky-500">:{data.q}</span>
+  //             </div>
+  //                 <Separator />
+  //                 <CommandList>
+  //                     <CommandGroup>
+  //                         {data?.data.map(emoji => (
+  //                             <CommandItem
+  //                                 key={emoji.id}
+  //                                 value={emoji.skins[0].native}
+  //                                 onSelect={_ => {
+  //                                     handleEmojiClick(emoji)
+  //                                 }}
+  //                                 className="flex items-center justify-start gap-1"
+  //                             >
+  //                                     <span className={cn('text-xl', EmojiFont.className)}>{emoji.skins[0].native}</span>
+  //                                     <span className="text-muted-foreground">{emoji.skins[0].shortcodes}</span>
+  //                                 </CommandItem>
+  //                         ))}
+  //                     </CommandGroup>
+  //                 </CommandList>
+  //             </Command>
+  //     )}
   return (
     <>
       <MDXTextEditorToolbar editor={editor} />
@@ -232,32 +266,6 @@ export const MDXMinimalTextEditor = ({ valid, name, className, content, type }: 
           valid && 'disabled'
         )}
       >
-        {data?.data.length > 0 && (
-          <Command className="fixed bottom-[50px] left-0 right-0 w-[221px] h-auto">
-            <div className="text-sm font-medium px-3 pt-2 pb-1">
-              EMOJI MATCHING <span className="text-sky-500">:{data.q}</span>
-            </div>
-            <Separator />
-            <CommandList>
-              <CommandGroup>
-                {data?.data.map(emoji => (
-                  <CommandItem
-                    key={emoji.id}
-                    value={emoji.skins[0].native}
-                    onSelect={_ => {
-                      handleEmojiClick(emoji)
-                    }}
-                    className="flex items-center justify-start gap-1"
-                  >
-                    <span className={cn('text-xl', EmojiFont.className)}>{emoji.skins[0].native}</span>
-                    <span className="text-muted-foreground">{emoji.skins[0].shortcodes}</span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        )}
-
         <EditorContent editor={editor} />
       </ScrollArea>
     </>
