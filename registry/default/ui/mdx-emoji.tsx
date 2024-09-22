@@ -110,20 +110,25 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
   addNodeView() {
     return ReactNodeViewRenderer(EmojiTooltip)
   },
-
   addInputRules() {
     init({ data })
 
-    // @ts-ignore
     const emojis_native = Object.values(data.emojis).map(emoji => {
-      // @ts-ignore
-      return { find: emoji.skins[0].shortcodes, replace: emoji.skins[0].native }
+      const shortcode = emoji.skins[0].shortcodes
+      const native = emoji.skins[0].native
+      console.log({ shortcode, native }) // Check values here
+      return { find: shortcode, replace: native }
     })
 
     const lookupSpace = this.options.shouldUseExtraLookupSpace ? ' ' : ''
     const replacementSpace = this.options.shouldUseExtraReplacementSpace ? ' ' : ''
 
     const createRule = (inputRule: InputRuleOptions) => {
+      if (typeof inputRule.find !== 'string') {
+        console.error('Invalid inputRule:', inputRule) // Log invalid inputRule
+        return null // Skip this rule
+      }
+
       const basePattern = this.options.shouldUseExtraLookupSpace
         ? `${lookupSpace}${escapeForRegEx(inputRule.find.trim())}`
         : `${escapeForRegEx(inputRule.find.trim())}${lookupSpace}`
@@ -158,7 +163,7 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
       }
     }
 
-    const rules = [...this.options.ruleConfigs, ...emojis_native].map(createRule)
+    const rules = [...this.options.ruleConfigs, ...emojis_native].map(createRule).filter(rule => rule !== null) // Only keep valid rules
 
     return rules
   },
