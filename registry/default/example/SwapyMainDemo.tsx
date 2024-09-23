@@ -150,6 +150,7 @@ export const initData: InitDataType = {
         {
           id: 'comment-1',
           user: users[0],
+          type: 'text',
           content:
             'BTW Ahemd, you have to finished this task today! we are on a deadline.  <span emoji="💀" shortcode=":sunglasses:" data-emoji="💀" class="inline-flex text-lg leading-none __className_aef5f5">💀</span>',
           createdAt: '2021-01-01T00:00:00.000Z',
@@ -159,16 +160,29 @@ export const initData: InitDataType = {
           },
         },
         {
-          id: 'comment-2',
+          id: 'comment-3',
           user: users[1],
-          content:
-            '<p>Okay Lol. I am going to finish this task. not today. <span emoji="😎" shortcode=":sunglasses:" data-emoji="😎" class="inline-flex text-lg leading-none __className_aef5f5">😎</span>, and I use arch, vim and Rust BTW, forgot to mention Elixir...girl.</p>',
+          type: 'voice',
+          content: '',
           createdAt: '2021-01-01T00:00:00.000Z',
           likes: {
             amount: 4089,
             users: [],
           },
         },
+
+        // {
+        //   id: 'comment-2',
+        //   user: users[1],
+        //   type: 'text',
+        //   content:
+        //     '<p>Okay Lol. I am going to finish this task. not today. <span emoji="😎" shortcode=":sunglasses:" data-emoji="😎" class="inline-flex text-lg leading-none __className_aef5f5">😎</span>, and I use arch, vim and Rust BTW, forgot to mention Elixir...girl.</p>',
+        //   createdAt: '2021-01-01T00:00:00.000Z',
+        //   likes: {
+        //     amount: 4089,
+        //     users: [],
+        //   },
+        // },
       ],
       taggedUsers: users,
       labels: [
@@ -507,6 +521,7 @@ export interface LikeButtonProps extends React.HTMLProps<HTMLDivElement> {
 }
 import { IoHeart } from 'react-icons/io5'
 import { MDXProvider, CommentsProvider, MDXContext } from './mdx-context-provider'
+import { record } from '@/assets'
 
 export const LikeButton: React.FC<LikeButtonProps> = ({ user, likes, className, ...props }) => {
   const { amount } = likes

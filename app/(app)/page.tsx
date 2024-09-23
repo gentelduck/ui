@@ -12,6 +12,8 @@ import {
   KanbanColumnHeaderTemplate,
   KanbanColumnRowTemplate,
 } from '@/registry/default/example/SwapyMainDemo'
+import { Comment } from '@/registry/default/ui/comment'
+import { AudioRecord } from '@/registry/default/ui/audio-record'
 // import { ThemeWrapper } from '@/components/theme-wrapper'
 // import { ThemeCustomizer } from '@/components/theme-customizer'
 // import { ThemesTabs } from './themes/tabs'
@@ -21,23 +23,26 @@ export default function IndexPage() {
   return (
     <>
       <div className="flex items-start gap-4 p-4  select-none container mt-12">
-        <Kanban
-          initData={initData}
-          kanbanColumnHeader={{
-            children: KanbanColumnHeaderTemplate,
-            // className: 'bg-red-500'
-          }}
-          kanbanColumnAddRow={{ children: KanbanColumnAddRowTemplate }}
-          kanbanColumnRow={{
-            children: KanbanColumnRowTemplate,
-
-            options: {
-              // draggingOnOriginStyle: 'bg-red-500',
-              // draggingOutStyle: 'bg-green-500',
-              // draggingOverNoColumnStyle: 'bg-purple-500',
-            },
-          }}
-        />
+        <AudioRecord />
+        {
+          // <Kanban
+          //   initData={initData}
+          //   kanbanColumnHeader={{
+          //     children: KanbanColumnHeaderTemplate,
+          //     // className: 'bg-red-500'
+          //   }}
+          //   kanbanColumnAddRow={{ children: KanbanColumnAddRowTemplate }}
+          //   kanbanColumnRow={{
+          //     children: KanbanColumnRowTemplate,
+          //
+          //     options: {
+          //       // draggingOnOriginStyle: 'bg-red-500',
+          //       // draggingOutStyle: 'bg-green-500',
+          //       // draggingOverNoColumnStyle: 'bg-purple-500',
+          //     },
+          //   }}
+          // />
+        }
       </div>
     </>
   )

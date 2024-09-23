@@ -12,6 +12,7 @@ import { DropdownMenuOptionsDataType, DropdownMenuView } from './dropdown-menu'
 
 import 'highlight.js/styles/tokyo-night-dark.css'
 import { MDXContext, CommentsContext } from '../example/mdx-context-provider'
+import { AudioRecord } from './audio-record'
 
 export const CommentTest = ({ user, comments }: { user: TaggedUserType; comments: CommentType[] }) => {
   return (
@@ -83,7 +84,11 @@ export const Comment: React.FC<CommentProps> = ({ showNestedShapes, mine, commen
   const daysDifference = differenceInDays(new Date(), commentDate)
   const hoursDifference = differenceInHours(new Date(), commentDate)
 
-  return (
+  return comment.type === 'voice' ? (
+    <>
+      <AudioRecord />
+    </>
+  ) : (
     <>
       <div
         className={cn('comment flex mt-1', className)}

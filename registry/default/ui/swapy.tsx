@@ -46,6 +46,7 @@ export interface CommentType {
   id: string
   content: string
   createdAt: string
+  type: 'voice' | 'text'
   user: TaggedUserType
   likes: LikedType
 }

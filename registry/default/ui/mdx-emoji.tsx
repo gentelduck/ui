@@ -33,7 +33,7 @@ const EmojiTooltip = ({ node }: any) => {
         <TooltipTrigger asChild>
           <span className="text-lg h-fit leading-none">
             {/* @ts-ignore */}
-            <span> {node.attrs.emoji} </span>
+            <span className={cn('inline-flex', EmojiFont.className)}> {node.attrs.emoji} </span>
           </span>
         </TooltipTrigger>
         <TooltipContent>
