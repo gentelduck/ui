@@ -44,7 +44,7 @@ const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<Ta
       setTableData(() => (updatedColumns[idx].currentSort === 'asc' ? sortedData : data))
     },
     icon: {
-      icon: ArrowDownIcon,
+      children: ArrowDownIcon,
       className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
     },
     children: 'Asc',
@@ -61,7 +61,7 @@ const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<Ta
       setTableData(() => (updatedColumns[idx].currentSort === 'desc' ? sortedData : data))
     },
     icon: {
-      icon: ArrowUpIcon,
+      children: ArrowUpIcon,
       className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
     },
     children: 'Desc',
@@ -73,7 +73,7 @@ const tableHeaderDropDown: DropdownMenuOptionsDataType<TableHeaderOptionsType<Ta
       setHeaders(headers.filter(sub => sub !== column))
     },
     icon: {
-      icon: EyeNoneIcon as LucideIcon,
+      children: EyeNoneIcon as LucideIcon,
       className: 'mr-2 h-3.5 w-3.5 text-muted-foreground/70',
     },
     children: 'Hide',
@@ -272,14 +272,14 @@ const optionsData: DropdownMenuOptionsDataType<TableHeaderOptionsType<TableDataT
   {
     children: 'Favorite',
     icon: {
-      icon: Star,
+      children: Star,
     },
   },
   {
     children: 'Delete',
     command: { label: '⌘⌫', key: 'a' },
     icon: {
-      icon: Trash2,
+      children: Trash2,
     },
     className: '[&_span]:text-red-500 text-red-500 [&_span]:hover:text-primary',
   },

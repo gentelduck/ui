@@ -164,10 +164,10 @@ export const AudioRecord = () => {
     }
   }, [audioURL])
 
-  console.log(audioRef.current.duration)
+  console.log(blob)
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <div className="p-5 bg-secondary rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-4">Voice Recorder</h1>
         <div className="mb-4">
@@ -184,7 +184,7 @@ export const AudioRecord = () => {
       </div>
 
       {audioURL && (
-        <div className="flex items-center gap-4 bg-secondary px-3 pt-2 pb-3 rounded-xl">
+        <div className="flex items-center gap-4 bg-secondary px-3 pt-2 pb-3 rounded-xl w-fit">
           <Button
             onClick={handlePlayPause}
             size={'icon'}
@@ -215,16 +215,13 @@ export const AudioRecord = () => {
                   backgroundColor={'#f0f0f000'}
                 />
               </div>
-              <span className="text-sm text-foreground">{formatAudioTimeWithoutMilliseconds(currentTime)}</span>
               <span className="text-sm text-foreground">
-                {isPaused || currentTime === 0
-                  ? formatAudioTimeWithoutMilliseconds(audioRef.current.duration)
-                  : formatAudioTimeWithoutMilliseconds(currentTime)}
+                {currentTime ? formatAudioTimeWithoutMilliseconds(currentTime) : audioRef.current.duration}
               </span>
             </div>
           )}
         </div>
       )}
-    </>
+    </div>
   )
 }
