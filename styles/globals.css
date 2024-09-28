@@ -573,6 +573,9 @@ section#id {
 /*  COMMENT */
 .fade_animation {
     transition:
-        opacity 0.4s,
+        margin 0.2s,
+        opacity 0.8s,
+        width 0.3s,
+        height 0.3s,
         transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
