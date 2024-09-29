@@ -228,8 +228,8 @@ interface HandleStopRecordingParams
 interface StartTimerParams extends Pick<RecordingParams, 'durationRef' | 'intervalRef' | 'setRecordedDuration'> {}
 
 const formatTime = (milliseconds: number): string => {
-  const minutes = Math.floor(milliseconds / 6000)
-  const seconds = Math.floor((milliseconds % 6000) / 1000)
+  const minutes = Math.floor(milliseconds / 60000) // Divide by 60000 for minutes
+  const seconds = Math.floor((milliseconds % 60000) / 1000) // Divide by 1000 for seconds
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 
@@ -252,7 +252,6 @@ const startRecording = async ({
   }
 
   mediaRecorderRef.current.onstop = () => {
-    console.log(audioChunksRef.current)
     setRecordedDuration(_ => 0)
     durationRef.current > 0 &&
       handleStopRecording({
