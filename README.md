@@ -13,22 +13,6 @@ Welcome to **Duck UI**, a modern UI component library designed for flexibility a
 - **Themed Styling**: Built with a palette that includes black and white, and customizable color options for various themes.
 - **Well-documented**: Comprehensive documentation to help you get started and make the most of Duck UI.
 
-## 📦 Installation
-
-To get started with Duck UI, install it via npm or yarn:
-
-```bash
-npm install @ahmedayob/duck-ui
-```
-
-or
-
-```bash
-yarn add @ahmedayob/duck-ui
-```
-
-## 📘 Usage
-
 Here's a basic example of how to use Duck UI components in your React application:
 
 ```jsx
