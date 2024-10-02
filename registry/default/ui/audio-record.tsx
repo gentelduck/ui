@@ -35,13 +35,21 @@ export const AudioRecord: React.FC = () => {
     <div className="flex flex-col gap-2 h-screen">
       <div className="p-5 rounded-lg shadow-md flex items-center gap-4 border border-border w-[333px]">
         <div className="relative">
-          {recording && (
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-              <span className="font-mono">{formatTime(recordedDuration)}</span>
-              <span className="font-mono w-2 h-2 rounded-full bg-primary animate-pulse" />
-            </div>
-          )}
-          <Input className={cn('transition fade_animation', !recording ? 'w-[235px]' : 'w-[179px] ')} />
+          <div
+            className={cn(
+              'absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 transition duration-100',
+              recording ? 'opacity-1' : 'opacity-0 pointer-events-none right-4'
+            )}
+          >
+            <span className="font-mono">{formatTime(recordedDuration)}</span>
+            <span className="font-mono w-2 h-2 rounded-full bg-primary animate-pulse" />
+          </div>
+          <div>
+            <Input
+              disabled={recording}
+              className={cn('transition fade_animation', !recording ? 'w-[235px]' : 'w-[179px] !opacity-100')}
+            />
+          </div>
         </div>
 
         <Button
@@ -101,6 +109,12 @@ export const AudioRecord: React.FC = () => {
   )
 }
 
+const AudioVisualizerMemo = React.memo(AudioVisualizer)
+
+const Wrapper = ({ children }: { children: React.ReactNode }) => {
+  return <>{children}</>
+}
+
 export const AudioRecordItem = ({
   audio,
 }: {
@@ -113,30 +127,30 @@ export const AudioRecordItem = ({
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [currentTime, setCurrentTime] = useState<number>(0)
-  const [timeLeft, setTimeLeft] = useState<number>(audio.duration * 1000 || 0)
+  const [timeLeft, setTimeLeft] = useState<number>(audio.duration)
 
-  useEffect(() => {
+  // Update the time left based on currentTime and duration
+  React.useEffect(() => {
+    setTimeLeft(audio.duration - currentTime)
+  }, [currentTime, audio.duration])
+
+  React.useEffect(() => {
     if (audio.blob) {
       audioRef.current = new Audio(URL.createObjectURL(audio.blob))
 
-      // Set the initial timeLeft value
-      audioRef.current.onloadedmetadata = () => {
-        setTimeLeft(audioRef.current!.duration * 1000)
-      }
+      // audioRef.current.onloadedmetadata = () => {
+      //   setLoading(false)
+      // }
 
       audioRef.current.onended = () => {
         setIsPlaying(false)
         setCurrentTime(0)
-        setTimeLeft(audio.duration * 1000)
+        setTimeLeft(audio.duration)
       }
 
       audioRef.current.ontimeupdate = () => {
         const currentTimeInMillis = audioRef.current!.currentTime * 1000
         setCurrentTime(currentTimeInMillis)
-
-        // Calculate the time left (duration - current time) and decrement by 1 second
-        const remainingTime = audioRef.current!.duration * 1000 - currentTimeInMillis
-        setTimeLeft(Math.max(remainingTime - 1000, 0)) // Ensure it doesn't go below 0
       }
 
       return () => {
@@ -146,7 +160,7 @@ export const AudioRecordItem = ({
         }
       }
     }
-  }, [audio])
+  }, [audio.blob])
 
   // Play or pause audio
   const handlePlayPause = React.useCallback(() => {
@@ -156,14 +170,14 @@ export const AudioRecordItem = ({
       audioRef.current?.play()
     }
     setIsPlaying(!isPlaying)
-  }, [])
+  }, [isPlaying])
 
   return (
     <>
       <div className="flex items-center gap-4 bg-secondary px-3 pt-2 pb-3 rounded-xl w-fit">
         <Button
           onClick={handlePlayPause}
-          size={'icon'}
+          size="icon"
           className="rounded-full relative"
           loading={loading}
         >
@@ -184,23 +198,35 @@ export const AudioRecordItem = ({
         {audio.blob && (
           <div className="mt-4 flex flex-col">
             <div className="cursor-pointer w-fit bg-secondary p-0">
-              {
-                <AudioVisualizer
-                  blob={audio.blob}
-                  width={180}
-                  height={23}
-                  barWidth={3}
-                  gap={2}
-                  barColor={'#ffffff69'}
-                  currentTime={currentTime / 1000}
-                  barPlayedColor={'#fff'}
-                  backgroundColor={'#f0f0f000'}
-                  setLoading={setLoading}
-                />
-              }
+              <Wrapper
+                children={
+                  <AudioVisualizerMemo
+                    blob={audio.blob}
+                    width={180}
+                    height={27}
+                    barWidth={3}
+                    gap={2}
+                    barColor="#ffffff69"
+                    currentTime={currentTime / 1000}
+                    barPlayedColor="#fff"
+                    backgroundColor="#f0f0f000"
+                    setLoading={setLoading}
+                  />
+                }
+              />
             </div>
 
-            <span className="flex items-center text-primary">{formatTime(isPlaying ? timeLeft : audio.duration)}</span>
+            <div className="flex items-center gap-2">
+              <span className="flex items-center text-primary text-sm">
+                {isPlaying || timeLeft < audio.duration
+                  ? formatTime(timeLeft > 0 ? timeLeft : 0)
+                  : formatTime(audio.duration)}
+              </span>
+              {
+                /* TODO: YOU SHOULD EDIT THE OBJ TO GIVE YOU VALUE OF RECIPIENT OPENED THE RECORD */
+                <span className="w-2 h-2 bg-primary rounded-full" />
+              }
+            </div>
           </div>
         )}
       </div>
@@ -239,8 +265,8 @@ interface HandleStopRecordingParams
 interface StartTimerParams extends Pick<RecordingParams, 'durationRef' | 'intervalRef' | 'setRecordedDuration'> {}
 
 const formatTime = (milliseconds: number): string => {
-  const minutes = Math.floor(milliseconds / 60000) // Divide by 60000 for minutes
-  const seconds = Math.floor((milliseconds % 60000) / 1000) // Divide by 1000 for seconds
+  const minutes = Math.floor(milliseconds / 60000)
+  const seconds = Math.floor((milliseconds % 60000) / 1000)
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 

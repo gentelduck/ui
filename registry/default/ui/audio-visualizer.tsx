@@ -1,21 +1,8 @@
-import {
-  useRef,
-  useState,
-  forwardRef,
-  type ForwardedRef,
-  type ForwardRefExoticComponent,
-  type RefAttributes,
-  useImperativeHandle,
-  useEffect,
-} from 'react'
+import { useRef, useState, forwardRef, useImperativeHandle, useEffect } from 'react'
 
 export interface dataPoint {
   max: number
   min: number
-}
-
-interface CustomCanvasRenderingContext2D extends CanvasRenderingContext2D {
-  roundRect: (x: number, y: number, w: number, h: number, radius: number) => void
 }
 
 export const calculateBarData = (
@@ -26,7 +13,7 @@ export const calculateBarData = (
   gap: number
 ): dataPoint[] => {
   const bufferData = buffer.getChannelData(0)
-  const units = width / (barWidth + gap)
+  const units = Math.floor(width / (barWidth + gap))
   const step = Math.floor(bufferData.length / units)
   const amp = height / 2
 
@@ -35,29 +22,19 @@ export const calculateBarData = (
 
   for (let i = 0; i < units; i++) {
     const mins: number[] = []
-    let minCount = 0
     const maxs: number[] = []
-    let maxCount = 0
 
-    for (let j = 0; j < step && i * step + j < buffer.length; j++) {
+    for (let j = 0; j < step && i * step + j < bufferData.length; j++) {
       const datum = bufferData[i * step + j]
-      if (datum <= 0) {
-        mins.push(datum)
-        minCount++
-      }
-      if (datum > 0) {
-        maxs.push(datum)
-        maxCount++
-      }
+      if (datum <= 0) mins.push(datum)
+      if (datum > 0) maxs.push(datum)
     }
-    const minAvg = minCount > 0 ? mins.reduce((a, c) => a + c, 0) / minCount : 0
-    const maxAvg = maxCount > 0 ? maxs.reduce((a, c) => a + c, 0) / maxCount : 0
+
+    const minAvg = mins.length ? mins.reduce((a, c) => a + c, 0) / mins.length : 0
+    const maxAvg = maxs.length ? maxs.reduce((a, c) => a + c, 0) / maxs.length : 0
 
     const dataPoint = { max: maxAvg, min: minAvg }
-
-    if (dataPoint.max > maxDataPoint) maxDataPoint = dataPoint.max
-    if (Math.abs(dataPoint.min) > maxDataPoint) maxDataPoint = Math.abs(dataPoint.min)
-
+    maxDataPoint = Math.max(maxDataPoint, Math.abs(dataPoint.max), Math.abs(dataPoint.min))
     data.push(dataPoint)
   }
 
@@ -72,9 +49,9 @@ export const calculateBarData = (
   return data
 }
 
-export const draw = (
+const draw = (
   data: dataPoint[],
-  canvas: HTMLCanvasElement,
+  canvas: HTMLCanvasElement | null,
   barWidth: number,
   gap: number,
   backgroundColor: string,
@@ -83,15 +60,15 @@ export const draw = (
   currentTime: number = 0,
   duration: number = 1,
   minBarHeight: number = 5,
-  animationProgress: number = 1 // Added animation progress
+  animationProgress: number = 1
 ): void => {
-  const amp = canvas.height / 2
+  if (!canvas) return
 
-  const ctx = canvas.getContext('2d') as CustomCanvasRenderingContext2D
+  const amp = canvas.height / 2
+  const ctx = canvas.getContext('2d')
   if (!ctx) return
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
-
   if (backgroundColor !== 'transparent') {
     ctx.fillStyle = backgroundColor
     ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -100,25 +77,16 @@ export const draw = (
   const playedPercent = (currentTime || 0) / duration
 
   data.forEach((dp, i) => {
-    const mappingPercent = i / data.length
-    const played = playedPercent > mappingPercent
-    ctx.fillStyle = played && barPlayedColor ? barPlayedColor : barColor
+    ctx.fillStyle = playedPercent > i / data.length && barPlayedColor ? barPlayedColor : barColor
 
     const x = i * (barWidth + gap)
     const y = amp
 
-    // Increase the scaling factor to make bars taller
-    const scalingFactor = 2 // Adjust this factor to make bars taller
-    const targetHeight = amp + dp.max * scalingFactor - y
+    const targetHeight = amp + dp.max * 2 - y // Adjust this factor for height
     const h = Math.max(targetHeight * animationProgress, minBarHeight)
 
     ctx.beginPath()
-    if (ctx.roundRect) {
-      ctx.roundRect(x, y - h / 2, barWidth, h, 50)
-      ctx.fill()
-    } else {
-      ctx.fillRect(x, y - h / 2, barWidth, h)
-    }
+    ctx.fillRect(x, y - h / 2, barWidth, h)
   })
 }
 
@@ -156,38 +124,36 @@ const processBlob = async ({
   height,
 }: ProcessBlobType): Promise<void> => {
   if (!canvasRef.current) return
+  const defaultBars = Array.from({ length: Math.floor(width / (barWidth + gap)) }, () => ({
+    max: minBarHeight,
+    min: minBarHeight,
+  }))
 
-  if (!blob) {
-    // Ensure min height bars if no blob is present
-    const barsData = Array.from({ length: Math.floor(width / (barWidth + gap)) }, () => ({
-      max: minBarHeight,
-      min: minBarHeight,
-    }))
-    draw(barsData, canvasRef.current, barWidth, gap, backgroundColor, barColor, barPlayedColor, 0, 1, minBarHeight, 1)
-    setLoading(false)
-    return
-  }
+  draw(defaultBars, canvasRef.current, barWidth, gap, backgroundColor, barColor, barPlayedColor, 0, 1, 1, 1)
 
-  const audioBuffer = await blob.arrayBuffer()
   const audioContext = new AudioContext()
-  await audioContext.decodeAudioData(audioBuffer, buffer => {
+  const audioBuffer = await blob.arrayBuffer()
+
+  // Decode the entire audio data
+  audioContext.decodeAudioData(audioBuffer, buffer => {
     if (!canvasRef.current) return
     setDuration(buffer.duration)
 
+    // Use calculateBarData to process the full buffer across the entire canvas width
     const barsData = calculateBarData(buffer, height, width, barWidth, gap)
+
+    // Set the calculated data for rendering
     setData(barsData)
 
-    // Animate the bar heights
     let startTime: number | null = null
     const animate = (time: number) => {
       if (!startTime) startTime = time
       const progress = Math.min((time - startTime) / 1000, 1) // 1 second animation
-
       setAnimationProgress(progress)
 
       draw(
         barsData,
-        canvasRef.current!,
+        canvasRef.current,
         barWidth,
         gap,
         backgroundColor,
@@ -196,16 +162,16 @@ const processBlob = async ({
         0,
         buffer.duration,
         minBarHeight,
-        progress // Use progress to animate the bars
+        progress
       )
 
       if (progress < 1) {
         requestAnimationFrame(animate)
+      } else {
+        setLoading(false) // End loading state after the animation completes
       }
     }
     requestAnimationFrame(animate)
-
-    setLoading(false)
   })
 }
 
@@ -241,7 +207,7 @@ const AudioVisualizer = forwardRef(
       minBarHeight = 2,
       setLoading,
     }: AudioVisualizerProps,
-    ref?: ForwardedRef<HTMLCanvasElement>
+    ref?: React.ForwardedRef<HTMLCanvasElement>
   ) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [data, setData] = useState<dataPoint[]>([])
@@ -250,31 +216,18 @@ const AudioVisualizer = forwardRef(
 
     useImperativeHandle<HTMLCanvasElement | null, HTMLCanvasElement | null>(ref, () => canvasRef.current, [])
 
-    // Draw default bars initially (before the data is processed)
     useEffect(() => {
       if (canvasRef.current) {
         const defaultBars = Array.from({ length: Math.floor(width / (barWidth + gap)) }, () => ({
           max: minBarHeight,
           min: minBarHeight,
         }))
-        draw(
-          defaultBars,
-          canvasRef.current,
-          barWidth,
-          gap,
-          backgroundColor,
-          barColor,
-          barPlayedColor,
-          0,
-          1,
-          minBarHeight,
-          1
-        )
+        draw(defaultBars, canvasRef.current, barWidth, gap, backgroundColor, barColor, barPlayedColor, 0, 1, 1, 1)
       }
     }, [canvasRef.current, width, barWidth, gap, minBarHeight])
 
-    // Process audio data and update the visualizer once the blob is available
     useEffect(() => {
+      setLoading(true)
       processBlob({
         blob,
         canvasRef,
@@ -291,14 +244,17 @@ const AudioVisualizer = forwardRef(
         barPlayedColor,
         minBarHeight,
       })
-    }, [blob, canvasRef.current])
+    }, [blob])
 
-    // Redraw canvas on currentTime or animationProgress updates
     useEffect(() => {
       if (!canvasRef.current) return
-
       draw(
-        data,
+        data.length
+          ? data
+          : Array.from({ length: Math.floor(width / (barWidth + gap)) }, () => ({
+              min: minBarHeight,
+              max: minBarHeight,
+            })),
         canvasRef.current,
         barWidth,
         gap,
@@ -310,21 +266,17 @@ const AudioVisualizer = forwardRef(
         minBarHeight,
         animationProgress
       )
-    }, [currentTime, duration, animationProgress])
+    }, [data, width, height, currentTime, duration, animationProgress])
 
     return (
-      <div style={{ position: 'relative', width, height }}>
-        <canvas
-          ref={canvasRef}
-          width={width}
-          height={height}
-          style={style}
-        />
-      </div>
+      <canvas
+        ref={canvasRef}
+        width={width}
+        height={height}
+        style={style}
+      />
     )
   }
 )
-
-AudioVisualizer.displayName = 'AudioVisualizer'
 
 export { AudioVisualizer }
