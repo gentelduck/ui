@@ -82,7 +82,8 @@ export const draw = (
   barPlayedColor?: string,
   currentTime: number = 0,
   duration: number = 1,
-  minBarHeight: number = 5 // New minBarHeight argument
+  minBarHeight: number = 5,
+  animationProgress: number = 1 // Added animation progress
 ): void => {
   const amp = canvas.height / 2
 
@@ -104,21 +105,107 @@ export const draw = (
     ctx.fillStyle = played && barPlayedColor ? barPlayedColor : barColor
 
     const x = i * (barWidth + gap)
-    const y = amp + dp.min
-    let h = amp + dp.max - y
+    const y = amp
 
-    // Ensure the bar height is at least `minBarHeight`
-    h = Math.max(h, minBarHeight)
+    // Increase the scaling factor to make bars taller
+    const scalingFactor = 2 // Adjust this factor to make bars taller
+    const targetHeight = amp + dp.max * scalingFactor - y
+    const h = Math.max(targetHeight * animationProgress, minBarHeight)
 
     ctx.beginPath()
     if (ctx.roundRect) {
-      // Use roundRect if supported by the browser
-      ctx.roundRect(x, y, barWidth, h, 50)
+      ctx.roundRect(x, y - h / 2, barWidth, h, 50)
       ctx.fill()
     } else {
-      // Fallback to fillRect if roundRect is not available
-      ctx.fillRect(x, y, barWidth, h)
+      ctx.fillRect(x, y - h / 2, barWidth, h)
     }
+  })
+}
+
+interface ProcessBlobType {
+  canvasRef: React.RefObject<HTMLCanvasElement>
+  blob: Blob
+  barWidth: number
+  gap: number
+  backgroundColor: string
+  barColor: string
+  barPlayedColor?: string
+  minBarHeight: number
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setData: React.Dispatch<React.SetStateAction<dataPoint[]>>
+  setDuration: React.Dispatch<React.SetStateAction<number>>
+  setAnimationProgress: React.Dispatch<React.SetStateAction<number>>
+  width: number
+  height: number
+}
+
+const processBlob = async ({
+  canvasRef,
+  blob,
+  barWidth,
+  gap,
+  backgroundColor,
+  barColor,
+  barPlayedColor,
+  minBarHeight,
+  setLoading,
+  setData,
+  setDuration,
+  setAnimationProgress,
+  width,
+  height,
+}: ProcessBlobType): Promise<void> => {
+  if (!canvasRef.current) return
+
+  if (!blob) {
+    // Ensure min height bars if no blob is present
+    const barsData = Array.from({ length: Math.floor(width / (barWidth + gap)) }, () => ({
+      max: minBarHeight,
+      min: minBarHeight,
+    }))
+    draw(barsData, canvasRef.current, barWidth, gap, backgroundColor, barColor, barPlayedColor, 0, 1, minBarHeight, 1)
+    setLoading(false)
+    return
+  }
+
+  const audioBuffer = await blob.arrayBuffer()
+  const audioContext = new AudioContext()
+  await audioContext.decodeAudioData(audioBuffer, buffer => {
+    if (!canvasRef.current) return
+    setDuration(buffer.duration)
+
+    const barsData = calculateBarData(buffer, height, width, barWidth, gap)
+    setData(barsData)
+
+    // Animate the bar heights
+    let startTime: number | null = null
+    const animate = (time: number) => {
+      if (!startTime) startTime = time
+      const progress = Math.min((time - startTime) / 1000, 1) // 1 second animation
+
+      setAnimationProgress(progress)
+
+      draw(
+        barsData,
+        canvasRef.current!,
+        barWidth,
+        gap,
+        backgroundColor,
+        barColor,
+        barPlayedColor,
+        0,
+        buffer.duration,
+        minBarHeight,
+        progress // Use progress to animate the bars
+      )
+
+      if (progress < 1) {
+        requestAnimationFrame(animate)
+      }
+    }
+    requestAnimationFrame(animate)
+
+    setLoading(false)
   })
 }
 
@@ -134,6 +221,7 @@ interface AudioVisualizerProps {
   currentTime?: number
   minBarHeight?: number
   style?: React.CSSProperties
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
   ref?: React.ForwardedRef<HTMLCanvasElement>
 }
 
@@ -151,67 +239,61 @@ const AudioVisualizer = forwardRef(
       barColor = 'rgb(184, 184, 184)',
       barPlayedColor = 'rgb(160, 198, 255)',
       minBarHeight = 2,
+      setLoading,
     }: AudioVisualizerProps,
     ref?: ForwardedRef<HTMLCanvasElement>
   ) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [data, setData] = useState<dataPoint[]>([])
     const [duration, setDuration] = useState<number>(0)
-    const [loading, setLoading] = useState<boolean>(true) // New loading state
+    const [animationProgress, setAnimationProgress] = useState<number>(0)
 
     useImperativeHandle<HTMLCanvasElement | null, HTMLCanvasElement | null>(ref, () => canvasRef.current, [])
 
+    // Draw default bars initially (before the data is processed)
     useEffect(() => {
-      const processBlob = async (): Promise<void> => {
-        if (!canvasRef.current) return
-
-        if (!blob) {
-          const barsData = Array.from({ length: 100 }, () => ({
-            max: 0,
-            min: 0,
-          }))
-          draw(
-            barsData,
-            canvasRef.current,
-            barWidth,
-            gap,
-            backgroundColor,
-            barColor,
-            barPlayedColor,
-            0,
-            1,
-            minBarHeight
-          )
-          setLoading(false)
-          return
-        }
-
-        const audioBuffer = await blob.arrayBuffer()
-        const audioContext = new AudioContext()
-        await audioContext.decodeAudioData(audioBuffer, buffer => {
-          if (!canvasRef.current) return
-          setDuration(buffer.duration)
-          const barsData = calculateBarData(buffer, height, width, barWidth, gap)
-          setData(barsData)
-          draw(
-            barsData,
-            canvasRef.current,
-            barWidth,
-            gap,
-            backgroundColor,
-            barColor,
-            barPlayedColor,
-            0,
-            buffer.duration,
-            minBarHeight
-          )
-          setLoading(false) // Set loading to false after drawing
-        })
+      if (canvasRef.current) {
+        const defaultBars = Array.from({ length: Math.floor(width / (barWidth + gap)) }, () => ({
+          max: minBarHeight,
+          min: minBarHeight,
+        }))
+        draw(
+          defaultBars,
+          canvasRef.current,
+          barWidth,
+          gap,
+          backgroundColor,
+          barColor,
+          barPlayedColor,
+          0,
+          1,
+          minBarHeight,
+          1
+        )
       }
+    }, [canvasRef.current, width, barWidth, gap, minBarHeight])
 
-      processBlob()
+    // Process audio data and update the visualizer once the blob is available
+    useEffect(() => {
+      processBlob({
+        blob,
+        canvasRef,
+        setAnimationProgress,
+        setLoading,
+        setDuration,
+        setData,
+        width,
+        height,
+        barWidth,
+        gap,
+        backgroundColor,
+        barColor,
+        barPlayedColor,
+        minBarHeight,
+      })
     }, [blob, canvasRef.current])
 
+    // Redraw canvas on currentTime or animationProgress updates
     useEffect(() => {
       if (!canvasRef.current) return
 
@@ -225,68 +307,13 @@ const AudioVisualizer = forwardRef(
         barPlayedColor,
         currentTime,
         duration,
-        minBarHeight
+        minBarHeight,
+        animationProgress
       )
-    }, [currentTime, duration])
+    }, [currentTime, duration, animationProgress])
 
     return (
       <div style={{ position: 'relative', width, height }}>
-        {!loading && (
-          <svg
-            id="wave"
-            data-name="Layer 1"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 50 38.05"
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-          >
-            <title>Audio Wave</title>
-            <path
-              id="Line_1"
-              data-name="Line 1"
-              d="M0.91,15L0.78,15A1,1,0,0,0,0,16v6a1,1,0,1,0,2,0s0,0,0,0V16a1,1,0,0,0-1-1H0.91Z"
-            />
-            <path
-              id="Line_2"
-              data-name="Line 2"
-              d="M6.91,9L6.78,9A1,1,0,0,0,6,10V28a1,1,0,1,0,2,0s0,0,0,0V10A1,1,0,0,0,7,9H6.91Z"
-            />
-            <path
-              id="Line_3"
-              data-name="Line 3"
-              d="M12.91,0L12.78,0A1,1,0,0,0,12,1V37a1,1,0,1,0,2,0s0,0,0,0V1a1,1,0,0,0-1-1H12.91Z"
-            />
-            <path
-              id="Line_4"
-              data-name="Line 4"
-              d="M18.91,10l-0.12,0A1,1,0,0,0,18,11V27a1,1,0,1,0,2,0s0,0,0,0V11a1,1,0,0,0-1-1H18.91Z"
-            />
-            <path
-              id="Line_5"
-              data-name="Line 5"
-              d="M24.91,15l-0.12,0A1,1,0,0,0,24,16v6a1,1,0,1,0,2,0s0,0,0,0V16a1,1,0,0,0-1-1H24.91Z"
-            />
-            <path
-              id="Line_6"
-              data-name="Line 6"
-              d="M30.91,9l-0.12,0A1,1,0,0,0,30,10v18a1,1,0,1,0,2,0s0,0,0,0V10a1,1,0,0,0-1-1H30.91Z"
-            />
-            <path
-              id="Line_7"
-              data-name="Line 7"
-              d="M36.91,0l-0.12,0A1,1,0,0,0,36,1V37a1,1,0,1,0,2,0s0,0,0,0V1a1,1,0,0,0-1-1H36.91Z"
-            />
-            <path
-              id="Line_8"
-              data-name="Line 8"
-              d="M42.91,10l-0.12,0A1,1,0,0,0,42,11V27a1,1,0,1,0,2,0s0,0,0,0V11a1,1,0,0,0-1-1H42.91Z"
-            />
-            <path
-              id="Line_9"
-              data-name="Line 9"
-              d="M48.91,15l-0.12,0A1,1,0,0,0,48,16v6a1,1,0,1,0,2,0s0,0,0,0V16a1,1,0,0,0-1-1H48.91Z"
-            />
-          </svg>
-        )}
         <canvas
           ref={canvasRef}
           width={width}

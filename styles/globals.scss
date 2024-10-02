@@ -174,7 +174,7 @@
       }
 
       /* Preformatted text background */
-      > pre {
+      >pre {
         @apply bg-accent/40;
       }
 
@@ -230,7 +230,7 @@
     display: inline-flex;
     align-items: center;
 
-    .tooltip-trigger:hover + .tooltip > .tooltip-content {
+    .tooltip-trigger:hover+.tooltip>.tooltip-content {
       transform: translateX(-50%) translateY(0);
       opacity: 1;
       transition: all 0.2s ease-in-out;
@@ -403,7 +403,7 @@ section#id {
       pointer-events: none;
     }
 
-    & > pre {
+    &>pre {
       background: hsl(var(--accent) / 0.4);
     }
 
@@ -532,16 +532,16 @@ section#id {
   .comment:first-child {
     @apply mt-4;
 
-    & > div {
-      & > div.top-shape {
+    &>div {
+      &>div.top-shape {
         @apply hidden;
       }
     }
   }
 
   .comment {
-    & > div {
-      & > div.top-shape {
+    &>div {
+      &>div.top-shape {
         @apply flex -mt-2;
       }
     }
@@ -553,12 +553,12 @@ section#id {
   }
 
   .comment:last-child {
-    & > div {
-      & > div.top-shape {
+    &>div {
+      &>div.top-shape {
         @apply flex -mt-2;
       }
 
-      & > div.bottom-shape {
+      &>div.bottom-shape {
         @apply opacity-0;
       }
     }
@@ -594,13 +594,13 @@ section#id {
 }
 
 @for $i from 1 through 9 {
-  #Line_#{$i} {
-    animation: pulse 1s infinite;
+  .line_#{$i} {
+    animation: wave-pulse 1s infinite;
     animation-delay: $i * 0.15s;
   }
 }
 
-@keyframes pulse {
+@keyframes wave-pulse {
   0% {
     transform: scaleY(1);
     transform-origin: 50% 50%;

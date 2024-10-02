@@ -36,12 +36,10 @@ export const AudioRecord: React.FC = () => {
       <div className="p-5 rounded-lg shadow-md flex items-center gap-4 border border-border w-[333px]">
         <div className="relative">
           {recording && (
-            <>
-              <span className="font-mono absolute right-8 top-1/2 -translate-y-1/2">
-                {formatTime(recordedDuration)}
-              </span>
-              <span className="font-mono absolute right-4 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-primary animate-pulse" />
-            </>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+              <span className="font-mono">{formatTime(recordedDuration)}</span>
+              <span className="font-mono w-2 h-2 rounded-full bg-primary animate-pulse" />
+            </div>
           )}
           <Input className={cn('transition fade_animation', !recording ? 'w-[235px]' : 'w-[179px] ')} />
         </div>
@@ -113,12 +111,19 @@ export const AudioRecordItem = ({
 }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
   const [currentTime, setCurrentTime] = useState<number>(0)
   const [timeLeft, setTimeLeft] = useState<number>(audio.duration * 1000 || 0)
 
   useEffect(() => {
     if (audio.blob) {
       audioRef.current = new Audio(URL.createObjectURL(audio.blob))
+
+      // Set the initial timeLeft value
+      audioRef.current.onloadedmetadata = () => {
+        setTimeLeft(audioRef.current!.duration * 1000)
+      }
+
       audioRef.current.onended = () => {
         setIsPlaying(false)
         setCurrentTime(0)
@@ -126,8 +131,12 @@ export const AudioRecordItem = ({
       }
 
       audioRef.current.ontimeupdate = () => {
-        setCurrentTime(audioRef.current!.currentTime * 1000)
-        setTimeLeft(audio.duration * 1000 - currentTime)
+        const currentTimeInMillis = audioRef.current!.currentTime * 1000
+        setCurrentTime(currentTimeInMillis)
+
+        // Calculate the time left (duration - current time) and decrement by 1 second
+        const remainingTime = audioRef.current!.duration * 1000 - currentTimeInMillis
+        setTimeLeft(Math.max(remainingTime - 1000, 0)) // Ensure it doesn't go below 0
       }
 
       return () => {
@@ -140,14 +149,14 @@ export const AudioRecordItem = ({
   }, [audio])
 
   // Play or pause audio
-  const handlePlayPause = () => {
+  const handlePlayPause = React.useCallback(() => {
     if (isPlaying) {
       audioRef.current?.pause()
     } else {
       audioRef.current?.play()
     }
     setIsPlaying(!isPlaying)
-  }
+  }, [])
 
   return (
     <>
@@ -156,17 +165,18 @@ export const AudioRecordItem = ({
           onClick={handlePlayPause}
           size={'icon'}
           className="rounded-full relative"
+          loading={loading}
         >
           <Play
             className={cn(
               'absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 transition fade_animation',
-              !isPlaying ? 'scale-1 opacity-1' : 'scale-0 opacity-0 pointer-events-none'
+              !isPlaying && !loading ? 'scale-1 opacity-1' : 'scale-0 opacity-0 pointer-events-none'
             )}
           />
           <Pause
             className={cn(
               'absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 transition fade_animation',
-              isPlaying ? 'scale-1 opacity-1' : 'scale-0 opacity-0 pointer-events-none'
+              isPlaying && !loading ? 'scale-1 opacity-1' : 'scale-0 opacity-0 pointer-events-none'
             )}
           />
         </Button>
@@ -185,6 +195,7 @@ export const AudioRecordItem = ({
                   currentTime={currentTime / 1000}
                   barPlayedColor={'#fff'}
                   backgroundColor={'#f0f0f000'}
+                  setLoading={setLoading}
                 />
               }
             </div>
