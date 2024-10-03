@@ -12,7 +12,8 @@ import { DropdownMenuOptionsDataType, DropdownMenuView } from './dropdown-menu'
 
 import 'highlight.js/styles/tokyo-night-dark.css'
 import { MDXContext, CommentsContext } from '../example/mdx-context-provider'
-import { AudioRecord } from './audio-record'
+import { AudioRecord, AudioRecordItem } from './audio-record'
+import { AudioServiceProvider } from './audio-service-worker'
 
 export const CommentTest = ({ user, comments }: { user: TaggedUserType; comments: CommentType[] }) => {
   return (
@@ -86,7 +87,17 @@ export const Comment: React.FC<CommentProps> = ({ showNestedShapes, mine, commen
 
   return comment.type === 'voice' ? (
     <>
-      <AudioRecord />
+      {
+        <AudioRecord />
+        // <AudioServiceProvider>
+        //   <AudioRecordItem
+        //     audio={{
+        //       duration: 22000,
+        //       blob: 'https://actions.google.com/sounds/v1/animals/animal_hiss_and_rattle.ogg',
+        //     }}
+        //   />
+        // </AudioServiceProvider>
+      }
     </>
   ) : (
     <>

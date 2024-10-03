@@ -23,25 +23,25 @@ export default function IndexPage() {
   return (
     <>
       <div className="flex items-start gap-4 p-4  select-none container mt-12">
-        <AudioRecord />
         {
-          // <Kanban
-          //   initData={initData}
-          //   kanbanColumnHeader={{
-          //     children: KanbanColumnHeaderTemplate,
-          //     // className: 'bg-red-500'
-          //   }}
-          //   kanbanColumnAddRow={{ children: KanbanColumnAddRowTemplate }}
-          //   kanbanColumnRow={{
-          //     children: KanbanColumnRowTemplate,
-          //
-          //     options: {
-          //       // draggingOnOriginStyle: 'bg-red-500',
-          //       // draggingOutStyle: 'bg-green-500',
-          //       // draggingOverNoColumnStyle: 'bg-purple-500',
-          //     },
-          //   }}
-          // />
+          // <AudioRecord />
+          <Kanban
+            initData={initData}
+            kanbanColumnHeader={{
+              children: KanbanColumnHeaderTemplate,
+              // className: 'bg-red-500'
+            }}
+            kanbanColumnAddRow={{ children: KanbanColumnAddRowTemplate }}
+            kanbanColumnRow={{
+              children: KanbanColumnRowTemplate,
+
+              options: {
+                // draggingOnOriginStyle: 'bg-red-500',
+                // draggingOutStyle: 'bg-green-500',
+                // draggingOverNoColumnStyle: 'bg-purple-500',
+              },
+            }}
+          />
         }
       </div>
     </>

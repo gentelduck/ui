@@ -116,7 +116,7 @@ export const EmojiReplacer = Node.create<EmojiReplacerOptions>({
     const emojis_native = Object.values(data.emojis).map(emoji => {
       const shortcode = emoji.skins[0].shortcodes
       const native = emoji.skins[0].native
-      console.log({ shortcode, native }) // Check values here
+      // console.log({ shortcode, native }) // Check values here
       return { find: shortcode, replace: native }
     })
 

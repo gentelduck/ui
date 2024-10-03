@@ -163,7 +163,7 @@ export const initData: InitDataType = {
           id: 'comment-3',
           user: users[1],
           type: 'voice',
-          content: '',
+          content: 'https://actions.google.com/sounds/v1/animals/june_songbirds.ogg',
           createdAt: '2021-01-01T00:00:00.000Z',
           likes: {
             amount: 4089,
