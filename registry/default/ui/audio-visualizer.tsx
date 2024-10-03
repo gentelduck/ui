@@ -1,4 +1,5 @@
 import { useRef, useState, forwardRef, useImperativeHandle, useEffect } from 'react'
+import { useAudioService } from './audio-service-worker'
 
 export interface dataPoint {
   max: number
@@ -49,7 +50,7 @@ export const calculateBarData = (
   return data
 }
 
-const draw = (
+export const draw = (
   data: dataPoint[],
   canvas: HTMLCanvasElement | null,
   barWidth: number,
@@ -107,7 +108,7 @@ interface ProcessBlobType {
   height: number
 }
 
-const processBlob = async ({
+export const processBlob = async ({
   canvasRef,
   blob,
   barWidth,
@@ -124,6 +125,7 @@ const processBlob = async ({
   height,
 }: ProcessBlobType): Promise<void> => {
   if (!canvasRef.current) return
+
   const defaultBars = Array.from({ length: Math.floor(width / (barWidth + gap)) }, () => ({
     max: minBarHeight,
     min: minBarHeight,
@@ -139,7 +141,7 @@ const processBlob = async ({
     if (!canvasRef.current) return
     setDuration(buffer.duration)
 
-    // Use calculateBarData to process the full buffer across the entire canvas width
+    // Calculate the waveform data for the entire audio buffer
     const barsData = calculateBarData(buffer, height, width, barWidth, gap)
 
     // Set the calculated data for rendering
@@ -191,92 +193,70 @@ interface AudioVisualizerProps {
   ref?: React.ForwardedRef<HTMLCanvasElement>
 }
 
-const AudioVisualizer = forwardRef(
-  (
-    {
+const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
+  blob,
+  width,
+  height,
+  barWidth = 2,
+  gap = 1,
+  backgroundColor = 'transparent',
+  barColor = 'rgb(184, 184, 184)',
+  barPlayedColor = 'rgb(160, 198, 255)',
+  currentTime = 0,
+  minBarHeight = 2,
+  style,
+  setLoading,
+}) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const { processAudio, data, duration, animationProgress } = useAudioService()
+
+  useEffect(() => {
+    setLoading(true)
+    processAudio(
       blob,
+      canvasRef,
       width,
       height,
-      barWidth = 2,
-      gap = 1,
-      currentTime,
-      style,
-      backgroundColor = 'transparent',
-      barColor = 'rgb(184, 184, 184)',
-      barPlayedColor = 'rgb(160, 198, 255)',
-      minBarHeight = 2,
-      setLoading,
-    }: AudioVisualizerProps,
-    ref?: React.ForwardedRef<HTMLCanvasElement>
-  ) => {
-    const canvasRef = useRef<HTMLCanvasElement>(null)
-    const [data, setData] = useState<dataPoint[]>([])
-    const [duration, setDuration] = useState<number>(0)
-    const [animationProgress, setAnimationProgress] = useState<number>(0)
-
-    useImperativeHandle<HTMLCanvasElement | null, HTMLCanvasElement | null>(ref, () => canvasRef.current, [])
-
-    useEffect(() => {
-      if (canvasRef.current) {
-        const defaultBars = Array.from({ length: Math.floor(width / (barWidth + gap)) }, () => ({
-          max: minBarHeight,
-          min: minBarHeight,
-        }))
-        draw(defaultBars, canvasRef.current, barWidth, gap, backgroundColor, barColor, barPlayedColor, 0, 1, 1, 1)
-      }
-    }, [canvasRef.current, width, barWidth, gap, minBarHeight])
-
-    useEffect(() => {
-      setLoading(true)
-      processBlob({
-        blob,
-        canvasRef,
-        setAnimationProgress,
-        setLoading,
-        setDuration,
-        setData,
-        width,
-        height,
-        barWidth,
-        gap,
-        backgroundColor,
-        barColor,
-        barPlayedColor,
-        minBarHeight,
-      })
-    }, [blob])
-
-    useEffect(() => {
-      if (!canvasRef.current) return
-      draw(
-        data.length
-          ? data
-          : Array.from({ length: Math.floor(width / (barWidth + gap)) }, () => ({
-              min: minBarHeight,
-              max: minBarHeight,
-            })),
-        canvasRef.current,
-        barWidth,
-        gap,
-        backgroundColor,
-        barColor,
-        barPlayedColor,
-        currentTime,
-        duration,
-        minBarHeight,
-        animationProgress
-      )
-    }, [data, width, height, currentTime, duration, animationProgress])
-
-    return (
-      <canvas
-        ref={canvasRef}
-        width={width}
-        height={height}
-        style={style}
-      />
+      barWidth,
+      gap,
+      backgroundColor,
+      barColor,
+      barPlayedColor,
+      minBarHeight,
+      setLoading
     )
-  }
-)
+  }, [blob])
+
+  useEffect(() => {
+    if (!canvasRef.current) return
+    draw(
+      data.length
+        ? data
+        : Array.from({ length: Math.floor(width / (barWidth + gap)) }, () => ({
+            min: minBarHeight,
+            max: minBarHeight,
+          })),
+      canvasRef.current,
+      barWidth,
+      gap,
+      backgroundColor,
+      barColor,
+      barPlayedColor,
+      currentTime,
+      duration,
+      minBarHeight,
+      animationProgress
+    )
+  }, [data, width, height, currentTime, duration, animationProgress])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={width}
+      height={height}
+      style={style}
+    />
+  )
+}
 
 export { AudioVisualizer }

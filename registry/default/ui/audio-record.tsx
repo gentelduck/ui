@@ -4,6 +4,7 @@ import { Button } from './button'
 import { cn } from '@/lib'
 import { Input } from './input'
 import { AudioVisualizer } from './audio-visualizer'
+import { AudioServiceProvider } from './audio-service-worker'
 
 interface Recording {
   url: string
@@ -99,10 +100,12 @@ export const AudioRecord: React.FC = () => {
       {/* Render List of Recordings */}
       <div className="flex flex-col gap-2 mt-5">
         {recordings.map((recording, index) => (
-          <AudioRecordItem
-            key={index}
-            audio={recording}
-          />
+          <AudioServiceProvider>
+            <AudioRecordItem
+              key={index}
+              audio={recording}
+            />
+          </AudioServiceProvider>
         ))}
       </div>
     </div>
