@@ -17,6 +17,7 @@ import { Badge } from './badge'
 import { Button } from './button'
 import { EllipsisVertical, Plus } from 'lucide-react'
 import { ScrollArea } from './scroll-area'
+import { Recording } from './audio-record'
 
 // Type for a Subtask
 interface Subtask {
@@ -41,12 +42,18 @@ interface Link {
   url?: string
 }
 
+// Type for Comment Content
+export type CommentContentType =
+  | { type: 'text'; content: string }
+  | { type: 'voice'; content: Omit<Recording, 'blob'> & { url: string } }
+  | { type: 'video'; content: null }
+  | { type: 'image'; content: null }
+
 // Type for a Comment
 export interface CommentType {
   id: string
-  content: string
+  content: CommentContentType[]
   createdAt: string
-  type: 'voice' | 'text'
   user: TaggedUserType
   likes: LikedType
 }

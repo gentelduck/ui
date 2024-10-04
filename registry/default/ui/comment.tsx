@@ -13,7 +13,9 @@ import { DropdownMenuOptionsDataType, DropdownMenuView } from './dropdown-menu'
 import 'highlight.js/styles/tokyo-night-dark.css'
 import { MDXContext, CommentsContext } from '../example/mdx-context-provider'
 import { AudioRecord, AudioRecordItem } from './audio-record'
-import { AudioServiceProvider } from './audio-service-worker'
+import { AudioProvider } from './audio-service-worker'
+import { Skeleton } from './ShadcnUI'
+import { AudioDucky } from './audio-ducky'
 
 export const CommentTest = ({ user, comments }: { user: TaggedUserType; comments: CommentType[] }) => {
   return (
@@ -85,21 +87,7 @@ export const Comment: React.FC<CommentProps> = ({ showNestedShapes, mine, commen
   const daysDifference = differenceInDays(new Date(), commentDate)
   const hoursDifference = differenceInHours(new Date(), commentDate)
 
-  return comment.type === 'voice' ? (
-    <>
-      {
-        <AudioRecord />
-        // <AudioServiceProvider>
-        //   <AudioRecordItem
-        //     audio={{
-        //       duration: 22000,
-        //       blob: 'https://actions.google.com/sounds/v1/animals/animal_hiss_and_rattle.ogg',
-        //     }}
-        //   />
-        // </AudioServiceProvider>
-      }
-    </>
-  ) : (
+  return (
     <>
       <div
         className={cn('comment flex mt-1', className)}
@@ -136,11 +124,24 @@ export const Comment: React.FC<CommentProps> = ({ showNestedShapes, mine, commen
               user={comment.user}
             />
           </div>
-          <div className="mdx__minimal__text__editor border-none">
-            <p
-              className={cn('text-sm  tiptap ProseMirror')}
-              dangerouslySetInnerHTML={{ __html: comment.content }}
-            ></p>
+          <div className="mdx__minimal__text__editor border-none flex flex-col gap-3">
+            {comment.content.map((item, idx) => {
+              return item.type === 'text' ? (
+                <p
+                  key={idx}
+                  className={cn('text-sm  tiptap ProseMirror')}
+                  dangerouslySetInnerHTML={{ __html: item.content }}
+                ></p>
+              ) : (
+                item.type === 'voice' && (
+                  <AudioDucky
+                    key={idx}
+                    duration={item.content.duration}
+                    url={item.content.url}
+                  />
+                )
+              )
+            })}
           </div>
           <CommentBottom comment={comment} />
         </div>

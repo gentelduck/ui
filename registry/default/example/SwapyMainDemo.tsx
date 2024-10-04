@@ -150,9 +150,13 @@ export const initData: InitDataType = {
         {
           id: 'comment-1',
           user: users[0],
-          type: 'text',
-          content:
-            'BTW Ahemd, you have to finished this task today! we are on a deadline.  <span emoji="💀" shortcode=":sunglasses:" data-emoji="💀" class="inline-flex text-lg leading-none __className_aef5f5">💀</span>',
+          content: [
+            {
+              type: 'text',
+              content:
+                'BTW Ahemd, you have to finished this task today! we are on a deadline.  <span emoji="💀" shortcode=":sunglasses:" data-emoji="💀" class="inline-flex text-lg leading-none __className_aef5f5">💀</span>',
+            },
+          ],
           createdAt: '2021-01-01T00:00:00.000Z',
           likes: {
             amount: 4,
@@ -162,8 +166,20 @@ export const initData: InitDataType = {
         {
           id: 'comment-3',
           user: users[1],
-          type: 'voice',
-          content: 'https://actions.google.com/sounds/v1/animals/june_songbirds.ogg',
+          content: [
+            {
+              type: 'text',
+              content:
+                'Asking to do something will imply paying you and i do not need anything right now so i am not gonna pay so refuse is better do not work without getting paid.',
+            },
+            {
+              type: 'voice',
+              content: {
+                url: 'https://actions.google.com/sounds/v1/alarms/phone_alerts_and_rings.ogg',
+                duration: 75000,
+              },
+            },
+          ],
           createdAt: '2021-01-01T00:00:00.000Z',
           likes: {
             amount: 4089,

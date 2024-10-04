@@ -1,18 +1,9 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useCallback,
-  RefObject,
-  Dispatch,
-  SetStateAction,
-} from 'react'
+import React, { createContext, useContext, useState, ReactNode, RefObject, Dispatch, SetStateAction } from 'react'
 import { dataPoint, processBlob } from './audio-visualizer'
 
-interface AudioServiceContextType {
+interface AudioContextType {
   processAudio: (
-    blob: Blob,
+    blob: Blob | null,
     canvasRef: RefObject<HTMLCanvasElement>,
     width: number,
     height: number,
@@ -29,28 +20,33 @@ interface AudioServiceContextType {
   animationProgress: number
 }
 
-const AudioServiceContext = createContext<AudioServiceContextType | undefined>(undefined)
+const AudioContext = createContext<AudioContextType | undefined>(undefined)
 
-export const useAudioService = (): AudioServiceContextType => {
-  const context = useContext(AudioServiceContext)
+export const useAudioProvider = (): AudioContextType => {
+  const context = useContext(AudioContext)
   if (!context) {
     throw new Error('useAudioService must be used within an AudioServiceProvider')
   }
   return context
 }
 
-interface AudioServiceProviderProps {
+interface AudioProviderProps {
   children: ReactNode
 }
 
-export const AudioServiceProvider: React.FC<AudioServiceProviderProps> = ({ children }) => {
-  const [data, setData] = useState<dataPoint[]>([])
-  const [duration, setDuration] = useState<number>(0)
+export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
+  const [data, setData] = React.useState<dataPoint[]>([])
+  const [duration, setDuration] = React.useState<number>(0)
+
+  React.useEffect(() => {
+    console.log(duration)
+  }, [duration])
+
   const [animationProgress, setAnimationProgress] = useState<number>(0)
 
-  const processAudio = useCallback(
+  const processAudio = React.useCallback(
     async (
-      blob: Blob,
+      blob: Blob | null,
       canvasRef: RefObject<HTMLCanvasElement>,
       width: number,
       height: number,
@@ -83,7 +79,7 @@ export const AudioServiceProvider: React.FC<AudioServiceProviderProps> = ({ chil
   )
 
   return (
-    <AudioServiceContext.Provider
+    <AudioContext.Provider
       value={{
         processAudio,
         data,
@@ -92,6 +88,6 @@ export const AudioServiceProvider: React.FC<AudioServiceProviderProps> = ({ chil
       }}
     >
       {children}
-    </AudioServiceContext.Provider>
+    </AudioContext.Provider>
   )
 }

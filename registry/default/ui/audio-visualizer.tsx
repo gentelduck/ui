@@ -1,5 +1,5 @@
-import { useRef, useState, forwardRef, useImperativeHandle, useEffect } from 'react'
-import { useAudioService } from './audio-service-worker'
+import React from 'react'
+import { useAudioProvider } from './audio-service-worker'
 
 export interface dataPoint {
   max: number
@@ -18,33 +18,43 @@ export const calculateBarData = (
   const step = Math.floor(bufferData.length / units)
   const amp = height / 2
 
-  let data: dataPoint[] = []
+  const data: dataPoint[] = new Array(units) // Preallocate array
   let maxDataPoint = 0
 
   for (let i = 0; i < units; i++) {
-    const mins: number[] = []
-    const maxs: number[] = []
+    let minSum = 0
+    let maxSum = 0
+    let minCount = 0
+    let maxCount = 0
 
-    for (let j = 0; j < step && i * step + j < bufferData.length; j++) {
-      const datum = bufferData[i * step + j]
-      if (datum <= 0) mins.push(datum)
-      if (datum > 0) maxs.push(datum)
+    const startIdx = i * step
+    const endIdx = Math.min(startIdx + step, bufferData.length)
+
+    for (let j = startIdx; j < endIdx; j++) {
+      const datum = bufferData[j]
+      if (datum < 0) {
+        minSum += datum
+        minCount++
+      } else {
+        maxSum += datum
+        maxCount++
+      }
     }
 
-    const minAvg = mins.length ? mins.reduce((a, c) => a + c, 0) / mins.length : 0
-    const maxAvg = maxs.length ? maxs.reduce((a, c) => a + c, 0) / maxs.length : 0
+    const minAvg = minCount ? minSum / minCount : 0
+    const maxAvg = maxCount ? maxSum / maxCount : 0
 
     const dataPoint = { max: maxAvg, min: minAvg }
     maxDataPoint = Math.max(maxDataPoint, Math.abs(dataPoint.max), Math.abs(dataPoint.min))
-    data.push(dataPoint)
+    data[i] = dataPoint // Assign directly to preallocated array
   }
 
   if (amp * 0.8 > maxDataPoint * amp) {
     const adjustmentFactor = (amp * 0.8) / maxDataPoint
-    data = data.map(dp => ({
-      max: dp.max * adjustmentFactor,
-      min: dp.min * adjustmentFactor,
-    }))
+    for (let i = 0; i < units; i++) {
+      data[i].max *= adjustmentFactor
+      data[i].min *= adjustmentFactor
+    }
   }
 
   return data
@@ -93,7 +103,7 @@ export const draw = (
 
 interface ProcessBlobType {
   canvasRef: React.RefObject<HTMLCanvasElement>
-  blob: Blob
+  blob: Blob | null
   barWidth: number
   gap: number
   backgroundColor: string
@@ -124,7 +134,7 @@ export const processBlob = async ({
   width,
   height,
 }: ProcessBlobType): Promise<void> => {
-  if (!canvasRef.current) return
+  if (!canvasRef.current || !blob) return
 
   const defaultBars = Array.from({ length: Math.floor(width / (barWidth + gap)) }, () => ({
     max: minBarHeight,
@@ -139,6 +149,7 @@ export const processBlob = async ({
   // Decode the entire audio data
   audioContext.decodeAudioData(audioBuffer, buffer => {
     if (!canvasRef.current) return
+
     setDuration(buffer.duration)
 
     // Calculate the waveform data for the entire audio buffer
@@ -147,10 +158,17 @@ export const processBlob = async ({
     // Set the calculated data for rendering
     setData(barsData)
 
+    // Set up for animation
     let startTime: number | null = null
+    let animationFrameId: number | null = null // For tracking animation frame ID
+
     const animate = (time: number) => {
       if (!startTime) startTime = time
-      const progress = Math.min((time - startTime) / 1000, 1) // 1 second animation
+
+      const elapsedTime = time - startTime
+      const progress = Math.min(elapsedTime / 1000, 1) // 1 second animation
+
+      // Update animation progress using a ref
       setAnimationProgress(progress)
 
       draw(
@@ -168,17 +186,24 @@ export const processBlob = async ({
       )
 
       if (progress < 1) {
-        requestAnimationFrame(animate)
+        animationFrameId = requestAnimationFrame(animate)
       } else {
         setLoading(false) // End loading state after the animation completes
       }
     }
-    requestAnimationFrame(animate)
+
+    // Start the animation
+    animationFrameId = requestAnimationFrame(animate)
+
+    // Cleanup when the component unmounts or the animation is done
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId)
+    }
   })
 }
 
 interface AudioVisualizerProps {
-  blob: Blob
+  blob: Blob | null
   width: number
   height: number
   barWidth?: number
@@ -207,10 +232,10 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
   style,
   setLoading,
 }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const { processAudio, data, duration, animationProgress } = useAudioService()
+  const canvasRef = React.useRef<HTMLCanvasElement>(null)
+  const { processAudio, data, duration, animationProgress } = useAudioProvider()
 
-  useEffect(() => {
+  React.useEffect(() => {
     setLoading(true)
     processAudio(
       blob,
@@ -227,7 +252,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
     )
   }, [blob])
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!canvasRef.current) return
     draw(
       data.length
