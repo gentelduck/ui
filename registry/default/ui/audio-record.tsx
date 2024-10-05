@@ -4,7 +4,7 @@ import { Button } from './button'
 import { cn } from '@/lib'
 import { Input } from './input'
 import { AudioVisualizer } from './audio-visualizer'
-import { AudioProvider } from './audio-service-worker'
+import { AudioProvider, useAudioProvider } from './audio-service-worker'
 
 export interface Recording {
   blob: Blob
@@ -96,24 +96,6 @@ export const stopRecording = ({ setRecording, intervalRef, mediaRecorderRef }: S
   mediaRecorderRef.current?.stop()
   setRecording(false)
   clearInterval(intervalRef.current!)
-}
-
-const getAudioDuration = (audio: HTMLAudioElement): Promise<number> => {
-  return new Promise((resolve, reject) => {
-    audio.addEventListener('loadedmetadata', () => {
-      if (audio.duration === Infinity) {
-        reject(new Error('Cannot retrieve the audio duration'))
-      } else {
-        resolve(audio.duration)
-      }
-    })
-
-    audio.addEventListener('error', () => {
-      reject(new Error('Error loading audio file'))
-    })
-
-    audio.load()
-  })
 }
 
 // Delete recording
@@ -245,16 +227,16 @@ const AudioItemWrapper = ({
   loading,
   isPlaying,
   timeLeft,
-  audioDuration,
   size = 'sm',
+  duration,
   handlePlayPause,
 }: {
   size: 'sm' | 'md' | 'lg'
   children: React.ReactNode
+  duration: number
   loading: boolean
   isPlaying: boolean
   timeLeft: number
-  audioDuration: number
   handlePlayPause: () => void
 }) => {
   return (
@@ -289,18 +271,35 @@ const AudioItemWrapper = ({
 
             <div className="flex items-center gap-2">
               <span className={cn('flex items-center text-primary', size === 'sm' ? 'text-xs' : 'text-sm')}>
-                {isPlaying || timeLeft < audioDuration
-                  ? formatTime(timeLeft > 0 ? timeLeft : 0)
-                  : formatTime(audioDuration)}
+                {isPlaying || timeLeft < duration ? formatTime(timeLeft > 0 ? timeLeft : 0) : formatTime(duration)}
               </span>
               {
                 /* TODO: YOU SHOULD EDIT THE OBJ TO GIVE YOU VALUE OF RECIPIENT OPENED THE RECORD */
                 <span className="w-2 h-2 bg-primary rounded-full" />
               }
+
+              <AudioSpeed loading={loading} />
             </div>
           </div>
         }
       </div>
+    </>
+  )
+}
+
+export const AudioSpeed = ({ loading }: { loading: boolean }) => {
+  const { speed, setSpeed } = useAudioProvider()
+
+  return (
+    <>
+      <Button
+        className={cn('w-8 h-4 rounded-full text-[.6rem] font-semibold')}
+        variant={'default'}
+        size={'sm'}
+        onClick={() => setSpeed(speed > 1.5 ? 0.5 : speed + 0.5)}
+      >
+        x{speed}
+      </Button>
     </>
   )
 }
@@ -335,35 +334,34 @@ const AudioRecordItem = ({
   barHeight,
   backgroundColor,
 }: AudioRecordItemProps) => {
+  const { duration: audioDuration, speed } = useAudioProvider()
+  const duration = audioDuration * 1000
+
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [loading, setLoading] = useState<boolean>(loadingState ?? true)
   const [currentTime, setCurrentTime] = useState<number>(0)
-  const [timeLeft, setTimeLeft] = useState<number>(audio.duration)
+  const [timeLeft, setTimeLeft] = useState<number>(duration)
 
-  // Update the time left based on currentTime and duration
   React.useEffect(() => {
-    setTimeLeft(audio.duration - currentTime)
-  }, [currentTime, audio.duration])
+    setTimeLeft(duration - currentTime)
+  }, [currentTime, duration])
 
   React.useEffect(() => {
     if (audio.blob) {
-      audioRef.current = new Audio(URL.createObjectURL(audio.blob))
+      const audioURL = URL.createObjectURL(audio.blob)
+      audioRef.current = new Audio(audioURL)
 
-      const duration = getAudioDuration(new Audio(URL.createObjectURL(audio!.blob!))).then(duration => {
-        console.log(duration, 'seconds')
-        return duration
-      })
-
+      // Handle end of the audio
       audioRef.current.onended = () => {
         setIsPlaying(false)
         setCurrentTime(0)
-        setTimeLeft(audio.duration)
+        setTimeLeft(duration)
       }
 
+      // Update current time as the audio plays
       audioRef.current.ontimeupdate = () => {
-        const currentTimeInMillis = audioRef.current!.currentTime * 1000
-        setCurrentTime(currentTimeInMillis)
+        setCurrentTime(audioRef.current!.currentTime * 1000)
       }
 
       return () => {
@@ -374,6 +372,23 @@ const AudioRecordItem = ({
       }
     }
   }, [audio.blob])
+
+  // Update the playback rate and keep the audio playing at the current time
+  React.useEffect(() => {
+    if (audioRef.current) {
+      const wasPlaying = isPlaying
+      const currentAudioTime = audioRef.current.currentTime
+
+      // Pause the audio temporarily, change playback rate, and resume if it was playing
+      audioRef.current.pause()
+      audioRef.current.playbackRate = speed
+      audioRef.current.currentTime = currentAudioTime
+
+      if (wasPlaying) {
+        audioRef.current.play()
+      }
+    }
+  }, [speed])
 
   // Play or pause audio
   const handlePlayPause = React.useCallback(() => {
@@ -390,10 +405,10 @@ const AudioRecordItem = ({
       <AudioItemWrapper
         size={size}
         loading={loading}
+        duration={duration}
         isPlaying={isPlaying}
         handlePlayPause={handlePlayPause}
         timeLeft={timeLeft}
-        audioDuration={audio.duration}
         children={
           <AudioVisualizerMemo
             blob={audio.blob}

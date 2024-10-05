@@ -116,6 +116,7 @@ interface ProcessBlobType {
   setAnimationProgress: React.Dispatch<React.SetStateAction<number>>
   width: number
   height: number
+  speed: number
 }
 
 export const processBlob = async ({
@@ -133,6 +134,7 @@ export const processBlob = async ({
   setAnimationProgress,
   width,
   height,
+  speed,
 }: ProcessBlobType): Promise<void> => {
   if (!canvasRef.current || !blob) return
 
@@ -233,7 +235,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
   setLoading,
 }) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
-  const { processAudio, data, duration, animationProgress } = useAudioProvider()
+  const { processAudio, data, duration, animationProgress, speed } = useAudioProvider()
 
   React.useEffect(() => {
     setLoading(true)
@@ -248,7 +250,8 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
       barColor,
       barPlayedColor,
       minBarHeight,
-      setLoading
+      setLoading,
+      speed
     )
   }, [blob])
 

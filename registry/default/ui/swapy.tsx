@@ -45,7 +45,7 @@ interface Link {
 // Type for Comment Content
 export type CommentContentType =
   | { type: 'text'; content: string }
-  | { type: 'voice'; content: Omit<Recording, 'blob'> & { url: string } }
+  | { type: 'voice'; content: Pick<Recording, 'blob'> & { url: string } }
   | { type: 'video'; content: null }
   | { type: 'image'; content: null }
 

@@ -13,10 +13,13 @@ interface AudioContextType {
     barColor: string,
     barPlayedColor: string,
     minBarHeight: number,
-    setLoading: Dispatch<SetStateAction<boolean>>
+    setLoading: Dispatch<SetStateAction<boolean>>,
+    speed: number
   ) => Promise<void>
   data: dataPoint[]
   duration: number
+  speed: number
+  setSpeed: React.Dispatch<React.SetStateAction<number>>
   animationProgress: number
 }
 
@@ -37,6 +40,7 @@ interface AudioProviderProps {
 export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const [data, setData] = React.useState<dataPoint[]>([])
   const [duration, setDuration] = React.useState<number>(0)
+  const [speed, setSpeed] = React.useState<number>(1)
 
   React.useEffect(() => {
     console.log(duration)
@@ -59,6 +63,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       setLoading: Dispatch<SetStateAction<boolean>>
     ) => {
       await processBlob({
+        speed,
         canvasRef,
         blob,
         barWidth,
@@ -85,6 +90,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         data,
         duration,
         animationProgress,
+        speed,
+        setSpeed,
       }}
     >
       {children}

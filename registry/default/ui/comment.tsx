@@ -12,9 +12,6 @@ import { DropdownMenuOptionsDataType, DropdownMenuView } from './dropdown-menu'
 
 import 'highlight.js/styles/tokyo-night-dark.css'
 import { MDXContext, CommentsContext } from '../example/mdx-context-provider'
-import { AudioRecord, AudioRecordItem } from './audio-record'
-import { AudioProvider } from './audio-service-worker'
-import { Skeleton } from './ShadcnUI'
 import { AudioDucky } from './audio-ducky'
 
 export const CommentTest = ({ user, comments }: { user: TaggedUserType; comments: CommentType[] }) => {
