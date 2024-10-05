@@ -170,14 +170,11 @@ export const initData: InitDataType = {
             {
               type: 'text',
               content:
-                'Asking to do something will imply paying you and i do not need anything right now so i am not gonna pay so refuse is better do not work without getting paid.',
+                '<p>Okay Lol. I am going to finish this task. not today. <span emoji="😎" shortcode=":sunglasses:" data-emoji="😎" class="inline-flex text-lg leading-none __className_aef5f5">😎</span>, and I use arch, vim and Rust BTW, forgot to mention Elixir...girl.</p>',
             },
             {
               type: 'voice',
-              content: {
-                url: 'https://actions.google.com/sounds/v1/alarms/phone_alerts_and_rings.ogg',
-                duration: 75000,
-              },
+              content: 'https://actions.google.com/sounds/v1/alarms/phone_alerts_and_rings.ogg',
             },
           ],
           createdAt: '2021-01-01T00:00:00.000Z',

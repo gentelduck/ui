@@ -6,13 +6,8 @@ import { Input } from './input'
 import { AudioVisualizer } from './audio-visualizer'
 import { AudioProvider, useAudioProvider } from './audio-service-worker'
 
-export interface Recording {
-  blob: Blob
-  duration: number
-}
-
 export interface RecordingParams {
-  setRecordings: React.Dispatch<React.SetStateAction<Recording[]>>
+  setRecordings: React.Dispatch<React.SetStateAction<Blob[]>>
   setRecordedDuration: React.Dispatch<React.SetStateAction<number>>
   audioChunksRef: React.MutableRefObject<Blob[]>
 }
@@ -27,7 +22,7 @@ export interface StopRecordingParams {
 export interface DeleteRecordingParams extends Pick<RecordingParams, 'audioChunksRef'>, StopRecordingParams {}
 
 export interface HandleStopRecordingParams
-  extends Omit<StopRecordingParams, 'setRecording' | 'mediaRecorderRef'>,
+  extends Omit<StopRecordingParams, 'setRecording' | 'mediaRecorderRef' | 'durationRef'>,
     Omit<RecordingParams, 'setRecordedDuration'> {}
 
 export interface StartTimerParams
@@ -65,7 +60,6 @@ export const startRecording = async ({
     durationRef.current > 0 &&
       handleStopRecording({
         setRecordings,
-        durationRef,
         intervalRef,
         audioChunksRef,
       })
@@ -78,16 +72,10 @@ export const startRecording = async ({
 }
 
 // Stop recording and process audio blob
-export const handleStopRecording = ({
-  setRecordings,
-  durationRef,
-  intervalRef,
-  audioChunksRef,
-}: HandleStopRecordingParams) => {
+export const handleStopRecording = ({ setRecordings, intervalRef, audioChunksRef }: HandleStopRecordingParams) => {
   const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' })
-  const url = URL.createObjectURL(audioBlob)
 
-  setRecordings(prev => [...prev, { url, blob: audioBlob, duration: durationRef.current }])
+  setRecordings(prev => [...prev, audioBlob])
   clearInterval(intervalRef.current!)
 }
 
@@ -122,7 +110,7 @@ export const startTimer = ({ durationRef, intervalRef, setRecordedDuration }: St
 
 const AudioRecord: React.FC = () => {
   const [recording, setRecording] = useState<boolean>(false)
-  const [recordings, setRecordings] = useState<Recording[]>([])
+  const [recordings, setRecordings] = useState<Blob[]>([])
   const [recordedDuration, setRecordedDuration] = useState<number>(0)
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
@@ -315,10 +303,7 @@ export interface AudioRecordItemProps {
   barPlayedColor?: string
   minBarHeight?: number
   style?: React.CSSProperties
-  audio: {
-    duration: number
-    blob: Blob | null
-  }
+  audio: Blob | null
 }
 
 const AudioRecordItem = ({
@@ -346,10 +331,22 @@ const AudioRecordItem = ({
   React.useEffect(() => {
     setTimeLeft(duration - currentTime)
   }, [currentTime, duration])
+  // Handle audio visualizer click
+  const handleVisualizerClick = event => {
+    if (audioRef.current == null) return
+    const rect = event.target.getBoundingClientRect()
+    const clickX = event.clientX - rect.left
+    const duration = audioRef.current.duration
 
+    if (duration && duration > 0) {
+      const newTime = (clickX / rect.width) * duration
+      audioRef.current.currentTime = newTime
+      setCurrentTime(newTime * 1000)
+    }
+  }
   React.useEffect(() => {
-    if (audio.blob) {
-      const audioURL = URL.createObjectURL(audio.blob)
+    if (audio) {
+      const audioURL = URL.createObjectURL(audio)
       audioRef.current = new Audio(audioURL)
 
       // Handle end of the audio
@@ -371,7 +368,7 @@ const AudioRecordItem = ({
         }
       }
     }
-  }, [audio.blob])
+  }, [audio])
 
   // Update the playback rate and keep the audio playing at the current time
   React.useEffect(() => {
@@ -410,20 +407,23 @@ const AudioRecordItem = ({
         handlePlayPause={handlePlayPause}
         timeLeft={timeLeft}
         children={
-          <AudioVisualizerMemo
-            blob={audio.blob}
-            width={barWidth ?? 180}
-            height={barHeight ?? 27}
-            barWidth={barWidth ?? 3}
-            gap={gap ?? 2}
-            barColor={barColor ?? '#ffffff69'}
-            currentTime={currentTime / 1000}
-            barPlayedColor={barPlayedColor ?? '#fff'}
-            backgroundColor={backgroundColor ?? '#f0f0f000'}
-            setLoading={setLoading}
-            style={style}
-            minBarHeight={minBarHeight ?? 2}
-          />
+          <div onClick={handleVisualizerClick}>
+            <AudioVisualizerMemo
+              setCurrentTime={setCurrentTime}
+              blob={audio}
+              width={barWidth ?? 180}
+              height={barHeight ?? 27}
+              barWidth={barWidth ?? 3}
+              gap={gap ?? 2}
+              barColor={barColor ?? '#ffffff69'}
+              currentTime={currentTime / 1000}
+              barPlayedColor={barPlayedColor ?? '#fff'}
+              backgroundColor={backgroundColor ?? '#f0f0f000'}
+              setLoading={setLoading}
+              style={style}
+              minBarHeight={minBarHeight ?? 2}
+            />
+          </div>
         }
       />
     </>

@@ -25,10 +25,9 @@ export const fetchAudioBlob = async ({ url, setAudioBlob }: FetchAudioBlobParams
 
 export interface AudioDuckyProps {
   url: string
-  duration: number
 }
 
-const AudioDucky: React.FC<AudioDuckyProps> = ({ url, duration }) => {
+const AudioDucky: React.FC<AudioDuckyProps> = ({ url }) => {
   const [audioBlob, setAudioBlob] = React.useState<Blob | null>(null)
 
   React.useEffect(() => {
@@ -40,10 +39,7 @@ const AudioDucky: React.FC<AudioDuckyProps> = ({ url, duration }) => {
     <AudioProvider>
       <AudioRecordItem
         loading={audioBlob === null ? true : false}
-        audio={{
-          duration,
-          blob: audioBlob,
-        }}
+        audio={audioBlob}
       />
     </AudioProvider>
   )

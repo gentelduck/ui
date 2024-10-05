@@ -46,7 +46,7 @@ export const calculateBarData = (
 
     const dataPoint = { max: maxAvg, min: minAvg }
     maxDataPoint = Math.max(maxDataPoint, Math.abs(dataPoint.max), Math.abs(dataPoint.min))
-    data[i] = dataPoint // Assign directly to preallocated array
+    data[i] = dataPoint
   }
 
   if (amp * 0.8 > maxDataPoint * amp) {
@@ -93,7 +93,7 @@ export const draw = (
     const x = i * (barWidth + gap)
     const y = amp
 
-    const targetHeight = amp + dp.max * 2 - y // Adjust this factor for height
+    const targetHeight = amp + dp.max * 2 - y
     const h = Math.max(targetHeight * animationProgress, minBarHeight)
 
     ctx.beginPath()
@@ -116,7 +116,6 @@ interface ProcessBlobType {
   setAnimationProgress: React.Dispatch<React.SetStateAction<number>>
   width: number
   height: number
-  speed: number
 }
 
 export const processBlob = async ({
@@ -134,7 +133,6 @@ export const processBlob = async ({
   setAnimationProgress,
   width,
   height,
-  speed,
 }: ProcessBlobType): Promise<void> => {
   if (!canvasRef.current || !blob) return
 
@@ -162,13 +160,13 @@ export const processBlob = async ({
 
     // Set up for animation
     let startTime: number | null = null
-    let animationFrameId: number | null = null // For tracking animation frame ID
+    let animationFrameId: number | null = null
 
     const animate = (time: number) => {
       if (!startTime) startTime = time
 
       const elapsedTime = time - startTime
-      const progress = Math.min(elapsedTime / 1000, 1) // 1 second animation
+      const progress = Math.min(elapsedTime / 1000, 1)
 
       // Update animation progress using a ref
       setAnimationProgress(progress)
@@ -190,7 +188,7 @@ export const processBlob = async ({
       if (progress < 1) {
         animationFrameId = requestAnimationFrame(animate)
       } else {
-        setLoading(false) // End loading state after the animation completes
+        setLoading(false)
       }
     }
 
@@ -218,6 +216,7 @@ interface AudioVisualizerProps {
   style?: React.CSSProperties
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
   ref?: React.ForwardedRef<HTMLCanvasElement>
+  setCurrentTime: React.Dispatch<React.SetStateAction<number>>
 }
 
 const AudioVisualizer: React.FC<AudioVisualizerProps> = ({

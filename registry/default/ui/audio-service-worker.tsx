@@ -63,7 +63,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       setLoading: Dispatch<SetStateAction<boolean>>
     ) => {
       await processBlob({
-        speed,
         canvasRef,
         blob,
         barWidth,

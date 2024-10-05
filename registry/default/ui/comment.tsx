@@ -133,8 +133,7 @@ export const Comment: React.FC<CommentProps> = ({ showNestedShapes, mine, commen
                 item.type === 'voice' && (
                   <AudioDucky
                     key={idx}
-                    duration={item.content.duration}
-                    url={item.content.url}
+                    url={item.content}
                   />
                 )
               )
