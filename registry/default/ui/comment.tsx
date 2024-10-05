@@ -12,7 +12,7 @@ import { DropdownMenuOptionsDataType, DropdownMenuView } from './dropdown-menu'
 
 import 'highlight.js/styles/tokyo-night-dark.css'
 import { MDXContext, CommentsContext } from '../example/mdx-context-provider'
-import { AudioDucky } from './audio-ducky'
+import { AudioItem } from './audio-record'
 
 export const CommentTest = ({ user, comments }: { user: TaggedUserType; comments: CommentType[] }) => {
   return (
@@ -131,7 +131,7 @@ export const Comment: React.FC<CommentProps> = ({ showNestedShapes, mine, commen
                 ></p>
               ) : (
                 item.type === 'voice' && (
-                  <AudioDucky
+                  <AudioItem
                     key={idx}
                     url={item.content}
                   />

@@ -3,8 +3,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Button } from './button'
 import { cn } from '@/lib'
 import { Input } from './input'
-import { AudioVisualizer } from './audio-visualizer'
-import { AudioProvider, useAudioProvider } from './audio-service-worker'
+import { AudioVisualizer, dataPoint, process_blob, ProcessBlobParams } from './audio-visualizer'
 
 export interface RecordingParams {
   setRecordings: React.Dispatch<React.SetStateAction<Blob[]>>
@@ -12,33 +11,55 @@ export interface RecordingParams {
   audioChunksRef: React.MutableRefObject<Blob[]>
 }
 
-export interface StopRecordingParams {
+export interface StopRecordingHandlerParam {
   setRecording: React.Dispatch<React.SetStateAction<boolean>>
   intervalRef: React.MutableRefObject<ReturnType<typeof setInterval> | null>
   mediaRecorderRef: React.MutableRefObject<MediaRecorder | null>
   durationRef: React.MutableRefObject<number>
 }
 
-export interface DeleteRecordingParams extends Pick<RecordingParams, 'audioChunksRef'>, StopRecordingParams {}
+export interface DeleteRecordingHandlerParams
+  extends Pick<RecordingParams, 'audioChunksRef'>,
+    StopRecordingHandlerParam {}
 
-export interface HandleStopRecordingParams
-  extends Omit<StopRecordingParams, 'setRecording' | 'mediaRecorderRef' | 'durationRef'>,
+export interface StopRecordingHandlerParams
+  extends Omit<StopRecordingHandlerParam, 'setRecording' | 'mediaRecorderRef' | 'durationRef'>,
     Omit<RecordingParams, 'setRecordedDuration'> {}
 
 export interface StartTimerParams
-  extends Omit<StopRecordingParams, 'setRecording' | 'mediaRecorderRef'>,
+  extends Omit<StopRecordingHandlerParam, 'setRecording' | 'mediaRecorderRef'>,
     Pick<RecordingParams, 'setRecordedDuration'> {}
 
-export interface StartRecordingParams extends StopRecordingParams, RecordingParams {}
+export interface StartRecordingHandlerParams extends StopRecordingHandlerParam, RecordingParams {}
 
-export const formatTime = (milliseconds: number): string => {
+export const format_time_handler = (milliseconds: number): string => {
   const minutes = Math.floor(milliseconds / 60000)
   const seconds = Math.floor((milliseconds % 60000) / 1000)
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 
+export interface VisualizerClickHandlerParams {
+  audioRef: React.MutableRefObject<HTMLAudioElement | null>
+  setCurrentTime: React.Dispatch<React.SetStateAction<number>>
+  event: React.MouseEvent<HTMLDivElement>
+}
+
+// Handle audio visualizer click
+const visualizer_click_handler = ({ audioRef, event, setCurrentTime }: VisualizerClickHandlerParams) => {
+  if (audioRef.current == null) return
+  const rect = event.currentTarget.getBoundingClientRect()
+  const clickX = event.clientX - rect.left
+  const duration = audioRef.current.duration
+
+  if (duration && duration > 0) {
+    const newTime = (clickX / rect.width) * duration
+    audioRef.current.currentTime = newTime
+    setCurrentTime(newTime * 1000)
+  }
+}
+
 // Start recording audio
-export const startRecording = async ({
+export const start_recording_handler = async ({
   setRecordings,
   setRecording,
   setRecordedDuration,
@@ -46,7 +67,7 @@ export const startRecording = async ({
   intervalRef,
   audioChunksRef,
   mediaRecorderRef,
-}: StartRecordingParams) => {
+}: StartRecordingHandlerParams) => {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
   mediaRecorderRef.current = new MediaRecorder(stream)
   audioChunksRef.current = []
@@ -58,7 +79,7 @@ export const startRecording = async ({
   mediaRecorderRef.current.onstop = () => {
     setRecordedDuration(_ => 0)
     durationRef.current > 0 &&
-      handleStopRecording({
+      Stop_recording_handler({
         setRecordings,
         intervalRef,
         audioChunksRef,
@@ -68,11 +89,11 @@ export const startRecording = async ({
   mediaRecorderRef.current.start()
   setRecording(true)
   durationRef.current = 0
-  startTimer({ durationRef, intervalRef, setRecordedDuration })
+  start_timer_handler({ durationRef, intervalRef, setRecordedDuration })
 }
 
 // Stop recording and process audio blob
-export const handleStopRecording = ({ setRecordings, intervalRef, audioChunksRef }: HandleStopRecordingParams) => {
+export const Stop_recording_handler = ({ setRecordings, intervalRef, audioChunksRef }: StopRecordingHandlerParams) => {
   const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' })
 
   setRecordings(prev => [...prev, audioBlob])
@@ -80,27 +101,27 @@ export const handleStopRecording = ({ setRecordings, intervalRef, audioChunksRef
 }
 
 // Stop recording audio
-export const stopRecording = ({ setRecording, intervalRef, mediaRecorderRef }: StopRecordingParams) => {
+export const stop_recording_handle = ({ setRecording, intervalRef, mediaRecorderRef }: StopRecordingHandlerParam) => {
   mediaRecorderRef.current?.stop()
   setRecording(false)
   clearInterval(intervalRef.current!)
 }
 
 // Delete recording
-export const deleteRecording = ({
+export const deleteRecordingHandler = ({
   setRecording,
   intervalRef,
   mediaRecorderRef,
   durationRef,
   audioChunksRef,
-}: DeleteRecordingParams) => {
+}: DeleteRecordingHandlerParams) => {
   durationRef.current = 0
   audioChunksRef.current = []
-  stopRecording({ setRecording, intervalRef, mediaRecorderRef, durationRef })
+  stop_recording_handle({ setRecording, intervalRef, mediaRecorderRef, durationRef })
 }
 
 // Start timer to track recording duration
-export const startTimer = ({ durationRef, intervalRef, setRecordedDuration }: StartTimerParams) => {
+export const start_timer_handler = ({ durationRef, intervalRef, setRecordedDuration }: StartTimerParams) => {
   clearInterval(intervalRef.current!)
   intervalRef.current = setInterval(() => {
     durationRef.current += 1000
@@ -108,7 +129,7 @@ export const startTimer = ({ durationRef, intervalRef, setRecordedDuration }: St
   }, 1000)
 }
 
-const AudioRecord: React.FC = () => {
+const AudioRecorder: React.FC = () => {
   const [recording, setRecording] = useState<boolean>(false)
   const [recordings, setRecordings] = useState<Blob[]>([])
   const [recordedDuration, setRecordedDuration] = useState<number>(0)
@@ -128,6 +149,22 @@ const AudioRecord: React.FC = () => {
     }
   }, [])
 
+  const record = recording
+    ? () => stop_recording_handle({ setRecording, intervalRef, mediaRecorderRef, durationRef })
+    : () =>
+        start_recording_handler({
+          setRecordings,
+          setRecording,
+          setRecordedDuration,
+          durationRef,
+          intervalRef,
+          audioChunksRef,
+          mediaRecorderRef,
+        })
+
+  const deleteRecording = () =>
+    deleteRecordingHandler({ intervalRef, mediaRecorderRef, setRecording, durationRef, audioChunksRef })
+
   return (
     <div className="flex flex-col gap-2 h-screen">
       <div className="p-5 rounded-lg shadow-md flex items-center gap-4 border border-border w-[333px]">
@@ -138,7 +175,7 @@ const AudioRecord: React.FC = () => {
               recording ? 'opacity-1' : 'opacity-0 pointer-events-none right-4'
             )}
           >
-            <span className="font-mono">{formatTime(recordedDuration)}</span>
+            <span className="font-mono">{format_time_handler(recordedDuration)}</span>
             <span className="font-mono w-2 h-2 rounded-full bg-primary animate-pulse" />
           </div>
           <div>
@@ -151,7 +188,7 @@ const AudioRecord: React.FC = () => {
 
         <Button
           size={'icon'}
-          onClick={() => deleteRecording({ intervalRef, mediaRecorderRef, setRecording, durationRef, audioChunksRef })}
+          onClick={deleteRecording}
           className={cn(
             'rounded-full relative transition fade_animation',
             recording ? 'scale-1 opacity-1 ml-0 w-10 h-10' : 'scale-0 opacity-0 pointer-events-none -ml- w-0 h-0'
@@ -162,20 +199,7 @@ const AudioRecord: React.FC = () => {
 
         <Button
           size={'icon'}
-          onClick={
-            recording
-              ? () => stopRecording({ setRecording, intervalRef, mediaRecorderRef, durationRef })
-              : () =>
-                  startRecording({
-                    setRecordings,
-                    setRecording,
-                    setRecordedDuration,
-                    durationRef,
-                    intervalRef,
-                    audioChunksRef,
-                    mediaRecorderRef,
-                  })
-          }
+          onClick={record}
           className={cn('rounded-full transition relative w-10 h-10', recording ? 'ml-0' : '-ml-4')}
         >
           <Mic
@@ -259,14 +283,16 @@ const AudioItemWrapper = ({
 
             <div className="flex items-center gap-2">
               <span className={cn('flex items-center text-primary', size === 'sm' ? 'text-xs' : 'text-sm')}>
-                {isPlaying || timeLeft < duration ? formatTime(timeLeft > 0 ? timeLeft : 0) : formatTime(duration)}
+                {isPlaying || timeLeft < duration
+                  ? format_time_handler(timeLeft > 0 ? timeLeft : 0)
+                  : format_time_handler(duration)}
               </span>
               {
                 /* TODO: YOU SHOULD EDIT THE OBJ TO GIVE YOU VALUE OF RECIPIENT OPENED THE RECORD */
                 <span className="w-2 h-2 bg-primary rounded-full" />
               }
 
-              <AudioSpeed loading={loading} />
+              <AudioSpeed />
             </div>
           </div>
         }
@@ -275,7 +301,7 @@ const AudioItemWrapper = ({
   )
 }
 
-export const AudioSpeed = ({ loading }: { loading: boolean }) => {
+export const AudioSpeed = () => {
   const { speed, setSpeed } = useAudioProvider()
 
   return (
@@ -331,19 +357,7 @@ const AudioRecordItem = ({
   React.useEffect(() => {
     setTimeLeft(duration - currentTime)
   }, [currentTime, duration])
-  // Handle audio visualizer click
-  const handleVisualizerClick = event => {
-    if (audioRef.current == null) return
-    const rect = event.target.getBoundingClientRect()
-    const clickX = event.clientX - rect.left
-    const duration = audioRef.current.duration
 
-    if (duration && duration > 0) {
-      const newTime = (clickX / rect.width) * duration
-      audioRef.current.currentTime = newTime
-      setCurrentTime(newTime * 1000)
-    }
-  }
   React.useEffect(() => {
     if (audio) {
       const audioURL = URL.createObjectURL(audio)
@@ -407,7 +421,7 @@ const AudioRecordItem = ({
         handlePlayPause={handlePlayPause}
         timeLeft={timeLeft}
         children={
-          <div onClick={handleVisualizerClick}>
+          <div onClick={event => visualizer_click_handler({ audioRef, event, setCurrentTime })}>
             <AudioVisualizerMemo
               setCurrentTime={setCurrentTime}
               blob={audio}
@@ -421,7 +435,7 @@ const AudioRecordItem = ({
               backgroundColor={backgroundColor ?? '#f0f0f000'}
               setLoading={setLoading}
               style={style}
-              minBarHeight={minBarHeight ?? 2}
+              minBarHeight={minBarHeight ?? 1}
             />
           </div>
         }
@@ -430,4 +444,127 @@ const AudioRecordItem = ({
   )
 }
 
-export { AudioRecord, AudioRecordItem, AudioItemWrapper }
+export interface FetchAudioBlobParams {
+  url: string
+  setAudioBlob: React.Dispatch<React.SetStateAction<Blob | null>>
+}
+
+export const fetchAudioBlob = async ({ url, setAudioBlob }: FetchAudioBlobParams) => {
+  try {
+    const response = await fetch(url)
+    if (!response.ok) {
+      console.error('Failed to fetch audio:', response.statusText)
+      return setAudioBlob(null)
+    }
+
+    const blob = await response.blob()
+    setAudioBlob(blob)
+  } catch (error) {
+    setAudioBlob(null)
+    console.error('Error fetching audio:', error)
+  }
+}
+
+export interface AudioItemProps {
+  url: string
+}
+
+const AudioItem: React.FC<AudioItemProps> = ({ url }) => {
+  const [audioBlob, setAudioBlob] = React.useState<Blob | null>(null)
+
+  React.useEffect(() => {
+    if (!url.startsWith('https://') || !url) return
+    fetchAudioBlob({ url, setAudioBlob })
+  }, [url])
+
+  return (
+    <AudioProvider>
+      <AudioRecordItem
+        loading={audioBlob === null ? true : false}
+        audio={audioBlob}
+      />
+    </AudioProvider>
+  )
+}
+
+// Audio Provider
+export interface AudioContextType {
+  process_audio: (args: Omit<ProcessBlobParams, 'setAnimationProgress' | 'setDuration' | 'setData'>) => Promise<void>
+  data: dataPoint[]
+  duration: number
+  speed: number
+  setSpeed: React.Dispatch<React.SetStateAction<number>>
+  animationProgress: number
+}
+
+export const AudioContext = React.createContext<AudioContextType | undefined>(undefined)
+
+const useAudioProvider = (): AudioContextType => {
+  const context = React.useContext(AudioContext)
+  if (!context) {
+    throw new Error('useAudioService must be used within an AudioServiceProvider')
+  }
+  return context
+}
+
+export interface AudioProviderProps {
+  children: React.ReactNode
+}
+
+const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
+  const [data, setData] = React.useState<dataPoint[]>([])
+  const [duration, setDuration] = React.useState<number>(0)
+  const [speed, setSpeed] = React.useState<number>(1)
+  const [animationProgress, setAnimationProgress] = React.useState<number>(0)
+
+  const process_audio = React.useCallback(
+    async ({
+      canvasRef,
+      blob,
+      barWidth,
+      gap,
+      backgroundColor,
+      barColor,
+      barPlayedColor,
+      minBarHeight,
+      setLoading,
+      width,
+      height,
+    }: Omit<ProcessBlobParams, 'setAnimationProgress' | 'setDuration' | 'setData'>) => {
+      await process_blob({
+        canvasRef,
+        blob,
+        barWidth,
+        gap,
+        backgroundColor,
+        barColor,
+        barPlayedColor,
+        minBarHeight,
+        setLoading,
+        setData,
+        setDuration,
+        setAnimationProgress,
+        width,
+        height,
+      })
+    },
+    []
+  )
+
+  return (
+    <AudioContext.Provider
+      value={{
+        process_audio: process_audio,
+        data,
+        duration,
+        animationProgress,
+        speed,
+        setSpeed,
+      }}
+    >
+      {children}
+    </AudioContext.Provider>
+  )
+}
+
+export { AudioRecorder, AudioItem, AudioRecordItem, AudioItemWrapper, AudioProvider, useAudioProvider }

@@ -13,7 +13,7 @@ import {
   KanbanColumnRowTemplate,
 } from '@/registry/default/example/SwapyMainDemo'
 import { Comment } from '@/registry/default/ui/comment'
-import { AudioRecord } from '@/registry/default/ui/audio-record'
+import { AudioRecorder } from '@/registry/default/ui/audio-record'
 // import { ThemeWrapper } from '@/components/theme-wrapper'
 // import { ThemeCustomizer } from '@/components/theme-customizer'
 // import { ThemesTabs } from './themes/tabs'

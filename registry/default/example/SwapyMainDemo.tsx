@@ -174,7 +174,7 @@ export const initData: InitDataType = {
             },
             {
               type: 'voice',
-              content: 'https://actions.google.com/sounds/v1/alarms/phone_alerts_and_rings.ogg',
+              content: 'https://zpgqhogoevbgpxustvmo.supabase.co/storage/v1/object/public/produc_imgs/Pingtr1p.ogg',
             },
           ],
           createdAt: '2021-01-01T00:00:00.000Z',

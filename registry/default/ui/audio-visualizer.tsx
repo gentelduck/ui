@@ -1,24 +1,33 @@
 import React from 'react'
-import { useAudioProvider } from './audio-service-worker'
+import { useAudioProvider } from './audio-record'
 
+// Calculate bar data
 export interface dataPoint {
   max: number
   min: number
 }
 
-export const calculateBarData = (
-  buffer: AudioBuffer,
-  height: number,
-  width: number,
-  barWidth: number,
+export interface CalculateBarDataParams {
+  buffer: AudioBuffer
+  width: number
+  height: number
+  barWidth: number
   gap: number
-): dataPoint[] => {
+}
+
+export const calculate_bar_data_handler = ({
+  buffer,
+  width,
+  height,
+  barWidth,
+  gap,
+}: CalculateBarDataParams): dataPoint[] => {
   const bufferData = buffer.getChannelData(0)
   const units = Math.floor(width / (barWidth + gap))
   const step = Math.floor(bufferData.length / units)
   const amp = height / 2
 
-  const data: dataPoint[] = new Array(units) // Preallocate array
+  const data: dataPoint[] = new Array(units)
   let maxDataPoint = 0
 
   for (let i = 0; i < units; i++) {
@@ -60,19 +69,34 @@ export const calculateBarData = (
   return data
 }
 
-export const draw = (
-  data: dataPoint[],
-  canvas: HTMLCanvasElement | null,
-  barWidth: number,
-  gap: number,
-  backgroundColor: string,
-  barColor: string,
-  barPlayedColor?: string,
-  currentTime: number = 0,
-  duration: number = 1,
-  minBarHeight: number = 5,
-  animationProgress: number = 1
-): void => {
+// Draw Handler
+export interface DrawHandlerParams {
+  data: dataPoint[]
+  canvas: HTMLCanvasElement | null
+  barWidth: number
+  gap: number
+  backgroundColor: string
+  barColor: string
+  barPlayedColor?: string
+  currentTime: number
+  duration: number
+  minBarHeight: number
+  animationProgress: number
+}
+
+export const draw_handler = ({
+  data,
+  canvas,
+  barWidth,
+  gap,
+  backgroundColor,
+  barColor,
+  barPlayedColor,
+  currentTime = 0,
+  duration = 1,
+  minBarHeight = 5,
+  animationProgress = 1,
+}: DrawHandlerParams): void => {
   if (!canvas) return
 
   const amp = canvas.height / 2
@@ -101,7 +125,8 @@ export const draw = (
   })
 }
 
-interface ProcessBlobType {
+// Process Blob
+export interface ProcessBlobParams {
   canvasRef: React.RefObject<HTMLCanvasElement>
   blob: Blob | null
   barWidth: number
@@ -118,7 +143,7 @@ interface ProcessBlobType {
   height: number
 }
 
-export const processBlob = async ({
+export const process_blob = async ({
   canvasRef,
   blob,
   barWidth,
@@ -133,7 +158,7 @@ export const processBlob = async ({
   setAnimationProgress,
   width,
   height,
-}: ProcessBlobType): Promise<void> => {
+}: ProcessBlobParams): Promise<void> => {
   if (!canvasRef.current || !blob) return
 
   const defaultBars = Array.from({ length: Math.floor(width / (barWidth + gap)) }, () => ({
@@ -141,7 +166,19 @@ export const processBlob = async ({
     min: minBarHeight,
   }))
 
-  draw(defaultBars, canvasRef.current, barWidth, gap, backgroundColor, barColor, barPlayedColor, 0, 1, 1, 1)
+  draw_handler({
+    data: defaultBars,
+    canvas: canvasRef.current,
+    barWidth,
+    gap,
+    backgroundColor,
+    barColor,
+    barPlayedColor,
+    currentTime: 0,
+    duration: 1,
+    minBarHeight: 1,
+    animationProgress: 1,
+  })
 
   const audioContext = new AudioContext()
   const audioBuffer = await blob.arrayBuffer()
@@ -153,7 +190,7 @@ export const processBlob = async ({
     setDuration(buffer.duration)
 
     // Calculate the waveform data for the entire audio buffer
-    const barsData = calculateBarData(buffer, height, width, barWidth, gap)
+    const barsData = calculate_bar_data_handler({ buffer, height, width, barWidth, gap })
 
     // Set the calculated data for rendering
     setData(barsData)
@@ -171,19 +208,19 @@ export const processBlob = async ({
       // Update animation progress using a ref
       setAnimationProgress(progress)
 
-      draw(
-        barsData,
-        canvasRef.current,
+      draw_handler({
+        data: barsData,
+        canvas: canvasRef.current,
         barWidth,
         gap,
         backgroundColor,
         barColor,
         barPlayedColor,
-        0,
-        buffer.duration,
+        currentTime: 0,
+        duration: buffer.duration,
         minBarHeight,
-        progress
-      )
+        animationProgress: progress,
+      })
 
       if (progress < 1) {
         animationFrameId = requestAnimationFrame(animate)
@@ -202,6 +239,7 @@ export const processBlob = async ({
   })
 }
 
+// Audio Visualizer
 interface AudioVisualizerProps {
   blob: Blob | null
   width: number
@@ -234,11 +272,11 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
   setLoading,
 }) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
-  const { processAudio, data, duration, animationProgress, speed } = useAudioProvider()
+  const { process_audio, data, duration, animationProgress } = useAudioProvider()
 
   React.useEffect(() => {
     setLoading(true)
-    processAudio(
+    process_audio({
       blob,
       canvasRef,
       width,
@@ -250,20 +288,19 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
       barPlayedColor,
       minBarHeight,
       setLoading,
-      speed
-    )
+    })
   }, [blob])
 
   React.useEffect(() => {
     if (!canvasRef.current) return
-    draw(
-      data.length
+    draw_handler({
+      data: data.length
         ? data
         : Array.from({ length: Math.floor(width / (barWidth + gap)) }, () => ({
             min: minBarHeight,
             max: minBarHeight,
           })),
-      canvasRef.current,
+      canvas: canvasRef.current,
       barWidth,
       gap,
       backgroundColor,
@@ -272,8 +309,8 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
       currentTime,
       duration,
       minBarHeight,
-      animationProgress
-    )
+      animationProgress,
+    })
   }, [data, width, height, currentTime, duration, animationProgress])
 
   return (
