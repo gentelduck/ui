@@ -1,9 +1,8 @@
 import React from 'react'
-import { CommentType, TaggedUserType } from './swapy'
+import { CommentContentType, CommentType, TaggedUserType } from './swapy'
 import { differenceInDays, differenceInHours, format, formatDistance } from 'date-fns'
 import { cn } from '@/lib'
 import { AvatarCustom } from './avatar'
-import { LikeButton } from '../example/SwapyMainDemo'
 import { ScrollArea } from './scroll-area'
 import { Button } from './button'
 import { ArrowBigUp, Bug, Check, Ellipsis, Pencil, Plus, Trash2 } from 'lucide-react'
@@ -13,31 +12,115 @@ import { DropdownMenuOptionsDataType, DropdownMenuView } from './dropdown-menu'
 import 'highlight.js/styles/tokyo-night-dark.css'
 import { MDXContext, CommentsContext } from '../example/mdx-context-provider'
 import { AudioItem } from './audio-record'
+import { LikeButton } from './custom-buttons'
 
-export const CommentTest = ({ user, comments }: { user: TaggedUserType; comments: CommentType[] }) => {
+export interface CommentContentProps extends React.ComponentPropsWithoutRef<typeof ScrollArea> {
+  length: number
+}
+
+export const CommentContent = ({ length, children, ...props }: CommentContentProps) => {
   return (
-    <ScrollArea className={cn('h-80 px-4 pt-2 pb-0', comments.length > 2 && 'grid place-content-end')}>
-      <div className="comments flex flex-col justify-end">
-        {comments.map((comment, idx) => {
-          const mine = user.id == comment.user.id
-          return (
-            <Comment
-              key={comment.id}
-              mine={mine}
-              className={cn(mine && '')}
-              comment={comment}
-              showNestedShapes={comments.length === idx + 1 ? false : true}
-            />
-          )
-        })}
-        <CommentsPlaceholder user={user} />
-      </div>
-      <CommentScrollDiv />
+    <ScrollArea
+      className={cn('h-80 px-4 pt-2 pb-0', length > 2 && 'grid place-content-end')}
+      {...props}
+    >
+      {children}
     </ScrollArea>
   )
 }
 
-export const CommentScrollDiv = () => {
+export interface CommentItemProps extends React.HTMLProps<HTMLDivElement> {
+  mine: boolean
+  comment: CommentType
+  showNestedShapes?: boolean
+}
+
+export const CommentItem: React.FC<CommentItemProps> = ({ showNestedShapes, mine, comment, className, ...props }) => {
+  return (
+    <>
+      <div
+        className={cn('comment flex mt-1', className)}
+        {...props}
+      >
+        <CommentAvatar user={comment.user} />
+        <div className="flex flex-col items-start justify-start w-full">
+          <CommentTop comment={comment} />
+          <CommentItemContent content={comment.content} />
+          <CommentBottom comment={comment} />
+        </div>
+      </div>
+    </>
+  )
+}
+
+export const CommentTop = ({ comment }: { comment: CommentType }) => {
+  const commentDate = new Date(comment.createdAt!)
+  const daysDifference = differenceInDays(new Date(), commentDate)
+  const hoursDifference = differenceInHours(new Date(), commentDate)
+
+  return (
+    <div className="flex items-center justify-start w-full gap-2 mb-2">
+      <div className="flex items-center justify-start w-full gap-2">
+        <p className="text-sm font-medium">{comment.user.name}</p>
+        <p className="text-xs text-muted-foreground">
+          {daysDifference > 1
+            ? format(commentDate, 'PP')
+            : hoursDifference > 1
+              ? format(commentDate, 'p')
+              : formatDistance(commentDate, new Date(), { addSuffix: false, includeSeconds: true })}
+        </p>
+      </div>
+      <LikeButton
+        onClick={({ e, state }) => {}}
+        likes={comment.likes}
+        user={comment.user}
+      />
+    </div>
+  )
+}
+export const CommentItemContent = ({ content }: { content: CommentContentType[] }) => {
+  return (
+    <div className="mdx__minimal__text__editor border-none flex flex-col gap-3">
+      {content.map((item, idx) => {
+        return item.type === 'text' ? (
+          <p
+            key={idx}
+            className={cn('text-sm  tiptap ProseMirror')}
+            dangerouslySetInnerHTML={{ __html: item.content }}
+          ></p>
+        ) : (
+          item.type === 'voice' && (
+            <AudioItem
+              key={idx}
+              url={item.content}
+            />
+          )
+        )
+      })}
+    </div>
+  )
+}
+
+export const CommentAvatar = ({ user }: { user: TaggedUserType }) => {
+  return (
+    <div className={cn('flex flex-col flex-shrink-0 basis-[40px] flex-grow-0 items-center mr-2')}>
+      <div className="top-shape w-[2px] max-h-2 bg-border flex-grow border-border border flex basis-auto flex-col items-stretch my-1"></div>
+      <AvatarCustom
+        className="w-8 h-8"
+        hover_card={user}
+        avatar_image={{
+          src: user.avatarUrl,
+        }}
+        fallback={{
+          className: 'w-8 h-8',
+        }}
+      />
+      <div className="bottom-shape w-[2px] bg-border flex-grow border-border border flex basis-auto flex-col items-stretch mt-1"></div>
+    </div>
+  )
+}
+
+export const CommentScrollTracker = () => {
   const { comments } = React.useContext(CommentsContext)
 
   React.useEffect(() => {
@@ -60,7 +143,7 @@ export const CommentsPlaceholder = ({ user }: { user: TaggedUserType }) => {
       {newComments.map((comment, idx) => {
         const mine = user.id == comment.user.id
         return (
-          <Comment
+          <CommentItem
             key={comment.id}
             mine={mine}
             className={cn(mine && '')}
@@ -69,79 +152,6 @@ export const CommentsPlaceholder = ({ user }: { user: TaggedUserType }) => {
           />
         )
       })}
-    </>
-  )
-}
-
-export interface CommentProps extends React.HTMLProps<HTMLDivElement> {
-  mine: boolean
-  comment: CommentType
-  showNestedShapes?: boolean
-}
-
-export const Comment: React.FC<CommentProps> = ({ showNestedShapes, mine, comment, className, ...props }) => {
-  const commentDate = new Date(comment.createdAt!)
-  const daysDifference = differenceInDays(new Date(), commentDate)
-  const hoursDifference = differenceInHours(new Date(), commentDate)
-
-  return (
-    <>
-      <div
-        className={cn('comment flex mt-1', className)}
-        {...props}
-      >
-        <div className={cn('flex flex-col flex-shrink-0 basis-[40px] flex-grow-0 items-center mr-2')}>
-          <div className="top-shape w-[2px] max-h-2 bg-border flex-grow border-border border flex basis-auto flex-col items-stretch my-1"></div>
-          <AvatarCustom
-            className="w-8 h-8"
-            hover_card={comment.user}
-            avatar_image={{
-              src: comment.user.avatarUrl,
-            }}
-            fallback={{
-              className: 'w-8 h-8',
-            }}
-          />
-          <div className="bottom-shape w-[2px] bg-border flex-grow border-border border flex basis-auto flex-col items-stretch mt-1"></div>
-        </div>
-        <div className="flex flex-col items-start justify-start w-full">
-          <div className="flex items-center justify-start w-full gap-2 mb-2">
-            <div className="flex items-center justify-start w-full gap-2">
-              <p className="text-sm font-medium">{comment.user.name}</p>
-              <p className="text-xs text-muted-foreground">
-                {daysDifference > 1
-                  ? format(commentDate, 'PP')
-                  : hoursDifference > 1
-                    ? format(commentDate, 'p')
-                    : formatDistance(commentDate, new Date(), { addSuffix: false, includeSeconds: true })}
-              </p>
-            </div>
-            <LikeButton
-              likes={comment.likes}
-              user={comment.user}
-            />
-          </div>
-          <div className="mdx__minimal__text__editor border-none flex flex-col gap-3">
-            {comment.content.map((item, idx) => {
-              return item.type === 'text' ? (
-                <p
-                  key={idx}
-                  className={cn('text-sm  tiptap ProseMirror')}
-                  dangerouslySetInnerHTML={{ __html: item.content }}
-                ></p>
-              ) : (
-                item.type === 'voice' && (
-                  <AudioItem
-                    key={idx}
-                    url={item.content}
-                  />
-                )
-              )
-            })}
-          </div>
-          <CommentBottom comment={comment} />
-        </div>
-      </div>
     </>
   )
 }

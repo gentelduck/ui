@@ -1,6 +1,5 @@
 'use client'
 import { cn } from '@/lib'
-import { IoMdHeartEmpty } from 'react-icons/io'
 
 import {
   AlertDialogCustom,
@@ -25,7 +24,7 @@ import {
 } from '../ui'
 import { EllipsisVertical, LucideIcon, MessageSquare, Paperclip, Plus, Reply, X } from 'lucide-react'
 import React from 'react'
-import { ChatBottom, CommentTest } from '../ui/comment'
+import { ChatBottom, CommentContent, CommentItem, CommentScrollTracker, CommentsPlaceholder } from '../ui/comment'
 
 export const users: TaggedUserType[] = [
   {
@@ -164,7 +163,7 @@ export const initData: InitDataType = {
           },
         },
         {
-          id: 'comment-3',
+          id: 'comment-2',
           user: users[1],
           content: [
             {
@@ -183,19 +182,6 @@ export const initData: InitDataType = {
             users: [],
           },
         },
-
-        // {
-        //   id: 'comment-2',
-        //   user: users[1],
-        //   type: 'text',
-        //   content:
-        //     '<p>Okay Lol. I am going to finish this task. not today. <span emoji="😎" shortcode=":sunglasses:" data-emoji="😎" class="inline-flex text-lg leading-none __className_aef5f5">😎</span>, and I use arch, vim and Rust BTW, forgot to mention Elixir...girl.</p>',
-        //   createdAt: '2021-01-01T00:00:00.000Z',
-        //   likes: {
-        //     amount: 4089,
-        //     users: [],
-        //   },
-        // },
       ],
       taggedUsers: users,
       labels: [
@@ -484,10 +470,26 @@ export const CommentsLayout: React.FC<CommentsLayoutProps> = ({ comments }) => {
                 </div>
 
                 {
-                  <CommentTest
-                    comments={comments}
-                    user={users[1]}
-                  />
+                  <CommentContent length={comments.length}>
+                    <div className="comments flex flex-col justify-end">
+                      {comments.map((comment, idx) => {
+                        const mine = users[0].id == comment.user.id
+                        return (
+                          <CommentItem
+                            key={comment.id}
+                            mine={mine}
+                            className={cn(mine && '')}
+                            comment={comment}
+                            showNestedShapes={comments.length === idx + 1 ? false : true}
+                          />
+                        )
+                      })}
+                      {
+                        // <CommentsPlaceholder user={users[0]} />
+                      }
+                    </div>
+                    <CommentScrollTracker />
+                  </CommentContent>
                 }
 
                 <div className="flex items-center justify-between py-2 px-4 bg-secondary/30 gap-2">
@@ -528,69 +530,7 @@ const CommentsLeft = ({ commentsArr }: { commentsArr: CommentType[] }) => {
   )
 }
 
-export interface LikeButtonProps extends React.HTMLProps<HTMLDivElement> {
-  user: TaggedUserType
-  likes: LikedType
-}
-import { IoHeart } from 'react-icons/io5'
-import { MDXProvider, CommentsProvider, MDXContext } from './mdx-context-provider'
-import { record } from '@/assets'
-
-export const LikeButton: React.FC<LikeButtonProps> = ({ user, likes, className, ...props }) => {
-  const { amount } = likes
-
-  // Initialize state
-  const [likeState, setLikeState] = React.useState({
-    current: amount,
-    prev: amount,
-    scrollTo: null as 'up' | 'down' | null,
-    hasLiked: false,
-  })
-
-  // Toggle like status
-  const handleLikeToggle = () => {
-    setLikeState(prevState => {
-      const newLikes = prevState.hasLiked ? prevState.current - 1 : prevState.current + 1
-      return {
-        ...prevState,
-        prev: prevState.current,
-        current: newLikes,
-        scrollTo: prevState.hasLiked ? 'down' : 'up',
-        hasLiked: !prevState.hasLiked,
-      }
-    })
-  }
-
-  return (
-    <div
-      className={cn('flex items-center justify-center gap-2', className)}
-      {...props}
-    >
-      <Button
-        size="icon"
-        variant="nothing"
-        className={cn('rounded-full h-auto w-auto', likeState.hasLiked && 'btn-love')}
-        onClick={handleLikeToggle}
-        icon={{
-          children: (likeState.hasLiked ? IoHeart : IoMdHeartEmpty) as LucideIcon,
-          className: 'text-[#e2264d]',
-        }}
-      >
-        <div
-          key={Math.random()}
-          className={cn(
-            'relative grid place-content-center h-4 overflow-hidden leading-4 transition',
-            likeState.scrollTo
-          )}
-          style={{ width: `${Math.min(48, Math.max(24, String(likeState.current).length * 12))}px` }}
-        >
-          <span className="absolute top-0 left-0">{likeState.current}</span>
-          <span className="absolute top-0 left-0">{likeState.prev}</span>
-        </div>
-      </Button>
-    </div>
-  )
-}
+import { MDXProvider, CommentsProvider } from './mdx-context-provider'
 
 export const ReplyButton = () => {
   return (

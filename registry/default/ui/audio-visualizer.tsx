@@ -15,59 +15,68 @@ export interface CalculateBarDataParams {
   gap: number
 }
 
-export const calculate_bar_data_handler = ({
-  buffer,
-  width,
-  height,
-  barWidth,
-  gap,
-}: CalculateBarDataParams): dataPoint[] => {
-  const bufferData = buffer.getChannelData(0)
-  const units = Math.floor(width / (barWidth + gap))
-  const step = Math.floor(bufferData.length / units)
-  const amp = height / 2
+export const calculate_bar_data_handler = (() => {
+  const cache = new Map()
 
-  const data: dataPoint[] = new Array(units)
-  let maxDataPoint = 0
+  return ({ buffer, width, height, barWidth, gap }: CalculateBarDataParams): dataPoint[] => {
+    // Create a unique key based on the input parameters
+    const key = `${buffer.length}-${width}-${height}-${barWidth}-${gap}`
 
-  for (let i = 0; i < units; i++) {
-    let minSum = 0
-    let maxSum = 0
-    let minCount = 0
-    let maxCount = 0
+    // Check if the result is already cached
+    if (cache.has(key)) {
+      return cache.get(key)
+    }
 
-    const startIdx = i * step
-    const endIdx = Math.min(startIdx + step, bufferData.length)
+    const bufferData = buffer.getChannelData(0)
+    const units = Math.floor(width / (barWidth + gap))
+    const step = Math.floor(bufferData.length / units)
+    const amp = height / 2
 
-    for (let j = startIdx; j < endIdx; j++) {
-      const datum = bufferData[j]
-      if (datum < 0) {
-        minSum += datum
-        minCount++
-      } else {
-        maxSum += datum
-        maxCount++
+    const data: dataPoint[] = new Array(units)
+    let maxDataPoint = 0
+
+    for (let i = 0; i < units; i++) {
+      let minSum = 0
+      let maxSum = 0
+      let minCount = 0
+      let maxCount = 0
+
+      const startIdx = i * step
+      const endIdx = Math.min(startIdx + step, bufferData.length)
+
+      for (let j = startIdx; j < endIdx; j++) {
+        const datum = bufferData[j]
+        if (datum < 0) {
+          minSum += datum
+          minCount++
+        } else {
+          maxSum += datum
+          maxCount++
+        }
+      }
+
+      const minAvg = minCount ? minSum / minCount : 0
+      const maxAvg = maxCount ? maxSum / maxCount : 0
+
+      const dataPoint = { max: maxAvg, min: minAvg }
+      maxDataPoint = Math.max(maxDataPoint, Math.abs(dataPoint.max), Math.abs(dataPoint.min))
+      data[i] = dataPoint
+    }
+
+    if (amp * 0.8 > maxDataPoint * amp) {
+      const adjustmentFactor = (amp * 0.8) / maxDataPoint
+      for (let i = 0; i < units; i++) {
+        data[i].max *= adjustmentFactor
+        data[i].min *= adjustmentFactor
       }
     }
 
-    const minAvg = minCount ? minSum / minCount : 0
-    const maxAvg = maxCount ? maxSum / maxCount : 0
+    // Store the computed result in the cache
+    cache.set(key, data)
 
-    const dataPoint = { max: maxAvg, min: minAvg }
-    maxDataPoint = Math.max(maxDataPoint, Math.abs(dataPoint.max), Math.abs(dataPoint.min))
-    data[i] = dataPoint
+    return data
   }
-
-  if (amp * 0.8 > maxDataPoint * amp) {
-    const adjustmentFactor = (amp * 0.8) / maxDataPoint
-    for (let i = 0; i < units; i++) {
-      data[i].max *= adjustmentFactor
-      data[i].min *= adjustmentFactor
-    }
-  }
-
-  return data
-}
+})()
 
 // Draw Handler
 export interface DrawHandlerParams {
@@ -97,32 +106,28 @@ export const draw_handler = ({
   minBarHeight = 5,
   animationProgress = 1,
 }: DrawHandlerParams): void => {
-  if (!canvas) return
+  if (!canvas || !data.length) return
 
-  const amp = canvas.height / 2
   const ctx = canvas.getContext('2d')
   if (!ctx) return
 
+  const amp = canvas.height / 2
+  const playedPercent = currentTime / duration
+
+  // Clear the canvas and set background
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   if (backgroundColor !== 'transparent') {
     ctx.fillStyle = backgroundColor
     ctx.fillRect(0, 0, canvas.width, canvas.height)
   }
 
-  const playedPercent = (currentTime || 0) / duration
-
-  data.forEach((dp, i) => {
-    ctx.fillStyle = playedPercent > i / data.length && barPlayedColor ? barPlayedColor : barColor
-
-    const x = i * (barWidth + gap)
-    const y = amp
-
-    const targetHeight = amp + dp.max * 2 - y
-    const h = Math.max(targetHeight * animationProgress, minBarHeight)
-
-    ctx.beginPath()
-    ctx.fillRect(x, y - h / 2, barWidth, h)
-  })
+  // Draw bars in a single loop
+  const totalBars = data.length
+  for (let i = 0; i < totalBars; i++) {
+    const height = Math.max(data[i].max * 2 * animationProgress, minBarHeight)
+    ctx.fillStyle = playedPercent > i / totalBars && barPlayedColor ? barPlayedColor : barColor
+    ctx.fillRect(i * (barWidth + gap), amp - height / 2, barWidth, height)
+  }
 }
 
 // Process Blob
