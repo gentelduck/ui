@@ -166,7 +166,7 @@ const AudioRecorder: React.FC = () => {
     deleteRecordingHandler({ intervalRef, mediaRecorderRef, setRecording, durationRef, audioChunksRef })
 
   return (
-    <div className="flex flex-col gap-2 h-screen">
+    <div className="flex flex-col gap-2">
       <div className="p-5 rounded-lg shadow-md flex items-center gap-4 border border-border w-[333px]">
         <div className="relative">
           <div

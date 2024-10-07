@@ -13,6 +13,8 @@ import 'highlight.js/styles/tokyo-night-dark.css'
 import { MDXContext, CommentsContext } from '../example/mdx-context-provider'
 import { AudioItem } from './audio-record'
 import { LikeButton } from './custom-buttons'
+import { ButtonProps } from 'react-day-picker'
+import { users } from '../example/SwapyMainDemo'
 
 export interface CommentContentProps extends React.ComponentPropsWithoutRef<typeof ScrollArea> {
   length: number
@@ -36,6 +38,7 @@ export interface CommentItemProps extends React.HTMLProps<HTMLDivElement> {
 }
 
 export const CommentItem: React.FC<CommentItemProps> = ({ showNestedShapes, mine, comment, className, ...props }) => {
+  console.log('asdf')
   return (
     <>
       <div
@@ -136,14 +139,16 @@ export const CommentScrollTracker = () => {
   )
 }
 
+const CommentItemMemo = React.memo(CommentItem)
 export const CommentsPlaceholder = ({ user }: { user: TaggedUserType }) => {
   const { comments: newComments } = React.useContext(CommentsContext)
+
   return (
     <>
       {newComments.map((comment, idx) => {
         const mine = user.id == comment.user.id
         return (
-          <CommentItem
+          <CommentItemMemo
             key={comment.id}
             mine={mine}
             className={cn(mine && '')}
@@ -220,30 +225,25 @@ const optionsData = ({ currentComment }: { currentComment: CommentType }) => {
   ] as DropdownMenuOptionsDataType<string, true>[]
 }
 
-export const ChatBottom = ({ comments }: { comments: CommentType[] }) => {
-  const { mention, editContent, mdxContent, setMdxContent } = React.useContext(MDXContext)
-  const { setComments } = React.useContext(CommentsContext)
+export interface CommentSendButtonProps extends React.ComponentPropsWithoutRef<typeof Button> {}
+export const CommentSendButton = React.forwardRef<HTMLButtonElement, CommentSendButtonProps>(
+  ({ className, ...props }, ref) => {
+    const { mention, editContent, setMdxContent } = React.useContext(MDXContext)
+    const { setComments, currentCommentContent, setCurrentCommentContent } = React.useContext(CommentsContext)
 
-  return (
-    <div className="flex items-center justify-center gap-2">
+    return (
       <Button
         size={'icon'}
         variant={'outline'}
-        className="rounded-full h-8 w-8 bg-secondary/20"
-        icon={{
-          children: Plus,
-        }}
-      />
-      <Button
-        size={'icon'}
-        variant={'outline'}
-        className={cn('rounded-full h-8 w-8 bg-secondary/20')}
-        disabled={mdxContent.length === 0}
+        className={cn('rounded-full h-8 w-8 bg-secondary/20', className)}
+        type="submit"
+        disabled={currentCommentContent.length === 0}
         onClick={() => {
           const newComment: CommentType = {
-            ...comments[0],
+            // ...comments[0],
             id: uuidv7(),
-            content: mdxContent,
+            user: users[0],
+            content: [{ type: 'text', content: currentCommentContent }],
             likes: {
               amount: 0,
               users: [],
@@ -253,21 +253,56 @@ export const ChatBottom = ({ comments }: { comments: CommentType[] }) => {
 
           setComments &&
             setComments(prev => {
-              if (mdxContent) {
-                return [...prev, newComment]
-              } else if (editContent) {
-                return [editContent]
-              }
+              return [...prev, newComment]
+              // if (currentCommentContent) {
+              // } else if (editContent) {
+              //   return [editContent]
+              // }
 
               return prev
             })
 
-          setMdxContent('')
+          setCurrentCommentContent('')
         }}
         icon={{
           children: editContent ? Check : ArrowBigUp,
         }}
+        ref={ref}
+        {...props}
       />
-    </div>
-  )
-}
+    )
+  }
+)
+
+export interface CommentExtraButtonProps extends React.ComponentPropsWithoutRef<typeof Button> {}
+export const CommentExtraButton = React.forwardRef<HTMLButtonElement, CommentExtraButtonProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <Button
+        size={'icon'}
+        variant={'outline'}
+        className={cn('rounded-full h-8 w-8 bg-secondary/20')}
+        icon={{
+          children: Plus,
+        }}
+        {...props}
+        ref={ref}
+      />
+    )
+  }
+)
+
+export interface CommentBottomButtonsProps extends React.HTMLProps<HTMLFormElement> {}
+export const CommentBottomButtons = React.forwardRef<HTMLFormElement, CommentBottomButtonsProps>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <form
+        className={cn('flex tems-center justify-center gap-2')}
+        {...props}
+        ref={ref}
+      >
+        {children}
+      </form>
+    )
+  }
+)
