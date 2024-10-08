@@ -304,7 +304,25 @@ export const CommentSendButton = React.forwardRef<HTMLButtonElement, CommentSend
 export interface CommentsAttachmentsProps extends React.ComponentPropsWithoutRef<typeof Button> {}
 export const CommentsAttachments = React.forwardRef<HTMLDivElement, CommentBottomButtonsProps>(
   ({ className, children, ...props }, ref) => {
-    return <div className="flex items-center justify-center gap-2  mt-1 mb-1">{children}</div>
+    return (
+      <div className={cn('absolute bottom-6 w-full', className)}>
+        <PopoverWrapper
+          wrapper={{
+            open: true,
+          }}
+          content={{
+            className: 'w-fit p-2 mb-1 w-full',
+            align: 'start',
+            side: 'top',
+            children: (
+              <div className="flex items justify-start gap-1 shrink-0 w-full">
+                <div className="rounded-full h-8 w-8 bg-secondary/20">should show attachmets tree right herea</div>
+              </div>
+            ),
+          }}
+        />
+      </div>
+    )
   }
 )
 
