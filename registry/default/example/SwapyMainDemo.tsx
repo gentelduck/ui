@@ -510,7 +510,7 @@ export const CommentBottom = React.forwardRef<HTMLDivElement, CommentBottom>(
     return (
       <div
         className={cn(
-          'flex items-center justify-center border-t border-border border-solid gap-2 px-2 py-3',
+          'flex items-center justify-center border-t border-border border-solid gap-2 px-2 py-3 relative',
           className
         )}
         ref={ref}
@@ -569,25 +569,38 @@ export const CommentClose = React.forwardRef<HTMLDivElement, CommentCloseProps>(
   )
 })
 
-export const CommentInput = () => {
-  const { currentCommentContent, setCurrentCommentContent } = React.useContext(CommentsContext)
-  const { setRecording, recording } = useAudioDataProvider()
-
-  return (
-    <div className="relative w-full">
-      <Input
-        disabled={recording}
-        placeholder="Write a comment..."
-        value={currentCommentContent}
-        onChange={e => {
-          setCurrentCommentContent(e.target.value)
-        }}
-        className={cn('font-medium resize-none py-1 h-8 w-full')}
-        name=""
-      />
-    </div>
-  )
+export interface CommentInputProps extends React.HTMLProps<HTMLDivElement> {
+  showOriginal?: boolean
 }
+
+export const CommentInput = React.forwardRef<HTMLDivElement, CommentInputProps>(
+  ({ className, children, showOriginal = true, ...props }, ref) => {
+    const { currentCommentContent, setCurrentCommentContent } = React.useContext(CommentsContext)
+    const { setRecording, recording } = useAudioDataProvider()
+
+    return (
+      <div
+        className={cn('relative w-full', className)}
+        ref={ref}
+        {...props}
+      >
+        {showOriginal && (
+          <Input
+            disabled={recording}
+            placeholder="Write a comment..."
+            value={currentCommentContent}
+            onChange={e => {
+              setCurrentCommentContent(e.target.value)
+            }}
+            className={cn('font-medium resize-none py-1 h-8 w-full')}
+            name=""
+          />
+        )}
+        {children}
+      </div>
+    )
+  }
+)
 
 export const ReplyButton = () => {
   return (

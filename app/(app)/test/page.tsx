@@ -26,6 +26,7 @@ import {
   CommentSendButton,
   CommentBottomButtons,
   CommentsPlaceholder,
+  CommentsAttachments,
 } from '@/registry/default/ui/comment'
 import React from 'react'
 
@@ -85,7 +86,9 @@ const CommentTest = () => {
                 className: 'w-8 h-8 bg-secondary/20',
               }}
             />
-            <CommentInput />
+            <CommentInput>
+              <CommentsAttachments />
+            </CommentInput>
             <Audio>
               <CommentBottomButtons>
                 <AudioTimer />
