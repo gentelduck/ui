@@ -35,6 +35,7 @@ import {
 } from '../ui/comment'
 import { MDXProvider, CommentsProvider, CommentsContext } from './mdx-context-provider'
 import { useDebounceCallback } from '@/hooks'
+import { useAudioDataProvider, useAudioProvider } from '../ui/audio-record'
 
 export const users: TaggedUserType[] = [
   {
@@ -493,7 +494,7 @@ export interface CommentProps extends React.HTMLAttributes<HTMLDivElement> {}
 export const Comment = React.forwardRef<HTMLDivElement, CommentProps>(({ className, children, ...props }, ref) => {
   return (
     <div
-      className={cn('max-w-[400px] border border-border border-solid rounded-lg', className)}
+      className={cn('max-w-[500px] border border-border border-solid rounded-lg', className)}
       {...props}
       ref={ref}
     >
@@ -570,17 +571,19 @@ export const CommentClose = React.forwardRef<HTMLDivElement, CommentCloseProps>(
 
 export const CommentInput = () => {
   const { currentCommentContent, setCurrentCommentContent } = React.useContext(CommentsContext)
+  const { setRecording, recording } = useAudioDataProvider()
 
   return (
-    <div className="relative w-[248.8px]">
-      <Textarea
+    <div className="relative w-full">
+      <Input
+        disabled={recording}
         placeholder="Write a comment..."
         value={currentCommentContent}
         onChange={e => {
           setCurrentCommentContent(e.target.value)
         }}
-        className={cn('w-full font-medium min-h-[32px] resize-none')}
-        name="comment_input"
+        className={cn('font-medium resize-none py-1 h-8 w-full')}
+        name=""
       />
     </div>
   )
