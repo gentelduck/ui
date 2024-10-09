@@ -11,6 +11,7 @@ import {
   Bug,
   Check,
   Ellipsis,
+  FileAudio,
   MessageSquare,
   Mic,
   Pencil,
@@ -27,10 +28,10 @@ import { DropdownMenuOptionsDataType, DropdownMenuView } from './dropdown-menu'
 
 import 'highlight.js/styles/tokyo-night-dark.css'
 import { MDXContext, CommentsContext } from '../example/mdx-context-provider'
-import { AudioItem, AudioProvider, AudioRecorder, useAudioProvider } from './audio-record'
+import { AudioItem, AudioProvider, AudioRecorder, useAudioDataProvider, useAudioProvider } from './audio-record'
 import { LikeButton } from './custom-buttons'
 import { ButtonProps } from 'react-day-picker'
-import { users } from '../example/SwapyMainDemo'
+import { CommentClose, users } from '../example/SwapyMainDemo'
 import { PopoverWrapper } from './popover'
 import { emailToolbarEditorAlign } from './Notion/mdx-editor'
 
@@ -124,7 +125,7 @@ export const CommentItemContent = ({ content }: { content: CommentContentType[] 
 
 export const CommentAvatar = ({ user }: { user: TaggedUserType }) => {
   return (
-    <div className={cn('flex flex-col flex-shrink-0 basis-[40px] flex-grow-0 items-center mr-2')}>
+    <div className={cn('flex flex-col flex-shrink-0 basis-8 flex-grow-0 items-center mr-2')}>
       <div className="top-shape w-[2px] max-h-2 bg-border flex-grow border-border border flex basis-auto flex-col items-stretch my-1"></div>
       <AvatarCustom
         className="w-8 h-8"
@@ -304,6 +305,8 @@ export const CommentSendButton = React.forwardRef<HTMLButtonElement, CommentSend
 export interface CommentsAttachmentsProps extends React.ComponentPropsWithoutRef<typeof Button> {}
 export const CommentsAttachments = React.forwardRef<HTMLDivElement, CommentBottomButtonsProps>(
   ({ className, children, ...props }, ref) => {
+    const { recordings } = useAudioDataProvider()
+
     return (
       <div className={cn('absolute bottom-6 w-full', className)}>
         <PopoverWrapper
@@ -315,12 +318,43 @@ export const CommentsAttachments = React.forwardRef<HTMLDivElement, CommentBotto
             align: 'start',
             side: 'top',
             children: (
-              <div className="flex items justify-start gap-1 shrink-0 w-full">
-                <div className="rounded-full h-8 w-8 bg-secondary/20">should show attachmets tree right herea</div>
-              </div>
+              <ScrollArea className="grid items justify-start gap-2 shrink-0 w-full grid-cols-2 max-h-[104px] overflow-y-scroll">
+                {recordings.map((recording, index) => (
+                  <CommentAttachmentItem
+                    key={index}
+                    blob={recording}
+                  />
+                ))}
+              </ScrollArea>
             ),
           }}
         />
+      </div>
+    )
+  }
+)
+
+export interface CommentAttachmentItemProps extends React.HTMLProps<HTMLDivElement> {
+  blob: Blob
+}
+
+export const CommentAttachmentItem = React.forwardRef<HTMLDivElement, CommentAttachmentItemProps>(
+  ({ className, blob, ...props }, ref) => {
+    return (
+      <div
+        className={cn(
+          'rounded-md bg-secondary h-fit flex items-center justify-start gap-2 w-[161px] p-2 relative',
+          className
+        )}
+        ref={ref}
+        {...props}
+      >
+        <CommentClose className="absolute top-2 right-2" />
+        <FileAudio />
+        <div>
+          <p className="text-xs text-muted-foreground truncate">{blob.type}</p>
+          <p className="text-xs text-muted-foreground">{blob.size}</p>
+        </div>
       </div>
     )
   }
