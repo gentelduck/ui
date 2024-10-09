@@ -510,7 +510,7 @@ export const CommentBottom = React.forwardRef<HTMLDivElement, CommentBottom>(
     return (
       <div
         className={cn(
-          'flex items-center justify-center border-t border-border border-solid gap-2 px-2 py-3 relative',
+          'flex items-center justify-center border-t border-border border-solid gap-2 px-4 py-3 relative',
           className
         )}
         ref={ref}
@@ -558,7 +558,7 @@ export const CommentClose = React.forwardRef<HTMLDivElement, CommentCloseProps>(
   return (
     <div
       className={cn(
-        'size-4 rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1',
+        'size-4 rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 cursor-pointer',
         className
       )}
       ref={ref}
