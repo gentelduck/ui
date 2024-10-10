@@ -1,26 +1,21 @@
 import React from 'react'
-import { CommentContentType, CommentType, TaggedUserType } from './swapy'
+import { Attachment, CommentType, TaggedUserType } from './swapy'
 import { differenceInDays, differenceInHours, format, formatDistance } from 'date-fns'
 import { cn } from '@/lib'
 import { AvatarCustom } from './avatar'
 import { ScrollArea } from './scroll-area'
 import { Button } from './button'
 import {
-  AlignCenter,
   ArrowBigUp,
   Bug,
   Check,
   Ellipsis,
   FileAudio,
-  MessageSquare,
+  LucideIcon,
   Mic,
-  Pencil,
+  Paperclip,
   Plus,
-  Share2,
-  Star,
   Trash2,
-  Twitch,
-  Twitter,
   Upload,
 } from 'lucide-react'
 import { uuidv7 } from 'uuidv7'
@@ -28,12 +23,10 @@ import { DropdownMenuOptionsDataType, DropdownMenuView } from './dropdown-menu'
 
 import 'highlight.js/styles/tokyo-night-dark.css'
 import { MDXContext, CommentsContext } from '../example/mdx-context-provider'
-import { AudioItem, AudioProvider, AudioRecorder, useAudioDataProvider, useAudioProvider } from './audio-record'
+import { AudioItem, useAudioDataProvider, useAudioProvider } from './audio-record'
 import { LikeButton } from './custom-buttons'
-import { ButtonProps } from 'react-day-picker'
 import { CommentClose, users } from '../example/SwapyMainDemo'
 import { PopoverWrapper } from './popover'
-import { emailToolbarEditorAlign } from './Notion/mdx-editor'
 
 export interface CommentContentProps extends React.ComponentPropsWithoutRef<typeof ScrollArea> {
   length: number
@@ -57,7 +50,6 @@ export interface CommentItemProps extends React.HTMLProps<HTMLDivElement> {
 }
 
 export const CommentItem: React.FC<CommentItemProps> = ({ showNestedShapes, mine, comment, className, ...props }) => {
-  console.log('asdf')
   return (
     <>
       <div
@@ -67,7 +59,10 @@ export const CommentItem: React.FC<CommentItemProps> = ({ showNestedShapes, mine
         <CommentAvatar user={comment.user} />
         <div className="flex flex-col items-start justify-start w-full">
           <CommentTop comment={comment} />
-          <CommentItemContent content={comment.content} />
+          <CommentItemContent
+            content={comment.content}
+            attachments={comment.attachments}
+          />
           <CommentBottom comment={comment} />
         </div>
       </div>
@@ -100,25 +95,31 @@ export const CommentTop = ({ comment }: { comment: CommentType }) => {
     </div>
   )
 }
-export const CommentItemContent = ({ content }: { content: CommentContentType[] }) => {
+export const CommentItemContent = ({ content, attachments }: { content: string; attachments: Attachment[] }) => {
+  console.log(attachments)
   return (
     <div className="mdx__minimal__text__editor border-none flex flex-col gap-3">
-      {content.map((item, idx) => {
-        return item.type === 'text' ? (
-          <p
-            key={idx}
-            className={cn('text-sm  tiptap ProseMirror')}
-            dangerouslySetInnerHTML={{ __html: item.content }}
-          ></p>
-        ) : (
-          item.type === 'voice' && (
+      <p
+        className={cn('text-sm  tiptap ProseMirror')}
+        dangerouslySetInnerHTML={{ __html: content }}
+      ></p>
+      {attachments &&
+        attachments.map((item, idx) => {
+          return item.type === 'audio' ? (
             <AudioItem
               key={idx}
-              url={item.content}
+              content={item.url}
             />
+          ) : (
+            item.type === 'image' && (
+              <img
+                className="w-1/2 rounded-md object-cover"
+                key={idx}
+                src={item.url}
+              />
+            )
           )
-        )
-      })}
+        })}
     </div>
   )
 }
@@ -250,6 +251,14 @@ export const CommentSendButton = React.forwardRef<HTMLButtonElement, CommentSend
     const { mention, editContent, setMdxContent } = React.useContext(MDXContext)
     const { setComments, currentCommentContent, setCurrentCommentContent } = React.useContext(CommentsContext)
     const { recording } = useAudioProvider()
+    const { recordings, setRecordings } = useAudioDataProvider()
+    const attachments = recordings.map(r => ({
+      id: uuidv7(),
+      url: r,
+      type: 'audio',
+      filename: 'audio.mp3',
+      size: r.size.toString(),
+    }))
 
     return (
       <Button
@@ -267,13 +276,13 @@ export const CommentSendButton = React.forwardRef<HTMLButtonElement, CommentSend
           children: editContent ? Check : ArrowBigUp,
         }}
         type="submit"
-        disabled={currentCommentContent.length === 0}
+        disabled={recordings.length === 0}
         onClick={e => {
           const newComment: CommentType = {
             id: uuidv7(),
-            user: users[0],
-
-            content: [{ type: 'text', content: currentCommentContent }],
+            user: users[1],
+            attachments: attachments,
+            content: currentCommentContent,
             likes: {
               amount: 0,
               users: [],
@@ -283,16 +292,17 @@ export const CommentSendButton = React.forwardRef<HTMLButtonElement, CommentSend
 
           setComments &&
             setComments(prev => {
-              if (currentCommentContent) {
-                return [...prev, newComment]
-              } else if (editContent) {
-                return [editContent]
-              }
+              return [...prev, newComment]
+              //               if (currentCommentContent || recording) {
+              // } else if (editContent) {
+              //   return [editContent]
+              // }
 
               return prev
             })
 
           setCurrentCommentContent('')
+          setRecordings([])
           onClick && onClick(e)
         }}
         ref={ref}
@@ -310,21 +320,45 @@ export const CommentsAttachments = React.forwardRef<HTMLDivElement, CommentBotto
     return (
       <div className={cn('absolute bottom-6 w-full', className)}>
         <PopoverWrapper
-          wrapper={{
-            open: true,
+          wrapper={
+            {
+              // open: open,
+            }
+          }
+          trigger={{
+            children: (
+              <Button
+                size={'sm'}
+                className={cn(
+                  'absolute left-0 gap-2 flex items-center h-fit py-1 transition-all duration-400 ease-out',
+                  recordings.length > 0 ? 'bottom-4 opacity-100' : '-bottom-4 opacity-0'
+                )}
+                icon={{
+                  icon: Paperclip as LucideIcon,
+                  className: '!size-[.8rem]',
+                }}
+                label={{
+                  children: recordings.length,
+                }}
+              >
+                <Paperclip className="!size-[.8rem]" /> <span className="text-xs">Attachments</span>{' '}
+              </Button>
+            ),
           }}
           content={{
             className: 'w-fit p-2 mb-1 w-full',
             align: 'start',
             side: 'top',
             children: (
-              <ScrollArea className="grid items justify-start gap-2 shrink-0 w-full grid-cols-2 max-h-[104px] overflow-y-scroll">
-                {recordings.map((recording, index) => (
-                  <CommentAttachmentItem
-                    key={index}
-                    blob={recording}
-                  />
-                ))}
+              <ScrollArea className="">
+                <div className="grid items justify-start gap-2 shrink-0 w-full grid-cols-2 max-h-[104px]">
+                  {recordings.map((recording, index) => (
+                    <CommentAttachmentItem
+                      key={index}
+                      blob={recording}
+                    />
+                  ))}
+                </div>
               </ScrollArea>
             ),
           }}
@@ -339,17 +373,24 @@ export interface CommentAttachmentItemProps extends React.HTMLProps<HTMLDivEleme
 }
 
 export const CommentAttachmentItem = React.forwardRef<HTMLDivElement, CommentAttachmentItemProps>(
-  ({ className, blob, ...props }, ref) => {
+  ({ className, blob, key, ...props }, ref) => {
+    const { setRecordings } = useAudioDataProvider()
+
     return (
       <div
         className={cn(
-          'rounded-md bg-secondary h-fit flex items-center justify-start gap-2 w-[161px] p-2 relative',
+          'rounded-md bg-secondary/50 h-fit flex items-center justify-start gap-2 w-[152px] p-2 relative',
           className
         )}
         ref={ref}
         {...props}
       >
-        <CommentClose className="absolute top-2 right-2" />
+        <CommentClose
+          className="absolute top-2 right-2"
+          onClick={() => {
+            setRecordings(prev => prev.filter(item => item !== blob))
+          }}
+        />
         <FileAudio />
         <div>
           <p className="text-xs text-muted-foreground truncate">{blob.type}</p>
