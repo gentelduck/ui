@@ -5,7 +5,6 @@ import {
   AlertDialogCustom,
   AvatarGroup,
   Badge,
-  type LikedType,
   type CommentType,
   Button,
   CheckboxGroup,
@@ -17,25 +16,13 @@ import {
   KanbanColumnRowComponentArgs,
   PopoverWrapper,
   Separator,
-  AvatarCustom,
-  PopoverClose,
-  MDXMinimalTextEditor,
   TaggedUserType,
   Input,
-  Textarea,
 } from '../ui'
-import { EllipsisVertical, LucideIcon, MessageSquare, Paperclip, Plus, Reply, X } from 'lucide-react'
+import { EllipsisVertical, MessageSquare, Paperclip, Plus, Reply, X } from 'lucide-react'
 import React from 'react'
-import {
-  CommentExtraButton,
-  CommentContent,
-  CommentItem,
-  CommentScrollTracker,
-  CommentsPlaceholder,
-} from '../ui/comment'
 import { MDXProvider, CommentsProvider, CommentsContext } from './mdx-context-provider'
-import { useDebounceCallback } from '@/hooks'
-import { useAudioDataProvider, useAudioProvider } from '../ui/audio-record'
+import { useAudioDataProvider } from '../ui/audio-record'
 
 export const users: TaggedUserType[] = [
   {
@@ -56,13 +43,9 @@ export const comments: CommentType[] = [
   {
     id: 'comment-1',
     user: users[0],
-    content: [
-      {
-        type: 'text',
-        content:
-          'BTW Ahemd, you have to finished this task today! we are on a deadline.  <span emoji="💀" shortcode=":sunglasses:" data-emoji="💀" class="inline-flex text-lg leading-none __className_aef5f5">💀</span>',
-      },
-    ],
+    content:
+      'BTW Ahemd, you have to finished this task today! we are on a deadline.  <span emoji="💀" shortcode=":sunglasses:" data-emoji="💀" class="inline-flex text-lg leading-none __className_aef5f5">💀</span>',
+    attachments: [],
     createdAt: '2021-01-01T00:00:00.000Z',
     likes: {
       amount: 4,
@@ -72,16 +55,22 @@ export const comments: CommentType[] = [
   {
     id: 'comment-2',
     user: users[1],
-    content: [
-      {
-        type: 'text',
-        content:
-          '<p>Okay Lol. I am going to finish this task. not today. <span emoji="😎" shortcode=":sunglasses:" data-emoji="😎" class="inline-flex text-lg leading-none __className_aef5f5">😎</span>, and I use arch, vim and Rust BTW, forgot to mention Elixir...girl.</p>',
-      },
-      {
-        type: 'voice',
-        content: 'https://zpgqhogoevbgpxustvmo.supabase.co/storage/v1/object/public/produc_imgs/Pingtr1p.ogg',
-      },
+    content:
+      '<p>Okay Lol. I am going to finish this task. not today. <span emoji="😎" shortcode=":sunglasses:" data-emoji="😎" class="inline-flex text-lg leading-none __className_aef5f5">😎</span>, and I use arch, vim and Rust BTW, forgot to mention Elixir...girl.</p>',
+    attachments: [
+      // {
+      //   type: 'image',
+      //   filename: 'image.png',
+      //   url: 'https://dnd.hellopangea.com/static/media/princess-min.d694ac37.png',
+      //   alt: 'Princess Bubblegum',
+      // },
+      // {
+      //   type: 'audio',
+      //   filename: 'audio.ogg',
+      //   size: '10KB',
+      //   url: 'https://zpgqhogoevbgpxustvmo.supabase.co/storage/v1/object/public/produc_imgs/Pingtr1p.ogg',
+      //   alt: 'Princess Bubblegum',
+      // },
     ],
     createdAt: '2021-01-01T00:00:00.000Z',
     likes: {
