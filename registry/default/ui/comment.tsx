@@ -4,6 +4,7 @@ import { differenceInDays, differenceInHours, format, formatDistance } from 'dat
 import { cn } from '@/lib'
 import { Avatar, AvatarFallback, AvatarImage } from './avatar'
 import { ScrollArea } from './scroll-area'
+import { filesize } from 'filesize'
 import { Button } from './button'
 import {
   ArrowBigUp,
@@ -12,7 +13,11 @@ import {
   CalendarDays,
   Check,
   Ellipsis,
+  FileText,
+  FileImage,
+  FileVideo,
   FileAudio,
+  File,
   LucideIcon,
   Mic,
   Paperclip,
@@ -32,6 +37,20 @@ import { Popover, PopoverContent, PopoverTrigger, PopoverWrapper } from './popov
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './hover-card'
 import { Input } from './input'
 import { users } from '../example/SwapyMainDemo'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from './sheet'
+import { Label } from './ShadcnUI'
+import { ContextMenu, ContextMenuTrigger } from './context-menu'
+import { toast } from 'sonner'
+import { AlertDialogCustom } from './alert-dialog'
 
 // Comment
 export interface CommentContextType {
@@ -39,6 +58,8 @@ export interface CommentContextType {
   setComments: React.Dispatch<React.SetStateAction<CommentType[]>>
   currentCommentContent: string
   setCurrentCommentContent: React.Dispatch<React.SetStateAction<string>>
+  attachments: AttachmentType[]
+  setAttachments: React.Dispatch<React.SetStateAction<AttachmentType[]>>
 }
 
 export const CommentContext = React.createContext<CommentContextType>({} as CommentContextType)
@@ -47,8 +68,8 @@ export interface CommentProps extends React.HTMLAttributes<HTMLDivElement> {}
 export const Comment = React.forwardRef<HTMLDivElement, CommentProps>(({ className, children, ...props }, ref) => {
   const [comments, setComments] = React.useState<CommentType[]>([])
   const [currentCommentContent, setCurrentCommentContent] = React.useState<string>('')
+  const [attachments, setAttachments] = React.useState<AttachmentType[]>([])
 
-  console.log(comments)
   return (
     <CommentContext.Provider
       value={{
@@ -56,6 +77,8 @@ export const Comment = React.forwardRef<HTMLDivElement, CommentProps>(({ classNa
         setCurrentCommentContent,
         comments,
         setComments,
+        attachments,
+        setAttachments,
       }}
     >
       <div
@@ -545,7 +568,7 @@ export const CommentAttachmentItem = React.forwardRef<HTMLDivElement, CommentAtt
         {...props}
       >
         <CommentClose
-          className="absolute top-2 right-2"
+          className="absolute top-1/2 -translate-y-1/2 right-2"
           onClick={() => {
             setRecordings(prev => prev.filter(item => item !== blob))
           }}
@@ -557,7 +580,7 @@ export const CommentAttachmentItem = React.forwardRef<HTMLDivElement, CommentAtt
             <FileAudio />
             <div>
               <p className="text-xs text-muted-foreground truncate">{blob.type}</p>
-              <p className="text-xs text-muted-foreground">{blob.size}</p>
+              <p className="text-xs text-muted-foreground truncate">{filesize(+blob.size, { round: 0 })}</p>
             </div>
           </>
         )}
@@ -779,65 +802,236 @@ const optionsData = ({ currentComment }: { currentComment: CommentType }) => {
 export interface CommentExtraButtonProps extends React.ComponentPropsWithoutRef<typeof Button> {}
 
 export const CommentExtraButton = React.forwardRef<HTMLButtonElement, CommentExtraButtonProps>(
-  ({ className, ...props }, ref) => {
-    const firstFocusableElement = React.useRef<HTMLDivElement>(null)
+  ({ className, children, ...props }, ref) => {
     return (
       <PopoverWrapper
-        content={{
-          className: 'w-fit p-2',
+        trigger={{
           children: (
-            <div className="flex items justify-start gap-1 shrink-0">
-              <button onFocusCapture={event => event.preventDefault()} />
-            </div>
+            <Button
+              icon={{ children: Plus, className: 'h-4 w-4 rounded' }}
+              className="rounded-full h-8 w-8 bg-secondary/20 mr-2"
+              variant="outline"
+              size="icon"
+              ref={ref}
+            />
           ),
+        }}
+        content={{
+          side: 'top',
+          align: 'center',
+          className: 'w-fit p-2',
+          children: <CommentAttachmentUpload />,
         }}
       />
     )
   }
 )
 
-export interface CommentExtraButtonTriggerProps extends React.ComponentPropsWithoutRef<typeof Button> {}
+const ExtraButtons = () => {
+  const { setEditContent } = React.useContext(MDXContext)
+  const { setComments } = React.useContext(CommentContext)
 
-export const CommentExtraButtonTrigger = React.forwardRef<HTMLButtonElement, CommentExtraButtonTriggerProps>(
+  return [
+    {
+      children: <CommentAttachmentUpload />,
+    },
+  ] as DropdownMenuOptionsDataType<string, true>[]
+}
+export type AttachmentType = {
+  id: string
+  file: File
+  url?: string | undefined
+  name: string
+  type: string
+  size: string
+  progress: number
+  status: string
+}
+
+// Define an enum for file types
+enum FileType {
+  Audio = 'audio',
+  Text = 'text',
+  Image = 'image',
+  Video = 'video',
+  Unknown = 'unknown',
+}
+
+// Mapping file types to their corresponding Lucide icons
+const fileTypeIcons = {
+  [FileType.Audio]: <FileAudio className="w-8 h-8" />,
+  [FileType.Text]: <FileText className="w-8 h-8" />,
+  [FileType.Image]: <FileImage className="w-8 h-8" />,
+  [FileType.Video]: <FileVideo className="w-8 h-8" />,
+  [FileType.Unknown]: <File className="w-8 h-8" />,
+}
+
+// Function to determine the file type based on the file's MIME type
+const getFileType = (file: File): FileType => {
+  if (file.type.startsWith('audio/')) return FileType.Audio
+  if (file.type.startsWith('text/')) return FileType.Text
+  if (file.type.startsWith('image/')) return FileType.Image
+  if (file.type.startsWith('video/')) return FileType.Video
+  return FileType.Unknown
+}
+
+export interface CommentAttachmentUploadProps extends React.ComponentPropsWithoutRef<typeof Button> {}
+export const CommentAttachmentUpload = React.forwardRef<HTMLButtonElement, CommentAttachmentUploadProps>(
   ({ className, children, ...props }, ref) => {
-    return (
-      <Button
-        type="button"
-        label={{
-          children: 'Extra',
-          showLabel: true,
-          side: 'top',
-        }}
-        icon={{ children: Plus }}
-        variant="outline"
-        className={cn('rounded-full h-8 w-8 bg-secondary/20', className)}
-        ref={ref}
-        {...props}
-      >
-        {children}
-      </Button>
-    )
-  }
-)
+    const { attachments, setAttachments } = React.useContext(CommentContext)
+    const [attachmentsState, setAttachmentsState] = React.useState<AttachmentType[]>([])
 
-export interface CommentExtraButtonItemProps extends React.ComponentPropsWithoutRef<typeof Button> {}
+    const handleAttachment = ({
+      e,
+      setAttachmentsState,
+    }: {
+      e: React.ChangeEvent<HTMLInputElement>
+      setAttachmentsState: React.Dispatch<React.SetStateAction<AttachmentType[]>>
+    }) => {
+      const files = e.currentTarget.files
 
-export const CommentExtraButtonItem = React.forwardRef<HTMLButtonElement, CommentExtraButtonItemProps>(
-  ({ className, children, ...props }, ref) => {
+      if (!files) return toast.error('Please select a file')
+
+      // Optional: Uncomment to limit to 5 files
+      if (files.length + files.length > 10) return toast.error('You can not upload more than 5 files at once')
+
+      const newAttachments: AttachmentType[] = []
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+
+        // Check for unacceptable file types
+        // if (!supportedFileTypes.includes(file.type)) {
+        //   return toast.error(`File type not supported: ${file.type}`);
+        // }
+
+        // Check if file size exceeds limit
+        if (file.size > 10 * 1024 * 1024) {
+          toast.error(`File has exceeded the max size: ${file.name.slice(0, 15)}...`)
+          continue // Skip this file and continue with the next
+        }
+
+        const attachment: AttachmentType = {
+          id: uuidv7(),
+          file: file,
+          name: file.name,
+          type: file.type,
+          size: file.size.toString(),
+          progress: 0,
+          status: 'pending',
+        }
+
+        newAttachments.push(attachment)
+      }
+
+      // Update state with new attachments
+      setAttachmentsState(prev => [...prev, ...newAttachments])
+      e.currentTarget.value = ''
+    }
+
     return (
-      <Button
-        variant="ghost"
-        className={cn('editor_button p-0', className)}
-        label={{
-          children: 'Upload Attachment',
-          showLabel: true,
-          side: 'top',
+      <AlertDialogCustom<typeof attachmentsState.length>
+        type="sheet"
+        drawerData={attachmentsState.length > 0}
+        header={{
+          head: 'Upload File',
+          description: 'Set your daily calorie goal',
         }}
-        icon={{ children: Upload }}
-        {...props}
-      >
-        {children}
-      </Button>
+        actions={
+          {
+            // cancel: () => {
+            //   setAttachmentsState([])
+            // },
+            // continue: () => {
+            //   setAttachments(prev => [...prev, ...attachmentsState])
+            // },
+          }
+        }
+        footer={{
+          className: 'Upload an attachment to your comment.',
+          // submit: (
+          //   <Button
+          //     variant="default"
+          //     onClick={() => {
+          //       setAttachments(prev => [...prev, ...attachmentsState])
+          //       setAttachmentsState([])
+          //     }}
+          //   >
+          //     Submit
+          //   </Button>
+          // ),
+          // cancel: <Button variant="outline">Cancel</Button>,
+        }}
+        state={attachmentsState.length}
+        trigger={{
+          children: (
+            <Button
+              variant="outline"
+              className="h-8 w-8 bg-secondary/20"
+              {...props}
+            >
+              <Upload className="h-4 w-4" />
+            </Button>
+          ),
+        }}
+        content={{
+          children: (
+            <div className="flex flex-col h-full gap-4">
+              <div>
+                <ContextMenu>
+                  <ContextMenuTrigger className="relative flex flex-col items-center justify-center w-full h-64 rounded-md border-2 border-dashed border-current dashed-border text-sm leading-5 transition-colors duration-100 ease-in-out hover:bg-muted/10">
+                    <div className="grid place-items-center gap-4">
+                      <Upload className="size-[30px]" />
+                      <span>Click to upload</span>
+                    </div>
+                    <Input
+                      placeholder="Filter emails..."
+                      type="file"
+                      value={''}
+                      className="absolute w-full h-full opacity-0 cursor-pointer"
+                      multiple={true}
+                      onChange={e => handleAttachment({ e, setAttachmentsState })}
+                      // accept={supportedFileTypes.join('')}
+                    />
+                  </ContextMenuTrigger>
+                </ContextMenu>
+                <p className="mt-2 text-muted-foreground text-[.9rem]"> Supports all file types.</p>
+              </div>
+
+              <ScrollArea className="flex flex-col gap-2 max-h-[600px]">
+                <div className="flex flex-col gap-2">
+                  {attachmentsState.map((attachment, index) => {
+                    const fileType = getFileType(attachment.file)
+                    return (
+                      <div
+                        className="relative flex items-center gap-4 bg-secondary/20 rounded-md p-2"
+                        key={attachment.id}
+                      >
+                        <CommentClose
+                          className="absolute top-1/2 -translate-y-1/2 right-2"
+                          onClick={() => {
+                            setAttachmentsState(prev => prev.filter(item => item.id !== attachment.id))
+                          }}
+                        />
+
+                        <div className="flex items-center gap-4">
+                          <div className="relative">{fileTypeIcons[fileType]}</div>
+                          <div className="grid items-start">
+                            <h3 className="inline-block text-[.9rem] truncate max-w-[300px]">{attachment.file.name}</h3>
+                            <p className="inline-block truncate text-semibold text-[.8rem] max-w-[300px]">
+                              {filesize(+attachment.file.size, { round: 0 })}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </ScrollArea>
+            </div>
+          ),
+        }}
+      />
     )
   }
 )

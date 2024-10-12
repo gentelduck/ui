@@ -29,6 +29,7 @@ import {
   CommentAvater,
   CommentBottom,
   CommentAttachmentItem,
+  CommentExtraButtonItem,
 } from '@/registry/default/ui/comment'
 import { LikeButton } from '@/registry/default/ui/custom-buttons'
 import React from 'react'
@@ -113,6 +114,7 @@ const CommentTest = () => {
         <Audio>
           <CommentBottomButtons>
             <AudioTimer />
+            <CommentExtraButton />
             <AudioDelete />
             <AudioStart />
             <CommentSendButton />
