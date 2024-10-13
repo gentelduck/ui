@@ -43,6 +43,8 @@ import {
   UploadTrigger,
   useUploadContext,
 } from './upload'
+import { DialogWrapper } from './ShadcnUI'
+import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog'
 
 // Comment
 export interface CommentContextType {
@@ -734,6 +736,88 @@ export const CommentSendButton = React.forwardRef<HTMLButtonElement, CommentSend
   }
 )
 
+export interface CommentItemContentImageProps extends React.HTMLProps<HTMLImageElement> {
+  attachments: AttachmentType[]
+}
+
+export const CommentItemContentImage = React.forwardRef<HTMLImageElement, CommentItemContentImageProps>(
+  ({ children, className, attachments, ...props }, ref) => {
+    return (
+      <div className="grid grid-cols-3 gap-2 max-w-[90%] my-2">
+        {attachments.map((attachment: AttachmentType) => {
+          const url = attachment.url ? attachment.url : URL.createObjectURL(attachment.file as Blob)
+          return (
+            <DialogWrapper
+              trigger={{
+                children: (
+                  <div className="relative">
+                    <picture className="w-full h-[100px] rounded-lg overflow-hidden cursor-pointer">
+                      <img
+                        className={cn('w-full h-[100px] rounded-lg object-cover object-center', className)}
+                        ref={ref}
+                        src={url}
+                        {...props}
+                      />
+                      <DropdownMenuView
+                        trigger={{
+                          icon: { children: Ellipsis, className: 'h-6 w-6 rounded' },
+                          variant: 'ghost',
+                          size: 'icon',
+                          className: 'h-4 w-6 absolute button-2 right-2',
+                        }}
+                        content={{
+                          options: {
+                            itemType: 'label',
+                            optionsData: [
+                              {
+                                children: 'Download',
+                                onClick: () => downloadAttachment({ attachment }),
+                                icon: { children: Download, className: 'h-4 w-4' },
+                              },
+                              {
+                                className: 'bg-red-400/10 text-red-400',
+                                onClick: () => {
+                                  // TODO :handle delete
+                                },
+                                children: 'Delete',
+                                icon: { children: Trash, className: 'h-4 w-4' },
+                              },
+                            ],
+                          },
+                        }}
+                      />
+                    </picture>
+                  </div>
+                ),
+              }}
+              content={{
+                className: 'max-w-[1000px] w-full h-[600px] p-4',
+                children: (
+                  <>
+                    <div>
+                      <DialogTitle className="text-xl font-bold max-w-[85%]">{attachment.name}</DialogTitle>
+                      <DialogDescription className="text-sm flex items-start text-accent-foreground/80">
+                        Size:
+                        <p className="text-muted-foreground truncate">{filesize(attachment.size, { round: 0 })}</p>
+                      </DialogDescription>
+                    </div>
+                    <ScrollArea className="h-full w-full rounded-lg">
+                      <img
+                        className="w-full h-full object-cover object-center cursor-pointer"
+                        src={url}
+                      />
+                    </ScrollArea>
+                  </>
+                ),
+              }}
+            />
+          )
+        })}
+      </div>
+    )
+  }
+)
+
 //FIX: Comment Placeholder
 export const CommentPlaceholder = ({ user }: { user: TaggedUserType }) => {
   const { comments: newComments } = React.useContext(CommentContext)
@@ -773,9 +857,44 @@ export const CommentPlaceholder = ({ user }: { user: TaggedUserType }) => {
   )
 }
 
+function groupByTypePrefix(attachments: AttachmentType[]): AttachmentType[][] {
+  if (!attachments.length) return []
+
+  const groupedAttachments = []
+  let currentGroup: AttachmentType[] = []
+  let currentType = ''
+
+  for (const attachment of attachments) {
+    // Extract the type prefix (e.g., 'image' from 'image/png')
+    const typePrefix = attachment.type.split('/')[0]
+
+    // If we are starting a new group
+    if (currentType !== typePrefix) {
+      // If there is a current group, push it to the result
+      if (currentGroup.length) {
+        groupedAttachments.push(currentGroup)
+      }
+      // Start a new group and set the current type
+      currentGroup = [attachment]
+      currentType = typePrefix
+    } else {
+      // If it's the same type, add it to the current group
+      currentGroup.push(attachment)
+    }
+  }
+
+  // Push the last group if it exists
+  if (currentGroup.length) {
+    groupedAttachments.push(currentGroup)
+  }
+
+  return groupedAttachments
+}
+
 //FIX: Comment Item Content
 export const CommentItemContent = ({ content, attachments }: { content: string; attachments: AttachmentType[] }) => {
-  console.log(attachments)
+  const groupedAttachments = groupByTypePrefix(attachments)
+  console.log('groupedAttachments', groupedAttachments)
   return (
     <div className="mdx__minimal__text__editor border-none flex flex-col gap-3 mb-2 w-full">
       {content && (
@@ -784,28 +903,43 @@ export const CommentItemContent = ({ content, attachments }: { content: string; 
           dangerouslySetInnerHTML={{ __html: content }}
         ></p>
       )}
-      {attachments &&
-        attachments.map((item, idx) => {
-          return !item.type.includes('audio') ? (
-            <CommentItemContentAttachment
-              key={idx}
-              className="w-full max-w-[260px] p-3"
-              attachment={item}
-            />
-          ) : item.type.includes('audio') ? (
-            <AudioItem
-              key={idx}
-              attachment={item}
-            />
-          ) : (
-            item.type === 'image' && (
-              <img
-                className="w-1/2 rounded-md object-cover"
+      {groupedAttachments &&
+        groupedAttachments.map((group, idx) => {
+          if (group[0].type.includes('image')) {
+            return (
+              <CommentItemContentImage
                 key={idx}
-                src={item.url as string}
+                attachments={group}
               />
             )
-          )
+          }
+          return group.map((item, idx) => {
+            if (item.type.includes('audio')) {
+              return (
+                <AudioItem
+                  key={idx}
+                  attachment={item}
+                />
+              )
+            }
+
+            // if( item.type.includes('video')){
+            //     return <VideoItem
+            //     key={idx}
+            //     attachment={item}
+            //   />
+            // }
+
+            if (!item.type.includes('audio')) {
+              return (
+                <CommentItemContentAttachment
+                  key={idx}
+                  className="w-full max-w-[260px] p-3"
+                  attachment={item}
+                />
+              )
+            }
+          })
         })}
     </div>
   )
