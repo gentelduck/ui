@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import { filesize } from 'filesize'
 import { cn } from '@/lib'
 import { Button } from './button'
+import { Upload as UploadIcon } from 'lucide-react'
 
 // Define an enum for file types
 export enum FileType {
@@ -108,15 +109,14 @@ export const Upload = ({ children, trigger, content }: UploadProps) => {
           footer={{
             className: 'Upload an attachment to your comment.',
             submit: (
-              <Button
-                variant="default"
+              <span
                 onClick={() => {
                   setAttachments(prev => [...prev, ...attachmentsState])
                   setAttachmentsState([])
                 }}
               >
                 Submit
-              </Button>
+              </span>
             ),
             cancel: <Button variant="outline">Cancel</Button>,
           }}
@@ -158,9 +158,9 @@ export const UploadInput = React.forwardRef<HTMLDivElement, UploadInputProps>(
         {...props}
       >
         <ContextMenu>
-          <ContextMenuTrigger className="relative flex flex-col items-center justify-center w-full h-64 rounded-md border-2 border-dashed border-current dashed-border text-sm leading-5 transition-colors duration-100 ease-in-out hover:bg-muted/10">
+          <ContextMenuTrigger className="relative flex flex-col items-center justify-center w-full h-64 rounded-md border border-dashed border-border text-sm leading-5 transition-colors duration-100 ease-in-out hover:bg-muted/10">
             <div className="grid place-items-center gap-4">
-              <File className="size-[30px]" />
+              <UploadIcon className="size-[30px]" />
               <span>Click to upload</span>
             </div>
             <Input
@@ -229,7 +229,7 @@ export const UploadItem = React.forwardRef<HTMLDivElement, UploadItemProps>(
         <div className="flex items-center gap-4">
           <div className="relative">{fileTypeIcons[fileType]}</div>
           <div className="grid items-start">
-            <h3 className="inline-block text-[.9rem] truncate max-w-[300px]">{attachment.name || 'Empty File'}</h3>
+            <h3 className="inline-block text-[.9rem] truncate max-w-[200px]">{attachment.name || 'Empty File'}</h3>
             <p className="inline-block truncate text-semibold text-[.8rem] max-w-[300px]">
               {filesize(attachment.file ? +attachment.file.size : 0, { round: 0 })}
             </p>
