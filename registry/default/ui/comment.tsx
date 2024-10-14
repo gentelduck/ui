@@ -45,6 +45,7 @@ import {
 } from './upload'
 import { DialogWrapper } from './ShadcnUI'
 import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog'
+import { ImagePreview, ImagePreviewContent, ImagePreviewItem, ImagePreviewTrigger } from './image-preview'
 
 // Comment
 export interface CommentContextType {
@@ -652,7 +653,7 @@ export const CommentItemContentAttachment = React.forwardRef<HTMLDivElement, Com
 )
 
 // Download Attachment
-const downloadAttachment = ({ attachment }: { attachment: AttachmentType }) => {
+export const downloadAttachment = ({ attachment }: { attachment: AttachmentType }) => {
   if (!attachment.file) return toast.error('Attachment not found')
   const url = URL.createObjectURL(attachment.file)
   const a = document.createElement('a')
@@ -732,88 +733,6 @@ export const CommentSendButton = React.forwardRef<HTMLButtonElement, CommentSend
         ref={ref}
         {...props}
       />
-    )
-  }
-)
-
-export interface CommentItemContentImageProps extends React.HTMLProps<HTMLImageElement> {
-  attachments: AttachmentType[]
-}
-
-export const CommentItemContentImage = React.forwardRef<HTMLImageElement, CommentItemContentImageProps>(
-  ({ children, className, attachments, ...props }, ref) => {
-    return (
-      <div className="grid grid-cols-3 gap-2 max-w-[90%] my-2">
-        {attachments.map((attachment: AttachmentType) => {
-          const url = attachment.url ? attachment.url : URL.createObjectURL(attachment.file as Blob)
-          return (
-            <DialogWrapper
-              trigger={{
-                children: (
-                  <div className="relative">
-                    <picture className="w-full h-[100px] rounded-lg overflow-hidden cursor-pointer">
-                      <img
-                        className={cn('w-full h-[100px] rounded-lg object-cover object-center', className)}
-                        ref={ref}
-                        src={url}
-                        {...props}
-                      />
-                      <DropdownMenuView
-                        trigger={{
-                          icon: { children: Ellipsis, className: 'h-6 w-6 rounded' },
-                          variant: 'ghost',
-                          size: 'icon',
-                          className: 'h-4 w-6 absolute button-2 right-2',
-                        }}
-                        content={{
-                          options: {
-                            itemType: 'label',
-                            optionsData: [
-                              {
-                                children: 'Download',
-                                onClick: () => downloadAttachment({ attachment }),
-                                icon: { children: Download, className: 'h-4 w-4' },
-                              },
-                              {
-                                className: 'bg-red-400/10 text-red-400',
-                                onClick: () => {
-                                  // TODO :handle delete
-                                },
-                                children: 'Delete',
-                                icon: { children: Trash, className: 'h-4 w-4' },
-                              },
-                            ],
-                          },
-                        }}
-                      />
-                    </picture>
-                  </div>
-                ),
-              }}
-              content={{
-                className: 'max-w-[1000px] w-full h-[600px] p-4',
-                children: (
-                  <>
-                    <div>
-                      <DialogTitle className="text-xl font-bold max-w-[85%]">{attachment.name}</DialogTitle>
-                      <DialogDescription className="text-sm flex items-start text-accent-foreground/80">
-                        Size:
-                        <p className="text-muted-foreground truncate">{filesize(attachment.size, { round: 0 })}</p>
-                      </DialogDescription>
-                    </div>
-                    <ScrollArea className="h-full w-full rounded-lg">
-                      <img
-                        className="w-full h-full object-cover object-center cursor-pointer"
-                        src={url}
-                      />
-                    </ScrollArea>
-                  </>
-                ),
-              }}
-            />
-          )
-        })}
-      </div>
     )
   }
 )
@@ -907,10 +826,16 @@ export const CommentItemContent = ({ content, attachments }: { content: string; 
         groupedAttachments.map((group, idx) => {
           if (group[0].type.includes('image')) {
             return (
-              <CommentItemContentImage
-                key={idx}
-                attachments={group}
-              />
+              <ImagePreview>
+                {group.map((attachment: AttachmentType) => {
+                  return (
+                    <ImagePreviewItem attachment={attachment}>
+                      <ImagePreviewTrigger attachment={attachment} />
+                      <ImagePreviewContent attachment={attachment} />
+                    </ImagePreviewItem>
+                  )
+                })}
+              </ImagePreview>
             )
           }
           return group.map((item, idx) => {
