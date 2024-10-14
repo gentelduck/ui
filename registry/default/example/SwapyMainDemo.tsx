@@ -77,7 +77,7 @@ export const comments: CommentType[] = [
       {
         type: 'image',
         name: 'image.png',
-        url: 'https://cdn.dribbble.com/userupload/15141885/file/original-08488d0f9a87b84a0dcb28fa0f98e660.jpg?resize=1024x768',
+        url: 'https://cdn.dribbble.com/userupload/15141886/file/original-dfa730af1401d31266a4660fd11454a0.jpg?resize=1600x1200',
         id: 'attachment-2',
         size: '1000000',
         file: null,
@@ -85,7 +85,7 @@ export const comments: CommentType[] = [
       {
         type: 'image',
         name: 'image.png',
-        url: 'https://cdn.dribbble.com/userupload/15141885/file/original-08488d0f9a87b84a0dcb28fa0f98e660.jpg?resize=1024x768',
+        url: 'https://cdn.dribbble.com/userupload/13745066/file/original-f80c8b9c204ccaa2b0fa17ab8f516aeb.jpg?resize=1024x768&vertical=center',
         id: 'attachment-3',
         size: '1000000',
         file: null,
@@ -93,7 +93,7 @@ export const comments: CommentType[] = [
       {
         type: 'image',
         name: 'image.png',
-        url: 'https://cdn.dribbble.com/userupload/15141885/file/original-08488d0f9a87b84a0dcb28fa0f98e660.jpg?resize=1024x768',
+        url: 'https://cdn.dribbble.com/userupload/15140812/file/original-39c2a658b21fa340e7eb51e0eca62e15.jpg?resize=1024x768',
         id: 'attachment-4',
         size: '1000000',
         file: null,
@@ -101,7 +101,7 @@ export const comments: CommentType[] = [
       {
         type: 'image',
         name: 'image.png',
-        url: 'https://cdn.dribbble.com/userupload/15141885/file/original-08488d0f9a87b84a0dcb28fa0f98e660.jpg?resize=1024x768',
+        url: 'https://cdn.dribbble.com/userupload/15140814/file/original-22eddfd50ce84be4acb8bbbd50cf7840.jpg?resize=1600x1200',
         id: 'attachment-6',
         size: '1000000',
         file: null,
