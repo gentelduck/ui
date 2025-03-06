@@ -15,25 +15,35 @@ export interface DocsSidebarNavProps {
 
 export function DocsSidebarNav({ config }: DocsSidebarNavProps) {
   const pathname = usePathname()
-  const [isOpen, SetIsOpen] = useState(false)
+  const [openIndexes, setOpenIndexes] = useState<{ [key: number]: boolean }>({})
+
   const items = pathname?.startsWith('/charts')
     ? config.chartsNav
     : config.sidebarNav
 
-  return items.length ? (
+  const toggleCategory = (index: number) => {
+    setOpenIndexes((prev) => ({ ...prev, [index]: !prev[index] }))
+  }
+
+  return items.length && (
     <div className="w-full">
       {items.map((item, index) => (
         <div key={index}>
           <button
-            className="mb-1 flex justify-between cursor-pointer rounded-md w-full text-start px-2 py-1 text-sm font-semibold"
-            onClick={() => SetIsOpen(!isOpen)}
+            className="flex justify-between cursor-pointer rounded-md w-full text-start px-2 py-1 text-sm font-semibold"
+            onClick={() => toggleCategory(index)}
           >
             {item.title}
-            <ChevronDown />
+            <ChevronDown
+              className={cn(
+                'transition-transform',
+                openIndexes[index] ? 'rotate-180' : 'rotate-0',
+              )}
+            />
           </button>
           {item?.items?.length && (
             <DocsSidebarNavItems
-              className={isOpen ? '!grid-rows-[1fr]' : ''}
+              className={openIndexes[index] ? '!grid-rows-[1fr]' : ''}
               items={item.items}
               pathname={pathname}
             />
@@ -41,7 +51,7 @@ export function DocsSidebarNav({ config }: DocsSidebarNavProps) {
         </div>
       ))}
     </div>
-  ) : null
+  )
 }
 
 interface DocsSidebarNavItemsProps {
@@ -58,20 +68,18 @@ export function DocsSidebarNavItems({
   return items?.length ? (
     <div
       className={cn(
-        'grid text-sm  transition-all grid-rows-[0fr] will-change-[grid-template-rows]',
+        'grid text-sm transition-all duration-500 grid-rows-[0fr] will-change-[grid-template-rows]',
         className,
       )}
     >
-      <ul className={cn('overflow-hidden  transition-all ')}>
+      <ul className="overflow-hidden transition-all ps-2">
         {items.map((item, index) =>
           item.href && !item.disabled ? (
-            <li>
+            <li key={index}>
               <Link
-                key={index}
                 href={item.href}
                 className={cn(
                   'group flex w-full items-center rounded-md border border-transparent px-2 py-1 hover:underline',
-                  item.disabled && 'cursor-not-allowed opacity-60',
                   pathname === item.href
                     ? 'font-medium text-foreground'
                     : 'text-muted-foreground',
@@ -92,7 +100,6 @@ export function DocsSidebarNavItems({
               key={index}
               className={cn(
                 'flex w-full cursor-not-allowed items-center rounded-md p-2 text-muted-foreground hover:underline',
-                item.disabled && 'cursor-not-allowed opacity-60',
               )}
             >
               {item.title}
