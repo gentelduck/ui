@@ -60,7 +60,7 @@ const PostLayout = async ({
   }
 
   return (
-    <main className="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
+    <main className="relative py-6 mt-7 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
       <div className="mx-auto w-full min-w-0">
         <div className="mb-4 flex items-center space-x-1 text-sm leading-none text-muted-foreground">
           <div className="truncate">Docs</div>
