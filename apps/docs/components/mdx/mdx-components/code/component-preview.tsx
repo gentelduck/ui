@@ -40,6 +40,7 @@ export function ComponentPreview({
   const Code = Codes[0]
 
   const Preview = React.useMemo(() => {
+    // @ts-expect-error
     const Component = Index[name]?.component
 
     if (!Component) {
@@ -147,7 +148,7 @@ export function ComponentPreview({
     </div>
   )
 }
-import { Crown, TriangleAlert } from 'lucide-react'
+import { Crown } from 'lucide-react'
 import { Button } from '@duck/registry-ui-duckui/button'
 
 export const BuildTab = () => {

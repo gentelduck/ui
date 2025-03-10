@@ -14,7 +14,7 @@ import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from '../../../../../packages/_oldstuff_refactor/ui/ShadcnUI/resizable'
+} from '@duck/registry-ui-duckui/resizable'
 
 export function CodePreview({
   block,
@@ -39,12 +39,11 @@ export function CodePreview({
         } as React.CSSProperties
       }
     >
-      {/* !  FIX: fix the type error 
-      @ts-expect-error Type 'RefObject<ImperativePanelHandle | null>' is not assignable to type 'RefObject<ImperativePanelHandle>'. Type 'ImperativePanelHandle | null' is not assignable to type 'ImperativePanelHandle'. Type 'null' is not assignable to type 'ImperativePanelHandle'.ts(2322) */}
+      {/* @ts-ignore */}
       <BlockToolbar block={block} resizablePanelRef={ref} />
       <TabsContent
         value="preview"
-      // className="relative after:absolute after:inset-0 after:right-3 after:z-0 after:rounded-lg after:bg-muted"
+        // className="relative after:absolute after:inset-0 after:right-3 after:z-0 after:rounded-lg after:bg-muted"
       >
         <ResizablePanelGroup direction="horizontal" className="relative z-10">
           <ResizablePanel

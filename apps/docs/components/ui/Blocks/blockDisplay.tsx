@@ -1,5 +1,5 @@
 import { styles } from '@duck/registers'
-import { CodePreview } from '~/components/mdx/mdx-components'
+import { CodePreview } from '~/components/mdx'
 import { getBlock } from '~/lib/blocks'
 
 export async function BlockDisplay({ name }: { name: string }) {

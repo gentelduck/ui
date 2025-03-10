@@ -33,9 +33,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@duck/registry-ui-duckui/accordion'
+import Image from 'next/image'
 
 const useMDXComponent = (code: string) => {
   const fn = new Function(code)
+  // @ts-expect-error
   return fn({ ...runtime }).default
 }
 

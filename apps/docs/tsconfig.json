@@ -22,9 +22,6 @@
       "~/velite": [
         "./.velite/*"
       ],
-      "~/old-registry-ui": [
-        "../_oldstuff_refactor/ui/*"
-      ],
       "~/*": [
         "./*"
       ]
@@ -39,11 +36,12 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".velite"
+    ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    "dist"
+    "./velite-configs/",
+    ".velite",
+    "./node_modules",
+    "./dist"
   ]
 }

@@ -1,29 +1,50 @@
-'use client'
+export function formatDate(input: string | number): string {
+  const date = new Date(input)
+  return date.toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
 
-import { Button } from '@duck/registry-ui-duckui/button'
-import { Calendar, Grab, LineChart } from 'lucide-react'
-import { Card } from '../../../../packages/_oldstuff_refactor/ui/ShadcnUI'
+export function absoluteUrl(path: string) {
+  return `${process.env.NEXT_PUBLIC_APP_URL}${path}`
+}
 
-export function MainExample() {
-  return (
-    <div className="flex flex-col gap-3 items-center">
-      <Button variant={'outline'} size={'default'} icon={<Calendar />}>
-        Mettings
-      </Button>
-      <div className="relative">
-        <Grab className="size-4 absolute -top-2 right-8 z-10 fill-white" />
+export const filteredObject = <T extends Record<string, any>>(
+  keys: string[],
+  obj: T,
+): Partial<T> => {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([key]) => !keys.includes(key)),
+  ) as Partial<T>
+}
 
-        <Button
-          variant={'outline'}
-          size={'default'}
-          className="bg-secondary"
-          icon={<LineChart />}
-        >
-          Analytics
-        </Button>
-      </div>
+export function groupDataByNumbers<T>(
+  strings: T[],
+  groupSizes: number[],
+): T[][] {
+  const result: T[][] = []
+  let index = 0
 
-      <Card className="w-[500px] h-[584px]"></Card>
-    </div>
-  )
+  for (const size of groupSizes) {
+    const group = strings.slice(index, index + size)
+    result.push(group)
+    index += size
+  }
+
+  return result
+}
+
+export function groupArrays<T>(numbers: number[], arr: T[]): T[][] {
+  const result: T[][] = []
+  let index = 0
+
+  for (const num of numbers) {
+    const headerGroup = arr.slice(index, index + num)
+    result.push(headerGroup)
+    index += num
+  }
+
+  return result
 }

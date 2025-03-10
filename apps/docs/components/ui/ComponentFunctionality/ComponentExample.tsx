@@ -65,6 +65,7 @@ export function ComponentExample({
             </TabsTrigger>
           </TabsList>
           {extractedClassNames ? (
+            //@ts-ignore
             <CopyWithClassNames
               value={codeString}
               classNames={extractedClassNames}

@@ -6,7 +6,7 @@ import {
   SelectItemLeftCheck,
   SelectTrigger,
   SelectValue,
-} from './ShadcnUI/select'
+} from '@duck/registry-ui-duckui/select'
 import {
   Tooltip,
   TooltipContent,
@@ -34,7 +34,7 @@ export function DuckSwitcher({
   className,
 }: DuckSwitcherProps) {
   const [selectedAccount, setSelectedAccount] = React.useState<string>(
-    accounts[0].email,
+    accounts[0]!.email,
   )
   const IconSelected =
     accounts.find((account) => account.email === selectedAccount)?.icon || Mail
