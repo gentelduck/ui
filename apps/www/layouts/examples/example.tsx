@@ -4,11 +4,14 @@ import { Button } from '@duck/registry-ui-duckui/button'
 import { TooltipProvider } from '@duck/registry-ui-duckui/tooltip'
 import { Calendar, Grab, LineChart } from 'lucide-react'
 import { Button as BButton } from '../../app/page'
-import { Card } from '../../../../packages/_oldstuff_refactor/ui/ShadcnUI'
+import { Card } from '../../../../packages/registry-ui-duckui/src/card/card'
+import Button1Demo from '@duck/registry-examples-duckui/button/button-1'
+// import { Button1Demo } from '@duck/registry-examples-duckui/button/button-1'
 
 export function MainExample() {
   return (
     <div className="flex flex-col gap-3 items-center">
+      <Button1Demo />
       <Button variant={'outline'} size={'default'} icon={<Calendar />}>
         Mettings
       </Button>
@@ -25,8 +28,7 @@ export function MainExample() {
         </Button>
       </div>
 
-      <Card className="w-[500px] h-[584px]">
-      </Card>
+      <Card className="w-[500px] h-[584px]"></Card>
     </div>
   )
 }

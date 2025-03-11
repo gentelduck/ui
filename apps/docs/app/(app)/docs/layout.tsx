@@ -4,6 +4,7 @@ import { DocsSidebarNav } from '~/components/docs-side-bar'
 interface DocsLayoutProps {
   children: React.ReactNode
 }
+import { } from '@duck/registry-examples-duckui/button/button-1'
 
 export default function DocsLayout({ children }: DocsLayoutProps) {
   return (

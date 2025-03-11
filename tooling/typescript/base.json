@@ -16,6 +16,7 @@
     "disableSourceOfProjectReferenceRedirect": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
+    "allowImportingTsExtensions": false,
     "checkJs": true,
     "noEmit": true,
     "composite": false,
