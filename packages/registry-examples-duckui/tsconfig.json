@@ -7,17 +7,13 @@
       "dom",
       "dom.iterable"
     ],
-    "jsx": "preserve",
     "baseUrl": ".",
+    "incremental": false,
+    "rootDir": "./",
+    "outDir": "./dist",
+    "module": "Preserve",
     "moduleResolution": "bundler",
-    "module": "esnext",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
     "paths": {
-      "~/old-registry-ui": [
-        "../_oldstuff_refactor/ui/index.ts"
-      ],
       "~/*": [
         "./*"
       ]
@@ -29,8 +25,8 @@
     ]
   },
   "include": [
-    ".",
-    "../_oldstuff_refactor/default/ui/index.ts"
+    "./**/*.ts",
+    "./**/*.tsx"
   ],
   "exclude": [
     "node_modules",

@@ -16,7 +16,11 @@ import {
 export function StyleSwitcher({
   className,
   ...props
+<<<<<<< HEAD
 }: React.ComponentPropsWithoutRef<typeof SelectTrigger>) {
+=======
+}: React.ComponentPropsWithRef<typeof SelectTrigger>) {
+>>>>>>> main
   const [config, setConfig] = useConfig()
 
   return (

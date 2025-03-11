@@ -150,22 +150,16 @@ export function ComponentPreview({
     </div>
   )
 }
+<<<<<<< HEAD
+=======
+import { Crown } from 'lucide-react'
+import { Button } from '@duck/registry-ui-duckui/button'
+>>>>>>> main
 
 export const BuildTab = () => {
   return (
     <TabsContent value="build" className="relative overflow-hidden">
-      <div className="h-[450px]">
-        llorem asdlkfajs;dflk asd;lfk jasd;lfk jasd;lkfj as;ldkfjas;dlkfj
-        a;sldkfj a;sldkf jasdlkfnjpowadifjpnqwemo ijpqweoc im,qwpoiuhfp,o
-        wgfhasodifj maspdlkfj poiqwaesf hmlorem asdlkfajs;dflk asd;lfk jasd;lfk
-        jasd;lkfj as;ldkfjas;dlkfj a;sldkfj a;sldkf jasdlkfnjpowadifjpnqwemo
-        ijpqweoc im,qwpoiuhfp,o wgfhasodifj maspdlkfj poiqwaesf hmlorem
-        asdlkfajs;dflk asd;lfk jasd;lfk jasd;lkfj as;ldkfjas;dlkfj a;sldkfj
-        a;sldkf jasdlkfnjpowadifjpnqwemo ijpqweoc im,qwpoiuhfp,o wgfhasodifj
-        maspdlkfj poiqwaesf hmorem asdlkfajs;dflk asd;lfk jasd;lfk jasd;lkfj
-        as;ldkfjas;dlkfj a;sldkfj a;sldkf jasdlkfnjpowadifjpnqwemo ijpqweoc
-        im,qwpoiuhfp,o wgfhasodifj maspdlkfj poiqwaesf hm
-      </div>
+      <div className="h-[450px]">asdf</div>
       <div className="flex flex-col items-center justify-center gap-4 bg-zinc-700/50 rounded-md px-4 py-2 backdrop-blur-sm absolute h-[450px] top-0 left-0 inset-0">
         <div className="flex items-center gap-4">
           <Button

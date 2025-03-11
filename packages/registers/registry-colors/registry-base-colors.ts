@@ -604,6 +604,7 @@ export const registry_base_colors: ColorBase = [
         'destructive-foreground': '210 40% 98%',
         radius: '0.95rem',
         border: '214.3 31.8% 91.4%',
+        radius: '0.95rem',
         input: '214.3 31.8% 91.4%',
         ring: '221.2 83.2% 53.3%',
         'chart-1': '12 76% 61%',

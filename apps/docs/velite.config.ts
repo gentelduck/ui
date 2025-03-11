@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import { defineConfig, s } from 'velite'
 // import { docs } from '~/velite-configs'
+=======
+import { defineCollection, defineConfig, s } from 'velite'
+>>>>>>> main
 
 import { getHighlighter, loadTheme } from '@shikijs/compat'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
@@ -26,7 +30,11 @@ import { Nodes } from 'hast'
 
 const config = defineConfig({
   collections: {
+<<<<<<< HEAD
     docs: {
+=======
+    docs: defineCollection({
+>>>>>>> main
       name: 'Docs',
       pattern: 'docs/**/*.mdx',
       schema: s
@@ -34,7 +42,16 @@ const config = defineConfig({
           title: s.string().max(99),
           metadata: s.metadata(),
           description: s.string(),
+<<<<<<< HEAD
           links: s.object({ doc: s.string(), api: s.string() }).optional(),
+=======
+          links: s
+            .object({
+              doc: s.string(),
+              api: s.string(),
+            })
+            .optional(),
+>>>>>>> main
           excerpt: s.excerpt(),
           content: s.markdown(),
           body: s.mdx(),
@@ -55,7 +72,11 @@ const config = defineConfig({
             .join('/')
             .replace(/\.mdx$/, ''),
         })),
+<<<<<<< HEAD
     },
+=======
+    }),
+>>>>>>> main
   },
   mdx: {
     remarkPlugins: [remarkGfm, codeImport],

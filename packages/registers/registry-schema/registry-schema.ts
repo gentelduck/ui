@@ -58,6 +58,8 @@ export const registry_entry_schema = z.object({
   files: z.array(registry_item_file_schema).optional(),
   tailwind: registry_item_tailwind_schema.optional(),
   cssVars: registry_item_css_vars_schema.optional(),
+  path: z.string().optional(),
+  component: z.any().optional(),
   source: z.string().optional(),
   category: z.string().optional(),
   subcategory: z.string().optional(),

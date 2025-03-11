@@ -32,7 +32,11 @@ export async function getBlock(
   name: string,
   style: Style['name'] = DEFAULT_BLOCKS_STYLE,
 ) {
+<<<<<<< HEAD
   // @ts-ignore
+=======
+  // @ts-expect-error
+>>>>>>> main
   const entry = Index[style][name]
 
   const content = await _getBlockContent(name, style)
@@ -92,7 +96,11 @@ async function _getBlockCode(
   name: string,
   style: Style['name'] = DEFAULT_BLOCKS_STYLE,
 ) {
+<<<<<<< HEAD
   // @ts-ignore
+=======
+  // @ts-expect-error
+>>>>>>> main
   const entry = Index[style][name]
   if (!entry) {
     console.error(`Block ${name} not found in style ${style}`)

@@ -34,8 +34,12 @@ import {
   AccordionTrigger,
 } from '@duck/registry-ui-duckui/accordion'
 import Image from 'next/image'
+<<<<<<< HEAD
 import runtime from 'react/jsx-runtime'
+=======
+>>>>>>> main
 
+import * as runtime from 'react/jsx-runtime'
 const useMDXComponent = (code: string) => {
   const fn = new Function(code)
   return fn({ ...runtime }).default

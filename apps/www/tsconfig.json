@@ -30,7 +30,8 @@
     ".",
     ".next/types/**/*.ts",
     "../../packages/_oldstuff_refactor/",
-    "../../packages/registry-ui-duckui/"
+    "../../packages/registry-ui-duckui/",
+    "../../packages/registry-examples-duckui/"
   ],
   "exclude": [
     "dist"

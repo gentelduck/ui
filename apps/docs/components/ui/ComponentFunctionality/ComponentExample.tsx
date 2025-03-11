@@ -69,7 +69,11 @@ export function ComponentExample({
             </TabsTrigger>
           </TabsList>
           {extractedClassNames ? (
+<<<<<<< HEAD
             // @ts-ignore
+=======
+            //@ts-ignore
+>>>>>>> main
             <CopyWithClassNames
               value={codeString}
               classNames={extractedClassNames}

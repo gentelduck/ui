@@ -1,6 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "@duck/typescript-config/base.json",
   "compilerOptions": {
     "lib": [
       "ES2022",
@@ -10,14 +9,31 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "moduleResolution": "bundler",
-    "module": "esnext",
-    "resolveJsonModule": true,
+    "module": "Preserve",
     "esModuleInterop": true,
     "isolatedModules": true,
     "skipLibCheck": true,
     "noErrorTruncation": true,
     "useDefineForClassFields": true,
     "strictPropertyInitialization": false,
+    "target": "ESNext",
+    "allowJs": true,
+    "moduleDetection": "force",
+    "incremental": true,
+    "disableSourceOfProjectReferenceRedirect": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "allowImportingTsExtensions": false,
+    "checkJs": true,
+    "noEmit": true,
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true,
+    "inlineSources": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "preserveWatchOutput": true,
+    "forceConsistentCasingInFileNames": true,
     "paths": {
       "~/velite": [
         "./.velite/*"

@@ -55,11 +55,11 @@ export function CopyButton({
           value,
           event
             ? {
-              name: event,
-              properties: {
-                code: value,
-              },
-            }
+                name: event,
+                properties: {
+                  code: value,
+                },
+              }
             : undefined,
         )
         setHasCopied(true)
@@ -125,7 +125,12 @@ export function CopyWithClassNames({
   )
 }
 
+<<<<<<< HEAD
 interface CopyNpmCommandButtonProps extends React.ComponentPropsWithoutRef<typeof DropdownMenuTrigger> {
+=======
+interface CopyNpmCommandButtonProps
+  extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger> {
+>>>>>>> main
   commands: Required<NpmCommands>
 }
 

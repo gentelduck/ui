@@ -1,3 +1,5 @@
+'use client'
+
 // import { TooltipProvider } from '@duck/registry-ui-duckui/tooltip'
 // import { MainExample } from '~/layouts'
 //
@@ -13,22 +15,21 @@
 //   )
 // }
 
-'use client'
-
 import Link from 'next/link'
 
-import { siteConfig } from '~/config/site'
 import {
-  PageActions,
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
 } from '~/components/page-header'
+<<<<<<< HEAD
 import { CopyButton } from '~/components/copy-button'
 import { toast } from 'sonner'
 import { Announcement } from '~/components/announcement'
 import { ThemeWrapper } from '~/components/theme-wrapper'
 // import { ThemesTabs } from './themes/tabs'
+=======
+>>>>>>> main
 import { buttonVariants } from '@duck/registry-ui-duckui/button'
 import { cn } from '@duck/libs/cn'
 
