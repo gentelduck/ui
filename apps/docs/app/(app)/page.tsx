@@ -45,7 +45,7 @@ export default function IndexPage() {
             specially for magical websites.
           </PageHeaderDescription>
           <Link
-            href={'/docs'}
+            href={'/docs/components/button'}
             className={cn(
               buttonVariants({
                 variant: 'default',
@@ -57,7 +57,8 @@ export default function IndexPage() {
           </Link>
         </PageHeader>
         <div className="flex flex-col justify-center items-center">
-          <img src={'/home.avif'} width={570} height={530} className='w-full' alt='3 people happy to see you using duck ui'  />
+
+          <img src={'/home.avif'} width={713} height={559} className='w-full' alt='3 people happy to see you using duck ui'  />
         </div>
       </div>
       <div>
