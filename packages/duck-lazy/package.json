@@ -1,6 +1,6 @@
 {
   "name": "@gentelduck/lazy",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "this is a package for lazy components that gonna let you lazy load your images and also virtulize your components on the client",
   "type": "module",
   "types": "index.ts",
