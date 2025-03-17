@@ -102,7 +102,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               variant={label.variant ?? 'secondary'}
               size={label.size ?? 'default'}
               className={cn(
-                'text-[.8rem] py-0 rounded-md px-1 font-meduim',
+                'text-[.8rem] py-0 rounded-md px-1 font-medium',
                 label.variant === 'nothing' && 'text-accent',
                 label.className,
               )}
