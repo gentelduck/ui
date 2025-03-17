@@ -45,7 +45,7 @@ export function CopyButton({
       size='icon'
       variant={variant}
       aria-label='Copy'
-      className={cn('w-6.5 h-6.5 [&_svg]:h-3.5 [&_svg]:w-3.5', className)}
+      className={cn('w-6.5 h-6.5 [&_svg]:h-3.5 [&_svg]:w-3.5 shadow-none rounded-sm', className)}
       icon={hasCopied ? <CheckIcon /> : <ClipboardIcon />}
       onClick={() => {
         copyToClipboardWithMeta(
@@ -91,14 +91,14 @@ export function CopyWithClassNames({
         <Button
           size='icon'
           variant='outline'
+          aria-label='Copy'
           className={cn(
-            'relative z-10 h-6 w-6  [&_svg]:h-3 [&_svg]:w-3',
+            'relative z-10 h-6 w-6  [&_svg]:h-3 [&_svg]:w-3 shadow-none rounded-sm',
             className,
           )}
           icon={hasCopied ? <CheckIcon /> : <ClipboardIcon />}
           {...props}
         >
-          <span className='sr-only'>Copy</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
@@ -151,14 +151,14 @@ export function CopyNpmCommandButton({
         <Button
           size='icon'
           variant='outline'
+          aria-label='Copy'
           className={cn(
-            'relative z-10 w-6.5 h-6.5 [&_svg]:h-3.5 [&_svg]:w-3.5',
+            'relative z-10 w-6.5 h-6.5 [&_svg]:h-3.5 [&_svg]:w-3.5 shadow-none rounded-sm',
             className,
           )}
           icon={hasCopied ? <CheckIcon /> : <ClipboardIcon />}
           {...props}
         >
-          <span className='sr-only'>Copy</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
