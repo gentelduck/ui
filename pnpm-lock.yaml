@@ -1550,6 +1550,9 @@ importers:
       recharts:
         specifier: 2.12.7
         version: 2.12.7(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      tailwindcss:
+        specifier: ^4.0.14
+        version: 4.0.14
     devDependencies:
       '@ahmedayob/duck-shortcut':
         specifier: ^0.0.2
