@@ -24,7 +24,9 @@
     "react-dom": "^19.0.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "4.0.14",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vite-bundle-analyzer": "^0.18.0",
+    "vite-plugin-inspect": "^11.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react-swc": "^3.8.0",
