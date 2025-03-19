@@ -1,23 +1,41 @@
-import type { UnpluginContextMeta, UnpluginFactory } from 'unplugin'
+import type { UnpluginFactory } from 'unplugin'
 import type { Options } from './plugin.types'
 import { createUnplugin } from 'unplugin'
+import MagicString from 'magic-string'
 
-export const meta: UnpluginContextMeta = {
-  framework: 'vite',
-}
-
-export const unpluginFactory: UnpluginFactory<Options | undefined> = (
-  options,
-  meta,
-) => ({
+export const unpluginFactory: UnpluginFactory<Options | undefined> = () => ({
   name: '@gentelduck/cn',
+
   transformInclude(id) {
-    return id.endsWith('main.ts')
+    return (
+      id.endsWith('.ts') ||
+      id.endsWith('.tsx') ||
+      id.endsWith('.js') ||
+      id.endsWith('.jsx')
+    )
   },
+
   transform(code) {
-    console.log('this is the code from the plugin')
-    console.log(code.slice(0, 10))
-    return code.replace('pl-4 pr-4 pt-4 pb-4', 'p-4')
+    console.log('Processing file with @gentelduck/cn plugin')
+
+    const s = new MagicString(code)
+
+    // Match all `cn("class-name ...")` instances
+    const cnRegex = /cn\((".*?")\)/g
+
+    let match
+    while ((match = cnRegex.exec(code)) !== null) {
+      const fullMatch = match[0]
+      const innerString = match[1]
+
+      // Replace `cn(...)` with its inner string
+      s.overwrite(match.index, match.index + fullMatch.length, innerString!)
+    }
+
+    return {
+      code: s.toString(),
+      map: s.generateMap({ hires: true }), // Optional source map
+    }
   },
 })
 
