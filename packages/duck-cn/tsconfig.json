@@ -12,12 +12,31 @@
     "rootDir": "./",
     "outDir": "./dist",
     "module": "Preserve",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "~/*": [
         "./src/*"
       ]
-    }
+    },
+    "target": "ESNext",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "disableSourceOfProjectReferenceRedirect": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "checkJs": true,
+    "noEmit": true,
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true,
+    "inlineSources": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "preserveWatchOutput": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "."
