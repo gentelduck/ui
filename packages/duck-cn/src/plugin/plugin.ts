@@ -17,7 +17,7 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (
   transform(code) {
     console.log('this is the code from the plugin')
     console.log(code.slice(0, 10))
-    return code.replace('__UNPLUGIN__', `Hello Unplugin! ${options}`)
+    return code.replace('pl-4 pr-4 pt-4 pb-4', 'p-4')
   },
 })
 
