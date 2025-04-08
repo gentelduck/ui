@@ -3,7 +3,7 @@
 import { Slot } from '../../button'
 
 export interface AspectRatioProps extends React.HTMLProps<HTMLDivElement> {
-  ratio: number
+  ratio: number | string
 }
 
 function AspectRatio({

@@ -40,7 +40,7 @@
 // import ShadcnSelect from './duck/select/select'
 import DuckAspectRatioExp from './duck/aspect-ratio/experimental'
 // import DuckAspectRatio from './duck/aspect-ratio/duck'
-// import ShadcnAspectRatio from './duck/aspect-ratio/aspect-ratio'
+import ShadcnAspectRatio from './duck/aspect-ratio/aspect-ratio'
 // import DuckSeparator from './duck/separator/duck'
 // import DuckSeparatorExp from './duck/separator/experimental'
 // import ShadcnSeparator from './duck/separator/separator'
@@ -92,7 +92,7 @@ function App() {
     <div className='flex flex-col justify-center container mx-auto  items-center gap-4'>
       <DuckAspectRatioExp />  Experimental
       {/* <DuckAspectRatio  />   old one  */}
-      {/* <ShadcnAspectRatio  /> other */}
+      <ShadcnAspectRatio  /> other
     </div>
   )
 }

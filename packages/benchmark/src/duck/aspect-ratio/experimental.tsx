@@ -3,7 +3,7 @@ import { AspectRatio } from "@gentelduck/registry-ui-duckui/experimental/aspect-
 
 export default function AspectRatioDemo() {
   return (
-    <AspectRatio ratio={16 / 9} className="bg-muted">
+    <AspectRatio ratio={'16 / 9'} className="bg-muted">
       {/* <img
         width={480}
         height={320}
