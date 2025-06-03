@@ -42,12 +42,22 @@ import DuckToggleExp from './duck/toggle/experimental'
 // import DuckSeparator from './duck/separator/duck'
 // import DuckSeparatorExp from './duck/separator/experimental'
 // import ShadcnSeparator from './duck/separator/separator'
+
+// import Sandbox from './sandbox'
+
+// import DuckSeparator from './duck/separator/duck'
+// import DuckSeparatorExp from './duck/separator/experimental'
+// import ShadcnSeparator from './duck/separator/separator'
+
+// import Dialog from './example/dialog'
+// import Command from './example/command'
+
+// import Command from "./example/command/duck"
+// import CommandShadcn from "./example/command/shadcn"
+// import DrawerExample from './example/drawer'
 // import DuckSkeleton from './duck/skeleton/duck'
 // import ShadcnSkeleton from './duck/skeleton/skeleton'
-// import DuckSheet from './duck/sheet/duck'
-// import ShadcnSheet from './duck/sheet/sheet'
-// import DuckDrawer from './duck/drawer/duck'
-// import ShadcnDrawer from './duck/drawer/drawer'
+
 // import DuckSonner from './duck/sonner/duck'
 // import ShadcnSonner from './duck/sonner/sonner'
 // function Ui() {
@@ -86,9 +96,10 @@ import DuckToggleExp from './duck/toggle/experimental'
 // }
 
 function App() {
+  // <ShadcnDialog />
   return (
-    <div className='flex flex-col mx-10 h-screen justify-center  items-center gap-4'>
-      <DuckToggleExp />  Experimental
+    <div className="flex flex-col mx-10 h-screen justify-center  items-center gap-4">
+      <DuckToggleExp /> Experimental
       {/* <DuckToggle  />   radix ui based  */}
       {/* <ShadcnToggle  /> other  */}
     </div>

@@ -1,4 +1,4 @@
-import { Checkbox } from "@gentelduck/registry-ui-duckui/checkbox";
+import { Checkbox } from '@gentleduck/registry-ui-duckui/checkbox'
 
 export default function CheckboxDemo() {
   return (

@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from '../popover'
 import { Command, CommandEmpty, CommandGroup, CommandList } from '../command'
-import { cn } from '@gentelduck/libs/cn'
+import { cn } from '@gentleduck/libs/cn'
 
 export type ComboboxContextType<T extends unknown[] = unknown[]> = {
   open: boolean
@@ -16,9 +16,7 @@ export type ComboboxContextType<T extends unknown[] = unknown[]> = {
   setData: React.Dispatch<React.SetStateAction<T>>
 }
 
-export const ComboboxContext = React.createContext<ComboboxContextType | null>(
-  null
-)
+export const ComboboxContext = React.createContext<ComboboxContextType | null>(null)
 
 export const useComboboxContext = <T extends unknown[]>() => {
   const context = React.useContext(ComboboxContext)
@@ -60,18 +58,9 @@ export const Combobox = <T extends unknown[]>({
         setLoading,
         data,
         setData: setData as React.Dispatch<React.SetStateAction<unknown[]>>,
-      }}
-    >
-      <Popover
-        open={open}
-        onOpenChange={setOpen}
-        modal={modal}
-        defaultOpen={defaultOpen}
-      >
-        <Command
-          className={cn('border-none bg-transparent', className)}
-          {...props}
-        >
+      }}>
+      <Popover open={open} onOpenChange={setOpen} modal={modal} defaultOpen={defaultOpen}>
+        <Command className={cn('border-none bg-transparent', className)} {...props}>
           {children}
         </Command>
       </Popover>
@@ -83,25 +72,24 @@ export interface ComboboxTriggerProps extends React.HTMLProps<HTMLDivElement> {
   type?: 'default' | 'custom'
 }
 
-export const ComboboxTrigger = React.forwardRef<
-  HTMLDivElement,
-  ComboboxTriggerProps
->(({ className, children, type = 'default', ...props }, ref) => {
-  const { setOpen, data, value } = useComboboxContext() ?? {}
+export const ComboboxTrigger = React.forwardRef<HTMLDivElement, ComboboxTriggerProps>(
+  ({ className, children, type = 'default', ...props }, ref) => {
+    const { setOpen, data, value } = useComboboxContext() ?? {}
 
-  return (
-    <>
-      {type === 'default' ? (
-        <PopoverTrigger>{children}</PopoverTrigger>
-      ) : (
-        <>
-          {children}
-          <PopoverTrigger></PopoverTrigger>
-        </>
-      )}
-    </>
-  )
-})
+    return (
+      <>
+        {type === 'default' ? (
+          <PopoverTrigger>{children}</PopoverTrigger>
+        ) : (
+          <>
+            {children}
+            <PopoverTrigger></PopoverTrigger>
+          </>
+        )}
+      </>
+    )
+  },
+)
 
 export interface ComboboxItemProps
   extends React.HTMLProps<HTMLDivElement>,
@@ -109,20 +97,15 @@ export interface ComboboxItemProps
   notFound?: string
 }
 
-export const ComboboxContent = React.forwardRef<
-  HTMLDivElement,
-  ComboboxItemProps
->(({ children, notFound = 'No data found.', ...props }, ref) => {
-  return (
-    <PopoverContent
-      className='!w-[618px] p-0'
-      {...props}
-      ref={ref}
-    >
-      <CommandList>
-        <CommandEmpty>{notFound}</CommandEmpty>
-        <CommandGroup>{children}</CommandGroup>
-      </CommandList>
-    </PopoverContent>
-  )
-})
+export const ComboboxContent = React.forwardRef<HTMLDivElement, ComboboxItemProps>(
+  ({ children, notFound = 'No data found.', ...props }, ref) => {
+    return (
+      <PopoverContent className="!w-[618px] p-0" {...props} ref={ref}>
+        <CommandList>
+          <CommandEmpty>{notFound}</CommandEmpty>
+          <CommandGroup>{children}</CommandGroup>
+        </CommandList>
+      </PopoverContent>
+    )
+  },
+)

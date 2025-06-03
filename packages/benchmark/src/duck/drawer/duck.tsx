@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import {
   Drawer,
   DrawerClose,
@@ -8,22 +8,20 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@gentelduck/registry-ui-duckui/drawer"
+} from '@gentleduck/registry-ui-duckui/drawer'
 
-export default function DrawerDemo() {
+export default function DrawerDemo({ side = 'top' }: { side?: 'left' | 'right' | 'top' | 'bottom' }) {
   return (
     <Drawer>
       <DrawerTrigger>Open</DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent side={side}>
         <DrawerHeader>
           <DrawerTitle>Are you absolutely sure?</DrawerTitle>
           <DrawerDescription>This action cannot be undone.</DrawerDescription>
         </DrawerHeader>
         <DrawerFooter>
-          <span>Submit</span>
-          <DrawerClose>
-            <span>Cancel</span>
-          </DrawerClose>
+          <DrawerClose>Submit</DrawerClose>
+          <DrawerClose variant="outline">Cancel</DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

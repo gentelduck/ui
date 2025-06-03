@@ -4,14 +4,9 @@ import * as React from 'react'
 
 import { useColors } from '~/hooks/use-colors'
 import { type Color, getColorFormat } from '~/lib/colors'
-import { cn } from '@gentelduck/libs/cn'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from '@gentelduck/registry-ui-duckui/select'
-import { Skeleton } from '@gentelduck/registry-ui-duckui/skeleton'
+import { cn } from '@gentleduck/libs/cn'
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@gentleduck/registry-ui-duckui/select'
+import { Skeleton } from '@gentleduck/registry-ui-duckui/skeleton'
 
 export function ColorFormatSelector({
   color,
@@ -28,33 +23,19 @@ export function ColorFormatSelector({
   }
 
   return (
-    <Select
-      value={format}
-      onValueChange={setFormat}
-    >
-      <SelectTrigger
-        className={cn('h-7 w-auto gap-1.5 rounded-lg pr-2 text-xs', className)}
-        {...props}
-      >
-        <span className='font-medium'>Format: </span>
-        <span className='font-mono text-xs text-muted-foreground'>
-          {format}
-        </span>
+    <Select value={format} onValueChange={setFormat}>
+      <SelectTrigger className={cn('h-7 w-auto gap-1.5 rounded-lg pr-2 text-xs', className)} {...props}>
+        <span className="font-medium">Format: </span>
+        <span className="font-mono text-xs text-muted-foreground">{format}</span>
       </SelectTrigger>
-      <SelectContent
-        align='end'
-        className='rounded-xl'
-      >
+      <SelectContent align="end" className="rounded-xl">
         {Object.entries(formats).map(([format, value]) => (
           <SelectItem
             key={format}
             value={format}
-            className='gap-2 rounded-lg [&>span]:flex [&>span]:items-center [&>span]:gap-2'
-          >
-            <span className='font-medium'>{format}</span>
-            <span className='font-mono text-xs text-muted-foreground'>
-              {value}
-            </span>
+            className="gap-2 rounded-lg [&>span]:flex [&>span]:items-center [&>span]:gap-2">
+            <span className="font-medium">{format}</span>
+            <span className="font-mono text-xs text-muted-foreground">{value}</span>
           </SelectItem>
         ))}
       </SelectContent>
@@ -62,14 +43,6 @@ export function ColorFormatSelector({
   )
 }
 
-export function ColorFormatSelectorSkeleton({
-  className,
-  ...props
-}: React.ComponentProps<typeof Skeleton>) {
-  return (
-    <Skeleton
-      className={cn('h-7 w-[116px] gap-1.5 rounded-lg', className)}
-      {...props}
-    />
-  )
+export function ColorFormatSelectorSkeleton({ className, ...props }: React.ComponentProps<typeof Skeleton>) {
+  return <Skeleton className={cn('h-7 w-[116px] gap-1.5 rounded-lg', className)} {...props} />
 }

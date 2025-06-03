@@ -1,28 +1,34 @@
 {
-  "name": "@gentelduck",
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "gentleduck",
   "private": false,
-  "engines": {
-    "node": ">=20.18.1",
-    "pnpm": "^10.2.1"
-  },
-  "devDependencies": {
-    "@changesets/cli": "^2.27.7",
-    "rimraf": "^4.4.1",
-    "@turbo/gen": "^2.3.3",
-    "eslint-plugin-astro": "^1.3.1",
-    "prettier-plugin-astro": "^0.14.1",
-    "turbo": "^2.3.3",
-    "typescript": "catalog:"
-  },
+  "version": "1.0.0",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint",
+    "clean": "rimraf dist .cache .turbo node_modules .next .velite",
+    "clean:git": "git clean -xdf .cache .turbo node_modules dist",
     "format": "biome format --write ./",
-    "build:lazy": "pnpm --filter=@gentelduck/lazy run ci",
-    "publish:lazy": "pnpm changeset publish",
-    "publish:duckui": "pnpm --filter=@gentelduck/lazy run publish"
+    "lint:ws": "pnpm dlx sherif@latest",
+    "lint": "biome lint --write ./",
+    "test": "vitest",
+    "bench": "vitest bench",
+    "coverage": "vitest run --coverage"
   },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.7",
+    "@turbo/gen": "^2.3.3",
+    "eslint-plugin-astro": "^1.3.1",
+    "husky": "^9.1.7",
+    "prettier-plugin-astro": "^0.14.1",
+    "rimraf": "^4.4.1",
+    "turbo": "^2.3.3",
+    "typescript": "catalog:",
+    "vitest": "^3.0.8",
+    "@vitest/ui": "^3.1.2",
+    "@vitest/coverage-v8": "^3.1.2"
+  },
+  "dependencies": {},
   "pnpm": {
     "onlyBuiltDependencies": [
       "@biomejs/biome",
@@ -33,7 +39,11 @@
       "esbuild",
       "protobufjs",
       "sharp"
-    ]
+    ],
+    "ignoredBuiltDependencies": ["rolldown"]
   },
-  "dependencies": {}
+  "engines": {
+    "node": ">=20.18.1",
+    "pnpm": "^10.2.1"
+  }
 }
