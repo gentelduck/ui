@@ -1,7 +1,4 @@
-export const useDebounceCallback = <T extends (...args: any[]) => void>(
-  callback: T,
-  delay?: number,
-) => {
+export const useDebounce = <const T extends (...args: unknown[]) => void>(callback: T, delay?: number) => {
   let timeoutRef: NodeJS.Timeout | null = null
 
   return (...args: Parameters<T>) => {
@@ -15,10 +12,7 @@ export const useDebounceCallback = <T extends (...args: any[]) => void>(
   }
 }
 
-export const debounceCallback = <T extends (...args: any[]) => void>(
-  callback: T,
-  delay?: number,
-) => {
+export const debounce = <const T extends (...args: unknown[]) => void>(callback: T, delay?: number) => {
   let timeoutRef: NodeJS.Timeout | null = null
 
   return (...args: Parameters<T>) => {
@@ -31,3 +25,10 @@ export const debounceCallback = <T extends (...args: any[]) => void>(
     }, delay)
   }
 }
+
+function p(x: any) {
+  if (typeof x === 'number') {
+    x.toFixed(2)
+  }
+}
+p('asdfasdf')

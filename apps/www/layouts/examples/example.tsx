@@ -1,20 +1,8 @@
 'use client'
 
-import { Button } from '@gentelduck/registry-ui-duckui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@gentelduck/registry-ui-duckui/tooltip'
-import {
-  CalendarIcon,
-  Grab,
-  LineChart,
-  LogOut,
-  Pointer,
-  RefreshCcw,
-  X,
-} from 'lucide-react'
+import { Button } from '@gentleduck/registry-ui-duckui/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@gentleduck/registry-ui-duckui/tooltip'
+import { CalendarIcon, Grab, LineChart, LogOut, Pointer, RefreshCcw, X } from 'lucide-react'
 import { toast } from 'sonner'
 
 import {
@@ -25,10 +13,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@gentelduck/registry-ui-duckui/dialog'
+} from '@gentleduck/registry-ui-duckui/dialog'
 import { Command as CCommand, Calendar } from 'lucide-react'
 
-import { Avatar, AvatarGroup } from '@gentelduck/registry-ui-duckui/avatar'
+import { Avatar, AvatarGroup } from '@gentleduck/registry-ui-duckui/avatar'
 import {
   Command,
   CommandEmpty,
@@ -38,25 +26,16 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from '@gentelduck/registry-ui-duckui/command'
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@gentelduck/registry-ui-duckui/hover-card'
-import { Input } from '@gentelduck/registry-ui-duckui/input'
-import { Label } from '@gentelduck/registry-ui-duckui/label'
+} from '@gentleduck/registry-ui-duckui/command'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@gentleduck/registry-ui-duckui/hover-card'
+import { Input } from '@gentleduck/registry-ui-duckui/input'
+import { Label } from '@gentleduck/registry-ui-duckui/label'
 import React from 'react'
 import Image from 'next/image'
-import { AspectRatio } from '@gentelduck/registry-ui-duckui/aspect-ratio'
-import { Checkbox } from '@gentelduck/registry-ui-duckui/checkbox'
-import { Badge } from '@gentelduck/registry-ui-duckui/badge'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@gentelduck/registry-ui-duckui/tabs'
+import { AspectRatio } from '@gentleduck/registry-ui-duckui/aspect-ratio'
+import { Checkbox } from '@gentleduck/registry-ui-duckui/checkbox'
+import { Badge } from '@gentleduck/registry-ui-duckui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@gentleduck/registry-ui-duckui/tabs'
 import {
   Card,
   CardContent,
@@ -64,7 +43,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@gentelduck/registry-ui-duckui/card'
+} from '@gentleduck/registry-ui-duckui/card'
 import {
   Sheet,
   SheetClose,
@@ -74,11 +53,17 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@gentelduck/registry-ui-duckui/sheet'
-// import { DialogPortal } from '../../../../packages/registry-ui-duckui/src/dialog/_new/dialog'
+} from '@gentleduck/registry-ui-duckui/sheet'
+import { VaulDrawer } from './hi'
+import { SONNER_V2 } from './js'
+import { Upload2Demo } from './tt'
+import { DrawerExample } from './ss'
 
 export function MainExample() {
-  // return <VaulDrawer />
+  return <DrawerExample />
+  return <Upload2Demo />
+  // return <SONNER_V2 />
+  return <VaulDrawer />
 
   const items = [
     // {
@@ -124,28 +109,26 @@ export function MainExample() {
       <DialogContent renderOnce>
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription>
+          <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
         </DialogHeader>
-        <div className='grid gap-4 py-4'>
-          <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='name' className='text-right'>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
               Name
             </Label>
-            <Input id='name' value='wild duck' className='col-span-3' />
+            <Input id="name" value="wild duck" className="col-span-3" />
           </div>
-          <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='username' className='text-right'>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
               Username
             </Label>
-            <Input id='username' value='@wildduck2' className='col-span-3' />
+            <Input id="username" value="@wildduck2" className="col-span-3" />
           </div>
-          <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='username' className='text-right'>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
               Username
             </Label>
-            <Input id='username' value='@wildduck2' className='col-span-3' />
+            <Input id="username" value="@wildduck2" className="col-span-3" />
           </div>
         </div>
 
@@ -157,16 +140,15 @@ export function MainExample() {
   )
 
   return (
-    <div className='flex flex-col gap-3 items-center'>
-      <div className='relative'>
-        <Pointer className='size-3 absolute top-3 right-0 z-10 fill-white' />
-        <Tooltip open={true} className=''>
+    <div className="flex flex-col gap-3 items-center">
+      <div className="relative">
+        <Pointer className="size-3 absolute top-3 right-0 z-10 fill-white" />
+        <Tooltip open={true} className="">
           <TooltipTrigger
             variant={'outline'}
             size={'default'}
             icon={<Calendar />}
-            className='group-data-[method="forced"]/tooltip:bg-muted'
-          >
+            className='group-data-[method="forced"]/tooltip:bg-muted'>
             Mettings
           </TooltipTrigger>
 
@@ -176,8 +158,8 @@ export function MainExample() {
       <Button variant={'outline'} size={'default'} icon={<Calendar />}>
         Mettings
         <CommandShortcut
-          keys='ctrl+k'
-          className='bg-muted'
+          keys="ctrl+k"
+          className="bg-muted"
           onKeysPressed={() => {
             toast('Event has been created', {
               description: 'Sunday, December 03, 2023 at 9:00 AM',
@@ -186,9 +168,8 @@ export function MainExample() {
                 onClick: () => console.log('Undo'),
               },
             })
-          }}
-        >
-          <CCommand className='!size-3' />
+          }}>
+          <CCommand className="!size-3" />
           +K
         </CommandShortcut>
       </Button>
@@ -197,63 +178,55 @@ export function MainExample() {
       </Badge>
 
       <Sheet>
-        <SheetTrigger variant='outline'>Open</SheetTrigger>
+        <SheetTrigger variant="outline">Open</SheetTrigger>
         <SheetContent>
           <SheetHeader>
             <SheetTitle>Edit profile</SheetTitle>
-            <SheetDescription>
-              Make changes to your profile here. Click save when you're done.
-            </SheetDescription>
+            <SheetDescription>Make changes to your profile here. Click save when you're done.</SheetDescription>
           </SheetHeader>
-          <div className='grid gap-4 py-4'>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='name' className='text-right'>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
                 Name
               </Label>
-              <Input id='name' value='Pedro Duarte' className='col-span-3' />
+              <Input id="name" value="Pedro Duarte" className="col-span-3" />
             </div>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='username' className='text-right'>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username" className="text-right">
                 Username
               </Label>
-              <Input id='username' value='@peduarte' className='col-span-3' />
+              <Input id="username" value="@peduarte" className="col-span-3" />
             </div>
           </div>
           <SheetFooter>
             <SheetClose asChild>
-              <Button type='submit'>Save changes</Button>
+              <Button type="submit">Save changes</Button>
             </SheetClose>
           </SheetFooter>
         </SheetContent>
       </Sheet>
 
-      <Tabs
-        defaultValue='account'
-        className='w-[400px] grid'
-        listValues={['account', 'password']}
-      >
-        <TabsList className='grid w-full grid-cols-2'>
-          <TabsTrigger value='account' defaultChecked={true}>
+      <Tabs defaultValue="account" className="w-[400px] grid" listValues={['account', 'password']}>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="account" defaultChecked={true}>
             Account
           </TabsTrigger>
-          <TabsTrigger value='password'>Password</TabsTrigger>
+          <TabsTrigger value="password">Password</TabsTrigger>
         </TabsList>
-        <TabsContent value='account'>
+        <TabsContent value="account">
           <Card>
             <CardHeader>
               <CardTitle>Account</CardTitle>
-              <CardDescription>
-                Make changes to your account here. Click save when you're done.
-              </CardDescription>
+              <CardDescription>Make changes to your account here. Click save when you're done.</CardDescription>
             </CardHeader>
-            <CardContent className='space-y-2'>
-              <div className='space-y-1'>
-                <Label htmlFor='name'>Name</Label>
-                <Input id='name' defaultValue='Pedro Duarte' />
+            <CardContent className="space-y-2">
+              <div className="space-y-1">
+                <Label htmlFor="name">Name</Label>
+                <Input id="name" defaultValue="Pedro Duarte" />
               </div>
-              <div className='space-y-1'>
-                <Label htmlFor='username'>Username</Label>
-                <Input id='username' defaultValue='@peduarte' />
+              <div className="space-y-1">
+                <Label htmlFor="username">Username</Label>
+                <Input id="username" defaultValue="@peduarte" />
               </div>
             </CardContent>
             <CardFooter>
@@ -261,22 +234,20 @@ export function MainExample() {
             </CardFooter>
           </Card>
         </TabsContent>
-        <TabsContent value='password'>
+        <TabsContent value="password">
           <Card>
             <CardHeader>
               <CardTitle>Password</CardTitle>
-              <CardDescription>
-                Change your password here. After saving, you'll be logged out.
-              </CardDescription>
+              <CardDescription>Change your password here. After saving, you'll be logged out.</CardDescription>
             </CardHeader>
-            <CardContent className='space-y-2'>
-              <div className='space-y-1'>
-                <Label htmlFor='current'>Current password</Label>
-                <Input id='current' type='password' />
+            <CardContent className="space-y-2">
+              <div className="space-y-1">
+                <Label htmlFor="current">Current password</Label>
+                <Input id="current" type="password" />
               </div>
-              <div className='space-y-1'>
-                <Label htmlFor='new'>New password</Label>
-                <Input id='new' type='password' />
+              <div className="space-y-1">
+                <Label htmlFor="new">New password</Label>
+                <Input id="new" type="password" />
               </div>
             </CardContent>
             <CardFooter>
@@ -286,28 +257,21 @@ export function MainExample() {
         </TabsContent>
       </Tabs>
 
-      <div className='relative'>
-        <Grab className='size-3 absolute -top-1 right-8 z-10 fill-white' />
+      <div className="relative">
+        <Grab className="size-3 absolute -top-1 right-8 z-10 fill-white" />
 
-        <Button
-          variant={'outline'}
-          size={'default'}
-          className='bg-secondary'
-          icon={<LineChart />}
-        >
+        <Button variant={'outline'} size={'default'} className="bg-secondary" icon={<LineChart />}>
           Analytics
         </Button>
       </div>
-      <Command className='rounded-lg border shadow-md md:min-w-[450px] pb-2'>
-        <CommandInput placeholder='Search...' />
-        <CommandList className='max-h-[299px]'>
+      <Command className="rounded-lg border shadow-md md:min-w-[450px] pb-2">
+        <CommandInput placeholder="Search..." />
+        <CommandList className="max-h-[299px]">
           {(search) => {
             const filteredGroups = items
               .map((group) => ({
                 ...group,
-                items: group.items.filter((item) =>
-                  item.name.toLowerCase().includes(search.toLowerCase()),
-                ),
+                items: group.items.filter((item) => item.name.toLowerCase().includes(search.toLowerCase())),
               }))
               .filter((group) => group.items.length > 0)
 
@@ -321,11 +285,8 @@ export function MainExample() {
                         <span>{item.name}</span>
                         <CommandShortcut
                           keys={item.key}
-                          onKeysPressed={() =>
-                            toast.info(`${item.name} triggered`)
-                          }
-                          className='bg-muted'
-                        >
+                          onKeysPressed={() => toast.info(`${item.name} triggered`)}
+                          className="bg-muted">
                           ⌘{item.key.split('+')[1]}
                         </CommandShortcut>
                       </CommandItem>
@@ -341,7 +302,7 @@ export function MainExample() {
         </CommandList>
       </Command>
 
-      <Avatar src={''} alt='WD' />
+      <Avatar src={''} alt="WD" />
 
       <Dialog>
         <DialogTrigger variant={'outline'}>Edit Profile</DialogTrigger>
@@ -349,28 +310,26 @@ export function MainExample() {
         <DialogContent renderOnce>
           <DialogHeader>
             <DialogTitle>Edit profile</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when you're done.
-            </DialogDescription>
+            <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
           </DialogHeader>
-          <div className='grid gap-4 py-4'>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='name' className='text-right'>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
                 Name
               </Label>
-              <Input id='name' value='wild duck' className='col-span-3' />
+              <Input id="name" value="wild duck" className="col-span-3" />
             </div>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='username' className='text-right'>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username" className="text-right">
                 Username
               </Label>
-              <Input id='username' value='@wildduck2' className='col-span-3' />
+              <Input id="username" value="@wildduck2" className="col-span-3" />
             </div>
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='username' className='text-right'>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username" className="text-right">
                 Username
               </Label>
-              <Input id='username' value='@wildduck2' className='col-span-3' />
+              <Input id="username" value="@wildduck2" className="col-span-3" />
             </div>
           </div>
 
@@ -380,45 +339,42 @@ export function MainExample() {
         </DialogContent>
       </Dialog>
 
-      <AspectRatio ratio={16 / 9} className='bg-muted'>
+      <AspectRatio ratio={16 / 9} className="bg-muted">
         <Image
-          src='https://sdmntprwestus.oaiusercontent.com/files/00000000-f2d0-5230-ae93-4d6e5d21c643/raw?se=2025-04-02T18%3A50%3A56Z&sp=r&sv=2024-08-04&sr=b&scid=5a891375-aaa2-5f3a-b791-40362a011415&skoid=3f3a9132-9530-48ef-96b7-fee5a811733f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-02T16%3A08%3A39Z&ske=2025-04-03T16%3A08%3A39Z&sks=b&skv=2024-08-04&sig=Ff%2B6OD2Y8WCvbX%2BHZL/yCf0mi0%2BZ3IZZlrkUvhLK7js%3D'
-          alt='Photo by Drew Beamer'
+          src="https://sdmntprwestus.oaiusercontent.com/files/00000000-f2d0-5230-ae93-4d6e5d21c643/raw?se=2025-04-02T18%3A50%3A56Z&sp=r&sv=2024-08-04&sr=b&scid=5a891375-aaa2-5f3a-b791-40362a011415&skoid=3f3a9132-9530-48ef-96b7-fee5a811733f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-02T16%3A08%3A39Z&ske=2025-04-03T16%3A08%3A39Z&sks=b&skv=2024-08-04&sig=Ff%2B6OD2Y8WCvbX%2BHZL/yCf0mi0%2BZ3IZZlrkUvhLK7js%3D"
+          alt="Photo by Drew Beamer"
           fill
-          className='h-full w-full rounded-md object-cover'
+          className="h-full w-full rounded-md object-cover"
         />
       </AspectRatio>
 
-      <AvatarGroup imgs={avatar_group} maxVisible={5} className='my-4' />
-      <div className='flex items-center gap-2'>
+      <AvatarGroup imgs={avatar_group} maxVisible={5} className="my-4" />
+      <div className="flex items-center gap-2">
         <Checkbox />
         <label>Checkbox</label>
       </div>
 
       <HoverCard open={true}>
         <HoverCardTrigger asChild>
-          <Button variant='link'>@wildduck</Button>
+          <Button variant="link">@wildduck</Button>
         </HoverCardTrigger>
-        <HoverCardContent className='w-80'>
-          <div className='flex justify-between space-x-4'>
+        <HoverCardContent className="w-80">
+          <div className="flex justify-between space-x-4">
             <Avatar
               src={
                 'https://sdmntprwestus.oaiusercontent.com/files/00000000-f2d0-5230-ae93-4d6e5d21c643/raw?se=2025-04-02T18%3A50%3A56Z&sp=r&sv=2024-08-04&sr=b&scid=5a891375-aaa2-5f3a-b791-40362a011415&skoid=3f3a9132-9530-48ef-96b7-fee5a811733f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-02T16%3A08%3A39Z&ske=2025-04-03T16%3A08%3A39Z&sks=b&skv=2024-08-04&sig=Ff%2B6OD2Y8WCvbX%2BHZL/yCf0mi0%2BZ3IZZlrkUvhLK7js%3D'
               }
-              alt='WD'
+              alt="WD"
             />
-            <div className='space-y-1'>
-              <h4 className='text-sm font-semibold'>@wildduck</h4>
-              <p className='text-sm'>
+            <div className="space-y-1">
+              <h4 className="text-sm font-semibold">@wildduck</h4>
+              <p className="text-sm">
                 The CEO of
-                <em className='font-semibold underline'> @gentelduck </em> , the
-                most powerful duck in the world
+                <em className="font-semibold underline"> @gentleduck </em> , the most powerful duck in the world
               </p>
-              <div className='flex items-center pt-2'>
-                <CalendarIcon className='mr-2 h-4 w-4 opacity-70' />{' '}
-                <span className='text-xs text-muted-foreground'>
-                  Joined December 2021
-                </span>
+              <div className="flex items-center pt-2">
+                <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />{' '}
+                <span className="text-xs text-muted-foreground">Joined December 2021</span>
               </div>
             </div>
           </div>

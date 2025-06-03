@@ -8,6 +8,7 @@
 // import ShadcnTabs from './duck/tabs/tabs'
 // import DuckToggleGroup from './duck/toggle-group/duck'
 // import ShadcnToggleGroup from './duck/toggle-group/toggle-group'
+import DuckToggleExp from './duck/toggle/experimental'
 // import DuckToggle from './duck/toggle/duck'
 // import ShadcnToggle from './duck/toggle/toggle'
 // import DuckBadge from './duck/badge/duck'
@@ -43,18 +44,20 @@
 // import ShadcnSeparator from './duck/separator/separator'
 
 // import Sandbox from './sandbox'
-// import DuckDialog from './duck/dialog/duck'
-// import ShadcnDialog from './duck/dialog/dialog'
+
 // import DuckSeparator from './duck/separator/duck'
 // import DuckSeparatorExp from './duck/separator/experimental'
 // import ShadcnSeparator from './duck/separator/separator'
 
+// import Dialog from './example/dialog'
+// import Command from './example/command'
+
+// import Command from "./example/command/duck"
+// import CommandShadcn from "./example/command/shadcn"
+// import DrawerExample from './example/drawer'
 // import DuckSkeleton from './duck/skeleton/duck'
 // import ShadcnSkeleton from './duck/skeleton/skeleton'
-// import DuckSheet from './duck/sheet/duck'
-// import ShadcnSheet from './duck/sheet/sheet'
-// import DuckDrawer from './duck/drawer/duck'
-// import ShadcnDrawer from './duck/drawer/drawer'
+
 // import DuckSonner from './duck/sonner/duck'
 // import ShadcnSonner from './duck/sonner/sonner'
 // function Ui() {
@@ -95,15 +98,10 @@
 function App() {
   // <ShadcnDialog />
   return (
-    <div className='flex flex-col mx-10 h-screen justify-center  items-center gap-4'>
-      {/* <Ui /> */}
-      {/* <DuckSonner /> */}
-
-      {
-        // <DuckSeparatorExp /> /* Experimental */
-        // <DuckSeparator  />  /* radix ui based */
-        // <ShadcnSeparator  /> /* other */
-      }
+    <div className="flex flex-col mx-10 h-screen justify-center  items-center gap-4">
+      <DuckToggleExp /> Experimental
+      {/* <DuckToggle  />   radix ui based  */}
+      {/* <ShadcnToggle  /> other  */}
     </div>
   )
 }

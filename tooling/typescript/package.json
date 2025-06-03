@@ -1,14 +1,6 @@
 {
-  "name": "@gentelduck/typescript-config",
+  "name": "@gentleduck/typescript-config",
   "private": true,
   "version": "0.1.0",
   "files": ["*.json"]
 }
-
-
-    
-    
-  
-  
-    
-    

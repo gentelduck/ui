@@ -1,133 +1,55 @@
-import { cn } from '@gentelduck/libs/cn'
-import { Button } from '../button'
-import React from 'react'
+import { cn } from '@gentleduck/libs/cn'
+import { AnimDialogVariants, AnimVariants } from '@gentleduck/motion/anim'
 import { X } from 'lucide-react'
-import { AnimVariants } from '@gentelduck/motion/anim'
-import { DialogContextType, DialogProps } from './dialog.types'
+import React from 'react'
+import DialogPrimitive, { ShouldRender, useDialogContext, useOverlayClose } from '@gentleduck/aria-feather/dialog'
+import { Button } from '../button'
 
-/**
- * Context for managing the open state of the dialog.
- *
- */
-export const DialogContext = React.createContext<DialogContextType | null>(null)
-
-/**
- * Hook to access the DialogContext. It holds the open state of the dialog
- * and a function to update it.
- *
- * @returns {DialogContextType} The dialog context object.
- * @throws {Error} If the hook is used outside of a Dialog.
- */
-export function useDialogContext(name: string = 'Dialog'): DialogContextType {
-  const context = React.useContext(DialogContext)
-  if (!context) {
-    throw new Error(`useDialogContext must be used within a ${name}`)
-  }
-  return context
+export function Dialog({ ...props }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root>) {
+  return <DialogPrimitive.Root {...props} />
 }
 
-/**
- * Dialog component that provides a context for managing its open state and
- * behavior. It uses a ref to handle the underlying HTMLDialogElement.
- *
- * @param {DialogProps} props - The properties for the Dialog component.
- * @param {React.ReactNode} props.children - The content to be rendered inside the dialog.
- * @param {boolean} [props.open] - Initial open state of the dialog.
- * @param {(state:boolean)=>void} [props.onOpenChange] - Callback function to handle state changes of the dialog.
- *
- * @returns {React.JSX.Element} A context provider that manages the dialog state and renders its children.
- */
-export function Dialog({
+export function DialogTrigger({
   children,
-  open: openProp,
-  onOpenChange,
-}: DialogProps): React.JSX.Element {
-  const dialogRef = React.useRef<HTMLDialogElement | null>(null)
-  const [open, setOpen] = React.useState<boolean>(openProp ?? false)
-
-  const _onOpenChange = (state: boolean) => {
-    try {
-      const dialog = dialogRef.current
-
-      if (!state) {
-        dialog?.close()
-        setOpen(false)
-        document.body.style.overflow = 'auto'
-        return onOpenChange?.(false)
-      } else {
-        dialog?.showModal()
-        setOpen(true)
-        onOpenChange?.(true)
-        document.body.style.overflow = 'hidden'
-      }
-    } catch (e) {
-      console.warn('Dialog failed to toggle', e)
-    }
-  }
-
-  React.useEffect(() => {
-    const dialog = dialogRef.current
-
-    dialog?.addEventListener('close', () => _onOpenChange(false))
-    return () =>
-      dialog?.removeEventListener('close', () => _onOpenChange(false))
-  }, [])
-
+  asChild,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Trigger> & React.ComponentPropsWithoutRef<typeof Button>) {
   return (
-    <DialogContext.Provider
-      value={{
-        open: open ?? false,
-        onOpenChange: _onOpenChange,
-        ref: dialogRef,
-      }}
-    >
-      {children}
-    </DialogContext.Provider>
+    <DialogPrimitive.Trigger>
+      <Button {...props} asChild={asChild}>
+        {children}
+      </Button>
+    </DialogPrimitive.Trigger>
   )
 }
 
-/**
- * A component that serves as a trigger for the dialog.
- *
- * It takes all the props of the Button component and an additional
- * `onClick` property that is called when the dialog is opened.
- *
- * @param {React.ComponentPropsWithoutRef<typeof Button>} props - The properties for the Button component.
- * @param {Function} [props.onClick] - Callback function to handle click events on the button.
- * @param {React.ReactNode} [props.children] - The content to be rendered inside the button.
- * @param {React.ComponentPropsWithoutRef<typeof Button>} [...props] - The properties for the Button component.
- *
- * @returns {React.JSX.Element} A button that toggles the dialog on click.
- */
-export function DialogTrigger({
-  onClick,
+export function DialogClose({
+  ref,
+  size = 16,
+  children,
+  className,
   ...props
-}: React.ComponentPropsWithoutRef<typeof Button>): React.JSX.Element {
+}: React.HTMLProps<HTMLButtonElement> & {
+  size?: number
+}): React.JSX.Element {
   const { onOpenChange } = useDialogContext()
 
   return (
-    <Button
-      onClick={(e) => {
-        onOpenChange(true)
-        onClick?.(e)
-      }}
+    <button
       {...props}
-    />
+      ref={ref}
+      type="button"
+      aria-label="close"
+      className={cn(
+        'absolute right-3 top-3 text-accent-foreground size-4 cursor-pointer opacity-70 rounded hover:opacity-100 transition-all',
+        className,
+      )}
+      onClick={() => onOpenChange(false)}>
+      {children ?? <X aria-hidden size={size} />}
+    </button>
   )
 }
 
-/**
- * A component that renders the content of the dialog when it is open.
- *
- * @param {React.HTMLProps<HTMLDialogElement>} props - The properties for the dialog content.
- * @param {React.ReactNode} [props.children] - The content to be rendered inside the dialog.
- * @param {boolean} [props.renderOnce] - If true, the content will only be rendered once.
- * @param {string} [props.className] - Additional class names for styling.
- * @param {React.HTMLProps<HTMLDivElement>} [...props] - Additional props for the dialog content.
- *
- * @returns {React.JSX.Element} A dialog content component.
- *
- */
 export function DialogContent({
   children,
   className,
@@ -136,35 +58,17 @@ export function DialogContent({
 }: React.HTMLProps<HTMLDialogElement> & {
   renderOnce?: boolean
 }): React.JSX.Element {
-  const { open, ref, onOpenChange } = useDialogContext()
-  const [shouldRender, setShouldRender] = React.useState<boolean>(false)
-  const _shouldRender = renderOnce ? shouldRender : ref.current?.open
-
-  React.useEffect(() => {
-    if (open) return setShouldRender(true)
-  }, [open])
+  const { open, ref } = useDialogContext()
+  const closeOverlay = useOverlayClose()
 
   return (
-    <dialog
-      ref={ref}
-      {...props}
-      className={cn(
-        'open:grid inset-1/2 -translate-1/2 w-full max-w-lg sm:max-w-md gap-4 border border-border bg-background p-6 shadow-sm sm:rounded-lg',
-        AnimVariants(),
-        className,
-      )}
-      onClick={(e) => {
-        if (e.currentTarget === e.target) onOpenChange(false)
-      }}
-    >
-      <button
-        aria-label='close'
-        className='absolute right-4 top-4 size-4 cursor-pointer opacity-70 rounded hover:opacity-100 transition-all'
-        onClick={() => onOpenChange(false)}
-      >
-        <X aria-hidden size={20} />
-      </button>
-      {_shouldRender && children}
+    <dialog ref={ref} className={cn(AnimVariants(), AnimDialogVariants(), className)} onClick={closeOverlay} {...props}>
+      <ShouldRender ref={ref} once={renderOnce} open={open}>
+        <div className="content-wrapper">
+          <DialogClose />
+          {children}
+        </div>
+      </ShouldRender>
     </dialog>
   )
 }
@@ -183,21 +87,8 @@ export function DialogContent({
  *
  * @returns {JSX.Element} The rendered DialogHeader component.
  */
-export function DialogHeader({
-  className,
-  ref,
-  ...props
-}: React.HTMLProps<HTMLDivElement>): React.JSX.Element {
-  console.log('asdfasd')
-  return (
-    <div
-      className={cn(
-        'flex flex-col space-y-1.5 text-center sm:text-left',
-        className,
-      )}
-      {...props}
-    />
-  )
+export function DialogHeader({ className, ref, ...props }: React.HTMLProps<HTMLDivElement>): React.JSX.Element {
+  return <div ref={ref} className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)} {...props} />
 }
 
 /**
@@ -214,17 +105,11 @@ export function DialogHeader({
  *
  * @returns {React.JSX.Element} The rendered DialogFooter component.
  */
-export function DialogFooter({
-  className,
-  ref,
-  ...props
-}: React.HTMLProps<HTMLDivElement>): React.JSX.Element {
+export function DialogFooter({ className, ref, ...props }: React.HTMLProps<HTMLDivElement>): React.JSX.Element {
   return (
     <div
-      className={cn(
-        'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
-        className,
-      )}
+      ref={ref}
+      className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
       {...props}
     />
   )
@@ -242,22 +127,9 @@ export function DialogFooter({
  *
  * @returns {React.JSX.Element} The rendered `DialogTitle` component with forwarded ref and applied props.
  */
-export interface DialogTitleProps extends React.HTMLProps<HTMLHeadingElement> { }
-export function DialogTitle({
-  className,
-  ref,
-  ...props
-}: DialogTitleProps): React.JSX.Element {
-  return (
-    <h2
-      ref={ref}
-      className={cn(
-        'text-lg font-semibold leading-none tracking-tight',
-        className,
-      )}
-      {...props}
-    />
-  )
+export interface DialogTitleProps extends React.HTMLProps<HTMLHeadingElement> {}
+export function DialogTitle({ className, ref, ...props }: DialogTitleProps): React.JSX.Element {
+  return <h2 ref={ref} className={cn('text-lg font-semibold leading-none tracking-tight', className)} {...props} />
 }
 
 /**
@@ -276,9 +148,16 @@ export const DialogDescription = ({
   ref,
   ...props
 }: React.HTMLProps<HTMLParagraphElement>): React.JSX.Element => (
-  <p
-    ref={ref}
-    className={cn('text-sm text-muted-foreground', className)}
-    {...props}
-  />
+  <p ref={ref} className={cn('text-sm text-muted-foreground', className)} {...props} />
 )
+
+export const DDialogPrimitive = {
+  Root: Dialog,
+  Trigger: DialogTrigger,
+  Content: DialogContent,
+  Close: DialogClose,
+  Header: DialogHeader,
+  Footer: DialogFooter,
+  Title: DialogTitle,
+  Description: DialogDescription,
+}

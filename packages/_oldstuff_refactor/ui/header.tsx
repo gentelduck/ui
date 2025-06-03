@@ -4,8 +4,8 @@ import React from 'react'
 
 import { NavCollabsedType, NavGroup, NavGroupProps, NavType } from './nav-group'
 import { Separator } from './ShadcnUI/separator'
-import { cn } from '@gentelduck/libs/cn'
-import { filteredObject } from '@gentelduck/libs/filtered-object'
+import { cn } from '@gentleduck/libs/cn'
+import { filteredObject } from '@gentleduck/libs/filtered-object'
 
 type HeaderProps<T extends boolean> = {
   header: HeaderType
@@ -23,12 +23,7 @@ type FooterType = {
   buttons: React.ReactNode[]
 }
 
-const Header = <T extends boolean>({
-  nav,
-  header,
-  logo,
-  footer,
-}: HeaderProps<T>) => {
+const Header = <T extends boolean>({ nav, header, logo, footer }: HeaderProps<T>) => {
   const { className, position, ...props } = header
   const navIsCollabsed = (header as NavCollabsedType).isCollabsed || false
   const filteredKeys = filteredObject(['isCollabsed'], header)
@@ -38,30 +33,20 @@ const Header = <T extends boolean>({
       {...filteredKeys}
       className={cn(
         'py-2 flex',
-        position === 'side'
-          ? 'flex-col h-full'
-          : position === 'top'
-          ? 'items-center'
-          : '',
-        className
+        position === 'side' ? 'flex-col h-full' : position === 'top' ? 'items-center' : '',
+        className,
       )}
-      {...props}
-    >
+      {...props}>
       {logo && logo}
-      {position === 'side' && <Separator className='my-1' />}
+      {position === 'side' && <Separator className="my-1" />}
       <NavGroup<T>
         position={position}
         nav={{ ...nav.nav, isCollabsed: navIsCollabsed } as NavType<true>}
         navigationKeys={nav.navigationKeys}
       />
 
-      {position === 'side' && <Separator className='my-1' />}
-      <div>
-        {footer &&
-          footer.buttons.map((button, idx) => (
-            <React.Fragment key={idx}>{button}</React.Fragment>
-          ))}{' '}
-      </div>
+      {position === 'side' && <Separator className="my-1" />}
+      <div>{footer && footer.buttons.map((button, idx) => <React.Fragment key={idx}>{button}</React.Fragment>)} </div>
     </header>
   )
 }

@@ -1,5 +1,5 @@
 'use client'
-import { DuckLazyImage } from '@gentelduck/lazy/lazy-image'
+import { DuckLazyImage } from '@gentleduck/lazy/lazy-image'
 import Image from 'next/image'
 export function HH() {
   return (

@@ -1,5 +1,5 @@
 {
-  "name": "@gentelduck/motion",
+  "name": "@gentleduck/motion",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -19,19 +19,21 @@
     }
   },
   "scripts": {
-    "build": "tsup"
+    "build": "tsdown",
+    "lint": "biome lint --write ./",
+    "format": "biome format --write ./",
+    "ci": "pnpm run lint && pnpm run format && pnpm run build",
+    "release": "changeset version",
+    "publish": "pnpm run ci && changeset publish"
   },
   "devDependencies": {
-    "@gentelduck/hooks": "workspace:*",
-    "@gentelduck/libs": "workspace:*",
-    "@gentelduck/variants": "workspace:*",
-    "@gentelduck/typescript-config": "workspace:*",
-    "class-variance-authority": "^0.7.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tsup": "^8.2.4",
-    "typescript": "catalog:",
-    "zod": "catalog:"
+    "@gentleduck/libs": "workspace:*",
+    "@gentleduck/variants": "workspace:*",
+    "@gentleduck/typescript-config": "workspace:*",
+    "typescript": "catalog:"
   },
-  "dependencies": {}
+  "packageManager": "pnpm@10.10.0",
+  "engines": {
+    "node": ">=22.0.0"
+  }
 }

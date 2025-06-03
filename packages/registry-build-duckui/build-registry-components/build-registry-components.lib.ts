@@ -2,11 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { create_temp_source_file, ENV, project } from '../main'
 import { ScriptKind, SourceFile } from 'ts-morph'
-import {
-  GenTempSourceFilesParams,
-  GetFileContentParams,
-  GetFileTargetParams,
-} from './build-registry-components.types'
+import { GenTempSourceFilesParams, GetFileContentParams, GetFileTargetParams } from './build-registry-components.types'
 
 // ----------------------------------------------------------------------------
 
@@ -19,11 +15,7 @@ import {
  * @param {import("ora").Ora} params.spinner - The spinner instance for displaying progress.
  * @returns {Promise<string | undefined>} The computed target path or `undefined` if no target is found.
  */
-export async function get_file_target({
-  item,
-  file,
-  spinner,
-}: GetFileTargetParams): Promise<string | undefined> {
+export async function get_file_target({ item, file, spinner }: GetFileTargetParams): Promise<string | undefined> {
   try {
     let target = file.target
     spinner.text = `🧭 Determining file target: ${target}`
@@ -50,15 +42,15 @@ export async function get_file_target({
         case 'registry:lib':
           target = `lib/${fileName}`
           break
+        default:
+          break
       }
     }
 
     spinner.text = `File target determined successfully: ${target}`
     return target
   } catch (error) {
-    spinner.fail(
-      `Failed to determine file target: ${error instanceof Error ? error.message : String(error)}`,
-    )
+    spinner.fail(`Failed to determine file target: ${error instanceof Error ? error.message : String(error)}`)
     process.exit(1)
   }
 }
@@ -73,10 +65,7 @@ export async function get_file_target({
  * @param {import("ora").Ora} params.spinner - The spinner instance for displaying progress.
  * @returns {Promise<string | undefined>} The file content as a string, or undefined if reading fails.
  */
-export async function get_file_content({
-  file,
-  spinner,
-}: GetFileContentParams): Promise<string | undefined> {
+export async function get_file_content({ file, spinner }: GetFileContentParams): Promise<string | undefined> {
   try {
     const filePath = path.join(
       process.cwd(),
@@ -88,9 +77,7 @@ export async function get_file_content({
 
     return content
   } catch (error) {
-    spinner.fail(
-      `Failed to read file content: ${error instanceof Error ? error.message : String(error)}`,
-    )
+    spinner.fail(`Failed to read file content: ${error instanceof Error ? error.message : String(error)}`)
     process.exit(1)
   }
 }
@@ -126,9 +113,7 @@ export async function gen_temp_source_files({
     spinner.text = `🧭 Temporary source file generated successfully: ${tempFilePath}`
     return sourceFile
   } catch (error) {
-    spinner.fail(
-      `Failed to generate temporary source file: ${error instanceof Error ? error.message : String(error)}`,
-    )
+    spinner.fail(`Failed to generate temporary source file: ${error instanceof Error ? error.message : String(error)}`)
     process.exit(1)
   }
 }

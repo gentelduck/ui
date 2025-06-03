@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
-import '@gentelduck/motion/css'
-import { Toaster } from '@gentelduck/registry-ui-duckui/sonner'
+import '@gentleduck/motion/css'
+import { Toaster } from '@gentleduck/registry-ui-duckui/sonner'
 // import { Toaster } from './page'
 
 // import ''
@@ -28,15 +28,15 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <script src='https://cdn.jsdelivr.net/npm/react-scan/dist/auto.global.js'></script>
+        {process.env.NODE_ENV === 'development' && (
+          <script src="https://cdn.jsdelivr.net/npm/react-scan/dist/auto.global.js" defer></script>
+        )}
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}>
         {children}
-        <Toaster theme='light' />
+        <Toaster theme="light" />
       </body>
     </html>
   )
