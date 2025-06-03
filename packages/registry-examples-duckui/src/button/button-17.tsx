@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from '@gentelduck/registry-ui-duckui/button'
+import { Button } from '@gentleduck/registry-ui-duckui/button'
 import { Inbox } from 'lucide-react'
 
 export default function Button17Demo() {
@@ -8,13 +8,12 @@ export default function Button17Demo() {
   return (
     <>
       <Button
-        aria-label='Inbox button with 23 notifications'
-        type='button'
-        role='button'
+        aria-label="Inbox button with 23 notifications"
+        type="button"
+        role="button"
         isCollapsed={open}
         icon={<Inbox />}
-        onClick={() => setOpen(!open)}
-      >
+        onClick={() => setOpen(!open)}>
         Button
       </Button>
     </>

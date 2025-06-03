@@ -1,4 +1,4 @@
-import { RadioGroup, RadioGroupItem } from "@gentelduck/registry-ui-duckui/radio-group"
+import { RadioGroup, RadioGroupItem } from '@gentleduck/registry-ui-duckui/radio-group'
 
 export default function RadioGroupDemo() {
   return (

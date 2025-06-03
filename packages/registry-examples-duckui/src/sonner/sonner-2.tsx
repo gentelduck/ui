@@ -1,13 +1,13 @@
 'use client'
 
-import { Button } from '@gentelduck/registry-ui-duckui/button'
+import { Button } from '@gentleduck/registry-ui-duckui/button'
 import { ShieldAlert } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function SonnerDemo() {
   return (
     <Button
-      variant='outline'
+      variant="outline"
       onClick={() =>
         toast('Actions have been triggered', {
           className: 'gap-3',
@@ -18,8 +18,7 @@ export default function SonnerDemo() {
             onClick: () => console.log('Undo'),
           },
         })
-      }
-    >
+      }>
       Show Toast
     </Button>
   )

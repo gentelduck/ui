@@ -165,10 +165,11 @@ export type Mapped<T> = {
  * // }
  * ```
  */
-export type MappedTo<T, U> = Mutable<T> extends any[]
-  ? { [K in `${Mutable<T>[number]}`]: U }
-  : Mutable<T> extends object
+export type MappedTo<
+  T extends Record<string, number> | ReadonlyArray<string | number>,
+  U extends unknown,
+> = T extends ReadonlyArray<infer Item>
+  ? { [K in `${Item & (string | number)}`]: U }
+  : T extends object
     ? { [K in keyof Mutable<T>]: U }
-    : T extends any[]
-      ? { [K in `${T[number]}`]: U }
-      : never
+    : never
