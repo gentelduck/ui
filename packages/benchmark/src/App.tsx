@@ -39,15 +39,24 @@
 // import ShadcnProgress from './duck/progress/progress'
 // import DuckSelect from './duck/select/duck'
 // import ShadcnSelect from './duck/select/select'
-// import DuckSwitchExp from './duck/switch/experimental'
-// import DuckSwitch from './duck/switch/duck'
-import ShadcnSwitch from './duck/switch/switch'
+// import DuckSeparator from './duck/separator/duck'
+// import DuckSeparatorExp from './duck/separator/experimental'
+// import ShadcnSeparator from './duck/separator/separator'
+
+// import DuckSeparator from './duck/separator/duck'
+// import DuckSeparatorExp from './duck/separator/experimental'
+// import ShadcnSeparator from './duck/separator/separator'
+
+// import Dialog from './example/dialog'
+// import Command from './example/command'
+
+// import Command from "./example/command/duck"
+import CmdK from './example/command/cmdk'
+// import CommandShadcn from "./example/command/shadcn"
+// import DrawerExample from './example/drawer'
 // import DuckSkeleton from './duck/skeleton/duck'
 // import ShadcnSkeleton from './duck/skeleton/skeleton'
-// import DuckSheet from './duck/sheet/duck'
-// import ShadcnSheet from './duck/sheet/sheet'
-// import DuckDrawer from './duck/drawer/duck'
-// import ShadcnDrawer from './duck/drawer/drawer'
+
 // import DuckSonner from './duck/sonner/duck'
 // import ShadcnSonner from './duck/sonner/sonner'
 // function Ui() {
@@ -86,11 +95,11 @@ import ShadcnSwitch from './duck/switch/switch'
 // }
 
 function App() {
+  // <ShadcnDialog />
   return (
-    <div className='flex flex-col mx-10 h-screen justify-center  items-center gap-4'>
-      {/* <DuckSwitchExp />  Experimental  */}
-      {/* <DuckSwitch  />   radix ui based  */}
-      <ShadcnSwitch  />  other 
+    <div className="flex flex-col mx-10 h-screen justify-center  items-center gap-4">
+      <CmdK />
+      {/* <CommandShadcn  /> */}
     </div>
   )
 }

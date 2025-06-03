@@ -1,4 +1,4 @@
-import { Switch } from "@gentelduck/registry-ui-duckui/switch"
+import { Switch } from '@/components/ui/switch'
 
 export default function SwitchDemo() {
   return (

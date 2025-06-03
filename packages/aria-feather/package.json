@@ -1,0 +1,46 @@
+{
+  "name": "@gentleduck/aria-feather",
+  "version": "0.1.0",
+  "description": "aria-feather is a behavioral component abstraction that makes the aero dynamics of the web",
+  "module": "./index.ts",
+  "exports": {
+    "./*": "./src/*/index.ts"
+  },
+  "keywords": ["aria", "gentleduck", "behavioral", "component", "accessibility", "a11y", "react-aria", "react"],
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsdown",
+    "lint": "biome lint --write ./",
+    "format": "biome format --write ./",
+    "ci": "pnpm run lint && pnpm run format && pnpm run build",
+    "release": "changeset version",
+    "publish": "pnpm run ci && changeset publish"
+  },
+  "author": "gentleduck",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gentleduck/ui/tree/master/packages/aria-feather"
+  },
+  "bugs": {
+    "url": "https://github.com/gentleduck/ui/issues"
+  },
+  "homepage": "https://github.com/gentleduck/ui/tree/master/packages/aria-feather#readme",
+  "dependencies": {
+    "@gentleduck/hooks": "workspace:*"
+  },
+  "devDependencies": {
+    "@changesets/cli": "catalog:",
+    "@gentleduck/tsdown-config": "workspace:*",
+    "@gentleduck/typescript-config": "workspace:*",
+    "clsx": "^1.2.1",
+    "husky": "catalog:",
+    "tsdown": "catalog:",
+    "@types/react": "catalog:react19",
+    "react": "catalog:react19"
+  },
+  "packageManager": "pnpm@10.10.0",
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

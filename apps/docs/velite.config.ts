@@ -11,12 +11,7 @@ import remarkGfm from 'remark-gfm'
 import { Pluggable, PluggableList, Plugin } from 'unified'
 import { rehypeNpmCommand } from './lib/rehype-npm-command'
 import { UnistNode, UnistTree } from './types/unist'
-import {
-  metadataPlugin,
-  rehypeComponent,
-  rehypeExtractTitle,
-  rehypePreBlockSource,
-} from './velite-configs/plugins'
+import { metadataPlugin, rehypeComponent, rehypeExtractTitle, rehypePreBlockSource } from './velite-configs/plugins'
 import { Nodes } from 'hast'
 
 // `s` is extended from Zod with some custom schemas,
@@ -28,15 +23,14 @@ const config = defineConfig({
   collections: {
     docs: {
       name: 'Docs',
-      pattern: 'docs/**/*.mdx',
+      // pattern: 'docs/**/*.mdx',
+      pattern: 'docs/hi.mdx',
       schema: s
         .object({
           title: s.string().max(99),
           metadata: s.metadata(),
           description: s.string(),
-          links: s
-            .object({ doc: s.string().optional(), api: s.string().optional() })
-            .optional(),
+          links: s.object({ doc: s.string().optional(), api: s.string().optional() }).optional(),
           excerpt: s.excerpt(),
           content: s.markdown(),
           body: s.mdx(),
@@ -63,6 +57,7 @@ const config = defineConfig({
     remarkPlugins: [remarkGfm, codeImport],
 
     rehypePlugins: [
+      () => {},
       rehypeSlug,
       rehypeComponent,
       rehypeExtractTitle,

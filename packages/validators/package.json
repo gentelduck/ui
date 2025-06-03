@@ -1,5 +1,5 @@
 {
-  "name": "@gentelduck/validators",
+  "name": "@gentleduck/validators",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -12,7 +12,10 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "clean": "rimraf dist .cache .turbo node_modules .next .velite",
+    "clean:git": "git clean -xdf .cache .turbo node_modules dist",
+    "format": "biome format --write ./",
+    "lint": "biome lint --write ./",
     "dev": "tsc",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
@@ -20,6 +23,10 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@gentelduck/typescript-config": "workspace:*"
+    "@gentleduck/typescript-config": "workspace:*"
+  },
+  "packageManager": "pnpm@10.10.0",
+  "engines": {
+    "node": ">=22.0.0"
   }
 }

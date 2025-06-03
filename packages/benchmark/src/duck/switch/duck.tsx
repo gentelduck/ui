@@ -1,4 +1,4 @@
-import { Switch } from "@/components/ui/switch"
+import { RadioGroup, RadioGroupItem } from '@gentleduck/registry-ui-duckui/radio-group'
 
 export default function SwitchDemo() {
   return (
