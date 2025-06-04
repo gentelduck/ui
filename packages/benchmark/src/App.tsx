@@ -2,7 +2,7 @@
 // import NativeTextarea from './duck/textarea/native'
 // import DuckButton from './duck/button/duck'
 // import ShadcnButton from './duck/button/button'
-// import DuckTextarea from './duck/textarea/duck'
+import DuckTextarea from './duck/textarea/duck'
 // import ShadcnTextarea from './duck/textarea/textarea'
 // import DuckTabs from './duck/tabs/duck'
 // import ShadcnTabs from './duck/tabs/tabs'
