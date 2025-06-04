@@ -8,6 +8,7 @@ import DuckTextarea from './duck/textarea/duck'
 // import ShadcnTabs from './duck/tabs/tabs'
 // import DuckToggleGroup from './duck/toggle-group/duck'
 // import ShadcnToggleGroup from './duck/toggle-group/toggle-group'
+import DuckToggleExp from './duck/toggle/experimental'
 // import DuckToggle from './duck/toggle/duck'
 // import ShadcnToggle from './duck/toggle/toggle'
 // import DuckBadge from './duck/badge/duck'
@@ -18,7 +19,8 @@ import DuckTextarea from './duck/textarea/duck'
 // import DuckLabel from './duck/label/duck'
 // import ShadcnLabel from './duck/label/label'
 // import DuckCheckbox from './duck/checkbox/duck'
-// import ShadcnCheckbox from './duck/checkbox/checkbox'
+import DuckCheckboxExp from './duck/checkbox/experimental'
+import ShadcnCheckbox from './duck/checkbox/checkbox'
 // import DuckSwitch from './duck/switch/duck'
 // import ShadcnSwitch from './duck/switch/switch'
 // import DuckRadioGroup from './duck/radio-group/duck'
@@ -98,10 +100,9 @@ function App() {
   // <ShadcnDialog />
   return (
     <div className="flex flex-col mx-10 h-screen justify-center  items-center gap-4">
-      {/* <Ui /> */}
-      {/* <DuckSonner /> */}
-      <DuckTextarea /> Experimental
-      {/* <ShadcnTextarea  /> other */}
+      <DuckToggleExp /> Experimental
+      {/* <DuckToggle  />   radix ui based  */}
+      {/* <ShadcnToggle  /> other  */}
     </div>
   )
 }
