@@ -44,8 +44,6 @@ import ShadcnCheckbox from './duck/checkbox/checkbox'
 // import DuckSeparatorExp from './duck/separator/experimental'
 // import ShadcnSeparator from './duck/separator/separator'
 
-// import Sandbox from './sandbox'
-
 // import DuckSeparator from './duck/separator/duck'
 // import ShadcnSeparator from './duck/separator/separator'
 
