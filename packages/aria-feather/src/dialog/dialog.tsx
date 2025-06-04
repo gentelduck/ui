@@ -3,6 +3,17 @@ import { Slot } from '../slot'
 import { useDialog, useDialogContext } from './dialog.hooks'
 import { DialogContextType, DialogProps } from './dialog.types'
 import { useComputedTimeoutTransition } from '@gentleduck/hooks'
+import { isSupported as isClosedBySupported, apply as applyClosedBy } from "dialog-closedby-polyfill";
+import { isSupported as isInvokersSupported, apply as applyInvokers } from "invokers-polyfill/fn";
+
+if (!isClosedBySupported()) { 
+  applyClosedBy() 
+};
+
+if (!isInvokersSupported()) {
+  applyInvokers();
+}
+
 
 /**
  * Context for managing the open state of the dialog.
