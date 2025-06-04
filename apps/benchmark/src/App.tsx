@@ -48,11 +48,11 @@
 // import DuckSeparatorExp from './duck/separator/experimental'
 // import ShadcnSeparator from './duck/separator/separator'
 
-// import Dialog from './example/dialog'
+import Dialog from './example/dialog'
 // import Command from './example/command'
 
 // import Command from "./example/command/duck"
-import CmdK from './example/command/cmdk'
+// import CmdK from './example/command/cmdk'
 // import CommandShadcn from "./example/command/shadcn"
 // import DrawerExample from './example/drawer'
 // import DuckSkeleton from './duck/skeleton/duck'
@@ -99,7 +99,7 @@ function App() {
   // <ShadcnDialog />
   return (
     <div className="flex flex-col mx-10 h-screen justify-center  items-center gap-4">
-      <CmdK />
+      <Dialog />
       {/* <CommandShadcn  /> */}
     </div>
   )

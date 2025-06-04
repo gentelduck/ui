@@ -1,8 +1,8 @@
-export * from './dialog'
+export * from './_dialog'
 export * from './dialog.types'
-export * from './dialog.hooks'
+export * from './_dialog.hooks'
 // export * from './drawer'
 export * from '../drawer/drawer.hooks'
 
-import Dialog from './dialog'
+import Dialog from './_dialog'
 export default Dialog

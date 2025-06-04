@@ -1,2 +1,2 @@
-export * from './dialog'
+export * from './_dialog'
 export * from './dialog.types'

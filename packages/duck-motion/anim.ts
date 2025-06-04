@@ -26,10 +26,8 @@ export const AnimVariants = cva('', {
   },
 })
 
-const ContentWrapper = '[&>.content-wrapper]:p-6 [&>.content-wrapper]:size-full [&>.content-wrapper]:gap-[inherit]'
-
 export const AnimDialogVariants = cva(
-  `top-1/2 ltr:left-1/2 rtl:right-1/2 -translate-y-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 border border-border bg-background rounded-lg p-0 m-0 w-full sm:max-w-lg shadow-sm outline-none ${ContentWrapper}`,
+  `inset-1/2 -translate-y-1/2 -translate-x-1/2 border border-border bg-background rounded-lg p-0 m-0 w-full sm:max-w-lg shadow-sm outline-none p-6 gap-[inherit]`,
   {
     variants: {
       animation: {
@@ -45,7 +43,7 @@ export const AnimDialogVariants = cva(
 )
 
 export const AnimSheetVariants = cva(
-  `duration-400 pointer-events-auto border-border bg-background outline-none ${ContentWrapper}`,
+  `duration-400 pointer-events-auto border-border bg-background outline-none p-6 gap-[inherit]`,
   {
     variants: {
       side: {
