@@ -1,5 +1,5 @@
 import { toast } from 'sonner'
-import { Toaster } from '@gentelduck/registry-ui-duckui/sonner'
+import { Toaster } from '@gentleduck/registry-ui-duckui/sonner'
 
 export default function DrawerDemo() {
   return (
@@ -15,8 +15,7 @@ export default function DrawerDemo() {
               onClick: () => console.log('Undo'),
             },
           })
-        }
-      >
+        }>
         Show Toast
       </button>
     </>

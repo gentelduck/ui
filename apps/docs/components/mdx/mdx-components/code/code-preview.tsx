@@ -3,18 +3,14 @@
 import * as React from 'react'
 import { ImperativePanelHandle } from 'react-resizable-panels'
 
-import { cn } from '@gentelduck/libs/cn'
+import { cn } from '@gentleduck/libs/cn'
 import { useConfig } from '~/hooks/use-config'
 import { useLiftMode } from '~/hooks/use-lift-mode'
 import { BlockToolbar } from '~/components/ui'
 import { Icons } from '~/components/icons'
-import { Block } from '@gentelduck/registers'
-import { Tabs, TabsContent } from '@gentelduck/registry-ui-duckui/tabs'
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '@gentelduck/registry-ui-duckui/resizable'
+import { Block } from '@gentleduck/registers'
+import { Tabs, TabsContent } from '@gentleduck/registry-ui-duckui/tabs'
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@gentleduck/registry-ui-duckui/resizable'
 
 export function CodePreview({
   block,
@@ -33,14 +29,14 @@ export function CodePreview({
   return (
     <Tabs
       id={block.name}
+      listValues={['preview', 'code', 'build']}
       defaultValue="preview"
       className="relative grid w-full scroll-m-20 gap-4"
       style={
         {
           '--container-height': block.container?.height,
         } as React.CSSProperties
-      }
-    >
+      }>
       {/* @ts-ignore */}
       <BlockToolbar block={block} resizablePanelRef={ref} />
       <TabsContent
@@ -55,8 +51,7 @@ export function CodePreview({
               isLiftMode ? 'border-border/50' : 'border-border',
             )}
             defaultSize={100}
-            minSize={30}
-          >
+            minSize={30}>
             {isLoading ? (
               <div className="absolute inset-0 z-10 flex h-[--container-height] w-full items-center justify-center gap-2 bg-background text-sm text-muted-foreground">
                 <Icons.spinner className="h-4 w-4 animate-spin" />

@@ -4,19 +4,15 @@ export * from './src/tooltip'
 export * from './src/accordion'
 export * from './src/toggle'
 export * from './src/toggle-group'
-export * from './src/sonner'
-export * from './src/toast'
 export * from './src/upload'
 export * from './src/tooltip'
 export * from './src/toggle-group'
 export * from './src/toggle'
-export * from './src/toast'
 export * from './src/textarea'
 export * from './src/tabs'
 export * from './src/table'
 export * from './src/switch'
 export * from './src/sonner'
-export * from './src/sonner-progress'
 export * from './src/slider'
 export * from './src/skeleton'
 export * from './src/sheet'
@@ -55,3 +51,74 @@ export * from './src/aspect-ratio'
 export * from './src/alert-dialog'
 export * from './src/alert'
 export * from './src/accordion'
+
+const components: Record<
+  string,
+  Partial<{
+    component: boolean
+    docs: boolean
+    benchmark: boolean
+    test: boolean
+    examples: boolean
+  }>
+> = {
+  button: {
+    docs: false,
+  },
+  badge: {
+    docs: false,
+  },
+  toggle: {},
+  toggleGroup: {},
+  switch: {},
+  checkbox: {},
+  textarea: {},
+  input: {},
+  label: {},
+  command: {
+    component: false,
+  },
+  separator: {},
+  portal: {},
+  radioGroup: {},
+  dialog: {},
+  tabs: {},
+  skeleton: {},
+  card: {},
+  aspectRatio: {},
+  avatar: {},
+  scrollArea: {},
+  form: {},
+  table: {},
+  sonner: {},
+  alert: {},
+  calendar: {},
+  pagination: {},
+  chart: {},
+  carousel: {},
+  resizable: {},
+
+  breadcrumb: {},
+  upload: {},
+  inputOTP: {},
+
+  popover: {},
+  dropdownMenu: {},
+  combobox: {},
+  select: {},
+  hoverCard: {},
+  tooltip: {},
+  navigationMenu: {},
+  menuBar: {},
+  contextMenu: {},
+
+  drawer: {},
+  sheet: {},
+  alertDialog: {},
+
+  collapsible: {},
+  accordion: {},
+
+  progress: {},
+  slider: {},
+}

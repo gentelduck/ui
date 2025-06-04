@@ -1,22 +1,13 @@
 'use client'
 
-import { type DialogProps } from '@gentelduck/registry-ui-duckui/dialog'
-//FIX: please ditch this to lucide.
-import {
-  CircleIcon,
-  FileIcon,
-  LaptopIcon,
-  MoonIcon,
-  SunIcon,
-} from '@radix-ui/react-icons'
 import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
 
-import { Button } from '@gentelduck/registry-ui-duckui/button'
-import { Command } from 'lucide-react'
+import { Button } from '@gentleduck/registry-ui-duckui/button'
+import { Circle, Command, CornerDownLeft, FileIcon, Moon, Sun } from 'lucide-react'
 import { docsConfig } from '~/config/docs'
-import { cn } from '@gentelduck/libs/cn'
+import { cn } from '@gentleduck/libs/cn'
 import {
   CommandDialog,
   CommandEmpty,
@@ -25,17 +16,49 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '@gentelduck/registry-ui-duckui/command'
+  CommandShortcut,
+} from '@gentleduck/registry-ui-duckui/command'
+import { useCommandRefsContext } from '../../../../../packages/registry-ui-duckui/src/command/command.hooks'
+import { Separator } from '@gentleduck/registry-ui-duckui/separator'
+import { useKeyCommands } from '@gentleduck/vim/react'
 
-export function CommandMenu({ ...props }: DialogProps) {
+// asdf
+export function CommandMenu() {
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const { setTheme } = useTheme()
 
-  const runCommand = React.useCallback((command: () => unknown) => {
-    setOpen(false)
-    command()
-  }, [])
+  const groupRef = React.useRef<HTMLUListElement>(null)
+  const items = [
+    ...docsConfig.sidebarNav.map((group) => ({
+      title: group.title,
+      items: group.items.map((navItem) => ({
+        name: navItem.title,
+        icon: <Circle className="h-3 w-3 mr-2" />,
+        action: () => router.push(navItem.href as string),
+      })),
+    })),
+    {
+      title: 'Theme',
+      items: [
+        {
+          name: 'Light',
+          icon: <Sun className="mr-2 h-4 w-4" />,
+          action: () => setTheme('light'),
+        },
+        {
+          name: 'Dark',
+          icon: <Moon className="mr-2 h-4 w-4" />,
+          action: () => setTheme('dark'),
+        },
+        {
+          name: 'System',
+          icon: <FileIcon className="mr-2 h-4 w-4" />,
+          action: () => setTheme('system'),
+        },
+      ],
+    },
+  ]
 
   return (
     <>
@@ -45,81 +68,103 @@ export function CommandMenu({ ...props }: DialogProps) {
         className={cn(
           'relative h-8 bg-muted/50 text-sm text-muted-foreground shadow-none [&>div]:w-full [&>div]:justify-between pr-2 md:w-40 lg:w-64',
         )}
-        onClick={() => setOpen(true)}
-        command={{
-          children: (
-            <>
-              <Command className="!size-3" />
-              <span className="text-md">K</span>
-            </>
-          ),
-          key: 'ctrl+k, ctrl+/, cmd+k, cmd+/',
-          action: () => {
-            //NOTE: i have to add this line to the `@ahmedayoub/shortcut`
-            window.event?.preventDefault()
-            setOpen(!open)
-          },
-        }}
-        {...props}
-      >
+        onClick={() => setOpen(true)}>
         <span className="hidden lg:inline-flex">Search documentation...</span>
         <span className="inline-flex lg:hidden">Search...</span>
+        <CommandShortcut
+          keys={'ctrl+k'}
+          onKeysPressed={() => {
+            setOpen(!open)
+            window.event?.preventDefault()
+          }}
+          className="bg-secondary">
+          <Command className="!size-3" />
+          <span className="text-md">K</span>
+        </CommandShortcut>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Links">
-            {docsConfig.mainNav
-              .filter((navitem) => !navitem.external)
-              .map((navItem) => (
-                <CommandItem
-                  key={navItem.href}
-                  value={navItem.title}
-                  onSelect={() => {
-                    runCommand(() => router.push(navItem.href as string))
-                  }}
-                >
-                  <FileIcon className="mr-2 h-4 w-4" />
-                  {navItem.title}
-                </CommandItem>
-              ))}
-          </CommandGroup>
-          {docsConfig.sidebarNav.map((group) => (
-            <CommandGroup key={group.title} heading={group.title}>
-              {group.items.map((navItem) => (
-                <CommandItem
-                  key={navItem.href}
-                  value={navItem.title}
-                  onSelect={() => {
-                    runCommand(() => router.push(navItem.href as string))
-                  }}
-                >
-                  <div className="mr-2 flex h-4 w-4 items-center justify-center">
-                    <CircleIcon className="h-3 w-3" />
-                  </div>
-                  {navItem.title}
-                </CommandItem>
-              ))}
-            </CommandGroup>
+        <CommandInput placeholder="Search..." autoFocus />
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandList className="max-h-[299px]">
+          {items.map((group, idx) => (
+            <React.Fragment key={group.title}>
+              <CommandGroup heading={group.title}>
+                {group.items.map((item) => (
+                  <CommandItem
+                    id={item.name}
+                    key={item.name}
+                    onClick={() => {
+                      console.log('asdf')
+                      setOpen(false)
+                      item.action()
+                      console.log(groupRef.current)
+                      // groupRef.current?.scrollTo(0, 0)
+                      groupRef.current?.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                        inline: 'start',
+                      })
+                    }}>
+                    {item.icon}
+                    <span>{item.name}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+              {idx !== items.length - 1 && <CommandSeparator />}
+            </React.Fragment>
           ))}
-          <CommandSeparator />
-          <CommandGroup heading="Theme">
-            <CommandItem onSelect={() => runCommand(() => setTheme('light'))}>
-              <SunIcon className="mr-2 h-4 w-4" />
-              Light
-            </CommandItem>
-            <CommandItem onSelect={() => runCommand(() => setTheme('dark'))}>
-              <MoonIcon className="mr-2 h-4 w-4" />
-              Dark
-            </CommandItem>
-            <CommandItem onSelect={() => runCommand(() => setTheme('system'))}>
-              <LaptopIcon className="mr-2 h-4 w-4" />
-              System
-            </CommandItem>
-          </CommandGroup>
         </CommandList>
+        <CommandFooter />
       </CommandDialog>
     </>
+  )
+}
+
+function CommandFooter() {
+  const { selectedItem } = useCommandRefsContext()
+  useKeyCommands({
+    'ctrl+c': {
+      name: 'ctrl+c',
+      description: 'Copy command',
+      execute: () =>
+        navigator.clipboard.writeText(
+          ('pnpm dlx @duck-ui add ' + selectedItem?.innerText.toLowerCase().replace(/ /g, '-')) as string,
+        ),
+    },
+  })
+  return (
+    <div className="flex items-center gap-4 px-2 pt-2 border-t justify-between w-full">
+      <div className="flex items-cneter gap-4 w-full">
+        {selectedItem?.innerText && (
+          <Button className={cn('px-2')} variant={'outline'} size={'xs'}>
+            <CornerDownLeft />
+            <Separator orientation="vertical" className="m-0 p-0 h-4" />
+            {selectedItem?.innerText}
+          </Button>
+        )}
+        {selectedItem?.innerText &&
+        docsConfig.sidebarNav[1]!.items.find((item) => item.title === selectedItem?.innerText)?.title.toLowerCase() ? (
+          <Button className={cn('px-2')} variant={'outline'} size={'xs'}>
+            <div className="flex items-center gap-1">
+              <Command className="!size-3" />
+              <p className="text-md">C</p>
+            </div>
+            <Separator orientation="vertical" className="m-0 p-0 h-4" />
+            <div className="flex items-center gap-1">
+              <span>pnpm dlx @duck-ui add</span>
+              <span className="text-blue-400">
+                {docsConfig.sidebarNav[1]!.items.find(
+                  (item) => item.title === selectedItem?.innerText,
+                )?.title.toLowerCase()}
+              </span>
+            </div>
+          </Button>
+        ) : (
+          <p className="text-xs text-muted-foreground my-auto h-fit text-right w-full">
+            <span className="font-medium text-xs">Command palette</span> for the documentation content.
+          </p>
+        )}
+      </div>
+    </div>
   )
 }

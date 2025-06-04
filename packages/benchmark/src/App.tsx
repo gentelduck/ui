@@ -2,7 +2,7 @@
 // import NativeTextarea from './duck/textarea/native'
 // import DuckButton from './duck/button/duck'
 // import ShadcnButton from './duck/button/button'
-// import DuckTextarea from './duck/textarea/duck'
+import DuckTextarea from './duck/textarea/duck'
 // import ShadcnTextarea from './duck/textarea/textarea'
 // import DuckTabs from './duck/tabs/duck'
 // import ShadcnTabs from './duck/tabs/tabs'
@@ -38,18 +38,24 @@
 // import ShadcnProgress from './duck/progress/progress'
 // import DuckSelect from './duck/select/duck'
 // import ShadcnSelect from './duck/select/select'
-import DuckAspectRatioExp from './duck/aspect-ratio/experimental'
-// import DuckAspectRatio from './duck/aspect-ratio/duck'
-import ShadcnAspectRatio from './duck/aspect-ratio/aspect-ratio'
 // import DuckSeparator from './duck/separator/duck'
 // import DuckSeparatorExp from './duck/separator/experimental'
 // import ShadcnSeparator from './duck/separator/separator'
+
+// import Sandbox from './sandbox'
+
+// import DuckSeparator from './duck/separator/duck'
+// import ShadcnSeparator from './duck/separator/separator'
+
+// import Dialog from './example/dialog'
+// import Command from './example/command'
+
+// import Command from "./example/command/duck"
+// import CommandShadcn from "./example/command/shadcn"
+// import DrawerExample from './example/drawer'
 // import DuckSkeleton from './duck/skeleton/duck'
 // import ShadcnSkeleton from './duck/skeleton/skeleton'
-// import DuckSheet from './duck/sheet/duck'
-// import ShadcnSheet from './duck/sheet/sheet'
-// import DuckDrawer from './duck/drawer/duck'
-// import ShadcnDrawer from './duck/drawer/drawer'
+
 // import DuckSonner from './duck/sonner/duck'
 // import ShadcnSonner from './duck/sonner/sonner'
 // function Ui() {
@@ -88,11 +94,13 @@ import ShadcnAspectRatio from './duck/aspect-ratio/aspect-ratio'
 // }
 
 function App() {
+  // <ShadcnDialog />
   return (
-    <div className='flex flex-col justify-center container mx-auto  items-center gap-4'>
-      <DuckAspectRatioExp />  Experimental
-      {/* <DuckAspectRatio  />   old one  */}
-      <ShadcnAspectRatio  /> other
+    <div className="flex flex-col mx-10 h-screen justify-center  items-center gap-4">
+      {/* <Ui /> */}
+      {/* <DuckSonner /> */}
+      <DuckTextarea /> Experimental
+      {/* <ShadcnTextarea  /> other */}
     </div>
   )
 }
