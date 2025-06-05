@@ -10,7 +10,8 @@ export const AnimVariants = cva('', {
     motionBackdrop: {
       default:
         'backdrop:transition-[inherit] backdrop:duration-[inherit] backdrop:ease-[inherit] backdrop:bg-black/50  backdrop:opacity-0 starting:open:backdrop:opacity-0 open:backdrop:opacity-100',
-    },
+      nothing: ""
+      },
     motionAlive: {
       default: 'transition-all transition-discrete ease-(--duck-motion-ease) duration-[200ms,150ms]',
     },
@@ -27,7 +28,7 @@ export const AnimVariants = cva('', {
 })
 
 export const AnimDialogVariants = cva(
-  `inset-1/2 -translate-y-1/2 -translate-x-1/2 border border-border bg-background rounded-lg p-0 m-0 w-full sm:max-w-lg shadow-sm outline-none p-6 gap-[inherit]`,
+  `border border-border bg-background rounded-lg p-0 m-0 w-full sm:max-w-lg shadow-sm outline-hidden p-6 gap-[inherit]`,
   {
     variants: {
       animation: {
@@ -40,6 +41,15 @@ export const AnimDialogVariants = cva(
       animation: 'default',
     },
   },
+)
+
+export const AnimPopoverVariants = cva(
+ `bg-popover text-popover-foreground inset-auto 
+ [position-anchor:_--popover-anchor] [position-area:_bottom_center] [position-try-order:_most-height] my-[1ch] ![position-try-fallbacks:_flip-block]`,
+)
+
+export const AnimDialogModalVariants = cva(
+  `inset-1/2 -translate-y-1/2 -translate-x-1/2`,
 )
 
 export const AnimSheetVariants = cva(

@@ -8,7 +8,7 @@
 // } from './alert-dialog.types'
 import { cn } from '@gentleduck/libs/cn'
 import React from 'react'
-import { AnimDialogVariants, AnimVariants } from '@gentleduck/motion/anim'
+import { AnimDialogModalVariants, AnimDialogVariants, AnimVariants } from '@gentleduck/motion/anim'
 import DialogPrimitive, { ShouldRender, useDialogContext } from '@gentleduck/aria-feather/dialog'
 import { DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../dialog'
 
@@ -27,7 +27,7 @@ function AlertDialogContent({
   const { open, ref } = useDialogContext()
 
   return (
-    <dialog closedby="closerequest" ref={ref} {...props} className={cn(AnimVariants(), AnimDialogVariants(), className)}>
+    <dialog closedby="closerequest" ref={ref} {...props} className={cn(AnimVariants(), AnimDialogVariants(), AnimDialogModalVariants(), className)}>
       {/* <ShouldRender ref={ref} once={renderOnce} open={open}> */}
         <DialogClose />
         {children}

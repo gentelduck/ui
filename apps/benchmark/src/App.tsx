@@ -49,6 +49,7 @@
 // import ShadcnSeparator from './duck/separator/separator'
 
 import Dialog from './example/dialog'
+import Popover from './example/popover'
 // import Command from './example/command'
 
 // import Command from "./example/command/duck"
@@ -99,8 +100,9 @@ function App() {
   // <ShadcnDialog />
   return (
     <div className="flex flex-col mx-10 h-screen justify-center  items-center gap-4">
+      <Popover  />
       <Dialog />
-      {/* <CommandShadcn  /> */}
+      {/* <closedby="any"  /> */}
     </div>
   )
 }

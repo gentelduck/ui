@@ -1,5 +1,5 @@
 import { cn } from '@gentleduck/libs/cn'
-import { AnimDialogVariants, AnimVariants } from '@gentleduck/motion/anim'
+import { AnimDialogModalVariants, AnimDialogVariants, AnimVariants } from '@gentleduck/motion/anim'
 import { X } from 'lucide-react'
 import React from 'react'
 import DialogPrimitive, { ShouldRender, useDialogContext, useOverlayClose } from '@gentleduck/aria-feather/dialog'
@@ -63,7 +63,7 @@ function DialogContent({
   const closeOverlay = useOverlayClose()
 
   return (
-    <dialog ref={ref} className={cn(AnimVariants(), AnimDialogVariants(), className)} onClick={closeOverlay} {...props}>
+    <dialog ref={ref} className={cn(AnimVariants(), AnimDialogVariants(), AnimDialogModalVariants(), className)} onClick={closeOverlay} {...props}>
       <ShouldRender ref={ref} once={renderOnce} open={open}>
         <div className="content-wrapper">
           <DialogClose />
