@@ -119,7 +119,7 @@ function PopoverTrigger({
   const { id } = usePopoverContext()
 
   return (
-    <Button popovertarget={id} className='[anchor-name:_--popover-anchor]' {...props}>
+    <Button popovertarget={id} style={{anchorName: `--${id}`}} {...props}>
       {children}
     </Button>
   )
@@ -135,7 +135,7 @@ function PopoverContent({
 
   const { id } = usePopoverContext()
   return (
-    <dialog closedby id={id} popover="auto" className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants(), className)}
+    <dialog style={{positionAnchor: `--${id}`}} closedby id={id} popover="auto" className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants(), className)}
       {...props}>
       {children}
     </dialog>

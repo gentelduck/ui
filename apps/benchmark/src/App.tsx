@@ -101,7 +101,9 @@ function App() {
   return (
     <div className="flex flex-col mx-10 h-screen justify-center  items-center gap-4">
       <Popover  />
+      <Popover  />
       <Dialog />
+      <Popover  />
       {/* <closedby="any"  /> */}
     </div>
   )
