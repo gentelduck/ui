@@ -8,15 +8,208 @@ interface AppLayoutProps {
 }
 
 export default function AppLayout({ children }: AppLayoutProps) {
-  const html = document.documentElement
+  // const html = document.documentElement
   // html.setAttribute('dir', 'rtl')
   return (
     <div data-wrapper="" className="flex items-center place-content-center min-h-screen flex-col gap-8">
-      <MenubarDemo />
+      <AccordionDemo />
     </div>
     // <SiteHeader />
     // <main className="flex flex-1 flex-col">{children}</main>
     //   <SiteFooter />
+  )
+}
+
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@gentleduck/registry-ui-duckui/accordion'
+
+export function AccordionDemo() {
+  return (
+    <Accordion type="multiple" collapsible={true} className="w-full" defaultValue="item-1">
+      <AccordionItem value="item-1">
+        <AccordionTrigger>Product Information</AccordionTrigger>
+        <AccordionContent className="flex flex-col gap-4 text-balance">
+          <p>
+            Our flagship product combines cutting-edge technology with sleek design. Built with premium materials, it
+            offers unparalleled performance and reliability.
+          </p>
+          <p>
+            Key features include advanced processing capabilities, and an intuitive user interface designed for both
+            beginners and experts.
+          </p>
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="item-2">
+        <AccordionTrigger>Shipping Details</AccordionTrigger>
+        <AccordionContent className="flex flex-col gap-4 text-balance">
+          <p>
+            We offer worldwide shipping through trusted courier partners. Standard delivery takes 3-5 business days,
+            while express shipping ensures delivery within 1-2 business days.
+          </p>
+          <p>
+            All orders are carefully packaged and fully insured. Track your shipment in real-time through our dedicated
+            tracking portal.
+          </p>
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="item-3">
+        <AccordionTrigger>Return Policy</AccordionTrigger>
+        <AccordionContent className="flex flex-col gap-4 text-balance">
+          <p>
+            We stand behind our products with a comprehensive 30-day return policy. If you&apos;re not completely
+            satisfied, simply return the item in its original condition.
+          </p>
+          <p>
+            Our hassle-free return process includes free return shipping and full refunds processed within 48 hours of
+            receiving the returned item.
+          </p>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  )
+}
+
+import { ChevronsUpDown } from 'lucide-react'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@gentleduck/registry-ui-duckui/collapsible'
+
+export function CollapsibleDemo() {
+  const [isOpen, setIsOpen] = React.useState(true)
+
+  return (
+    <Collapsible open={true} onOpenChange={setIsOpen} className="flex w-[350px] flex-col gap-2">
+      <div className="flex items-center justify-between gap-4 w-full px-2">
+        <h4 className="text-sm font-semibold">@peduarte starred 3 repositories</h4>
+        <CollapsibleTrigger>
+          <div>
+            <ChevronsUpDown />
+            <span className="sr-only">Toggle</span>
+          </div>
+        </CollapsibleTrigger>
+      </div>
+      <div className="rounded-md border px-4 py-2 font-mono text-sm">@radix-ui/primitives</div>
+      <CollapsibleContent className="flex flex-col gap-2">
+        <div className="rounded-md border px-4 py-2 font-mono text-sm">@radix-ui/colors</div>
+        <div className="rounded-md border px-4 py-2 font-mono text-sm">@stitches/react</div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
+
+import { Slider } from '@gentleduck/registry-ui-duckui/slider'
+
+type SliderProps = React.ComponentProps<typeof Slider>
+
+export function SliderDemo({ className, ...props }: SliderProps) {
+  return <Slider defaultValue={50} max={100} step={1} className={cn('w-[60%]', className)} {...props} />
+}
+
+import { Bold, Italic, Underline } from 'lucide-react'
+
+import { ToggleGroup, ToggleGroupItem } from '@gentleduck/registry-ui-duckui/toggle-group'
+
+export function ToggleGroupDemo() {
+  return (
+    <ToggleGroup variant="outline" type="single" onValueChange={(value) => console.log(value)}>
+      <ToggleGroupItem value="bold" aria-label="Toggle bold">
+        <Bold className="h-4 w-4" />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="italic" aria-label="Toggle italic">
+        <Italic className="h-4 w-4" />
+      </ToggleGroupItem>
+      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
+        <Underline className="h-4 w-4" />
+      </ToggleGroupItem>
+    </ToggleGroup>
+  )
+}
+
+import { Toggle } from '@gentleduck/registry-ui-duckui/toggle'
+
+export function ToggleDemo() {
+  return (
+    <Toggle aria-label="Toggle italic">
+      <Bold className="h-4 w-4" />
+    </Toggle>
+  )
+}
+
+import { Progress } from '@gentleduck/registry-ui-duckui/progress'
+
+export function ProgressDemo() {
+  const [progress, setProgress] = React.useState(13)
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setProgress(66), 500)
+    return () => clearTimeout(timer)
+  }, [])
+
+  return <Progress value={progress} className="w-[60%]" />
+}
+
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@gentleduck/registry-ui-duckui/input-otp'
+
+export function InputOTPDemo() {
+  return (
+    <InputOTP value={'123456'} onValueChange={(value) => console.log(value)}>
+      <InputOTPGroup>
+        <InputOTPSlot />
+        <InputOTPSlot />
+        <InputOTPSlot />
+      </InputOTPGroup>
+      <InputOTPSeparator />
+      <InputOTPGroup>
+        <InputOTPSlot />
+        <InputOTPSlot />
+        <InputOTPSlot />
+      </InputOTPGroup>
+    </InputOTP>
+  )
+}
+
+import Link from 'next/link'
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@gentleduck/registry-ui-duckui/breadcrumb'
+export function BreadcrumbDemo() {
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link href="/">Home</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1">
+              <BreadcrumbEllipsis className="size-4" />
+              <span className="sr-only">Toggle menu</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem>Documentation</DropdownMenuItem>
+              <DropdownMenuItem>Themes</DropdownMenuItem>
+              <DropdownMenuItem>GitHub</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link href="/docs/components">Components</Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
   )
 }
 
@@ -194,9 +387,23 @@ export function SelectDemo() {
   )
 }
 
-import { DropdownMenu } from '@gentleduck/registry-ui-duckui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from '@gentleduck/registry-ui-duckui/dropdown-menu'
 
-import { Button } from '@gentleduck/registry-ui-duckui/button'
 import { Command } from 'lucide-react'
 
 type Checked = boolean
@@ -207,65 +414,63 @@ export function DropdownMenuCheckboxes() {
   const [position, setPosition] = React.useState('top')
 
   return (
-    <DropdownMenu.DropdownMenu
+    <DropdownMenu
       open={true}
       onOpenChange={(value) => {
         console.log(value)
       }}>
-      <DropdownMenu.DropdownMenuTrigger>Open</DropdownMenu.DropdownMenuTrigger>
-      <DropdownMenu.DropdownMenuContent className="w-56">
-        <DropdownMenu.DropdownMenuLabel>Appearance</DropdownMenu.DropdownMenuLabel>
-        <DropdownMenu.DropdownMenuSeparator />
-        <DropdownMenu.DropdownMenuGroup>
-          <DropdownMenu.DropdownMenuCheckboxItem
-            checked={showStatusBar}
-            onClick={() => setShowStatusBar(!showStatusBar)}>
+      <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuCheckboxItem checked={showStatusBar} onClick={() => setShowStatusBar(!showStatusBar)}>
             Status Bar
-          </DropdownMenu.DropdownMenuCheckboxItem>
-          <DropdownMenu.DropdownMenuCheckboxItem checked={showActivityBar} disabled>
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem checked={showActivityBar} disabled>
             Activity Bar
-          </DropdownMenu.DropdownMenuCheckboxItem>
-          <DropdownMenu.DropdownMenuCheckboxItem checked={showPanel}>Panel</DropdownMenu.DropdownMenuCheckboxItem>
-        </DropdownMenu.DropdownMenuGroup>
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem checked={showPanel}>Panel</DropdownMenuCheckboxItem>
+        </DropdownMenuGroup>
 
-        <DropdownMenu.DropdownMenuSeparator />
-        <DropdownMenu.DropdownMenuRadioGroup value={position} onValueChange={setPosition} defaultValue={position}>
-          <DropdownMenu.DropdownMenuRadioItem value="top">Top</DropdownMenu.DropdownMenuRadioItem>
-          <DropdownMenu.DropdownMenuRadioItem value="bottom">Bottom</DropdownMenu.DropdownMenuRadioItem>
-          <DropdownMenu.DropdownMenuRadioItem value="right">Right</DropdownMenu.DropdownMenuRadioItem>
-        </DropdownMenu.DropdownMenuRadioGroup>
-        <DropdownMenu.DropdownMenuGroup>
-          <DropdownMenu.DropdownMenuItem disabled={true}>Status Bar</DropdownMenu.DropdownMenuItem>
-          <DropdownMenu.DropdownMenuItem>Activity Bar</DropdownMenu.DropdownMenuItem>
-          <DropdownMenu.DropdownMenuItem>Panel</DropdownMenu.DropdownMenuItem>
-        </DropdownMenu.DropdownMenuGroup>
-        <DropdownMenu.DropdownMenuSeparator />
-        <DropdownMenu.DropdownMenuGroup>
-          <DropdownMenu.DropdownMenuSub>
-            <DropdownMenu.DropdownMenuSubTrigger>Submenu</DropdownMenu.DropdownMenuSubTrigger>
-            <DropdownMenu.DropdownMenuSubContent>
-              <DropdownMenu.DropdownMenuItem disabled={true}>Item 1</DropdownMenu.DropdownMenuItem>
-              <DropdownMenu.DropdownMenuItem>Item 2</DropdownMenu.DropdownMenuItem>
-            </DropdownMenu.DropdownMenuSubContent>
-          </DropdownMenu.DropdownMenuSub>
-        </DropdownMenu.DropdownMenuGroup>
-        <DropdownMenu.DropdownMenuSeparator />
-        <DropdownMenu.DropdownMenuGroup>
-          <DropdownMenu.DropdownMenuItem disabled={true}>
+        <DropdownMenuSeparator />
+        <DropdownMenuRadioGroup value={position} onValueChange={setPosition} defaultValue={position}>
+          <DropdownMenuRadioItem value="top">Top</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="bottom">Bottom</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="right">Right</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+        <DropdownMenuGroup>
+          <DropdownMenuItem disabled={true}>Status Bar</DropdownMenuItem>
+          <DropdownMenuItem>Activity Bar</DropdownMenuItem>
+          <DropdownMenuItem>Panel</DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>Submenu</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem disabled={true}>Item 1</DropdownMenuItem>
+              <DropdownMenuItem>Item 2</DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem disabled={true}>
             Preferences
-            <DropdownMenu.DropdownMenuShortcut onKeysPressed={() => {}} keys="⌘">
+            <DropdownMenuShortcut onKeysPressed={() => {}} keys="⌘">
               <Command />P
-            </DropdownMenu.DropdownMenuShortcut>
-          </DropdownMenu.DropdownMenuItem>
-          <DropdownMenu.DropdownMenuItem>
+            </DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
             Settings
-            <DropdownMenu.DropdownMenuShortcut onKeysPressed={() => {}} keys="⌘">
+            <DropdownMenuShortcut onKeysPressed={() => {}} keys="⌘">
               <Command />P
-            </DropdownMenu.DropdownMenuShortcut>
-          </DropdownMenu.DropdownMenuItem>
-        </DropdownMenu.DropdownMenuGroup>
-      </DropdownMenu.DropdownMenuContent>
-    </DropdownMenu.DropdownMenu>
+            </DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 import { Calculator, CreditCard, Settings, Smile, User } from 'lucide-react'
@@ -281,6 +486,8 @@ import {
   CommandShortcut,
 } from '@gentleduck/registry-ui-duckui/command'
 import React from 'react'
+import { cn } from '@gentleduck/libs/cn'
+import { Button } from '@gentleduck/registry-ui-duckui/button'
 
 export function CommandDemo() {
   return (
