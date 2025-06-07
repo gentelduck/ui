@@ -4,7 +4,7 @@
 // import { SheetContentProps, SheetWrapperProps } from './sheet.types'
 import { cn } from '@gentleduck/libs/cn'
 import React from 'react'
-import { AnimSheetVariants, AnimVariants } from '@gentleduck/motion/anim'
+import { AnimDialogVariants, AnimSheetVariants, AnimVariants } from '@gentleduck/motion/anim'
 import DialogPrimitive, { ShouldRender, useDialogContext } from '@gentleduck/aria-feather/dialog'
 import { DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../dialog'
 
@@ -30,7 +30,7 @@ const SheetContent = ({
     <>
       <dialog
         ref={ref}
-        className={cn(AnimVariants(), AnimSheetVariants({ side: side }), className, "content-wrapper")}
+        className={cn(AnimVariants(), AnimDialogVariants({ animation: "nothing" }), AnimSheetVariants({ side: side }), className)}
         closedby="any"
         {...props}>
         {/* <ShouldRender ref={ref} once={renderOnce} open={open}> */}

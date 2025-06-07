@@ -37,7 +37,7 @@ function TooltipContent({
 
   const { id } = usePopoverContext()
   return (
-    <dialog style={{ positionAnchor: `--${id}` }} closedby id={id} popover="auto" 
+    <dialog role='tooltip' style={{ positionAnchor: `--${id}` }} closedby id={id} popover="auto" 
     className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants(), AnimTooltipVariants(), className)}
       {...props}>
       {children}

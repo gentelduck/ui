@@ -1,5 +1,7 @@
 import { cva } from '@gentleduck/variants'
 
+
+
 export const AnimVariants = cva('', {
   variants: {
     motionBlur: {
@@ -28,13 +30,12 @@ export const AnimVariants = cva('', {
 })
 
 export const AnimDialogVariants = cva(
-  `border border-border bg-background rounded-lg p-0 m-0 w-full sm:max-w-lg shadow-sm outline-hidden p-6 gap-[inherit]`,
+  `border border-border bg-background rounded-lg p-0 m-0   shadow-sm outline-hidden p-6 gap-[inherit]`,
   {
     variants: {
       animation: {
         default: 'opacity-0 scale-90 starting:open:opacity-0 starting:open:scale-90 open:opacity-100 open:scale-100',
-        fadeScaleIn:
-          'opacity-0 scale-75 starting:open:opacity-0 starting:open:scale-75 open:opacity-100 open:scale-100 ',
+        nothing: ""
       },
     },
     defaultVariants: {
@@ -53,11 +54,11 @@ export const AnimTooltipVariants = cva(
 )
 
 export const AnimDialogModalVariants = cva(
-  `inset-1/2 -translate-y-1/2 -translate-x-1/2`,
+  `inset-1/2 -translate-y-1/2 -translate-x-1/2 sm:max-w-lg w-full`,
 )
 
 export const AnimSheetVariants = cva(
-  `duration-400 pointer-events-auto border-border bg-background outline-none p-6 gap-[inherit]`,
+  `duration-400 pointer-events-auto border-0`,
   {
     variants: {
       side: {
