@@ -48,6 +48,10 @@ export const AnimPopoverVariants = cva(
   [position-area:_bottom] [position-try-order:_most-height] my-[1ch] ![position-try-fallbacks:_flip-block]`,
 )
 
+export const AnimTooltipVariants = cva(
+  `p-2.5 px-4 w-fit`,
+)
+
 export const AnimDialogModalVariants = cva(
   `inset-1/2 -translate-y-1/2 -translate-x-1/2`,
 )

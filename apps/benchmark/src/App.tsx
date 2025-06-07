@@ -50,6 +50,7 @@
 
 import Dialog from './example/dialog'
 import Popover from './example/popover'
+import Tooltip from './example/tooltip'
 // import Command from './example/command'
 
 // import Command from "./example/command/duck"
@@ -102,6 +103,9 @@ function App() {
     <div className="flex flex-col mx-10 h-500 justify-center  items-center gap-4">
       <Popover  />
       <Popover  />
+      <Tooltip  />
+      <Tooltip  />
+      
       <Dialog />
       <Popover  />
       {/* <closedby="any"  /> */}

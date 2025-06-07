@@ -2,69 +2,81 @@
 
 import * as React from 'react'
 import { cn } from '@gentleduck/libs/cn'
-import { tooltipVariants, tooltipArrowVariants } from './tooltip.constants'
-import type { TooltipContentProps, TooltipProps, TooltipTriggerProps } from './tooltip.types'
 import { Button } from '../button'
+import { Slot } from '@gentleduck/aria-feather/slot'
+import { usePopoverContext, Popover } from '@gentleduck/aria-feather/popover'
+import { AnimDialogVariants, AnimPopoverVariants, AnimTooltipVariants, AnimVariants } from '@gentleduck/motion/anim'
 
-function Tooltip({
-  delayDuration = 500,
-  sideOffset = 4,
-  open = false,
-  className,
-  style,
-  size,
-  ...props
-}: TooltipProps) {
-  return (
-    <div
-      data-method={open ? 'forced' : 'hover'}
-      className={cn('whitespace-nowrap group/tooltip relative', className)}
-      style={
-        {
-          '--tooltip-delay': `${delayDuration}ms`,
-          '--side-offset': `${sideOffset}px`,
-          ...style,
-        } as React.CSSProperties
-      }
-      {...props}
-    />
-  )
-}
+const Tooltip = Popover
 
-function TooltipTrigger({ ...props }: TooltipTriggerProps): JSX.Element {
-  return <Button {...props} />
-}
-
-/**
- * Renders the content of a Tooltip component.
- *
- * @param {TooltipContentProps} props - Additional props to pass to the tooltip content.
- * @param {string} [props.position] - The position of the tooltip, either 'top', 'right', 'bottom', or 'left'.
- * @param {string} [props.variant] - Optional variant style for the tooltip content.
- * @param {string} [props.className] - Additional classes to apply to the tooltip content.
- * @param {boolean} [props.showArrow=false] - If true, renders an arrow pointing towards the trigger.
- * @param {React.ReactNode} props.children - The content to be rendered inside the tooltip.
- * @param {React.HTMLProps<HTMLDivElement>} [...props] - Additional props to pass to the tooltip content.
- * @returns {JSX.Element} The rendered tooltip content.
- */
-function TooltipContent({
-  position = 'top',
-  variant,
-  className,
-  showArrow = false,
+function TooltipTrigger({
+  onClick,
+  open,
   children,
   ...props
-}: TooltipContentProps): JSX.Element {
+}: React.ComponentPropsWithRef<typeof Slot> & {
+  open?: boolean
+  asChild?: boolean
+}): React.JSX.Element {
+  const { id } = usePopoverContext()
+
   return (
-    <div
-      role="tooltip"
-      className={cn(tooltipVariants({ variant, position }), className)}
-      data-side={position}
-      {...props}>
+    <Button aria-haspopup="dialog" aria-controls={id} popovertarget={id} style={{ anchorName: `--${id}` }} {...props}>
       {children}
-      {showArrow && <span className={cn(tooltipArrowVariants({ position }))} aria-hidden="true" />}
-    </div>
+    </Button>
   )
 }
 
+
+function TooltipContent({
+  className,
+  children,
+  overlay = "nothing",
+  ...props
+}: React.ComponentProps<'dialog'> & { overlay?: "default" | "nothing" } = { overlay: "nothing" }) {
+
+  const { id } = usePopoverContext()
+  return (
+    <dialog style={{ positionAnchor: `--${id}` }} closedby id={id} popover="auto" 
+    className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants(), AnimTooltipVariants(), className)}
+      {...props}>
+      {children}
+    </dialog>
+  )
+}
+
+// function PopoverAnchor({
+//   ...props
+// }: React.ComponentProps<'dialog'>) {
+//   return <dialog {...props} />
+// }
+
 export { Tooltip, TooltipTrigger, TooltipContent }
+
+
+// PopoverWrapper Component
+// export interface PopoverWrapperProps {
+//   wrapper?: React.ComponentPropsWithoutRef<typeof Popover>
+//   trigger?: React.ComponentPropsWithoutRef<typeof PopoverTrigger>
+//   content?: React.ComponentPropsWithoutRef<typeof PopoverContent>
+// }
+
+// const PopoverWrapper: React.FC<PopoverWrapperProps> = ({ content, trigger, wrapper }) => {
+//   const { className: triggerClassName, key: triggerKey, children: triggerChildren, ...triggerProps } = trigger ?? {}
+//   const { className: contentClassName, key: contentKey, children: contentChildren, ...contentProps } = content ?? {}
+
+//   return (
+//     <Popover {...wrapper}>
+//       <PopoverTrigger asChild className={cn('', triggerClassName)} {...triggerProps}>
+//         {triggerChildren}
+//       </PopoverTrigger>
+//       <PopoverContent className={cn('w-80', contentClassName)} {...contentProps}>
+//         {contentChildren}
+//       </PopoverContent>
+//     </Popover>
+//   )
+// }
+
+// PopoverWrapper.displayName = 'PopoverWrapper'
+
+// export { Popover, PopoverTrigger, PopoverContent, PopoverWrapper, PopoverClose }
