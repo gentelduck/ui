@@ -10,7 +10,7 @@ import { cn } from '@gentleduck/libs/cn'
 import React from 'react'
 import { AnimDialogModalVariants, AnimDialogVariants, AnimVariants } from '@gentleduck/motion/anim'
 import DialogPrimitive, { ShouldRender, useDialogContext } from '@gentleduck/aria-feather/dialog'
-import { DialogClose, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../dialog'
+import { DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../dialog'
 
 const AlertDialog = DialogPrimitive.Root
 
@@ -29,7 +29,6 @@ function AlertDialogContent({
   return (
     <dialog closedby="closerequest" ref={ref} {...props} className={cn(AnimVariants(), AnimDialogVariants(), AnimDialogModalVariants(), className)}>
       {/* <ShouldRender ref={ref} once={renderOnce} open={open}> */}
-        <DialogClose />
         {children}
       {/* </ShouldRender> */}
     </dialog>
