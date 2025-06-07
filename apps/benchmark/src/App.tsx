@@ -51,6 +51,7 @@
 import Dialog from './example/dialog'
 import Popover from './example/popover'
 import Tooltip from './example/tooltip'
+import HoverCard from './example/hover-card'
 // import Command from './example/command'
 
 // import Command from "./example/command/duck"
@@ -105,6 +106,8 @@ function App() {
       <Popover  />
       <Tooltip  />
       <Tooltip  />
+      <HoverCard  />
+      <HoverCard  />
       
       <Dialog />
       <Popover  />

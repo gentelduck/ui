@@ -1,1 +1,1 @@
-export * from './hover-card'
+export * from './_hover-card'
