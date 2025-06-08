@@ -30,8 +30,9 @@ function PopoverContent({
   className,
   children,
   overlay = "nothing",
+
   ...props
-}: React.ComponentProps<'dialog'> & { overlay?: "default" | "nothing" } = { overlay: "nothing" }) {
+}: React.ComponentProps<'dialog'> & { overlay?: "default" | "nothing", side?: 'left' | 'right' | 'top' | 'bottom' } = { overlay: "nothing" }) {
 
   const { id } = usePopoverContext()
   return (

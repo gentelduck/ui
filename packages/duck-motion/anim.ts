@@ -1,7 +1,5 @@
 import { cva } from '@gentleduck/variants'
 
-
-
 export const AnimVariants = cva('', {
   variants: {
     motionBlur: {
@@ -13,7 +11,7 @@ export const AnimVariants = cva('', {
       default:
         'backdrop:transition-[inherit] backdrop:duration-[inherit] backdrop:ease-[inherit] backdrop:bg-black/50  backdrop:opacity-0 starting:open:backdrop:opacity-0 open:backdrop:opacity-100',
       nothing: ""
-      },
+    },
     motionAlive: {
       default: 'transition-all transition-discrete ease-(--duck-motion-ease) duration-[200ms,150ms]',
     },
@@ -30,7 +28,7 @@ export const AnimVariants = cva('', {
 })
 
 export const AnimDialogVariants = cva(
-  `border border-border bg-background rounded-lg p-0 m-0   shadow-sm outline-hidden p-6 gap-[inherit]`,
+  `border border-border bg-background rounded-lg shadow-sm outline-hidden p-6 gap-[inherit]`,
   {
     variants: {
       animation: {
@@ -46,7 +44,28 @@ export const AnimDialogVariants = cva(
 
 export const AnimPopoverVariants = cva(
   `bg-popover text-popover-foreground inset-auto 
-  [position-area:_bottom] [position-try-order:_most-height] my-[1ch] ![position-try-fallbacks:_flip-block]`,
+  [position-try-order:_most-height] my-[1ch] ![position-try-fallbacks:_flip-block]`,
+  {
+    variants: {
+      side: {
+        top: `
+          [position-area:_top] 
+          `,
+        bottom: `
+          [position-area:_bottom] 
+        `,
+        left: `
+          [position-area:_left] 
+        `,
+        right: `
+          [position-area:_right] 
+        `,
+      },
+    },
+    defaultVariants: {
+      side: 'bottom',
+    },
+  },
 )
 
 export const AnimTooltipVariants = cva(
@@ -58,31 +77,35 @@ export const AnimDialogModalVariants = cva(
 )
 
 export const AnimSheetVariants = cva(
-  `duration-400 pointer-events-auto border-0`,
+  `duration-400 pointer-events-auto border-0 rounded-none`,
   {
     variants: {
       side: {
         top: `
           max-w-full w-full
           border-b
+          rounded-b-lg
           -translate-y-full starting:open:-translate-y-full open:translate-y-0  
           bottom-auto
           `,
         bottom: `
           max-w-full w-full
           border-t
+          rounded-t-lg
           translate-y-full starting:open:translate-y-full open:translate-y-0
           top-auto
         `,
         left: `
           max-h-screen h-screen
           border-l 
+          rounded-l-lg
           -translate-x-full starting:open:-translate-x-full open:translate-x-0
           end-auto
         `,
         right: `
           max-h-screen h-screen
           border-r 
+          rounded-r-lg
           translate-x-full starting:open:translate-x-full open:translate-x-0
           start-auto
         `,
