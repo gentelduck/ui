@@ -30,13 +30,14 @@ function PopoverContent({
   className,
   children,
   overlay = "nothing",
-
+  side = "bottom",
   ...props
-}: React.ComponentProps<'dialog'> & { overlay?: "default" | "nothing", side?: 'left' | 'right' | 'top' | 'bottom' } = { overlay: "nothing" }) {
+}: React.ComponentProps<'dialog'> & { overlay?: "default" | "nothing" } = { overlay: "nothing" }) {
 
   const { id } = usePopoverContext()
   return (
-    <dialog style={{ positionAnchor: `--${id}` }} closedby id={id} popover="auto" className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants(), className)}
+    <dialog style={{ positionAnchor: `--${id}` }} closedby id={id} popover="auto" 
+            className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants({ side: side }), className)}
       {...props}>
       {children}
     </dialog>

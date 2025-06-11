@@ -13,7 +13,7 @@ export default function PopoverDemo() {
       <PopoverTrigger>
         Open popover
       </PopoverTrigger>
-      <PopoverContent className="w-80">
+      <PopoverContent side="top" className="w-80">
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="leading-none font-medium">Dimensions</h4>

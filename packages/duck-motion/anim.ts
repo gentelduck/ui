@@ -44,21 +44,21 @@ export const AnimDialogVariants = cva(
 
 export const AnimPopoverVariants = cva(
   `bg-popover text-popover-foreground inset-auto 
-  [position-try-order:_most-height] my-[1ch] ![position-try-fallbacks:_flip-block]`,
+  [position-try-order:_most-height] ![position-try-fallbacks:_flip-block]`,
   {
     variants: {
       side: {
         top: `
-          [position-area:_top] 
+          [position-area:_top] my-[1ch] origin-bottom
           `,
         bottom: `
-          [position-area:_bottom] 
+          [position-area:_bottom] my-[1ch] origin-top
         `,
         left: `
-          [position-area:_left] 
+          [position-area:_left_center] origin-right mx-[1ch]
         `,
         right: `
-          [position-area:_right] 
+          [position-area:_right_center] origin-left mx-[1ch]
         `,
       },
     },
@@ -98,14 +98,14 @@ export const AnimSheetVariants = cva(
         left: `
           max-h-screen h-screen
           border-l 
-          rounded-l-lg
+          rounded-r-lg
           -translate-x-full starting:open:-translate-x-full open:translate-x-0
           end-auto
-        `,
-        right: `
+          `,
+          right: `
           max-h-screen h-screen
           border-r 
-          rounded-r-lg
+          rounded-l-lg
           translate-x-full starting:open:translate-x-full open:translate-x-0
           start-auto
         `,
