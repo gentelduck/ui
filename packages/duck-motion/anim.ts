@@ -50,7 +50,7 @@ export const AnimPopoverVariants = cva(
       side: {
         top: `
           [position-area:_top] my-[1ch] origin-bottom
-          `,
+        `,
         bottom: `
           [position-area:_bottom] my-[1ch] origin-top
         `,
@@ -59,6 +59,21 @@ export const AnimPopoverVariants = cva(
         `,
         right: `
           [position-area:_right_center] origin-left mx-[1ch]
+        `,
+        'top-left': `
+          [position-area:_top_left] m-[1ch] origin-bottom-right
+        `,
+        'top-right': `
+          [position-area:_top_right] m-[1ch] origin-bottom-left
+        `,
+        'bottom-left': `
+          [position-area:_bottom_left] m-[1ch] origin-top-right
+        `,
+        'bottom-right': `
+          [position-area:_bottom_right] m-[1ch] origin-top-left
+        `,
+        center: `
+          [position-area:_center] origin-center
         `,
       },
     },
