@@ -49,52 +49,52 @@ export const AnimPopoverVariants = cva(
     variants: {
       side: {
         top: `
-          [position-area:_top] origin-bottom my-2
+          [position-area:_block-start] origin-bottom my-2
         `,
         bottom: `
-          [position-area:_bottom] origin-top my-2
+          [position-area:_block-end] origin-top my-2
         `,
         left: `
-          [position-area:_left_center] origin-right mx-2
+          [position-area:_inline-start_center] origin-right mx-2
         `,
         right: `
-          [position-area:_right_center] origin-left mx-2
+          [position-area:_inline-end_center] origin-left mx-2
         `,
         'top-left': `
-          [position-area:_top_left] origin-bottom-right my-2
+          [position-area:_block-start_inline-start] origin-bottom-right my-2
         `,
         'top-right': `
-          [position-area:_top_right] origin-bottom-left my-2
+          [position-area:_block-start_inline-end] origin-bottom-left my-2
         `,
         'bottom-left': `
-          [position-area:_bottom_left] origin-top-right my-2
+          [position-area:_block-end_inline-start] origin-top-right my-2
         `,
         'bottom-right': `
-          [position-area:_bottom_right] origin-top-left my-2
+          [position-area:_block-end_inline-end] origin-top-left my-2
         `,
         'top-span-left': `
-          [position-area:_top_span-left] origin-bottom-right my-2
+          [position-area:_block-start_span-inline-start] origin-bottom-right my-2
         `,
         'top-span-right': `
-          [position-area:_top_span-right] origin-bottom-left  my-2
+          [position-area:_block-start_span-inline-end] origin-bottom-left  my-2
         `,
         'bottom-span-left': `
-          [position-area:_bottom_span-left] origin-top-right my-2
+          [position-area:_block-end_span-inline-start] origin-top-right my-2
         `,
         'bottom-span-right': `
-          [position-area:_bottom_span-right] origin-top-left my-2
+          [position-area:_block-end_span-inline-end] origin-top-left my-2
         `,
         'right-span-top': `
-          [position-area:_right_span-top] origin-bottom-left mx-2
+          [position-area:_inline-end_span-block-start] origin-bottom-left mx-2
         `,
         'right-span-bottom': `
-          [position-area:_right_span-bottom] origin-bottom-left mx-2
+          [position-area:_inline-end_span-block-end] origin-bottom-left mx-2
         `,
         'left-span-top': `
-          [position-area:_left_span-top] origin-top-right mx-2
+          [position-area:_inline-start_span-block-start] origin-top-right mx-2
         `,
         'left-span-bottom': `
-          [position-area:_left_span-bottom] origin-top-right mx-2
+          [position-area:_inline-start_span-block-end] origin-top-right mx-2
         `,
         center: `
           [position-area:_center] origin-center
