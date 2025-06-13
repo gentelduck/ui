@@ -1,8 +1,7 @@
 import React from 'react'
 import { DialogContext } from './_dialog'
 import { DialogContextType } from './dialog.types'
-import { useComputedTimeoutTransition } from '@gentleduck/hooks'
-// import { useComputedTimeoutTransition } from '@gentleduck/hooks'
+import { lockScrollbar, cleanLockScrollbar } from './dialog.libs'
 
 export function useDialogContext(name: string = 'Dialog'): DialogContextType {
   const context = React.useContext(DialogContext)
@@ -21,16 +20,12 @@ export function useDialog(openProp?: boolean, onOpenChange?: (state: boolean) =>
       try {
         const dialog = dialogRef.current
         if (state) {
-          document.body.classList.add('scroll-locked')
-          setTimeout(() => {
-            dialog?.showModal()
-            setOpen(true)
-            onOpenChange?.(true)
-          }, 100)
+          dialog?.showModal()
+          lockScrollbar(true)
+          setOpen(true)
+          onOpenChange?.(true)
         } else {
-          useComputedTimeoutTransition(dialog, () => {
-            document.body.classList.remove('scroll-locked')
-          })
+          lockScrollbar(false)
           dialog?.close()
           setOpen(false)
           onOpenChange?.(false)
@@ -44,9 +39,7 @@ export function useDialog(openProp?: boolean, onOpenChange?: (state: boolean) =>
 
   React.useEffect(() => {
     const dialog = dialogRef.current
-    useComputedTimeoutTransition(dialog, () => {
-      document.body.classList.toggle('scroll-locked', open)
-    })
+    lockScrollbar(open)
 
     if (openProp) {
       handleOpenChange(true)
@@ -62,6 +55,7 @@ export function useDialog(openProp?: boolean, onOpenChange?: (state: boolean) =>
 
     return () => {
       dialog?.removeEventListener("close", dialogClose)
+      cleanLockScrollbar()
     }
   }, [handleOpenChange, open, openProp])
 
