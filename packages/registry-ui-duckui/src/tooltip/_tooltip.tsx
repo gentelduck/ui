@@ -21,7 +21,7 @@ function TooltipTrigger({
   const { id } = usePopoverContext()
 
   return (
-    <Button aria-haspopup="dialog" aria-controls={id} popovertarget={id} style={{ anchorName: `--${id}` }} {...props}>
+    <Button aria-haspopup="dialog" aria-controls={id} popoverTarget={id} style={{ anchorName: `--${id}` }} {...props}>
       {children}
     </Button>
   )
@@ -37,8 +37,8 @@ function TooltipContent({
 
   const { id } = usePopoverContext()
   return (
-    <dialog role='tooltip' style={{ positionAnchor: `--${id}` }} closedby id={id} popover="auto" 
-    className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants(), AnimTooltipVariants(), className)}
+    <dialog role='tooltip' style={{ positionAnchor: `--${id}` }} closedby="any" id={id} popover="auto"
+      className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants(), AnimTooltipVariants(), className)}
       {...props}>
       {children}
     </dialog>

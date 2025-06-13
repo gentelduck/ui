@@ -53,6 +53,16 @@ export function useDialog(openProp?: boolean, onOpenChange?: (state: boolean) =>
     } else if (openProp === false) {
       handleOpenChange(false)
     }
+
+    function dialogClose() {
+      handleOpenChange?.(false)
+    }
+
+    dialog?.addEventListener("close", dialogClose)
+
+    return () => {
+      dialog?.removeEventListener("close", dialogClose)
+    }
   }, [handleOpenChange, open, openProp])
 
   return {
