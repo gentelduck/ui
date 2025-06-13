@@ -99,9 +99,8 @@ import HoverCard from './example/hover-card'
 // }
 
 function App() {
-  // <ShadcnDialog />
   return (
-    <div className="flex flex-col mx-10 h-500 w-800 justify-center  items-center gap-4">
+    <div className="flex flex-col justify-center items-center gap-4 mx-10 h-500">
       <Popover  />
       <Popover  />
       <Tooltip  />
@@ -111,7 +110,6 @@ function App() {
       
       <Dialog />
       <Popover  />
-      {/* <closedby="any"  /> */}
     </div>
   )
 }
