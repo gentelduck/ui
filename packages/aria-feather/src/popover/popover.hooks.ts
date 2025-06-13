@@ -1,5 +1,6 @@
 import React from "react"
 import { PopoverContextType } from "./popover.types"
+import { useDialog } from "../dialog/dialog.hooks"
 
 /**
  * Context for managing the open state of the popover.
@@ -14,3 +15,6 @@ export function usePopoverContext(name: string = 'Popover'): PopoverContextType 
   }
   return context
 }
+
+
+export {useDialog as usePopover}

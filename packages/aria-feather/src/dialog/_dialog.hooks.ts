@@ -15,27 +15,22 @@ export function useDialog(openProp?: boolean, onOpenChange?: (state: boolean) =>
   const dialogRef = React.useRef<HTMLDialogElement | null>(null)
   const [open, setOpen] = React.useState<boolean>(openProp ?? false)
 
-  const handleOpenChange = React.useCallback(
-    (state: boolean) => {
-      try {
-        const dialog = dialogRef.current
-        if (state) {
-          dialog?.showModal()
-          lockScrollbar(true)
-          setOpen(true)
-          onOpenChange?.(true)
-        } else {
-          lockScrollbar(false)
-          dialog?.close()
-          setOpen(false)
-          onOpenChange?.(false)
-        }
-      } catch (e) {
-        console.warn('Dialog failed to toggle', e)
+  function handleOpenChange(state: boolean) {
+    try {
+      const dialog = dialogRef.current
+      if (state) {
+        dialog?.showModal()
+        setOpen(true)
+        onOpenChange?.(true)
+      } else {
+        dialog?.close()
+        setOpen(false)
+        onOpenChange?.(false)
       }
-    },
-    [onOpenChange],
-  )
+    } catch (e) {
+      console.warn('Dialog failed to toggle', e)
+    }
+  }
 
   React.useEffect(() => {
     const dialog = dialogRef.current
