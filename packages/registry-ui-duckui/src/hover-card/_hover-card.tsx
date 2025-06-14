@@ -4,7 +4,7 @@ import * as React from 'react'
 import { cn } from '@gentleduck/libs/cn'
 import { Button } from '../button'
 import { Slot } from '@gentleduck/aria-feather/slot'
-import { usePopoverContext, Popover } from '@gentleduck/aria-feather/popover'
+import { usePopoverContext, Root as Popover,Trigger as PopoverPrimitiveTrigger } from '@gentleduck/aria-feather/popover'
 import { AnimDialogVariants, AnimPopoverVariants, AnimTooltipVariants, AnimVariants } from '@gentleduck/motion/anim'
 
 const HoverCard = Popover
@@ -13,17 +13,19 @@ function HoverCardTrigger({
   onClick,
   open,
   children,
+  asChild,
   ...props
 }: React.ComponentPropsWithRef<typeof Slot> & {
   open?: boolean
   asChild?: boolean
 }): React.JSX.Element {
-  const { id } = usePopoverContext()
 
   return (
-    <Button aria-haspopup="dialog" aria-controls={id} popoverTarget={id} style={{ anchorName: `--${id}` }} {...props}>
-      {children}
-    </Button>
+    <PopoverPrimitiveTrigger>
+      <Button  {...props} asChild={asChild}>
+        {children}
+      </Button>
+    </PopoverPrimitiveTrigger>
   )
 }
 
@@ -36,6 +38,7 @@ function HoverCardContent({
 }: React.ComponentProps<'dialog'> & { overlay?: "default" | "nothing" } = { overlay: "nothing" }) {
 
   const { id } = usePopoverContext()
+  
   return (
     <dialog role='tooltip' style={{ positionAnchor: `--${id}` }} closedby="any" id={id} popover="auto"
       className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants(), AnimTooltipVariants(), className)}

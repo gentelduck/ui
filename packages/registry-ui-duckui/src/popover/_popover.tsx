@@ -4,27 +4,28 @@ import * as React from 'react'
 import { cn } from '@gentleduck/libs/cn'
 import { Button } from '../button'
 import { Slot } from '@gentleduck/aria-feather/slot'
-import { usePopoverContext, Popover } from '@gentleduck/aria-feather/popover'
+import { usePopoverContext, Root as Popover, Trigger as PopoverPrimitiveTrigger } from '@gentleduck/aria-feather/popover'
 import { AnimDialogVariants, AnimPopoverVariants, AnimVariants } from '@gentleduck/motion/anim'
 
 function PopoverTrigger({
   onClick,
   open,
   children,
+  asChild,
   ...props
 }: React.ComponentPropsWithRef<typeof Slot> & {
   open?: boolean
   asChild?: boolean
 }): React.JSX.Element {
-  const { id } = usePopoverContext()
 
   return (
-    <Button aria-haspopup="dialog" aria-controls={id} popoverTarget={id} style={{ anchorName: `--${id}` }} {...props}>
-      {children}
-    </Button>
+    <PopoverPrimitiveTrigger>
+      <Button  {...props} asChild={asChild}>
+        {children}
+      </Button>
+    </PopoverPrimitiveTrigger>
   )
 }
-
 
 function PopoverContent({
   className,
@@ -34,9 +35,9 @@ function PopoverContent({
   ...props
 }: React.ComponentProps<'dialog'> & { overlay?: "default" | "nothing" } = { overlay: "nothing" }) {
 
-  const { id } = usePopoverContext()
+  const { id, ref } = usePopoverContext()
   return (
-    <dialog style={{ positionAnchor: `--${id}` }} closedby="any" id={id} popover="auto"
+    <dialog ref={ref} style={{ positionAnchor: `--${id}` }} closedby="any" id={id} popover="auto"
       className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants({ side: side }), className)}
       {...props}>
       {children}
