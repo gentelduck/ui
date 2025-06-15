@@ -2,7 +2,7 @@ import React from "react"
 import { PopoverContext, usePopover, usePopoverContext } from "./popover.hooks"
 import { PopoverProps } from "./popover.types"
 import { Slot } from "../slot"
-
+import { useStableId } from "@gentleduck/hooks"
 
 
 /**
@@ -11,7 +11,7 @@ import { Slot } from "../slot"
  */
 export function Root({ children, open: openProp, onOpenChange }: PopoverProps): React.JSX.Element {
   const { open, onOpenChange: _onOpenChange, ref } = usePopover(openProp, onOpenChange)
-  const popoverId = React.useId()
+  const popoverId = useStableId()
   return (
     <PopoverContext.Provider
       value={{
@@ -40,7 +40,7 @@ export function Trigger({
       aria-haspopup="dialog"
       aria-controls={id}
       popoverTarget={id}
-      style={{ '--position-anchor': id } as React.CSSProperties}
+      style={{ '--position-anchor': `--${id}` } as React.CSSProperties}
       onClick={(e) => {
         onOpenChange(open ?? !_open)
         onClick?.(e)

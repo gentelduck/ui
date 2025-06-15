@@ -43,7 +43,7 @@ export const AnimDialogVariants = cva(
 )
 
 export const AnimPopoverVariants = cva(
-  `bg-popover text-popover-foreground inset-auto 
+  `bg-popover text-popover-foreground inset-auto absolute max-h-[unset]
   [position-anchor:var(--position-anchor)]
   [position-try:_most-height_flip-block,_most-width_flip-inline,_flip-block_flip-inline] [position-visibility:anchors-visible]`,
   {

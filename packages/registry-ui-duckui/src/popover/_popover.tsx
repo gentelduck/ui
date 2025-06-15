@@ -39,7 +39,7 @@ function PopoverContent({
 
   return (
     <dialog ref={ref}
-      style={{ '--position-anchor': id } as React.CSSProperties}
+      style={{ '--position-anchor': `--${id}` } as React.CSSProperties}
       closedby="any" id={id} popover="auto"
       className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants({ side: side }), className)}
       {...props}>

@@ -2,33 +2,13 @@
 
 import * as React from 'react'
 import { cn } from '@gentleduck/libs/cn'
-import { Button } from '../button'
-import { Slot } from '@gentleduck/aria-feather/slot'
 import { usePopoverContext, Root as Popover, Trigger as PopoverPrimitiveTrigger } from '@gentleduck/aria-feather/popover'
 import { AnimDialogVariants, AnimPopoverVariants, AnimTooltipVariants, AnimVariants } from '@gentleduck/motion/anim'
+import { PopoverTrigger } from '../popover/_popover'
 
 const Tooltip = Popover
 
-function TooltipTrigger({
-  onClick,
-  open,
-  children,
-  asChild,
-  ...props
-}: React.ComponentPropsWithRef<typeof Slot> & {
-  open?: boolean
-  asChild?: boolean
-}): React.JSX.Element {
-
-  return (
-    <PopoverPrimitiveTrigger>
-      <Button  {...props} asChild={asChild}>
-        {children}
-      </Button>
-    </PopoverPrimitiveTrigger>
-  )
-}
-
+const TooltipTrigger = PopoverTrigger
 
 function TooltipContent({
   className,
@@ -39,7 +19,8 @@ function TooltipContent({
 
   const { id } = usePopoverContext()
   return (
-    <dialog role='tooltip' style={{ positionAnchor: `--${id}` }} closedby="any" id={id} popover="auto"
+    <dialog role='tooltip' style={{ '--position-anchor': `--${id}` } as React.CSSProperties}
+      closedby="any" id={id} popover="auto"
       className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants(), AnimTooltipVariants(), className)}
       {...props}>
       {children}
