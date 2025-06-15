@@ -10,7 +10,7 @@ export const AnimVariants = cva('', {
     motionBackdrop: {
       default:
         'backdrop:transition-[inherit] backdrop:duration-[inherit] backdrop:ease-[inherit] backdrop:bg-black/50  backdrop:opacity-0 starting:open:backdrop:opacity-0 open:backdrop:opacity-100',
-      nothing: ""
+      nothing: "backdrop:opacity-0"
     },
     motionAlive: {
       default: 'transition-all transition-discrete ease-(--duck-motion-ease) duration-[200ms,150ms]',
@@ -44,7 +44,8 @@ export const AnimDialogVariants = cva(
 
 export const AnimPopoverVariants = cva(
   `bg-popover text-popover-foreground inset-auto 
-  [position-try-order:_most-height,most-width] [position-try-fallbacks:_flip-block,_flip-inline,_flip-block_flip-inline] [position-visibility:anchors-visible]`,
+  [position-anchor:var(--position-anchor)]
+  [position-try:_most-height_flip-block,_most-width_flip-inline,_flip-block_flip-inline] [position-visibility:anchors-visible]`,
   {
     variants: {
       side: {

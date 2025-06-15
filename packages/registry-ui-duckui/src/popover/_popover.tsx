@@ -20,7 +20,7 @@ function PopoverTrigger({
 
   return (
     <PopoverPrimitiveTrigger>
-      <Button  {...props} asChild={asChild}>
+      <Button className='[anchor-name:var(--position-anchor)]' {...props} asChild={asChild}>
         {children}
       </Button>
     </PopoverPrimitiveTrigger>
@@ -36,8 +36,11 @@ function PopoverContent({
 }: React.ComponentProps<'dialog'> & { overlay?: "default" | "nothing" } = { overlay: "nothing" }) {
 
   const { id, ref } = usePopoverContext()
+
   return (
-    <dialog ref={ref} style={{ positionAnchor: `--${id}` }} closedby="any" id={id} popover="auto"
+    <dialog ref={ref}
+      style={{ '--position-anchor': id } as React.CSSProperties}
+      closedby="any" id={id} popover="auto"
       className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants({ side: side }), className)}
       {...props}>
       {children}

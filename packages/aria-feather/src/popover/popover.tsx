@@ -37,7 +37,10 @@ export function Trigger({
 
   return (
     <Slot
-      aria-haspopup="dialog" aria-controls={id} popoverTarget={id} style={{ anchorName: `--${id}` }}
+      aria-haspopup="dialog"
+      aria-controls={id}
+      popoverTarget={id}
+      style={{ '--position-anchor': id } as React.CSSProperties}
       onClick={(e) => {
         onOpenChange(open ?? !_open)
         onClick?.(e)
