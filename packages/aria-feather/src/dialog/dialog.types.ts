@@ -8,4 +8,5 @@ export type DialogProps = {
   children?: React.ReactNode
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  lockScroll?: boolean
 }

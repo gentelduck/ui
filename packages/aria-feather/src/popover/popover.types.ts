@@ -10,4 +10,5 @@ export type PopoverProps = {
   open?: boolean
   onOpenChange?: (open: boolean) => void
   id: string
+  lockScroll?: boolean 
 }

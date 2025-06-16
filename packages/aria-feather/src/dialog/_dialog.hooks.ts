@@ -11,7 +11,7 @@ export function useDialogContext(name: string = 'Dialog'): DialogContextType {
   return context
 }
 
-export function useDialog(openProp?: boolean, onOpenChange?: (state: boolean) => void) {
+export function useDialog(openProp?: boolean, onOpenChange?: (state: boolean) => void, lockScroll?: boolean) {
   const dialogRef = React.useRef<HTMLDialogElement | null>(null)
   const [open, setOpen] = React.useState<boolean>(openProp ?? false)
 
@@ -34,7 +34,10 @@ export function useDialog(openProp?: boolean, onOpenChange?: (state: boolean) =>
 
   React.useEffect(() => {
     const dialog = dialogRef.current
-    lockScrollbar(open)
+
+    if (lockScroll) {
+      lockScrollbar(open)
+    }
 
     if (openProp) {
       handleOpenChange(true)

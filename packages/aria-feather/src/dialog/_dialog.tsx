@@ -24,8 +24,8 @@ export const DialogContext = React.createContext<DialogContextType | null>(null)
  * Dialog component that provides a context for managing its open state and
  * behavior. It uses a ref to handle the underlying HTMLDialogElement.
  */
-export function Root({ children, open: openProp, onOpenChange }: DialogProps): React.JSX.Element {
-  const { open, onOpenChange: _onOpenChange, ref } = useDialog(openProp, onOpenChange)
+export function Root({ children, open: openProp, onOpenChange, lockScroll = true }: DialogProps): React.JSX.Element {
+  const { open, onOpenChange: _onOpenChange, ref } = useDialog(openProp, onOpenChange, lockScroll)
 
   return (
     <DialogContext.Provider

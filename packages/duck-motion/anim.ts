@@ -28,7 +28,7 @@ export const AnimVariants = cva('', {
 })
 
 export const AnimDialogVariants = cva(
-  `border border-border bg-background rounded-lg shadow-sm outline-hidden p-6 gap-[inherit]`,
+  `border border-border bg-background rounded-lg shadow-sm outline-hidden p-6 m-0 gap-[inherit]`, 
   {
     variants: {
       animation: {
@@ -43,7 +43,7 @@ export const AnimDialogVariants = cva(
 )
 
 export const AnimPopoverVariants = cva(
-  `bg-popover text-popover-foreground inset-auto absolute max-h-[unset]
+  `bg-popover text-popover-foreground inset-auto absolute max-h-none
   [position-anchor:var(--position-anchor)]
   [position-try:_most-height_flip-block,_most-width_flip-inline,_flip-block_flip-inline] [position-visibility:anchors-visible]`,
   {
