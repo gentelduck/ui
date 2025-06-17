@@ -20,7 +20,9 @@ function TooltipContent({
 
   const { id, ref } = useDialogContext()
   return (
-    <dialog ref={ref} role='tooltip' style={{ '--position-anchor': `--${id}` } as React.CSSProperties}
+    <dialog 
+      ref={ref} 
+      role='tooltip' style={{ '--position-anchor': `--${id}` } as React.CSSProperties}
       closedby="any" id={id} popover="auto"
       className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants(), AnimTooltipVariants(), className)}
       {...props}>

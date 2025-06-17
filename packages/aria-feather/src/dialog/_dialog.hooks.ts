@@ -46,28 +46,46 @@ export function useDialog({ openProp, onOpenChange, lockScroll, hoverable, mode 
     const trigger = triggerRef.current
     if (lockScroll) lockScrollbar(open)
 
-
     if (openProp) {
       handleOpenChange(true)
     } else if (openProp === false) {
       handleOpenChange(false)
     }
-
     function dialogClose() {
       handleOpenChange(false)
     }
 
     dialog?.addEventListener("close", dialogClose)
+
+    let openTimer = null;
+    let closeTimer = null;
+
+    function openAfterDelay() {
+      clearTimeout(closeTimer);
+      openTimer = setTimeout(() => handleOpenChange(true), 300);
+    }
+
+    function closeAfterDelay() {
+      clearTimeout(openTimer);
+      closeTimer = setTimeout(() => handleOpenChange(false), 1500);
+    }
+
+
+    // TODO: focus visible not working and if applied it leads to random UI rendering
     if (hoverable) {
-      trigger?.addEventListener("mouseover", () => handleOpenChange(true))
-      // trigger?.addEventListener("mouseover", () => handleOpenChange(true))
+      [trigger, dialog].forEach(elm => {
+        elm?.addEventListener("mouseover", openAfterDelay);
+        elm?.addEventListener("mouseout", closeAfterDelay);
+      });
     }
 
     return () => {
       dialog?.removeEventListener("close", dialogClose)
       if (hoverable) {
-        trigger?.removeEventListener("mouseover", () => handleOpenChange(true))
-        // trigger?.removeEventListener("mouseout", () => handleOpenChange(true))
+        [trigger, dialog].forEach(elm => {
+          elm?.addEventListener("mouseover", openAfterDelay);
+          elm?.addEventListener("mouseout", closeAfterDelay);
+        });
       }
       cleanLockScrollbar()
     }

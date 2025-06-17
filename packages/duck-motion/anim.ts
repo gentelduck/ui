@@ -43,8 +43,8 @@ export const AnimDialogVariants = cva(
 )
 
 export const AnimPopoverVariants = cva(
-  `bg-popover text-popover-foreground inset-auto absolute max-h-none
-  [position-anchor:var(--position-anchor)]
+  `bg-popover text-popover-foreground inset-auto absolute max-h-none p-4 w-fit
+  [position-anchor:var(--position-anchor)] 
   [position-try:_most-height_flip-block,_most-width_flip-inline,_flip-block_flip-inline] [position-visibility:anchors-visible]`,
   {
     variants: {
@@ -109,7 +109,7 @@ export const AnimPopoverVariants = cva(
 )
 
 export const AnimTooltipVariants = cva(
-  `p-2.5 px-4 w-fit`,
+  `px-3 py-1.5 !text-primary-foreground bg-primary border-primary text-xs text-balance`,
 )
 
 export const AnimDialogModalVariants = cva(
