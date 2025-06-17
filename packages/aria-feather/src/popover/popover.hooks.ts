@@ -1,20 +1,20 @@
-import React from "react"
-import { PopoverContextType } from "./popover.types"
-import { useDialog } from "../dialog/_dialog.hooks"
+// import React from "react"
+// import { useDialog } from "../dialog/_dialog.hooks"
+// import { DialogContextType } from "../dialog"
 
-/**
- * Context for managing the open state of the popover.
- *
- */
-export const PopoverContext = React.createContext<PopoverContextType | null>(null)
+// /**
+//  * Context for managing the open state of the popover.
+//  *
+//  */
+// export const PopoverContext = React.createContext<DialogContextType | null>(null)
 
-export function usePopoverContext(name: string = 'Popover'): PopoverContextType {
-  const context = React.useContext(PopoverContext)
-  if (!context) {
-    throw new Error(`usePopoverContext must be used within a ${name}`)
-  }
-  return context
-}
+// export function usePopoverContext(name: string = 'Popover'): DialogContextType {
+//   const context = React.useContext(PopoverContext)
+//   if (!context) {
+//     throw new Error(`usePopoverContext must be used within a ${name}`)
+//   }
+//   return context
+// }
 
 
-export {useDialog as usePopover}
+// export { useDialog as usePopover }

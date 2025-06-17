@@ -1,27 +1,14 @@
 import React from "react"
-import { PopoverContext, usePopover, usePopoverContext } from "./popover.hooks"
-import { PopoverProps } from "./popover.types"
 import { Slot } from "../slot"
-import { useStableId } from "@gentleduck/hooks"
-
+import { DialogProps, Root as DialogRoot, useDialogContext } from "../dialog"
 
 /**
  * Popover component that provides a context for managing its open state and
  * behavior. It uses a ref to handle the underlying HTMLPopoverElement.
  */
-export function Root({ children, open: openProp, onOpenChange, lockScroll = false }: PopoverProps): React.JSX.Element {
-  const { open, onOpenChange: _onOpenChange, ref } = usePopover(openProp, onOpenChange, lockScroll)
-  const popoverId = useStableId()
+export function Root({ lockScroll = false, hoverable = true, mode = "popover",...props }: DialogProps): React.JSX.Element {
   return (
-    <PopoverContext.Provider
-      value={{
-        open: open,
-        onOpenChange: _onOpenChange,
-        ref,
-        id: popoverId,
-      }}>
-      {children}
-    </PopoverContext.Provider>
+    <DialogRoot {...props} mode={mode} lockScroll={lockScroll} hoverable={hoverable} />
   )
 }
 
@@ -33,10 +20,11 @@ export function Trigger({
   open?: boolean
   asChild?: boolean
 }): React.JSX.Element {
-  const { onOpenChange, open: _open, id } = usePopoverContext()
+  const { onOpenChange, open: _open, id, triggerRef } = useDialogContext()
 
   return (
     <Slot
+      ref={triggerRef}
       aria-haspopup="dialog"
       aria-controls={id}
       popoverTarget={id}

@@ -2,12 +2,12 @@ import React from 'react'
 import { Slot } from '../slot'
 import { useDialog, useDialogContext } from './_dialog.hooks'
 import { DialogContextType, DialogProps } from './dialog.types'
-import { useComputedTimeoutTransition } from '@gentleduck/hooks'
+import { useComputedTimeoutTransition, useStableId } from '@gentleduck/hooks'
 import { isSupported as isClosedBySupported, apply as applyClosedBy } from "dialog-closedby-polyfill";
 import { isSupported as isInvokersSupported, apply as applyInvokers } from "invokers-polyfill/fn";
 
-if (!isClosedBySupported()) { 
-  applyClosedBy() 
+if (!isClosedBySupported()) {
+  applyClosedBy()
 };
 
 if (!isInvokersSupported()) {
@@ -24,8 +24,10 @@ export const DialogContext = React.createContext<DialogContextType | null>(null)
  * Dialog component that provides a context for managing its open state and
  * behavior. It uses a ref to handle the underlying HTMLDialogElement.
  */
-export function Root({ children, open: openProp, onOpenChange, lockScroll = true }: DialogProps): React.JSX.Element {
-  const { open, onOpenChange: _onOpenChange, ref } = useDialog(openProp, onOpenChange, lockScroll)
+
+export function Root({ children, open: openProp, onOpenChange, lockScroll = true, hoverable = false, mode = "dialog" }: DialogProps): React.JSX.Element {
+  const { open, onOpenChange: _onOpenChange, ref, triggerRef } = useDialog({ openProp, onOpenChange, lockScroll, hoverable, mode })
+  const id = useStableId()
 
   return (
     <DialogContext.Provider
@@ -33,6 +35,8 @@ export function Root({ children, open: openProp, onOpenChange, lockScroll = true
         open: open,
         onOpenChange: _onOpenChange,
         ref,
+        triggerRef,
+        id
       }}>
       {children}
     </DialogContext.Provider>

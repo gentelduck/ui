@@ -4,8 +4,13 @@ import * as React from 'react'
 import { cn } from '@gentleduck/libs/cn'
 import { Button } from '../button'
 import { Slot } from '@gentleduck/aria-feather/slot'
-import { usePopoverContext, Root as Popover, Trigger as PopoverPrimitiveTrigger } from '@gentleduck/aria-feather/popover'
+import { Root, Trigger as PopoverPrimitiveTrigger } from '@gentleduck/aria-feather/popover'
 import { AnimDialogVariants, AnimPopoverVariants, AnimVariants } from '@gentleduck/motion/anim'
+import { useDialogContext } from '@gentleduck/aria-feather/dialog'
+
+function Popover({ hoverable = false, mode = "dialog", ...props }: React.ComponentPropsWithoutRef<typeof Root>) {
+  return <Root {...props} hoverable={hoverable} mode={mode} />
+}
 
 function PopoverTrigger({
   onClick,
@@ -35,7 +40,7 @@ function PopoverContent({
   ...props
 }: React.ComponentProps<'dialog'> & { overlay?: "default" | "nothing" } = { overlay: "nothing" }) {
 
-  const { id, ref } = usePopoverContext()
+  const { id, ref } = useDialogContext()
 
   return (
     <dialog ref={ref}

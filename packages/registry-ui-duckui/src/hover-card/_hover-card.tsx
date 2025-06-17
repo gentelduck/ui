@@ -2,9 +2,10 @@
 
 import * as React from 'react'
 import { cn } from '@gentleduck/libs/cn'
-import { usePopoverContext, Root as Popover } from '@gentleduck/aria-feather/popover'
+import { Root as Popover } from '@gentleduck/aria-feather/popover'
 import { AnimDialogVariants, AnimPopoverVariants, AnimTooltipVariants, AnimVariants } from '@gentleduck/motion/anim'
 import { PopoverTrigger } from '../popover/_popover'
+import { useDialogContext } from '@gentleduck/aria-feather/dialog'
 
 const HoverCard = Popover
 
@@ -17,10 +18,11 @@ function HoverCardContent({
   ...props
 }: React.ComponentProps<'dialog'> & { overlay?: "default" | "nothing" } = { overlay: "nothing" }) {
 
-  const { id } = usePopoverContext()
+  const { id, ref } = useDialogContext()
+
 
   return (
-    <dialog role='tooltip' style={{ '--position-anchor': `--${id}` } as React.CSSProperties}
+    <dialog ref={ref} role='tooltip' style={{ '--position-anchor': `--${id}` } as React.CSSProperties}
       closedby="any" id={id} popover="auto"
       className={cn(AnimVariants({ motionBackdrop: overlay }), AnimDialogVariants(), AnimPopoverVariants(), AnimTooltipVariants(), className)}
       {...props}>
