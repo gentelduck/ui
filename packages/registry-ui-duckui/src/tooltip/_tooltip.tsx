@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { cn } from '@gentleduck/libs/cn'
 import { Root as Popover, Trigger as PopoverPrimitiveTrigger } from '@gentleduck/aria-feather/popover'
-import { AnimDialogVariants, AnimPopoverVariants, AnimTooltipVariants, AnimVariants } from '@gentleduck/motion/anim'
+import { AnimDialogVariants, AnimPopoverArrowVariants, AnimPopoverVariants, AnimTooltipVariants, AnimVariants } from '@gentleduck/motion/anim'
 import { PopoverTrigger } from '../popover/_popover'
 import { useDialogContext } from '@gentleduck/aria-feather/dialog'
 
@@ -20,6 +20,7 @@ function TooltipContent({
 
   const { id, ref } = useDialogContext()
   return (
+    <>
     <dialog 
       ref={ref} 
       role='tooltip' style={{ '--position-anchor': `--${id}` } as React.CSSProperties}
@@ -28,6 +29,7 @@ function TooltipContent({
       {...props}>
       {children}
     </dialog>
+    </>
   )
 }
 
@@ -64,5 +66,7 @@ export { Tooltip, TooltipTrigger, TooltipContent }
 // }
 
 // PopoverWrapper.displayName = 'PopoverWrapper'
+
+// export { Popover, PopoverTrigger, PopoverContent, PopoverWrapper, PopoverClose }
 
 // export { Popover, PopoverTrigger, PopoverContent, PopoverWrapper, PopoverClose }

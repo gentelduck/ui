@@ -28,7 +28,7 @@ export const AnimVariants = cva('', {
 })
 
 export const AnimDialogVariants = cva(
-  `border border-border bg-background rounded-lg shadow-sm outline-hidden p-6 m-0 gap-[inherit]`, 
+  `border border-border bg-background rounded-lg shadow-sm outline-hidden p-6 m-0 gap-[inherit]`,
   {
     variants: {
       animation: {
@@ -41,6 +41,8 @@ export const AnimDialogVariants = cva(
     },
   },
 )
+
+
 
 export const AnimPopoverVariants = cva(
   `bg-popover text-popover-foreground inset-auto absolute max-h-none p-4 w-fit
@@ -148,6 +150,30 @@ export const AnimSheetVariants = cva(
           rounded-l-lg
           translate-x-full starting:open:translate-x-full open:translate-x-0
           start-auto
+        `,
+      },
+    },
+    defaultVariants: {
+      side: 'left',
+    },
+  },
+)
+export const AnimPopoverArrowVariants = cva(
+  `after:border-[inherit] after:w-0 after:h-0 after:absolute after:[position-anchor:var(--position-anchor)] after:[position-area:inherit]`,
+  {
+    variants: {
+      side: {
+        top: `
+            after:border-x-8 after:border-x-transparent after:border-t-10 
+          `,
+        bottom: `
+            after:border-x-8 after:border-x-transparent after:border-b-10 
+        `,
+        left: `
+            after:border-y-8 after:border-y-transparent after:border-l-10 
+            `,
+        right: `
+            after:border-y-8 after:border-y-transparent after:border-r-10 
         `,
       },
     },

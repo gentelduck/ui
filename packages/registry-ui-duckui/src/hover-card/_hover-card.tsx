@@ -20,7 +20,6 @@ function HoverCardContent({
 
   const { id, ref } = useDialogContext()
 
-
   return (
     <dialog ref={ref} role='tooltip' style={{ '--position-anchor': `--${id}` } as React.CSSProperties}
       closedby="any" id={id} popover="auto"
