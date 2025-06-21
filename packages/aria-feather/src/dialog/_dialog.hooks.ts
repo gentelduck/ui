@@ -56,6 +56,7 @@ export function useDialog({ openProp, onOpenChange, lockScroll, hoverable, mode 
     }
 
     dialog?.addEventListener("close", dialogClose)
+    dialog?.addEventListener("beforetoggle", dialogClose)
 
     let openTimer = null;
     let closeTimer = null;
@@ -81,10 +82,12 @@ export function useDialog({ openProp, onOpenChange, lockScroll, hoverable, mode 
 
     return () => {
       dialog?.removeEventListener("close", dialogClose)
+      dialog?.removeEventListener("beforetoggle", dialogClose)
+
       if (hoverable) {
         [trigger, dialog].forEach(elm => {
-          elm?.addEventListener("mouseover", openAfterDelay);
-          elm?.addEventListener("mouseout", closeAfterDelay);
+          elm?.removeEventListener("mouseover", openAfterDelay);
+          elm?.removeEventListener("mouseout", closeAfterDelay);
         });
       }
       cleanLockScrollbar()

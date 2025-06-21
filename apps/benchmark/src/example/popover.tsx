@@ -9,20 +9,20 @@ import {
 
 export default function PopoverDemo() {
   return (
-    <Popover>
+    <Popover >
       <PopoverTrigger>
         Open popover
       </PopoverTrigger>
-      <PopoverContent side="right" className="w-80">
-        <div className="grid gap-4">
+      <PopoverContent side="left" className="w-80">
+        <div className="gap-4 grid">
           <div className="space-y-2">
-            <h4 className="leading-none font-medium">Dimensions</h4>
+            <h4 className="font-medium leading-none">Dimensions</h4>
             <p className="text-muted-foreground text-sm">
               Set the dimensions for the layer.
             </p>
           </div>
-          <div className="grid gap-2">
-            <div className="grid grid-cols-3 items-center gap-4">
+          <div className="gap-2 grid">
+            <div className="items-center gap-4 grid grid-cols-3">
               <Label htmlFor="width">Width</Label>
               <Input
                 id="width"
@@ -30,7 +30,7 @@ export default function PopoverDemo() {
                 className="col-span-2 h-8"
               />
             </div>
-            <div className="grid grid-cols-3 items-center gap-4">
+            <div className="items-center gap-4 grid grid-cols-3">
               <Label htmlFor="maxWidth">Max. width</Label>
               <Input
                 id="maxWidth"
@@ -38,7 +38,7 @@ export default function PopoverDemo() {
                 className="col-span-2 h-8"
               />
             </div>
-            <div className="grid grid-cols-3 items-center gap-4">
+            <div className="items-center gap-4 grid grid-cols-3">
               <Label htmlFor="height">Height</Label>
               <Input
                 id="height"
@@ -46,7 +46,7 @@ export default function PopoverDemo() {
                 className="col-span-2 h-8"
               />
             </div>
-            <div className="grid grid-cols-3 items-center gap-4">
+            <div className="items-center gap-4 grid grid-cols-3">
               <Label htmlFor="maxHeight">Max. height</Label>
               <Input
                 id="maxHeight"

@@ -43,7 +43,6 @@ function PopoverContent({
   const { id, ref } = useDialogContext()
 
   return (
-    <>
     <dialog ref={ref}
       style={{ '--position-anchor': `--${id}` } as React.CSSProperties}
       closedby="any" id={id} popover="auto"
@@ -51,8 +50,6 @@ function PopoverContent({
       {...props}>
       {children}
     </dialog>
-    <span style={{ '--position-anchor': `--${id}` } as React.CSSProperties} className={AnimPopoverArrowVariants()}></span>
-</>
   )
 }
 
