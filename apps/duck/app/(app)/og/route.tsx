@@ -4,8 +4,8 @@ export const runtime = 'nodejs'
 
 async function loadAssets(): Promise<{ name: string; data: Buffer; weight: 400 | 700; style: 'normal' }[]> {
   const [{ base64Font: regular }, { base64Font: bold }] = await Promise.all([
-    import('./jetbrains-mono-400-woff2.json').then((mod) => mod.default || mod),
-    import('./jetbrains-mono-700-woff2.json').then((mod) => mod.default || mod),
+    import('./jetbrains-mono-400-woff.json').then((mod) => mod.default || mod),
+    import('./jetbrains-mono-700-woff.json').then((mod) => mod.default || mod),
   ])
 
   return [
@@ -309,7 +309,7 @@ export async function GET(request: Request) {
       <div tw="flex flex-col absolute left-24 right-24 top-24 bottom-24">
         <div tw="flex items-center">
           {/* biome-ignore lint/performance/noImgElement: ImageResponse markup does not support next/image. */}
-          <img alt="" height="56" src={logoSrc} width="56" />
+          <img alt="" height={56} src={logoSrc} width={56} />
           <div tw="flex flex-col ml-4">
             <span
               style={{
