@@ -1,5 +1,18 @@
 # @gentleduck/registry-ui
 
+## 0.6.1
+
+### Patch Changes
+
+- bfa58d9: - Disabled and `aria-disabled` controls show a `cursor-not-allowed` cursor. They relied on `pointer-events-none` alone, which hid the cursor instead of showing that the control is disabled.
+  - An icon inside a component can be resized with its own `size-*` class, without `!`. The components' default `[&_svg]:size-4` now steps aside when the icon carries a size.
+  - The `Switch` thumb grows from the correct side in left-to-right layouts. Its transform origins were the right-to-left ones; they now follow the direction.
+  - `PopoverArrow`'s props no longer reference the primitive's internal `Scope` type, which made declaration emit non-portable.
+- Updated dependencies [1681854]
+- Updated dependencies [bfa58d9]
+  - @gentleduck/calendar@0.5.0
+  - @gentleduck/primitives@0.4.0
+
 ## 0.6.0
 
 ### Minor Changes

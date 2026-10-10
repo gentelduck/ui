@@ -1,5 +1,11 @@
 # @gentleduck/docs
 
+## 3.0.1
+
+### Patch Changes
+
+- bfa58d9: Stop the on-page table of contents from splitting words mid-character. Long entries such as `throwError(code, meta?)` broke as `throwError(code, m` / `eta?)`; they now wrap between words, and split inside a word only when a single run cannot fit.
+
 ## 3.0.0
 
 ### Major Changes
