@@ -116,3 +116,6 @@ node_modules/
 
 # local security-audit working dir
 /audit/
+
+# Playwright MCP screenshots and console logs
+.playwright-mcp/
