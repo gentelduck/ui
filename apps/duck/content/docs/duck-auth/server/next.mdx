@@ -6,11 +6,14 @@ section: Server
 A route handler composes no middleware, so one wrapper gives every route the CSRF guard and the error mapping:
 
 ```ts title="lib/auth.ts"
+import { drizzlePgAdapter } from '@gentleduck/auth/adapters/drizzle/pg'
 import { createAuth } from '@gentleduck/auth/core'
 import { errorResponse } from '@gentleduck/auth/server/generic'
 import { withNextCsrf } from '@gentleduck/auth/server/next'
 
 export const auth = createAuth({
+  baseUrl: 'https://app.example.com',
+  stores: drizzlePgAdapter(process.env.DATABASE_URL ?? ''),
   // ...
 })
 
