@@ -1,5 +1,5 @@
 ---
-"@gentleduck/calendar": patch
+"@gentleduck/calendar": minor
 ---
 
 Fix importing `@gentleduck/calendar` or `@gentleduck/calendar/adapter` without `date-fns`, `dayjs` and `luxon` installed (#545). Both entry points imported every adapter statically, so Node failed with `ERR_MODULE_NOT_FOUND` and bundlers such as Vite and esbuild could not resolve the missing library, even when only `NativeAdapter` was used.
