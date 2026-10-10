@@ -95,7 +95,7 @@
     "build:docs": "node scripts/build-changelogs.mjs && duck-md build && bun scripts/build-search-index.mjs && node scripts/build-llm-pages.mjs",
     "build:reg": "bun run build:reg:cli && bun run format:reg",
     "build:reg:cli": "registry-build build",
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS=--max-old-space-size=1024 next dev",
     "dev:docs": "duck-md dev",
     "format:reg": "bunx biome format --write ./__ui_registry__/index.tsx",
     "lint": "biome check .",
