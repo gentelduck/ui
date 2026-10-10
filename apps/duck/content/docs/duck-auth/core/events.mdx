@@ -19,6 +19,23 @@ Payloads are typed per event name. Handlers run one after another; a handler tha
 
 `strict({ env: 'production' })` refuses an engine with no `lockout` listener, since a lockout nobody hears is a brute force nobody sees.
 
+## Where a handler runs
+
+```ts
+// A write that must happen once: on the server that emitted, inside its request.
+auth.events.on('session.revoked', (e) => auditLog.write(e), { delivery: 'origin' })
+
+// State every server keeps: on every server.
+auth.events.on('authz.revoked', ({ identityId }) => decisionCache.drop(identityId))
+```
+
+| `delivery` | Runs on | Request context |
+| --- | --- | --- |
+| `'origin'` | the server that emitted, once | kept |
+| `'fleet'`, the default | every server | kept on the emitter; the others get a copy of the payload and none |
+
+On the in-process bus both run on the one server there is. Webhooks are delivered as `origin`, once per emit.
+
 ## The events
 
 | Event | Payload | Emitted when |
@@ -58,7 +75,7 @@ A payload that already carries `audit` is left alone. `runWithAuditEnvelope(enve
 
 ## Across a fleet
 
-The default bus is in-process: a `lockout` raised on one instance is heard only there. With more than one instance, publish through Redis:
+The default bus is in-process: a `fleet` handler hears only its own instance. With more than one instance and any `fleet` handler, publish through Redis:
 
 ```ts
 import { redisEvents } from '@gentleduck/auth/adapters/redis'
@@ -70,7 +87,7 @@ createAuth({
 ```
 
 - `redis` is an `@upstash/redis`-shaped client with `publish` and `subscribe`. For ioredis or iovalkey, `valkeyEvents({ cmd, sub })` from `@gentleduck/auth/adapters/valkey` takes a command connection and a dedicated subscriber one.
-- Each event goes to the channel `${prefix}:${event}`. Local handlers run straight off the emit, and every other instance runs its own when the message arrives, with `Date` fields revived.
+- Each emit goes to the channel `${prefix}:${event}`. The emitter runs its `origin` and `fleet` handlers straight off the emit, and every other instance runs its `fleet` handlers when the message arrives, with `Date` fields revived. An instance subscribes to a channel only while it holds a `fleet` handler for that event.
 - A failed publish is logged, not thrown, so Redis being down never fails a sign-in.
 
-`strict({ env: 'production' })` refuses the in-process bus.
+`strict({ env: 'production' })` refuses the in-process bus while it holds a `fleet` handler, naming the events, and passes it when every handler is `origin`. It sees only the handlers registered before it runs.

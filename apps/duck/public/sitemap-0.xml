@@ -40,12 +40,6 @@
 <url><loc>https://gentleduck.org/duck-auth/channels/smtp</loc><lastmod>2026-07-02T03:11:11.285Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://gentleduck.org/duck-auth/channels/twilio</loc><lastmod>2026-07-02T03:11:11.285Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://gentleduck.org/duck-auth/channels/webpush</loc><lastmod>2026-07-02T03:11:11.285Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://gentleduck.org/duck-auth/client</loc><lastmod>2026-07-02T03:11:11.285Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://gentleduck.org/duck-auth/client/react</loc><lastmod>2026-07-02T03:11:11.285Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://gentleduck.org/duck-auth/client/solid</loc><lastmod>2026-07-02T03:11:11.285Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://gentleduck.org/duck-auth/client/svelte</loc><lastmod>2026-07-02T03:11:11.285Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://gentleduck.org/duck-auth/client/vanilla</loc><lastmod>2026-07-02T03:11:11.285Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://gentleduck.org/duck-auth/client/vue</loc><lastmod>2026-07-02T03:11:11.285Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://gentleduck.org/duck-auth/comparison</loc><lastmod>2026-07-02T03:11:11.285Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://gentleduck.org/duck-auth/concepts</loc><lastmod>2026-07-02T03:11:11.285Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://gentleduck.org/duck-auth/core</loc><lastmod>2026-07-02T03:11:11.285Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>

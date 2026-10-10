@@ -80,18 +80,46 @@ export const auth = createAuth({
 
 <Step>The callback route</Step>
 
-In `src/server.ts`, import `AuthError` from `@gentleduck/auth/core`, `applyIntents` and `expressCaller` from `@gentleduck/auth/server/express`, and `oauthCallback` beside `errorToHttp`. Change the static line to serve `.html` pages without the extension, and add the callback next to the mounted routes:
+In `src/server.ts`, import `isSafeRedirectUrl` beside `errorToHttp`. Change the static line to serve `.html` pages without the extension, and add the two provider routes under the sign-in ones:
 
 ```ts title="src/server.ts"
 app.use(express.static('public', { extensions: ['html'] }))
 
+// A script cannot follow a redirect to the IdP, so it gets `{ url }` to navigate to
+app.post('/auth/providers/:id/begin', async (req, res) => {
+  const intents = await auth.flows.beginProvider(req.params.id, req.body ?? {})
+  applyIntents(
+    intents.map((i) =>
+      i.type === 'redirect' && isSafeRedirectUrl(i.url) ? { type: 'json', status: 200, body: { url: i.url } } : i,
+    ),
+    res,
+  )
+})
+
+// A GET, so expressCsrf lets it through; the signed state is the proof
 app.get('/auth/providers/:id/callback', async (req, res) => {
+  const failed = (code: string) => res.redirect(`/?error=${code}`)
+  const id = req.params.id
+  if (!auth.providers.has(id) || auth.providers.get(id).kind !== 'oauth') return failed('AUTH_PROVIDER_FAILED')
+  const params = new URL(req.originalUrl, 'http://localhost').searchParams
+  const headers = toHeaders(req.headers)
   try {
-    const request = { cookie: req.headers.cookie, method: req.method, url: req.url }
-    const intents = await oauthCallback(auth, req.params.id, request, expressCaller(req))
+    const { intents } = await auth.flows.signIn({
+      input: {
+        code: params.get('code') ?? '',
+        cookieHeader: headers.get('cookie') ?? '',
+        state: params.get('state') ?? '',
+      },
+      providerId: id,
+      ...expressCaller(req),
+      previousSid: auth.transport.extract({ headers }) ?? undefined,
+    })
+    const error = intents.find((intent) => intent.type === 'error')
+    if (error) return failed(error.code)
     applyIntents([...intents, { type: 'redirect', url: '/' }], res)
   } catch (err) {
-    res.redirect(`/?error=${err instanceof AuthError ? err.code : 'AUTH_PROVIDER_FAILED'}`)
+    if (!(err instanceof AuthError)) throw err
+    failed(err.code)
   }
 })
 ```
@@ -118,7 +146,7 @@ if (!status || !list || !signInForm || !noteForm || !signOut || !linkForm || !gi
 }
 ```
 
-hide the form with the sign-in one inside `onChange`:
+hide the form with the sign-in one inside `render`:
 
 ```ts title="src/page.ts"
   linkForm.hidden = Boolean(identity)
@@ -129,11 +157,14 @@ and wire them at the end:
 ```ts title="src/page.ts"
 linkForm.addEventListener('submit', async (event) => {
   event.preventDefault()
-  await client.beginProvider('magic-link', { email: new FormData(linkForm).get('email') })
+  await post('/auth/providers/magic-link/begin', { email: new FormData(linkForm).get('email') })
   status.textContent = 'Check your email'
 })
 
-github.addEventListener('click', () => client.beginProvider('oauth:github'))
+github.addEventListener('click', async () => {
+  const { url } = await (await post('/auth/providers/oauth:github/begin')).json()
+  location.assign(url)
+})
 ```
 
 <Step>The page the link opens</Step>
@@ -147,15 +178,19 @@ github.addEventListener('click', () => client.beginProvider('oauth:github'))
 ```
 
 ```ts title="src/magic-link.ts"
-import { createAuthClient } from '@gentleduck/auth/client/vanilla'
-
-const client = createAuthClient({ baseUrl: '/auth', csrfCookieName: 'duck-csrf' })
 const token = new URLSearchParams(location.search).get('token') ?? ''
 
 document.querySelector('button')?.addEventListener('click', async () => {
-  const res = await client.signIn({ providerId: 'magic-link', input: { token } })
+  const res = await fetch('/auth/signin', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-csrf-token': document.cookie.match(/(?:^|; )duck-csrf=([^;]*)/)?.[1] ?? '',
+    },
+    body: JSON.stringify({ providerId: 'magic-link', input: { token } }),
+  })
   if (res.ok) location.assign('/')
-  else document.body.append(res.error.code)
+  else document.body.append((await res.json()).error.code)
 })
 ```
 
@@ -168,10 +203,10 @@ npx tsx src/server.ts
 
 ## What just happened
 
-1. **Sending a link answered the same for anyone.** `beginProvider('magic-link')` answers `{ ok: true }` whether or not the address has an account, and the server printed a link to `/magic-link?token=...` only for Ada.
+1. **Sending a link answered the same for anyone.** `flows.beginProvider('magic-link')` answers `{ ok: true }` whether or not the address has an account, and the server printed a link to `/magic-link?token=...` only for Ada.
 2. **The link signs in on a click, not on load.** Mail scanners open links to check them; a page that signed in on load would spend the token before the person got there.
 3. **Redeeming the link proved the address.** Ada's identity is now `emailVerified`. If it was not before, the link also removed everything else on the account, her password included: until that moment, anyone could have signed up with her address and set it.
-4. **GitHub's begin answered a URL, not a redirect.** The client asks for JSON, so the begin route answers `{ url }` and the client sends the page there, carrying the `duck-oauth` cookie that binds the flow to this browser.
+4. **GitHub's begin answered a URL, not a redirect.** A script cannot follow a redirect to another origin, so the begin route answers `{ url }` and the page sends itself there, carrying the `duck-oauth` cookie that binds the flow to this browser.
 5. **The callback found Ada's account.** GitHub said her primary address is verified, and so had duck-auth, so `'link-if-verified'` linked GitHub to the existing identity. The session's factor is `oauth`.
 
 ## Who an OAuth sign-in becomes

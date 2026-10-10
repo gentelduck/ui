@@ -1,6 +1,6 @@
 ---
 title: Testing
-description: An in-memory engine for tests, capturing what would be mailed, a redis double, and stubbing the client
+description: An in-memory engine for tests, capturing what would be mailed, a redis double, and driving your routes
 section: Advanced
 ---
 ## An engine for tests
@@ -73,20 +73,17 @@ import { fakeRedis } from '@gentleduck/auth/test'
 const sessions = session({ redis: fakeRedis() })
 ```
 
-## The client
+## Your routes
 
-The client calls the `fetch` it is given, so a test can answer it directly:
+A route over a Fetch-native framework takes a `Request`, so a test calls it with no server. With a Hono `app`:
 
 ```ts
-import { createAuthClient } from '@gentleduck/auth/client/vanilla'
-
-const client = createAuthClient({
-  baseUrl: '/auth',
-  fetch: async (url) =>
-    String(url) === '/auth/session'
-      ? Response.json({ session: null, identity: null })
-      : Response.json({ ok: false, error: { code: 'AUTH_INVALID_CREDENTIALS', status: 401 } }, { status: 401 }),
+const res = await app.request('/auth/signin', {
+  body: JSON.stringify({ providerId: 'password', input: { email: 'a@x.com', password: 'correct-horse-battery' } }),
+  headers: { 'content-type': 'application/json', 'sec-fetch-site': 'same-origin' },
+  method: 'POST',
 })
+expect(res.headers.get('set-cookie')).toContain('duck-sid=')
 ```
 
-For component stories, the [Storybook decorator](/duck-auth/client/react#storybook) renders against a mock client.
+Send `sec-fetch-site: cross-site` to see the CSRF guard answer 403 `AUTH_CSRF`.

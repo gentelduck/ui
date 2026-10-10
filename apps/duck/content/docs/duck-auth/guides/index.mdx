@@ -84,26 +84,46 @@ export const auth = createAuth({
 })
 ```
 
-<Step>Mount the routes</Step>
+<Step>Write the routes</Step>
 
-`server/express` provides handlers for duck-auth's own endpoints. Sign-up is yours to write, since what an account needs (a name, terms accepted, an invite) is your app's call.
+The routes are yours, over `auth.flows`. `server/express` supplies the glue: the CSRF guard, the caller, and `applyIntents` to write a flow's answer. Sign-up is yours too, since what an account needs (a name, terms accepted, an invite) is your app's call.
 
 ```ts title="src/server.ts"
+import { AuthError } from '@gentleduck/auth/core'
 import { errorToHttp } from '@gentleduck/auth/server/generic'
-import { expressCsrf, mountProviderBegin, mountSession, mountSignIn, mountSignOut } from '@gentleduck/auth/server/express'
+import { applyIntents, expressCaller, expressCsrf, toHeaders } from '@gentleduck/auth/server/express'
 import express, { type ErrorRequestHandler } from 'express'
 import { auth } from './auth'
 
 const app = express()
 app.use(express.json())
-
-app.post('/auth/signin', mountSignIn(auth))
-app.post('/auth/signout', mountSignOut(auth))
-app.get('/auth/session', mountSession(auth))
-app.post('/auth/providers/:id/begin', mountProviderBegin(auth))
-
-// Your own routes take the CSRF guard; duck-auth's handlers run it themselves.
 app.use(expressCsrf(auth))
+
+app.post('/auth/signin', async (req, res) => {
+  const { providerId, input } = req.body ?? {}
+  if (typeof providerId !== 'string') throw new AuthError('AUTH_INVALID_PARAMETERS')
+  const headers = toHeaders(req.headers)
+  const { intents } = await auth.flows.signIn({
+    input: input ?? {},
+    providerId,
+    ...expressCaller(req),
+    previousSid: auth.transport.extract({ headers }) ?? undefined,
+  })
+  applyIntents(intents, res)
+})
+
+app.post('/auth/signout', async (req, res) => {
+  const sid = auth.transport.extract({ headers: toHeaders(req.headers) })
+  applyIntents(sid ? (await auth.flows.signOut(sid)).intents : auth.transport.revoke(), res)
+})
+
+app.get('/auth/session', async (req, res) => {
+  const resolved = await auth.resolveSession({ headers: toHeaders(req.headers) }).orNull()
+  if (!resolved) return applyIntents([{ type: 'json', status: 200, body: { session: null, identity: null } }], res)
+  // `csrfHash` is server-side state; the browser holds the plaintext
+  const { csrfHash: _csrfHash, ...session } = resolved.session
+  applyIntents([{ type: 'json', status: 200, body: { session, identity: resolved.identity } }], res)
+})
 
 app.post('/auth/signup', async (req, res) => {
   const { email, name, password } = req.body
@@ -168,6 +188,6 @@ curl -s -c jar localhost:3000/auth/signin -H 'content-type: application/json' \
 ## Next steps
 
 - [Delivery](/duck-auth/core/delivery): replace the `console.log` with a mailer.
-- [React client](/duck-auth/client/react): call these endpoints from a browser.
+- [Server adapters](/duck-auth/server): what each of these routes must check, and the same routes on other frameworks.
 - [Adding MFA](/duck-auth/guides/mfa): TOTP and backup codes as a second step.
 - [Production hardening](/duck-auth/advanced/security): what `strict()` checks once `NODE_ENV=production`.

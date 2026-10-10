@@ -1,35 +1,50 @@
 ---
 title: Elysia
-description: Mounting the auth routes on Elysia, giving sessions the client IP, and guarding your own routes
+description: Writing the auth routes on Elysia over auth.flows, giving sessions the client IP, and guarding your own routes
 section: Server
 ---
 ```ts
-import {
-  elysiaProviderBegin,
-  elysiaProviderCallback,
-  elysiaSession,
-  elysiaSignIn,
-  elysiaSignOut,
-} from '@gentleduck/auth/server/elysia'
+import { AuthError } from '@gentleduck/auth/core'
+import { elysiaCaller, elysiaCsrf } from '@gentleduck/auth/server/elysia'
+import { errorResponse, executeIntents, jsonResponse } from '@gentleduck/auth/server/generic'
 import { Elysia } from 'elysia'
 
 const app = new Elysia()
+  .onError(({ error }) => errorResponse(error))
   .derive(({ server, request }) => ({ ip: server?.requestIP(request)?.address }))
-  .post('/auth/signin', elysiaSignIn(auth))
-  .post('/auth/signout', elysiaSignOut(auth))
-  .get('/auth/session', elysiaSession(auth))
-  .post('/auth/providers/:id/begin', elysiaProviderBegin(auth))
-  .get('/auth/providers/:id/callback', elysiaProviderCallback(auth))
-  .post('/auth/providers/:id/callback', elysiaProviderCallback(auth))
+  .onBeforeHandle(elysiaCsrf(auth))
+  .post('/auth/signin', async (ctx) => {
+    const { providerId, input } = ctx.body ?? {}
+    if (typeof providerId !== 'string') throw new AuthError('AUTH_INVALID_PARAMETERS')
+    const { intents } = await auth.flows.signIn({
+      input: input ?? {},
+      providerId,
+      ...elysiaCaller(ctx),
+      previousSid: auth.transport.extract(ctx.request) ?? undefined,
+    })
+    return executeIntents(intents)
+  })
+  .post('/auth/signout', async ({ request }) => {
+    const sid = auth.transport.extract(request)
+    return executeIntents(sid ? (await auth.flows.signOut(sid)).intents : auth.transport.revoke())
+  })
+  .get('/auth/session', async ({ request }) => {
+    const resolved = await auth.resolveSession(request).orNull()
+    if (!resolved) return jsonResponse(200, { session: null, identity: null })
+    // `csrfHash` is server-side state; the browser holds the plaintext
+    const { csrfHash: _csrfHash, ...session } = resolved.session
+    return jsonResponse(200, { session, identity: resolved.identity })
+  })
 ```
 
-- Elysia resolves no client IP. The `derive` gives the handlers the socket's address, which the session records; behind a proxy, derive it from the header your proxy sets instead.
-- The callback answers the session cookies and an empty 200. To land the browser on a page, write the callback yourself, as on the [OAuth page](/duck-auth/providers/oauth#the-routes).
+- Elysia resolves no client IP. The `derive` gives `elysiaCaller` the socket's address, which the session records; behind a proxy, derive it from the header your proxy sets instead.
+- A hook covers only the routes after it, so `onBeforeHandle(elysiaCsrf(auth))` guards everything below it.
+- The provider routes are on the [OAuth page](/duck-auth/providers/oauth#the-routes). Mount the callback above the guard, with `{ parse: 'none' }` on its POST so Apple's form body reads as text.
 
 ## Your own routes
 
 ```ts
-import { elysiaCsrf, elysiaWithActor } from '@gentleduck/auth/server/elysia'
+import { elysiaWithActor } from '@gentleduck/auth/server/elysia'
 
 app.group('/api', (api) =>
   api.onBeforeHandle(elysiaCsrf(auth)).get(
@@ -43,4 +58,4 @@ app.group('/api', (api) =>
 )
 ```
 
-Elysia composes no `next`, so the actor scope wraps each handler. `elysiaCaller(ctx)` is the IP and User-Agent to pass to a flow you call yourself.
+Elysia composes no `next`, so the actor scope wraps each handler.

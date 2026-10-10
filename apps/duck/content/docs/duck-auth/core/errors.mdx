@@ -61,7 +61,7 @@ errorToHttp(new AuthError('AUTH_RATE_LIMITED', { retryAfter: 30 }))
 
 - An `AuthError` answers its status, with its meta spread into `error`. Meta keys that look like secrets are scrubbed.
 - Anything else answers 500 with `detail: 'internal error'`, and is logged rather than described.
-- The clients pass this body through untouched, so `result.error.code` in the browser is the server's code.
+- A page reads `error.code` from this body, so the browser sees the server's code.
 
 ## Codes
 

@@ -27,16 +27,14 @@ duck-auth sends no mail. Every token it mints (a magic link, a reset link, a ver
 | Transports | Cookie, bearer and JWT, a composite of them, and DPoP proof-of-possession. |
 | Stores | In-memory for tests, Drizzle for Postgres, MySQL and SQLite, and Redis or Valkey for sessions, events and single-use tokens. |
 | Limiters | In-memory, Redis and Valkey; every flow spends against one. |
-| Servers | Express, Hono, Next.js, Fastify, Koa, Elysia, NestJS, gRPC, and a generic Web Fetch layer. |
-| Clients | Vanilla, React, Vue, Svelte and Solid. |
+| Servers | Glue for Express, Hono, Next.js, Fastify, Koa, Elysia, NestJS, gRPC and any Fetch runtime: CSRF, the caller, writing a flow's intents. The routes are yours, over `auth.flows`. |
 | Hardening | CSRF, `strict()` production checks, compliance presets, hijack and anomaly detection, captcha verifiers, field encryption at rest, audit stamping. |
 
 ## Architecture
 
 <MermaidDiagram chart={`flowchart TD
     subgraph app["Your application"]
-        SRV["Framework adapter: express, hono, next ..."]
-        CLI["Client binding: react, vue, vanilla ..."]
+        SRV["Your routes, on express, hono, next ..."]
     end
 
     subgraph eng["AuthEngine"]
@@ -52,7 +50,6 @@ duck-auth sends no mail. Every token it mints (a magic link, a reset link, a ver
         DE["deliver: your mailer"]
     end
 
-    CLI --> SRV
     SRV --> FL
     FL --> PR
     FL --> SE
@@ -62,7 +59,7 @@ duck-auth sends no mail. Every token it mints (a magic link, a reset link, a ver
     FL --> LI
     FL --> DE`} />
 
-A framework adapter turns a request into a call on `auth.flows` and turns the answer back into a response. The answer is a list of intents (set this cookie, redirect there, send this JSON), so the engine never touches a framework's response object.
+Your route turns a request into a call on `auth.flows`, and the framework adapter turns the answer back into a response. The answer is a list of intents (set this cookie, redirect there, send this JSON), so the engine never touches a framework's response object.
 
 ## Quick example
 

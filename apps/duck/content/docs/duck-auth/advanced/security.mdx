@@ -37,7 +37,7 @@ Outside production, `strict()` checks only the [compliance preset](/duck-auth/co
 | --- | --- |
 | Limiter | None, `NoopLimiter`, or the in-process `MemoryLimiter`. |
 | Stores | A memory store in any `stores` slot. |
-| Events | No bus, or the in-process one. |
+| Events | No bus, or the in-process one, while it holds a `fleet` handler. |
 | Captcha | The null verifier, which passes everything, or a siteverify endpoint over `http`. |
 | Transport | A cookie transport with `secure: false`, or a JWT transport signing HS256 with a key under 32 bytes. A composite's parts are checked one by one. |
 | OAuth | A `stateSigningSecret` under 32 bytes, or `allowStateReplay: true`. |

@@ -1,75 +1,87 @@
 ---
 title: NestJS
-description: The auth controller, the guard and param decorators for your own routes, the actor middleware, and gating sign-in on your own rules
+description: Writing the auth controller over auth.flows, the guards and param decorators for your own routes, the actor middleware, and gating sign-in on your own rules
 section: Server
 ---
-The handlers take Nest's Express request and response, so this needs `@nestjs/platform-express`.
+On `@nestjs/platform-express`, Express's `applyIntents` writes a flow's answer onto Nest's response.
 
-```ts title="auth.controller.ts"
-import { Controller, Get, Post, Req, Res } from '@nestjs/common'
-import {
-  type NestAdapter,
-  nestProviderBegin,
-  nestProviderCallback,
-  nestSession,
-  nestSignIn,
-  nestSignOut,
-} from '@gentleduck/auth/server/nestjs'
+```ts title="csrf.guard.ts"
+import { type CanActivate, type ExecutionContext, Injectable } from '@nestjs/common'
+import { makeCsrfGuard } from '@gentleduck/auth/server/nestjs'
 import { auth } from './auth'
 
-@Controller('auth')
-export class AuthController {
-  @Post('signin')
-  signIn(@Req() req: NestAdapter.Request, @Res() res: NestAdapter.Response) {
-    return nestSignIn(auth)(req, res)
-  }
+@Injectable()
+export class CsrfGuard implements CanActivate {
+  private readonly guard = makeCsrfGuard(auth)
 
-  @Post('signout')
-  signOut(@Req() req: NestAdapter.Request, @Res() res: NestAdapter.Response) {
-    return nestSignOut(auth)(req, res)
-  }
-
-  @Get('session')
-  session(@Req() req: NestAdapter.Request, @Res() res: NestAdapter.Response) {
-    return nestSession(auth)(req, res)
-  }
-
-  @Post('providers/:id/begin')
-  begin(@Req() req: NestAdapter.Request, @Res() res: NestAdapter.Response) {
-    return nestProviderBegin(auth)(req, res)
-  }
-
-  @Get('providers/:id/callback')
-  callback(@Req() req: NestAdapter.Request, @Res() res: NestAdapter.Response) {
-    return nestProviderCallback(auth)(req, res)
-  }
-
-  @Post('providers/:id/callback')
-  formCallback(@Req() req: NestAdapter.Request, @Res() res: NestAdapter.Response) {
-    return nestProviderCallback(auth)(req, res)
+  canActivate(ctx: ExecutionContext): Promise<boolean> {
+    return this.guard.canActivate(ctx)
   }
 }
 ```
 
-- Apple returns the browser with a form POST, so the callback is mounted for both GET and POST. Nest parses the form body by default.
+```ts title="auth.controller.ts"
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common'
+import { AuthError } from '@gentleduck/auth/core'
+import { applyIntents, type ExpressAdapter } from '@gentleduck/auth/server/express'
+import { nodeHeadersToFetch } from '@gentleduck/auth/server/generic'
+import { type NestAdapter, nestCaller } from '@gentleduck/auth/server/nestjs'
+import { auth } from './auth'
+import { CsrfGuard } from './csrf.guard'
 
+@Controller('auth')
+@UseGuards(CsrfGuard)
+export class AuthController {
+  @Post('signin')
+  async signIn(@Req() req: NestAdapter.Request, @Body() body: unknown, @Res() res: ExpressAdapter.Response) {
+    if (typeof body !== 'object' || body === null) throw new AuthError('AUTH_INVALID_PARAMETERS')
+    const providerId: unknown = Reflect.get(body, 'providerId')
+    if (typeof providerId !== 'string') throw new AuthError('AUTH_INVALID_PARAMETERS')
+    const headers = nodeHeadersToFetch(req.headers)
+    const { intents } = await auth.flows.signIn({
+      input: Reflect.get(body, 'input') ?? {},
+      providerId,
+      ...nestCaller(req),
+      previousSid: auth.transport.extract({ headers }) ?? undefined,
+    })
+    applyIntents(intents, res)
+  }
+
+  @Post('signout')
+  async signOut(@Req() req: NestAdapter.Request, @Res() res: ExpressAdapter.Response) {
+    const sid = auth.transport.extract({ headers: nodeHeadersToFetch(req.headers) })
+    applyIntents(sid ? (await auth.flows.signOut(sid)).intents : auth.transport.revoke(), res)
+  }
+
+  @Get('session')
+  async session(@Req() req: NestAdapter.Request, @Res() res: ExpressAdapter.Response) {
+    const resolved = await auth.resolveSession({ headers: nodeHeadersToFetch(req.headers) }).orNull()
+    if (!resolved) return applyIntents([{ type: 'json', status: 200, body: { session: null, identity: null } }], res)
+    // `csrfHash` is server-side state; the browser holds the plaintext
+    const { csrfHash: _csrfHash, ...session } = resolved.session
+    applyIntents([{ type: 'json', status: 200, body: { session, identity: resolved.identity } }], res)
+  }
+}
+```
+
+- Register `NestExceptionFilter` so a thrown `AuthError` answers at its status: `app.useGlobalFilters(new NestExceptionFilter())`.
 - The IP the session records is `req.ip`, so set Express's `trust proxy` through `app.set('trust proxy', 1)` on the Nest app.
-- The callback answers the session cookies and an empty 200. To land the browser on a page, write the callback yourself, as on the [OAuth page](/duck-auth/providers/oauth#the-routes).
+- The provider routes are on the [OAuth page](/duck-auth/providers/oauth#the-routes). Leave the callback out of `CsrfGuard`, and let Nest read Apple's form post as text: create the app with `{ bodyParser: false }`, then `app.useBodyParser('json')` and `app.useBodyParser('text', { type: 'application/x-www-form-urlencoded' })`.
 
 ## Gating sign-in
 
-`nestSignIn(auth, { onAuthenticated })` runs your check once the credentials verify, before the response is written. Answer a denial and the new session is revoked, so the client never sees it:
+Your route sees the new session before the browser does. Check it before applying the intents, and revoke it on a refusal, so the client never holds it:
 
 ```ts
-nestSignIn(auth, {
-  onAuthenticated: async ({ session }) =>
-    session && (await isSuspended(session.identityId))
-      ? { code: 'ACCOUNT_SUSPENDED', status: 403, detail: 'contact support' }
-      : undefined,
-})
+const { session, sid, intents } = await auth.flows.signIn({ /* as above */ })
+if (session && (await isSuspended(session.identityId))) {
+  await auth.flows.signOut(sid)
+  throw new ForbiddenException('contact support')
+}
+applyIntents(intents, res)
 ```
 
-It runs after the password is checked, so a denial tells nothing to someone who does not know it.
+It runs after the password is checked, so a refusal tells nothing to someone who does not know it.
 
 ## Your own routes
 
@@ -101,6 +113,5 @@ export class AppModule implements NestModule {
 | `makeCsrfGuard(auth)` | The CSRF check alone. |
 | `@CurrentIdentity()`, `@CurrentSession()` | What the guard or the middleware resolved. |
 | `nestActorContext(auth)` | Binds the actor for everything downstream. The guard reuses the session it resolved, so the pair reads it once. |
-| `NestExceptionFilter` | Answers an `AuthError` at its status: `app.useGlobalFilters(new NestExceptionFilter())`. |
-
-`nestCaller(req)` is the IP and User-Agent to pass to a flow you call yourself.
+| `NestExceptionFilter` | Answers an `AuthError` at its status, with `Cache-Control: no-store`. |
+| `nestCaller(req)` | The IP and User-Agent to pass to a flow. |

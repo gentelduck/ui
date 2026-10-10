@@ -168,10 +168,10 @@ and in `DELETE /api/notes`:
 
 <Step>The pages</Step>
 
-Drop `csrfCookieName` from both clients in `src/page.ts` and `src/magic-link.ts`. Over https the CSRF cookie is `__Host-duck-csrf`, which is the client's default, and the notes request reads it under that name:
+Over https the CSRF cookie is `__Host-duck-csrf`, so `src/page.ts` and `src/magic-link.ts` read it under that name:
 
 ```ts title="src/page.ts"
-const csrfToken = document.cookie.match(/(?:^|; )__Host-duck-csrf=([^;]*)/)?.[1] ?? ''
+'x-csrf-token': document.cookie.match(/(?:^|; )__Host-duck-csrf=([^;]*)/)?.[1] ?? '',
 ```
 
 <Step>Start it</Step>
@@ -194,7 +194,7 @@ Run chapter 7's engine with `NODE_ENV=production` and it stops at the first line
 | The in-process nonce store | A `state` burnt on one instance replays on another. | `valkeyDPoPNonceStore` |
 | No limiter | Each instance grants its own budget, so a fleet allows each guess once per instance. | `valkeyLimiter` |
 | `MemoryAdapter` | A restart forgets it, and no other instance sees it. The error names each slot it fills. | `drizzlePgAdapter` |
-| The in-process event bus | A lockout raised on one instance is never heard on another. | `valkeyEvents` |
+| The in-process event bus | Once the `lockout` listener is on it, a lockout raised on one instance is never heard on another. | `valkeyEvents` |
 | `secure: false` | The session cookie would travel over plain http. | `cookieTransport()` |
 | `http://localhost:3000` | Links and callbacks would go out over plain http. | an `https` `baseUrl` |
 | No `lockout` listener | Nobody hears that an account is being guessed at. | the listener |

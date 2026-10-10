@@ -1,40 +1,65 @@
 ---
 title: Express
-description: Mounting the auth routes on Express 4 or 5, guarding your own routes, and binding the actor
+description: Writing the auth routes on Express 4 or 5 over auth.flows, guarding your own routes, and binding the actor
 section: Server
 ---
 ```ts
+import { AuthError } from '@gentleduck/auth/core'
 import {
+  applyIntents,
   expressActorContext,
+  expressCaller,
   expressCsrf,
-  mountProviderBegin,
-  mountProviderCallback,
-  mountSession,
-  mountSignIn,
-  mountSignOut,
+  toHeaders,
 } from '@gentleduck/auth/server/express'
+import { errorToHttp } from '@gentleduck/auth/server/generic'
 import express from 'express'
 
 const app = express()
 app.set('trust proxy', 1)
+app.use(express.json())
+app.use('/auth', expressCsrf(auth))
 
-app.post('/auth/signin', express.json(), mountSignIn(auth))
-app.post('/auth/signout', mountSignOut(auth))
-app.get('/auth/session', mountSession(auth))
-app.post('/auth/providers/:id/begin', express.json(), mountProviderBegin(auth))
-app.get('/auth/providers/:id/callback', mountProviderCallback(auth))
-app.post('/auth/providers/:id/callback', express.urlencoded({ extended: false }), mountProviderCallback(auth))
+app.post('/auth/signin', async (req, res) => {
+  const { providerId, input } = req.body ?? {}
+  if (typeof providerId !== 'string') throw new AuthError('AUTH_INVALID_PARAMETERS')
+  const headers = toHeaders(req.headers)
+  const { intents } = await auth.flows.signIn({
+    input: input ?? {},
+    providerId,
+    ...expressCaller(req),
+    previousSid: auth.transport.extract({ headers }) ?? undefined,
+  })
+  applyIntents(intents, res)
+})
+
+app.post('/auth/signout', async (req, res) => {
+  const sid = auth.transport.extract({ headers: toHeaders(req.headers) })
+  applyIntents(sid ? (await auth.flows.signOut(sid)).intents : auth.transport.revoke(), res)
+})
+
+app.get('/auth/session', async (req, res) => {
+  const resolved = await auth.resolveSession({ headers: toHeaders(req.headers) }).orNull()
+  if (!resolved) return applyIntents([{ type: 'json', status: 200, body: { session: null, identity: null } }], res)
+  // `csrfHash` is server-side state; the browser holds the plaintext
+  const { csrfHash: _csrfHash, ...session } = resolved.session
+  applyIntents([{ type: 'json', status: 200, body: { session, identity: resolved.identity } }], res)
+})
+
+app.use((err, _req, res, _next) => {
+  const { status, body } = errorToHttp(err)
+  res.status(status).json(body)
+})
 ```
 
-- `express.json()` goes on the routes that read a body.
+- Express 5 hands an async throw to the error handler. On Express 4, catch it in each route and call `next(err)`.
 - `trust proxy` decides which IP `req.ip` answers, and so what the session records. Set it to the number of proxies in front of you.
-- The callback answers the session cookies and an empty 200. To land the browser on a page, write the callback yourself, as on the [OAuth page](/duck-auth/providers/oauth#the-routes).
+- `applyIntents(intents, res)` writes a flow's answer, cookies included, with `Cache-Control: no-store`.
+- The provider routes are on the [OAuth page](/duck-auth/providers/oauth#the-routes). Mount the callback before `expressCsrf`, and parse its form body with `express.text({ type: 'application/x-www-form-urlencoded' })`.
 
 ## Your own routes
 
 ```ts
-import { toHeaders } from '@gentleduck/auth/server/express'
-
 app.use('/api', expressCsrf(auth), expressActorContext(auth))
 
 app.get('/api/me', async (req, res) => {
@@ -49,24 +74,3 @@ app.get('/api/me', async (req, res) => {
 
 - `expressCsrf` answers the 403 itself, so it does not depend on your error handler.
 - `expressActorContext` passes a refusal to `next(err)`. Its `AuthError` carries `status` and `toJSON()` for your error handler.
-
-## Calling a flow yourself
-
-`applyIntents(intents, res)` writes a flow's answer, cookies included, onto the response. `expressCaller(req)` is the IP and User-Agent to stamp on the session:
-
-```ts
-import { applyIntents, expressCaller } from '@gentleduck/auth/server/express'
-
-app.post('/auth/magic-link/redeem', express.json(), expressCsrf(auth), async (req, res, next) => {
-  try {
-    const { intents } = await auth.flows.signIn({
-      providerId: 'magic-link',
-      input: { token: String(req.body.token ?? '') },
-      ...expressCaller(req),
-    })
-    applyIntents(intents, res)
-  } catch (err) {
-    next(err)
-  }
-})
-```

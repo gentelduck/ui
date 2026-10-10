@@ -1,27 +1,60 @@
 ---
 title: Fastify
-description: Registering the auth routes on Fastify, guarding your own routes with a preHandler, and binding the actor per handler
+description: Writing the auth routes on Fastify over auth.flows, guarding them with a preHandler, and binding the actor per handler
 section: Server
 ---
 ```ts
-import { registerFastify } from '@gentleduck/auth/server/fastify'
+import { AuthError } from '@gentleduck/auth/core'
+import { fastifyCaller, fastifyCsrf } from '@gentleduck/auth/server/fastify'
+import { errorToHttp, executeIntents, jsonResponse, nodeHeadersToFetch } from '@gentleduck/auth/server/generic'
 import Fastify from 'fastify'
 
-const app = Fastify()
-registerFastify(app, auth)
+const app = Fastify({ trustProxy: 1 })
+
+app.setErrorHandler((err, _req, reply) => {
+  const { status, body } = errorToHttp(err)
+  reply.status(status).header('cache-control', 'no-store').send(body)
+})
+
+app.register(async (own) => {
+  own.addHook('preHandler', fastifyCsrf(auth))
+
+  own.post<{ Body: { providerId?: unknown; input?: unknown } }>('/auth/signin', async (req, reply) => {
+    const { providerId, input } = req.body ?? {}
+    if (typeof providerId !== 'string') throw new AuthError('AUTH_INVALID_PARAMETERS')
+    const headers = nodeHeadersToFetch(req.headers)
+    const { intents } = await auth.flows.signIn({
+      input: input ?? {},
+      providerId,
+      ...fastifyCaller(req),
+      previousSid: auth.transport.extract({ headers }) ?? undefined,
+    })
+    return reply.send(executeIntents(intents))
+  })
+
+  own.post('/auth/signout', async (req, reply) => {
+    const sid = auth.transport.extract({ headers: nodeHeadersToFetch(req.headers) })
+    return reply.send(executeIntents(sid ? (await auth.flows.signOut(sid)).intents : auth.transport.revoke()))
+  })
+
+  own.get('/auth/session', async (req, reply) => {
+    const resolved = await auth.resolveSession({ headers: nodeHeadersToFetch(req.headers) }).orNull()
+    if (!resolved) return reply.send(jsonResponse(200, { session: null, identity: null }))
+    // `csrfHash` is server-side state; the browser holds the plaintext
+    const { csrfHash: _csrfHash, ...session } = resolved.session
+    return reply.send(jsonResponse(200, { session, identity: resolved.identity }))
+  })
+})
 ```
 
-`registerFastify` mounts every route under `/auth`; pass `{ prefix: '/api/auth' }` to move them. To mount only some, register the handlers yourself: `fastifySignIn`, `fastifySignOut`, `fastifySession`, `fastifyProviderBegin` and `fastifyProviderCallback`, with `:id` in the provider paths.
-
-- Fastify's `trustProxy` option decides which IP `req.ip` answers, and so what the session records. Set it to the proxies in front of you.
-- Apple posts its callback as a form, which Fastify refuses with a 415 unless a parser such as `@fastify/formbody` is registered.
-- The callback answers the session cookies and an empty 200. To land the browser on a page, write the callback yourself, as on the [OAuth page](/duck-auth/providers/oauth#the-routes).
+- Fastify sends a Web `Response` as it is, so `executeIntents` and `jsonResponse` serve as the intents writer.
+- `trustProxy` decides which IP `req.ip` answers, and so what the session records. Set it to the proxies in front of you.
+- The provider routes are on the [OAuth page](/duck-auth/providers/oauth#the-routes). Register the callback outside the guarded plugin. Apple posts it as a form, which Fastify refuses with a 415 unless a parser for `application/x-www-form-urlencoded` is registered.
 
 ## Your own routes
 
 ```ts
-import { fastifyCsrf, fastifyWithActor } from '@gentleduck/auth/server/fastify'
-import { nodeHeadersToFetch } from '@gentleduck/auth/server/generic'
+import { fastifyWithActor } from '@gentleduck/auth/server/fastify'
 
 app.register(async (api) => {
   api.addHook('preHandler', fastifyCsrf(auth))
@@ -37,4 +70,4 @@ app.register(async (api) => {
 })
 ```
 
-Fastify composes no `next`, so the actor scope wraps each handler instead of sitting in front of them. `fastifyCaller(req)` is the IP and User-Agent to pass to a flow you call yourself.
+Fastify composes no `next`, so the actor scope wraps each handler instead of sitting in front of them.
