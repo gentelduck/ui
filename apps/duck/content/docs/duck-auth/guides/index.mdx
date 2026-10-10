@@ -10,7 +10,7 @@ This guide builds a small Express backend: sign-up, password and magic-link sign
 <Step>Install</Step>
 
 ```bash
-bun add @gentleduck/auth drizzle-orm pg express
+bun add @gentleduck/auth drizzle-orm pg express@5
 bun add -D drizzle-kit @types/pg @types/express
 ```
 
@@ -142,7 +142,7 @@ app.use(onError)
 app.listen(3000)
 ```
 
-`errorToHttp` maps an `AuthError` to its status and an `{ ok: false, error: { code, status } }` body, and anything else to a 500 that says nothing about the cause. `assertStrength` refuses a weak password as `AUTH_INVALID_CREDENTIALS` without naming the rule it broke.
+`errorToHttp` maps an `AuthError` to its status and an `{ ok: false, error: { code, status } }` body, and anything else to a 500 that says nothing about the cause. Express 5, which the install pins, hands an async route's throw to `onError`; Express 4 leaves it unhandled. `assertStrength` refuses a weak password as `AUTH_INVALID_CREDENTIALS` without naming the rule it broke.
 
 <Step>Try it</Step>
 

@@ -5,7 +5,7 @@ section: Server
 ---
 ```ts
 import { AuthError } from '@gentleduck/auth/core'
-import { jsonResponse, nodeHeadersToFetch } from '@gentleduck/auth/server/generic'
+import { errorToHttp, nodeHeadersToFetch } from '@gentleduck/auth/server/generic'
 import { koaActorContext, koaApplyIntents, koaCaller, koaCsrf } from '@gentleduck/auth/server/koa'
 import { bodyParser } from '@koa/bodyparser'
 import Router from '@koa/router'
@@ -42,11 +42,21 @@ router.get('/auth/session', async (ctx) => {
   await koaApplyIntents([{ type: 'json', status: 200, body: { session, identity: resolved.identity } }], ctx)
 })
 
+app.use(async (ctx, next) => {
+  try {
+    await next()
+  } catch (err) {
+    const { status, body } = errorToHttp(err)
+    ctx.status = status
+    ctx.set('cache-control', 'no-store')
+    ctx.body = body
+  }
+})
 app.use(bodyParser())
 app.use(router.routes())
 ```
 
-- A thrown `AuthError` carries its `status`, which Koa answers it at. Map its body with `errorToHttp` from `server/generic` in an error middleware to answer the `{ ok: false, error }` shape.
+- Koa answers a throw as plain text, so the first middleware answers it with `errorToHttp` instead: the `AuthError`'s `status` and the `{ ok: false, error }` body the other adapters send.
 - `proxy: true` makes `ctx.request.ip` read the forwarded address, and so what the session records. Leave it off unless a proxy you control sets that header.
 - The provider routes are on the [OAuth page](/duck-auth/providers/oauth#the-routes). Mount the callback before `koaCsrf`, and let the body parser read Apple's form post as text: `bodyParser({ enableTypes: ['json', 'text'], extendTypes: { text: ['application/x-www-form-urlencoded'] } })`.
 
@@ -56,4 +66,4 @@ app.use(router.routes())
 router.use('/api', koaCsrf(auth), koaActorContext(auth))
 ```
 
-`koaActorContext` throws a refusal to Koa, which answers it at the error's `status`.
+`koaActorContext` throws a refusal, which the error middleware answers at the error's `status`.

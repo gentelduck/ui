@@ -37,9 +37,11 @@ The engine never touches Express's response. It answers **intents** (set this co
 <Step>Install Express</Step>
 
 ```bash
-npm i express
+npm i express@5
 npm i -D @types/express
 ```
+
+The routes throw from async handlers, which Express 5 hands to the error handler. Express 4 leaves those throws unhandled.
 
 <Step>Print the links</Step>
 
