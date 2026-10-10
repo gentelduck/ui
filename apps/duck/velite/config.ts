@@ -84,6 +84,7 @@ export function createDocsVeliteConfig({
       preMdxPlugins: [rehypeComponent],
       mermaid: {
         theme: { light: 'default', dark: 'dark' },
+        outputDir: '.gentleduck/.cache/mermaid',
       },
       prettyCode: {
         // Bundled syntect themes only. `github-light` is NOT bundled — picking
