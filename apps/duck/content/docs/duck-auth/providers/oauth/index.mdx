@@ -52,27 +52,66 @@ Every provider takes these, plus its own extras:
 
 ## The routes
 
-A flow is two requests: `begin`, which sets the pre-auth cookie and redirects to the IdP, and the callback the IdP sends the browser back to. With Express:
+A flow is two requests: `begin`, which sets the pre-auth cookie and redirects to the IdP, and the callback the IdP sends the browser back to. Both are your routes. With Express:
 
 ```ts
-import { applyIntents, expressCaller, mountProviderBegin } from '@gentleduck/auth/server/express'
-import { oauthCallback } from '@gentleduck/auth/server/generic'
+import { AuthError } from '@gentleduck/auth/core'
+import { applyIntents, expressCaller, expressCsrf, toHeaders } from '@gentleduck/auth/server/express'
+import { isSafeRedirectUrl } from '@gentleduck/auth/server/generic'
 import express from 'express'
 
-app.post('/auth/providers/:id/begin', express.json(), mountProviderBegin(auth))
-
-const callback: express.RequestHandler = async (req, res) => {
-  const request = { body: req.body, cookie: req.headers.cookie, method: req.method, url: req.url }
-  const intents = await oauthCallback(auth, req.params.id, request, expressCaller(req))
-  applyIntents([...intents, { type: 'redirect', url: '/' }], res)
+// Never CSRF-guarded: Apple posts it cross-site, and the signed state is the proof
+const callback: express.RequestHandler<{ id: string }> = async (req, res) => {
+  const failed = (code: string) => applyIntents([{ type: 'redirect', url: `/sign-in?error=${code}` }], res)
+  const id = req.params.id
+  if (!auth.providers.has(id) || auth.providers.get(id).kind !== 'oauth') return failed('AUTH_PROVIDER_FAILED')
+  const params =
+    req.method === 'POST'
+      ? new URLSearchParams(typeof req.body === 'string' ? req.body : '')
+      : new URL(req.originalUrl, 'http://localhost').searchParams
+  const headers = toHeaders(req.headers)
+  const user = params.get('user')
+  try {
+    const { intents } = await auth.flows.signIn({
+      input: {
+        code: params.get('code') ?? '',
+        cookieHeader: headers.get('cookie') ?? '',
+        state: params.get('state') ?? '',
+        ...(user !== null && { user }),
+      },
+      providerId: id,
+      ...expressCaller(req),
+      previousSid: auth.transport.extract({ headers }) ?? undefined,
+    })
+    const error = intents.find((intent) => intent.type === 'error')
+    if (error) return failed(error.code)
+    applyIntents([...intents, { type: 'redirect', url: '/' }], res)
+  } catch (err) {
+    if (!(err instanceof AuthError)) throw err
+    failed(err.code)
+  }
 }
 app.get('/auth/providers/:id/callback', callback)
-app.post('/auth/providers/:id/callback', express.urlencoded({ extended: false }), callback)
+app.post('/auth/providers/:id/callback', express.text({ type: 'application/x-www-form-urlencoded' }), callback)
+
+app.use('/auth', expressCsrf(auth))
+
+// A script cannot follow a redirect to the IdP, so it gets `{ url }` to navigate to
+app.post('/auth/providers/:id/begin', express.json(), async (req, res) => {
+  const intents = await auth.flows.beginProvider(req.params.id, req.body ?? {})
+  applyIntents(
+    intents.map((i) =>
+      i.type === 'redirect' && isSafeRedirectUrl(i.url) ? { type: 'json', status: 200, body: { url: i.url } } : i,
+    ),
+    res,
+  )
+})
 ```
 
-- In the browser, `client.beginProvider('oauth:google')` posts to `begin` and follows the IdP URL it answers.
-- The callback answers the session cookies and nothing else, so where the browser lands is yours: add the redirect, and on a thrown `AuthError`, redirect to your sign-in page with its code.
-- The POST route is only for Apple, which posts its callback as a form.
+- In the browser, post to `begin` and `location.assign` the `url` it answers.
+- The callback reads the query on a redirect and the form on Apple's POST, which also carries the `user` field Apple sends only on a first sign-in. It needs the request's `cookie` header, where the pre-auth cookie is.
+- Where the browser lands is yours: the app on success, and your sign-in page with the code on a refusal.
+- `flows.signIn` and `flows.beginProvider` refuse an unknown provider id with `AUTH_PROVIDER_FAILED`. The `kind` check keeps the callback to `oauth` providers.
 
 The other [server adapters](/duck-auth/server) have the same pieces.
 

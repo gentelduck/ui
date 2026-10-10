@@ -13,14 +13,13 @@ Auth for a TypeScript backend comes three ways: a hosted service that runs it fo
 | Second factors | TOTP, backup codes, WebAuthn; step-up to AAL 2 and remembered devices. |
 | Sessions | Cookie, bearer and JWT transports (HS256, ES256, RS256, EdDSA, with key rotation and a JWKS), DPoP, hijack and anomaly detection, impersonation. |
 | Storage | Drizzle on Postgres, MySQL and SQLite; Redis and Valkey for sessions, limits and events; an in-memory adapter for tests. |
-| Servers | Express, Fastify, Hono, Koa, Elysia, Next.js, NestJS, gRPC, and any fetch runtime. |
-| Clients | Vanilla, React, Vue, Svelte, Solid. |
+| Servers | Glue for Express, Fastify, Hono, Koa, Elysia, Next.js, NestJS, gRPC and any fetch runtime; you write the routes over `auth.flows`. |
 | Operations | Multi-tenancy, organisations, signed webhooks, encryption at rest, GDPR, HIPAA, SOC 2 and FIPS presets, and a `strict()` gate that refuses a production engine built with development pieces. |
 
 ## What it leaves out
 
 - **Hosting.** There is no service and no dashboard; you run it and own the data.
-- **UI.** The clients hold session state and call the server. The forms are yours.
+- **Routes and UI.** There are no ready-made routes and no browser client: your routes call `auth.flows`, and your pages call your routes.
 - **Authorization.** It says who the caller is, never what they may do. That is [duck-iam](/duck-iam/introduction); see [Bridging to duck-iam](/duck-auth/guides/iam-bridge).
 - **SMS codes.** There is no SMS second factor; SIM swaps make it a weak one. Your [`deliver`](/duck-auth/core/delivery) function can still send links by SMS.
 

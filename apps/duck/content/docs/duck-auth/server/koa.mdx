@@ -1,18 +1,12 @@
 ---
 title: Koa
-description: Mounting the auth routes on Koa with @koa/router, guarding your own routes, and binding the actor
+description: Writing the auth routes on Koa with @koa/router over auth.flows, guarding your own routes, and binding the actor
 section: Server
 ---
 ```ts
-import {
-  koaActorContext,
-  koaCsrf,
-  koaProviderBegin,
-  koaProviderCallback,
-  koaSession,
-  koaSignIn,
-  koaSignOut,
-} from '@gentleduck/auth/server/koa'
+import { AuthError } from '@gentleduck/auth/core'
+import { jsonResponse, nodeHeadersToFetch } from '@gentleduck/auth/server/generic'
+import { koaActorContext, koaApplyIntents, koaCaller, koaCsrf } from '@gentleduck/auth/server/koa'
 import { bodyParser } from '@koa/bodyparser'
 import Router from '@koa/router'
 import Koa from 'koa'
@@ -20,20 +14,41 @@ import Koa from 'koa'
 const app = new Koa({ proxy: true })
 const router = new Router()
 
-router.post('/auth/signin', koaSignIn(auth))
-router.post('/auth/signout', koaSignOut(auth))
-router.get('/auth/session', koaSession(auth))
-router.post('/auth/providers/:id/begin', koaProviderBegin(auth))
-router.get('/auth/providers/:id/callback', koaProviderCallback(auth))
-router.post('/auth/providers/:id/callback', koaProviderCallback(auth))
+router.use('/auth', koaCsrf(auth))
 
-app.use(bodyParser({ enableTypes: ['json', 'form'] }))
+router.post('/auth/signin', async (ctx) => {
+  const { providerId, input } = ctx.request.body ?? {}
+  if (typeof providerId !== 'string') throw new AuthError('AUTH_INVALID_PARAMETERS')
+  const headers = nodeHeadersToFetch(ctx.request.headers)
+  const { intents } = await auth.flows.signIn({
+    input: input ?? {},
+    providerId,
+    ...koaCaller(ctx),
+    previousSid: auth.transport.extract({ headers }) ?? undefined,
+  })
+  await koaApplyIntents(intents, ctx)
+})
+
+router.post('/auth/signout', async (ctx) => {
+  const sid = auth.transport.extract({ headers: nodeHeadersToFetch(ctx.request.headers) })
+  await koaApplyIntents(sid ? (await auth.flows.signOut(sid)).intents : auth.transport.revoke(), ctx)
+})
+
+router.get('/auth/session', async (ctx) => {
+  const resolved = await auth.resolveSession({ headers: nodeHeadersToFetch(ctx.request.headers) }).orNull()
+  if (!resolved) return koaApplyIntents([{ type: 'json', status: 200, body: { session: null, identity: null } }], ctx)
+  // `csrfHash` is server-side state; the browser holds the plaintext
+  const { csrfHash: _csrfHash, ...session } = resolved.session
+  await koaApplyIntents([{ type: 'json', status: 200, body: { session, identity: resolved.identity } }], ctx)
+})
+
+app.use(bodyParser())
 app.use(router.routes())
 ```
 
-- The handlers read `ctx.request.body`, so a body parser goes first. `form` is for Apple, which posts its callback as a form.
+- A thrown `AuthError` carries its `status`, which Koa answers it at. Map its body with `errorToHttp` from `server/generic` in an error middleware to answer the `{ ok: false, error }` shape.
 - `proxy: true` makes `ctx.request.ip` read the forwarded address, and so what the session records. Leave it off unless a proxy you control sets that header.
-- The callback answers the session cookies and an empty 200. To land the browser on a page, write the callback yourself, as on the [OAuth page](/duck-auth/providers/oauth#the-routes).
+- The provider routes are on the [OAuth page](/duck-auth/providers/oauth#the-routes). Mount the callback before `koaCsrf`, and let the body parser read Apple's form post as text: `bodyParser({ enableTypes: ['json', 'text'], extendTypes: { text: ['application/x-www-form-urlencoded'] } })`.
 
 ## Your own routes
 
@@ -41,4 +56,4 @@ app.use(router.routes())
 router.use('/api', koaCsrf(auth), koaActorContext(auth))
 ```
 
-`koaActorContext` throws a refusal to Koa, which answers it at the error's `status`. `koaCaller(ctx)` is the IP and User-Agent to pass to a flow you call yourself, and `koaApplyIntents(intents, ctx)` writes its answer onto the context.
+`koaActorContext` throws a refusal to Koa, which answers it at the error's `status`.

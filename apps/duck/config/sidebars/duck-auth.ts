@@ -97,18 +97,6 @@ export const duckAuthSidebar = defineSidebar([
     ],
   },
   {
-    title: 'Client libraries',
-    href: '/duck-auth/client',
-    items: [
-      { title: 'Overview', href: '/duck-auth/client' },
-      { title: 'Vanilla', href: '/duck-auth/client/vanilla' },
-      { title: 'React', href: '/duck-auth/client/react' },
-      { title: 'Vue', href: '/duck-auth/client/vue' },
-      { title: 'Svelte', href: '/duck-auth/client/svelte' },
-      { title: 'Solid', href: '/duck-auth/client/solid' },
-    ],
-  },
-  {
     title: 'Guides',
     items: [
       { title: 'Quick start', href: '/duck-auth/guides' },

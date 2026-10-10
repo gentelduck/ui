@@ -32,7 +32,7 @@ if (confirmed.ok) showOnce(confirmed.backupCodes)
 - Confirming emits `mfa.enrolled` and mints the backup codes. They are hashed at rest, so this is the only time they can be shown.
 - Enrolling again while a confirmed factor exists is refused with `AUTH_MFA_REQUIRED`. Replacing one means removing it first, behind a step-up.
 
-These calls act on whatever identity they are given; your route decides who may make them. On Hono, `mountHono` mounts them for the signed-in identity; see [Hono](/duck-auth/server/hono).
+These calls act on whatever identity they are given; your route decides who may make them. Take the identity from the resolved session, never the body, and pass the session's tenant, since `auth.mfa` reads unscoped without one: `{ tenantId: session.tenantId }`.
 
 ## Asking for the second factor
 
@@ -68,6 +68,7 @@ app.post('/api/step-up', async (req, res) => {
 
 - `checkStepUp` asks for AAL 2 by default. `freshness` also asks that the last factor be recent; `need.reason` is `mfa-required` or `fresh-required`.
 - `completeStepUp` checks the code against the session's own tenant, is rate limited per identity, and rotates to an AAL 2 session. `applyIntents` sets its cookie; the client then retries the action.
+- Step up through `completeStepUp`, not a route over `auth.mfa.verifyTotp`: that answers `false` however often it is asked, a six-digit oracle for anyone holding the password. If you do expose one, consume `auth.limiter` on `stepup:${identityId}` first, the bucket `completeStepUp` spends.
 - A wrong code throws `AUTH_INVALID_CREDENTIALS`. Every code works once: the one that confirmed enrollment, or passed a step-up, is refused along with any older one, so the person waits for the next. A backup code is spent by the step-up it passes; `auth.mfa.remainingBackupCodes(id)` says how many are left.
 
 [Compliance presets](/duck-auth/core/compliance) that require MFA refuse an engine without the provider, but sign-in still answers AAL 1: requiring the factor is this check.

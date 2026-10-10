@@ -19,7 +19,7 @@ The package has one runtime dependency, `@gentleduck/error`, which `AuthError` e
 
 <PackageManagerTabs bun="bun add @gentleduck/auth" npm="npm i @gentleduck/auth" pnpm="pnpm add @gentleduck/auth" yarn="yarn add @gentleduck/auth" />
 
-That covers the engine, the memory store and limiter, the cookie, bearer, JWT and DPoP transports, passwords with scrypt, magic links, TOTP, API keys, OAuth, every server adapter but NestJS, and the vanilla and Svelte clients.
+That covers the engine, the memory store and limiter, the cookie, bearer, JWT and DPoP transports, passwords with scrypt, magic links, TOTP, API keys, OAuth, and every server adapter but NestJS.
 
 ## Optional peer dependencies
 
@@ -33,7 +33,6 @@ Every peer is optional. Install one only when you import the subpath that needs 
 | `@simplewebauthn/server` | `providers/passkey`, and WebAuthn MFA in `providers/mfa`. Loaded on first ceremony. |
 | `@aws-sdk/client-kms` | `authAwsKmsProvider` in `core/dataAtRest`. Loaded on first use. |
 | `@nestjs/common` | `server/nestjs` |
-| `react`, `vue` or `solid-js` | `client/react`, `client/vue`, `client/solid` |
 
 Two integrations take a client you build rather than a peer:
 
@@ -98,4 +97,4 @@ resolved?.identity?.id === ada.id // true
 
 - [Quick start](/duck-auth/guides): the same engine behind Express, with sign-up and sign-out.
 - [Adapters](/duck-auth/adapters): swap `MemoryAdapter` for Postgres, MySQL or SQLite.
-- [Server adapters](/duck-auth/server): mount the handlers on your framework.
+- [Server adapters](/duck-auth/server): write the routes on your framework.

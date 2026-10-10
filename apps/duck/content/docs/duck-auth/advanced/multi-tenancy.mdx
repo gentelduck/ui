@@ -35,7 +35,7 @@ A call without a tenant is unscoped, not scoped to "no tenant":
 - A resolve without `expectedTenantId` accepts a session from any tenant.
 - `auth.sessions.listForIdentity(id)` lists the person's sessions in every tenant. Pass `{ tenantId }` to list one.
 
-So the mounted [server routes](/duck-auth/server), which pass no tenant, serve a single-tenant app. A multi-tenant app writes its sign-in route and its guards itself, with the tenant from the host or path; [Fetch runtimes](/duck-auth/server/generic) has a sign-in route to start from.
+So a multi-tenant app passes the tenant, from the host or path, to every flow its [routes](/duck-auth/server) call and to its guards; [Fetch runtimes](/duck-auth/server/generic) has a sign-in route to start from.
 
 ## The ambient tenant
 

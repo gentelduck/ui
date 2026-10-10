@@ -1,25 +1,23 @@
 ---
 title: "Chapter 5: in the browser"
-description: Sign in from a page with the vanilla client, read its envelopes, follow the session with onChange, and send the CSRF token on your own requests
+description: Sign in from a page with plain fetch calls to your own routes, read the error envelope, draw the page from the session, and send the CSRF token on every write
 section: Course
 order: 5
 ---
-The server from chapter 4 is complete; now a page talks to it. The client wraps the routes you mounted, so the page never builds a sign-in request or parses a cookie by hand, except for the one request that is yours.
+The server from chapter 4 is complete; now a page talks to it. The routes are yours, so the page calls them with `fetch`, the same way it calls `/api/notes`.
 
 ## Learning goals
 
-- Create a client with `createAuthClient` and match it to the server.
-- Read an envelope instead of catching an error.
-- Keep the page in step with the session through `onChange`.
-- Send the CSRF token on a request the client does not make.
+- Call your auth routes with `fetch`.
+- Read the error envelope a refused request answers.
+- Draw the page from `GET /auth/session`.
+- Send the CSRF token on every write.
 
-## Where the client sits
+## Where the page sits
 
 <MermaidDiagram chart={`flowchart LR
-    P["page.ts"] --> C["createAuthClient"]
-    C --> |"POST /auth/signin, GET /auth/session"| X["Express"]
-    P --> |"fetch /api/notes with x-csrf-token"| X
-    C --> |"onChange"| P`} />
+    P["page.ts"] --> |"POST /auth/signin, GET /auth/session"| X["Express"]
+    P --> |"POST /api/notes with x-csrf-token"| X`} />
 
 ## Step by step
 
@@ -55,11 +53,7 @@ app.use(express.static('public'))
 <Step>The page script</Step>
 
 ```ts title="src/page.ts"
-import { createAuthClient } from '@gentleduck/auth/client/vanilla'
-
 type Profile = { username: string; email: string }
-
-const client = createAuthClient<Profile>({ baseUrl: '/auth', csrfCookieName: 'duck-csrf' })
 
 const status = document.querySelector('#status')
 const list = document.querySelector('#notes')
@@ -68,44 +62,53 @@ const noteForm = document.querySelector<HTMLFormElement>('#note')
 const signOut = document.querySelector('#sign-out')
 if (!status || !list || !signInForm || !noteForm || !signOut) throw new Error('DuckNotes markup is missing')
 
+// Every write echoes the readable duck-csrf cookie in x-csrf-token
+const post = (path: string, body: unknown = {}) =>
+  fetch(path, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-csrf-token': document.cookie.match(/(?:^|; )duck-csrf=([^;]*)/)?.[1] ?? '',
+    },
+    body: JSON.stringify(body),
+  })
+
 const showNotes = async () => {
   const res = await fetch('/api/notes')
   const notes: string[] = res.ok ? await res.json() : []
   list.replaceChildren(...notes.map((text) => Object.assign(document.createElement('li'), { textContent: text })))
 }
 
-client.onChange(({ identity }) => {
+const render = async () => {
+  const { identity }: { identity: { profile: Profile } | null } = await (await fetch('/auth/session')).json()
   status.textContent = identity ? `Signed in as ${identity.profile.email}` : 'Signed out'
   signInForm.hidden = Boolean(identity)
   noteForm.hidden = !identity
-  void showNotes()
-})
+  await showNotes()
+}
 
 signInForm.addEventListener('submit', async (event) => {
   event.preventDefault()
   const form = new FormData(signInForm)
-  const res = await client.signIn({
+  const res = await post('/auth/signin', {
     providerId: 'password',
     input: { email: form.get('email'), password: form.get('password') },
-  })
-  if (!res.ok) status.textContent = res.error.code === 'AUTH_INVALID_CREDENTIALS' ? 'Wrong email or password' : 'Try again'
+  }).catch(() => null)
+  if (res?.ok) return render()
+  const code = res ? (await res.json()).error?.code : null
+  status.textContent = code === 'AUTH_INVALID_CREDENTIALS' ? 'Wrong email or password' : 'Try again'
 })
 
 noteForm.addEventListener('submit', async (event) => {
   event.preventDefault()
-  const csrfToken = document.cookie.match(/(?:^|; )duck-csrf=([^;]*)/)?.[1] ?? ''
-  await fetch('/api/notes', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-csrf-token': csrfToken },
-    body: JSON.stringify({ text: new FormData(noteForm).get('text') }),
-  })
+  await post('/api/notes', { text: new FormData(noteForm).get('text') })
   noteForm.reset()
   await showNotes()
 })
 
-signOut.addEventListener('click', () => client.signOut())
+signOut.addEventListener('click', () => post('/auth/signout').then(render))
 
-await client.getSession()
+await render()
 ```
 
 <Step>Bundle it and open the page</Step>
@@ -122,45 +125,17 @@ Open `http://localhost:3000`, sign up Ada with the curl call from chapter 4, the
 
 ## What just happened
 
-1. **`getSession` read the session once on load,** and `onChange` drew the page from it. Every later sign-in and sign-out notifies the same listener, so there is one place that decides what is shown.
-2. **A wrong password was an envelope, not a throw.** Every client call answers `{ ok: true, data }` or `{ ok: false, error }`, with `error.code` as the server wrote it. A request that never reached the server answers `AUTH_NETWORK_ERROR`.
-3. **The client sent the CSRF token on sign-out by itself.** It reads the `duck-csrf` cookie and echoes it in `x-csrf-token` on every write it makes. The notes request is yours, so it does the same by hand.
-4. **`csrfCookieName: 'duck-csrf'` matches the server.** Over https with the default cookie settings the cookie is `__Host-duck-csrf`, which is also the client's default. Chapter 8 drops the option.
+1. **`render` asked the server once on load,** and again after every sign-in and sign-out. The page remembers nothing, so there is one place that decides what is shown.
+2. **A wrong password was an envelope, not a throw.** A refused request answers `{ ok: false, error }` at the error's status, with `error.code` as the server wrote it. A request that never reached the server rejects, which the `.catch` turns into "Try again".
+3. **Every write sent the CSRF token.** `post` reads the `duck-csrf` cookie and echoes it in `x-csrf-token`. Sign-in has no session yet, so `expressCsrf` checks only the origin there; sign-out and the notes need the token.
+4. **The cookie name matches the server.** Over https with the default cookie settings the cookie is `__Host-duck-csrf`; chapter 8 changes the regex with it.
 5. **The session cookie stayed out of reach.** `sid` is HttpOnly, so no script on the page, yours or an injected one, can read it. `duck-csrf` is readable on purpose.
-
-## The same in React
-
-`@gentleduck/auth/client/react` wraps the same client in a provider and hooks:
-
-```tsx title="src/header.tsx"
-import { Provider, useSession, useSignOut } from '@gentleduck/auth/client/react'
-
-type Profile = { username: string; email: string }
-
-function Header() {
-  const { data, status } = useSession<Profile>()
-  const signOut = useSignOut()
-  if (status === 'loading') return null
-  if (status === 'guest') return <a href="/">Sign in</a>
-  return <button onClick={() => signOut.mutate()}>Sign out {data.identity?.profile.email}</button>
-}
-
-export function App() {
-  return (
-    <Provider baseUrl="/auth" csrfCookieName="duck-csrf">
-      <Header />
-    </Provider>
-  )
-}
-```
-
-Vue, Svelte and Solid have the same shape; see [Client libraries](/duck-auth/client).
 
 ## Try it
 
 1. Sign in, then reload. The notes come back, because the page asks the server rather than remembering anything.
 2. Delete the `duck-csrf` cookie in the dev tools and add a note. The server answers 403 `AUTH_CSRF`.
-3. Stop the server and sign in. `res.error.code` is `AUTH_NETWORK_ERROR`, and the page says "Try again".
+3. Stop the server and sign in. The `fetch` rejects, and the page says "Try again".
 
 ## Where we are
 
@@ -173,12 +148,11 @@ ducknotes/
     mailer.ts
     auth.ts
     server.ts - now serving public/
-    page.ts   - the browser client
+    page.ts   - the page script
 ```
 
 ## See also
 
-- [Client libraries](/duck-auth/client): envelopes and matching the server.
-- [Vanilla client](/duck-auth/client/vanilla): every option and method.
-- [React client](/duck-auth/client/react): the hooks and the Storybook decorator.
+- [Server adapters](/duck-auth/server): the routes the page calls.
+- [The CSRF cookie](/duck-auth/core/transports/cookie#the-csrf-cookie): what the token is and its name over https.
 - [Chapter 6: more ways in](/duck-auth/course/chapter-6)

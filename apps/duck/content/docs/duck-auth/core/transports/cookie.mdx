@@ -29,9 +29,9 @@ A contradiction, such as a `__Host-` name with a `domain`, throws `AUTH_MISCONFI
 
 ## The CSRF cookie
 
-Every sign-in also sets `__Host-duck-csrf` (or `duck-csrf` when the settings rule out the prefix) with the session's CSRF token. It is not HttpOnly: the client reads it and echoes it in the `x-csrf-token` header on every state-changing request. The server adapters check it; a mismatch answers 403 `AUTH_CSRF`. The duck-auth clients do this for you.
+Every sign-in also sets `__Host-duck-csrf` (or `duck-csrf` when the settings rule out the prefix) with the session's CSRF token. It is not HttpOnly: your page reads it and echoes it in the `x-csrf-token` header on every state-changing request. The adapters' CSRF guards check it; a mismatch answers 403 `AUTH_CSRF`.
 
-`transport.csrfCookieName` answers the name in use, for a client configured by hand.
+`transport.csrfCookieName` answers the name in use, for the page to read it by.
 
 ## Local development
 

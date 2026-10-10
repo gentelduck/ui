@@ -1,19 +1,68 @@
 ---
 title: Next.js
-description: Mounting the auth routes as one App Router catch-all, reading the session in server components and route handlers, and guarding your own routes
+description: Writing the auth routes as App Router route handlers over auth.flows, reading the session in server components, and guarding your own routes
 section: Server
 ---
-```ts title="app/auth/[...auth]/route.ts"
-import { mountNext } from '@gentleduck/auth/server/next'
-import { auth } from '@/lib/auth'
+A route handler composes no middleware, so one wrapper gives every route the CSRF guard and the error mapping:
 
-export const { GET, POST } = mountNext(auth)
+```ts title="lib/auth.ts"
+import { errorResponse } from '@gentleduck/auth/server/generic'
+import { withNextCsrf } from '@gentleduck/auth/server/next'
+
+export function route<Args extends [Request, ...unknown[]]>(
+  handler: (...args: Args) => Promise<Response>,
+): (...args: Args) => Promise<Response> {
+  return withNextCsrf(auth, async (...args) => {
+    try {
+      return await handler(...args)
+    } catch (err) {
+      return errorResponse(err)
+    }
+  })
+}
 ```
 
-`mountNext` routes on the path's last segments, so the catch-all can live anywhere. Mounted at `app/api/auth/[...auth]`, give the client `baseUrl: '/api/auth'`. Turn a route off with `mountNext(auth, { providerCallback: false })`; the keys are `signin`, `signout`, `session`, `providerBegin` and `providerCallback`.
+```ts title="app/api/auth/signin/route.ts"
+import { AuthError } from '@gentleduck/auth/core'
+import { executeIntents, readBodyJson } from '@gentleduck/auth/server/generic'
+import { nextCaller } from '@gentleduck/auth/server/next'
+import { auth, route } from '@/lib/auth'
 
-- A route handler sees no client IP, so sessions record only the User-Agent.
-- The callback answers the session cookies and an empty 200. To land the browser on a page, turn `providerCallback` off and write the callback yourself, as on the [OAuth page](/duck-auth/providers/oauth#the-routes).
+export const POST = route(async (req) => {
+  const body = await readBodyJson(req)
+  if (typeof body !== 'object' || body === null) throw new AuthError('AUTH_INVALID_PARAMETERS')
+  const providerId: unknown = Reflect.get(body, 'providerId')
+  if (typeof providerId !== 'string') throw new AuthError('AUTH_INVALID_PARAMETERS')
+  const { intents } = await auth.flows.signIn({
+    input: Reflect.get(body, 'input') ?? {},
+    providerId,
+    ...nextCaller(req),
+    previousSid: auth.transport.extract(req) ?? undefined,
+  })
+  return executeIntents(intents)
+})
+```
+
+```ts title="app/api/auth/signout/route.ts"
+export const POST = route(async (req) => {
+  const sid = auth.transport.extract(req)
+  return executeIntents(sid ? (await auth.flows.signOut(sid)).intents : auth.transport.revoke())
+})
+```
+
+```ts title="app/api/auth/session/route.ts"
+export const GET = route(async (req) => {
+  const resolved = await auth.resolveSession(req).orNull()
+  if (!resolved) return jsonResponse(200, { session: null, identity: null })
+  // `csrfHash` is server-side state; the browser holds the plaintext
+  const { csrfHash: _csrfHash, ...session } = resolved.session
+  return jsonResponse(200, { session, identity: resolved.identity })
+})
+```
+
+- A route handler sees no client IP, so `nextCaller` gives sessions only the User-Agent.
+- `withNextCsrf` and the wrapper pass every argument on, the route's `{ params }` included.
+- The provider routes are on the [OAuth page](/duck-auth/providers/oauth#the-routes). The callback skips `withNextCsrf`, so catch its throw with `errorResponse` there yourself.
 
 ## Reading the session
 
@@ -35,14 +84,11 @@ In a route handler, pass the request itself: `auth.resolveSession(req)`.
 
 ## Your own routes
 
-A route handler composes no middleware, so the CSRF guard and the actor scope wrap each one:
-
 ```ts title="app/api/profile/route.ts"
-import { nextWithActor, withNextCsrf } from '@gentleduck/auth/server/next'
-import { auth } from '@/lib/auth'
+import { nextWithActor } from '@gentleduck/auth/server/next'
+import { auth, route } from '@/lib/auth'
 
-export const POST = withNextCsrf(
-  auth,
+export const POST = route(
   nextWithActor(auth, async (req: Request) => {
     const resolved = await auth.resolveSession(req).orNull()
     if (!resolved) return Response.json({ error: 'unauthenticated' }, { status: 401 })
@@ -51,6 +97,4 @@ export const POST = withNextCsrf(
 )
 ```
 
-Both pass every argument on, the route's `{ params }` included. `nextWithActor` answers a refusal itself, since Next turns any throw from a route into a 500. `nextCaller(req)` is the User-Agent to pass to a flow you call yourself.
-
-For a layout the catch-all does not fit, `nextSignIn`, `nextSignOut` and `nextSession` take the engine, and `nextProviderBegin` and `nextProviderCallback` take the provider id as well.
+`nextWithActor` answers a refusal itself, since Next turns any throw from a route into a 500.
