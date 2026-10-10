@@ -1,5 +1,11 @@
 # @gentleduck/cli
 
+## 1.5.1
+
+### Patch Changes
+
+- bfa58d9: Update `execa` from 9 to 10.
+
 ## 1.5.0
 
 ### Minor Changes
