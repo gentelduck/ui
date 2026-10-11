@@ -3,6 +3,9 @@
     "authentications",
     "signup"
   ],
+  "dependencies": [
+    "react-hook-form"
+  ],
   "files": [
     {
       "content": "export const icons = {\n  userFilled: ({ ...props }: React.SVGProps<SVGSVGElement>) => (\n    <svg\n      fill=\"currentColor\"\n      height=\"200px\"\n      stroke=\"currentColor\"\n      stroke-width=\"0\"\n      viewBox=\"0 0 448 512\"\n      width=\"200px\"\n      xmlns=\"http://www.w3.org/2000/svg\"\n      {...props}>\n      <title id=\"iconTitle\">user_filled</title>\n\n      <path d=\"M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z\"></path>\n    </svg>\n  ),\n}\n",
@@ -23,8 +26,7 @@
     "input",
     "avatar",
     "separator",
-    "label",
-    "react-hook-form"
+    "label"
   ],
   "root_folder": "authentications/signup-1",
   "source": "/registry-blocks/src/authentications/signup-1",

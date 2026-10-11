@@ -3,6 +3,9 @@
     "dashboards",
     "dashboard"
   ],
+  "dependencies": [
+    "react-hook-form"
+  ],
   "files": [
     {
       "content": "'use client'\nimport { SidebarInset, SidebarProvider } from '@gentleduck/registry-ui/sidebar'\nimport { AppSidebar } from './components/app-sidebar'\nimport { ChartAreaInteractive } from './components/chart-area-interactive'\nimport { DataTable } from './components/data-table'\nimport { SectionCards } from './components/section-cards'\nimport { SiteHeader } from './components/site-header'\nimport data from './data.json'\n\nexport default function Page() {\n  return (\n    <SidebarProvider>\n      <AppSidebar />\n      <SidebarInset>\n        <SiteHeader />\n        <div className=\"flex flex-1 flex-col\">\n          <div className=\"@container/main flex flex-1 flex-col gap-2\">\n            <div className=\"flex flex-col gap-4 py-4 md:gap-6 md:py-6\">\n              <SectionCards />\n              <div className=\"px-4 lg:px-6\">\n                <ChartAreaInteractive />\n              </div>\n              <DataTable data={data} />\n            </div>\n          </div>\n        </div>\n      </SidebarInset>\n    </SidebarProvider>\n  )\n}\n",
@@ -71,8 +74,7 @@
     "input",
     "avatar",
     "separator",
-    "label",
-    "react-hook-form"
+    "label"
   ],
   "root_folder": "dashboards/dashboard-1",
   "source": "/registry-blocks/src/dashboards/dashboard-1",

@@ -2,7 +2,9 @@
   "dependencies": [
     "@gentleduck/variants",
     "@gentleduck/libs",
-    "@gentleduck/primitives"
+    "@gentleduck/primitives",
+    "@gentleduck/motion",
+    "motion"
   ],
   "files": [
     {
@@ -31,6 +33,9 @@
     }
   ],
   "name": "alert",
+  "registryDependencies": [
+    "direction"
+  ],
   "root_folder": "alert",
   "source": "/registry-ui/src/alert",
   "type": "registry:ui"

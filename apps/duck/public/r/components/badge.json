@@ -24,13 +24,16 @@
       "type": "registry:ui"
     },
     {
-      "content": "import { loadDomAnimation } from '@gentleduck/motion/motion-features'\nimport { useMotionPreset } from '@gentleduck/motion/motion-presets'\nimport { popIn } from '@gentleduck/motion/presets/pop-in'\nimport { springBouncy } from '@gentleduck/motion/transitions/springs'\nimport { LazyMotion, m } from 'motion/react'\nimport * as React from 'react'\nimport { Badge } from './badge'\n\nconst MotionBadge = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<typeof Badge>>((props, ref) => {\n  const content = useMotionPreset(popIn, { transition: springBouncy })\n  return (\n    <LazyMotion features={loadDomAnimation}>\n      <m.div\n        initial={content.initial}\n        animate={content.animate}\n        transition={content.transition}\n        className=\"inline-flex\">\n        <Badge ref={ref} {...props} />\n      </m.div>\n    </LazyMotion>\n  )\n})\nMotionBadge.displayName = 'MotionBadge'\n\nexport { MotionBadge }\n",
+      "content": "'use client'\n\nimport { popIn } from '@gentleduck/motion/presets/pop-in'\nimport { springBouncy } from '@gentleduck/motion/transitions/springs'\nimport { withMotion } from '../_internal/motion-shell'\nimport { Badge } from './badge'\n\nconst MotionBadge = withMotion(Badge, popIn, { transition: springBouncy })\nMotionBadge.displayName = 'MotionBadge'\n\nexport { MotionBadge }\n",
       "path": "badge/motion-badge.tsx",
       "target": "components/ui/motion-badge.tsx",
       "type": "registry:ui"
     }
   ],
   "name": "badge",
+  "registryDependencies": [
+    "motion-shell"
+  ],
   "root_folder": "badge",
   "source": "/registry-ui/src/badge",
   "type": "registry:ui"

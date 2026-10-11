@@ -34635,7 +34635,9 @@
     "dependencies": [
       "@gentleduck/primitives",
       "@gentleduck/libs",
-      "lucide-react"
+      "lucide-react",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -34677,7 +34679,9 @@
     "dependencies": [
       "@gentleduck/variants",
       "@gentleduck/libs",
-      "@gentleduck/primitives"
+      "@gentleduck/primitives",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -34698,6 +34702,9 @@
       }
     ],
     "name": "alert",
+    "registryDependencies": [
+      "direction"
+    ],
     "root_folder": "alert",
     "type": "registry:ui",
     "source": "/registry-ui/src/alert",
@@ -34788,6 +34795,10 @@
       }
     ],
     "name": "aspect-ratio",
+    "registryDependencies": [
+      "direction",
+      "motion-shell"
+    ],
     "root_folder": "aspect-ratio",
     "type": "registry:ui",
     "source": "/registry-ui/src/aspect-ratio",
@@ -34829,6 +34840,9 @@
       }
     ],
     "name": "avatar",
+    "registryDependencies": [
+      "motion-shell"
+    ],
     "root_folder": "avatar",
     "type": "registry:ui",
     "source": "/registry-ui/src/avatar",
@@ -34875,6 +34889,9 @@
       }
     ],
     "name": "badge",
+    "registryDependencies": [
+      "motion-shell"
+    ],
     "root_folder": "badge",
     "type": "registry:ui",
     "source": "/registry-ui/src/badge",
@@ -34905,7 +34922,9 @@
     "dependencies": [
       "@gentleduck/primitives",
       "@gentleduck/libs",
-      "lucide-react"
+      "lucide-react",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -34922,6 +34941,9 @@
       }
     ],
     "name": "breadcrumb",
+    "registryDependencies": [
+      "direction"
+    ],
     "root_folder": "breadcrumb",
     "type": "registry:ui",
     "source": "/registry-ui/src/breadcrumb",
@@ -34948,7 +34970,9 @@
       "@gentleduck/primitives",
       "@gentleduck/variants",
       "@gentleduck/libs",
-      "lucide-react"
+      "lucide-react",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -35009,7 +35033,8 @@
       "react-day-picker",
       "@gentleduck/libs",
       "@gentleduck/primitives",
-      "lucide-react"
+      "lucide-react",
+      "@gentleduck/calendar"
     ],
     "files": [
       {
@@ -35107,7 +35132,9 @@
   {
     "dependencies": [
       "@gentleduck/libs",
-      "@gentleduck/primitives"
+      "@gentleduck/primitives",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -35124,6 +35151,9 @@
       }
     ],
     "name": "card",
+    "registryDependencies": [
+      "direction"
+    ],
     "root_folder": "card",
     "type": "registry:ui",
     "source": "/registry-ui/src/card",
@@ -35168,7 +35198,8 @@
     ],
     "name": "carousel",
     "registryDependencies": [
-      "button"
+      "button",
+      "direction"
     ],
     "root_folder": "carousel",
     "type": "registry:ui",
@@ -35216,6 +35247,9 @@
       }
     ],
     "name": "chart",
+    "registryDependencies": [
+      "direction"
+    ],
     "root_folder": "chart",
     "type": "registry:ui",
     "source": "/registry-ui/src/chart",
@@ -35268,7 +35302,8 @@
     ],
     "name": "checkbox",
     "registryDependencies": [
-      "label"
+      "label",
+      "direction"
     ],
     "root_folder": "checkbox",
     "type": "registry:ui",
@@ -35317,7 +35352,8 @@
     ],
     "name": "collapsible",
     "registryDependencies": [
-      "button"
+      "button",
+      "direction"
     ],
     "root_folder": "collapsible",
     "type": "registry:ui",
@@ -35467,7 +35503,9 @@
     "dependencies": [
       "@gentleduck/primitives",
       "@gentleduck/libs",
-      "lucide-react"
+      "lucide-react",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -35484,7 +35522,9 @@
       }
     ],
     "name": "context-menu",
-    "registryDependencies": [],
+    "registryDependencies": [
+      "shortcut-binder"
+    ],
     "root_folder": "context-menu",
     "type": "registry:ui",
     "source": "/registry-ui/src/context-menu",
@@ -35511,7 +35551,9 @@
       "@gentleduck/primitives",
       "@gentleduck/hooks",
       "@gentleduck/libs",
-      "lucide-react"
+      "lucide-react",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -35638,7 +35680,9 @@
     "dependencies": [
       "@gentleduck/primitives",
       "@gentleduck/libs",
-      "lucide-react"
+      "lucide-react",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -35655,7 +35699,9 @@
       }
     ],
     "name": "dropdown-menu",
-    "registryDependencies": [],
+    "registryDependencies": [
+      "shortcut-binder"
+    ],
     "root_folder": "dropdown-menu",
     "type": "registry:ui",
     "source": "/registry-ui/src/dropdown-menu",
@@ -35682,7 +35728,9 @@
       "@gentleduck/variants",
       "@gentleduck/libs",
       "@gentleduck/primitives",
-      "lucide-react"
+      "lucide-react",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -35786,6 +35834,10 @@
       }
     ],
     "name": "input",
+    "registryDependencies": [
+      "direction",
+      "motion-shell"
+    ],
     "root_folder": "input",
     "type": "registry:ui",
     "source": "/registry-ui/src/input",
@@ -35828,6 +35880,9 @@
       }
     ],
     "name": "input-otp",
+    "registryDependencies": [
+      "motion-shell"
+    ],
     "root_folder": "input-otp",
     "type": "registry:ui",
     "source": "/registry-ui/src/input-otp",
@@ -35869,6 +35924,10 @@
       }
     ],
     "name": "label",
+    "registryDependencies": [
+      "direction",
+      "motion-shell"
+    ],
     "root_folder": "label",
     "type": "registry:ui",
     "source": "/registry-ui/src/label",
@@ -35895,7 +35954,8 @@
       "@gentleduck/primitives",
       "@gentleduck/motion",
       "@gentleduck/libs",
-      "lucide-react"
+      "lucide-react",
+      "motion"
     ],
     "files": [
       {
@@ -35912,7 +35972,9 @@
       }
     ],
     "name": "menubar",
-    "registryDependencies": [],
+    "registryDependencies": [
+      "shortcut-binder"
+    ],
     "root_folder": "menubar",
     "type": "registry:ui",
     "source": "/registry-ui/src/menubar",
@@ -35930,6 +35992,29 @@
       {
         "name": "motion-menubar.tsx",
         "path": "menubar/motion-menubar.tsx",
+        "type": "file"
+      }
+    ]
+  },
+  {
+    "dependencies": [
+      "@gentleduck/motion",
+      "motion"
+    ],
+    "files": [
+      {
+        "path": "_internal/motion-shell.tsx",
+        "type": "registry:ui"
+      }
+    ],
+    "name": "motion-shell",
+    "root_folder": "_internal",
+    "type": "registry:ui",
+    "source": "/registry-ui/src/_internal",
+    "tree": [
+      {
+        "name": "motion-shell.tsx",
+        "path": "_internal/motion-shell.tsx",
         "type": "file"
       }
     ]
@@ -35960,7 +36045,8 @@
     ],
     "name": "pagination",
     "registryDependencies": [
-      "button"
+      "button",
+      "direction"
     ],
     "root_folder": "pagination",
     "type": "registry:ui",
@@ -35991,7 +36077,9 @@
   {
     "dependencies": [
       "@gentleduck/primitives",
-      "@gentleduck/libs"
+      "@gentleduck/libs",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -36032,7 +36120,9 @@
   {
     "dependencies": [
       "@gentleduck/libs",
-      "@gentleduck/primitives"
+      "@gentleduck/primitives",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -36049,6 +36139,9 @@
       }
     ],
     "name": "progress",
+    "registryDependencies": [
+      "direction"
+    ],
     "root_folder": "progress",
     "type": "registry:ui",
     "source": "/registry-ui/src/progress",
@@ -36119,7 +36212,9 @@
       "react-resizable-panels",
       "@gentleduck/libs",
       "@gentleduck/primitives",
-      "lucide-react"
+      "lucide-react",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -36136,6 +36231,9 @@
       }
     ],
     "name": "resizable",
+    "registryDependencies": [
+      "direction"
+    ],
     "root_folder": "resizable",
     "type": "registry:ui",
     "source": "/registry-ui/src/resizable",
@@ -36160,7 +36258,9 @@
   {
     "dependencies": [
       "@gentleduck/libs",
-      "@gentleduck/primitives"
+      "@gentleduck/primitives",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -36177,6 +36277,9 @@
       }
     ],
     "name": "scroll-area",
+    "registryDependencies": [
+      "direction"
+    ],
     "root_folder": "scroll-area",
     "type": "registry:ui",
     "source": "/registry-ui/src/scroll-area",
@@ -36202,7 +36305,9 @@
     "dependencies": [
       "@gentleduck/primitives",
       "@gentleduck/libs",
-      "lucide-react"
+      "lucide-react",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -36244,7 +36349,9 @@
   {
     "dependencies": [
       "@gentleduck/libs",
-      "@gentleduck/primitives"
+      "@gentleduck/primitives",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -36261,6 +36368,9 @@
       }
     ],
     "name": "separator",
+    "registryDependencies": [
+      "direction"
+    ],
     "root_folder": "separator",
     "type": "registry:ui",
     "source": "/registry-ui/src/separator",
@@ -36287,7 +36397,9 @@
       "@gentleduck/primitives",
       "@gentleduck/libs",
       "@gentleduck/variants",
-      "lucide-react"
+      "lucide-react",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -36336,11 +36448,34 @@
   },
   {
     "dependencies": [
+      "@gentleduck/vim"
+    ],
+    "files": [
+      {
+        "path": "_internal/shortcut-binder.tsx",
+        "type": "registry:ui"
+      }
+    ],
+    "name": "shortcut-binder",
+    "root_folder": "_internal",
+    "type": "registry:ui",
+    "source": "/registry-ui/src/_internal",
+    "tree": [
+      {
+        "name": "shortcut-binder.tsx",
+        "path": "_internal/shortcut-binder.tsx",
+        "type": "file"
+      }
+    ]
+  },
+  {
+    "dependencies": [
       "@gentleduck/hooks",
       "@gentleduck/libs",
       "@gentleduck/primitives",
       "@gentleduck/variants",
-      "lucide-react"
+      "lucide-react",
+      "@gentleduck/vim"
     ],
     "files": [
       {
@@ -36433,6 +36568,10 @@
       }
     ],
     "name": "skeleton",
+    "registryDependencies": [
+      "motion-shell",
+      "direction"
+    ],
     "root_folder": "skeleton",
     "type": "registry:ui",
     "source": "/registry-ui/src/skeleton",
@@ -36457,7 +36596,9 @@
   {
     "dependencies": [
       "@gentleduck/primitives",
-      "@gentleduck/libs"
+      "@gentleduck/libs",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -36565,7 +36706,8 @@
     "dependencies": [
       "@gentleduck/primitives",
       "@gentleduck/libs",
-      "@gentleduck/motion"
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -36582,6 +36724,9 @@
       }
     ],
     "name": "switch",
+    "registryDependencies": [
+      "direction"
+    ],
     "root_folder": "switch",
     "type": "registry:ui",
     "source": "/registry-ui/src/switch",
@@ -36606,7 +36751,9 @@
   {
     "dependencies": [
       "@gentleduck/libs",
-      "@gentleduck/primitives"
+      "@gentleduck/primitives",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -36623,6 +36770,9 @@
       }
     ],
     "name": "table",
+    "registryDependencies": [
+      "direction"
+    ],
     "root_folder": "table",
     "type": "registry:ui",
     "source": "/registry-ui/src/table",
@@ -36647,7 +36797,9 @@
   {
     "dependencies": [
       "@gentleduck/libs",
-      "@gentleduck/primitives"
+      "@gentleduck/primitives",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -36664,7 +36816,9 @@
       }
     ],
     "name": "tabs",
-    "registryDependencies": [],
+    "registryDependencies": [
+      "direction"
+    ],
     "root_folder": "tabs",
     "type": "registry:ui",
     "source": "/registry-ui/src/tabs",
@@ -36706,6 +36860,10 @@
       }
     ],
     "name": "textarea",
+    "registryDependencies": [
+      "motion-shell",
+      "direction"
+    ],
     "root_folder": "textarea",
     "type": "registry:ui",
     "source": "/registry-ui/src/textarea",
@@ -36731,7 +36889,9 @@
     "dependencies": [
       "@gentleduck/variants",
       "@gentleduck/libs",
-      "@gentleduck/primitives"
+      "@gentleduck/primitives",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -36827,7 +36987,9 @@
   {
     "dependencies": [
       "@gentleduck/libs",
-      "@gentleduck/primitives"
+      "@gentleduck/primitives",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -36868,7 +37030,9 @@
   {
     "dependencies": [
       "@gentleduck/libs",
-      "@gentleduck/motion"
+      "@gentleduck/motion",
+      "motion",
+      "@gentleduck/variants"
     ],
     "files": [
       {
@@ -36973,7 +37137,8 @@
   {
     "dependencies": [
       "@gentleduck/libs",
-      "@gentleduck/primitives"
+      "@gentleduck/primitives",
+      "@gentleduck/vim"
     ],
     "files": [
       {
@@ -36990,6 +37155,10 @@
       }
     ],
     "name": "kbd",
+    "registryDependencies": [
+      "direction",
+      "motion-shell"
+    ],
     "root_folder": "kbd",
     "type": "registry:ui",
     "source": "/registry-ui/src/kbd",
@@ -37015,7 +37184,9 @@
     "dependencies": [
       "@gentleduck/libs",
       "@gentleduck/variants",
-      "@gentleduck/primitives"
+      "@gentleduck/primitives",
+      "@gentleduck/motion",
+      "motion"
     ],
     "files": [
       {
@@ -37036,6 +37207,9 @@
       }
     ],
     "name": "empty",
+    "registryDependencies": [
+      "direction"
+    ],
     "root_folder": "empty",
     "type": "registry:ui",
     "source": "/registry-ui/src/empty",
@@ -37266,7 +37440,8 @@
       "button",
       "popover",
       "field",
-      "sheet"
+      "sheet",
+      "textarea"
     ],
     "root_folder": "json-editor",
     "type": "registry:ui",

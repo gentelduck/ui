@@ -2,7 +2,9 @@
   "dependencies": [
     "@gentleduck/variants",
     "@gentleduck/libs",
-    "@gentleduck/primitives"
+    "@gentleduck/primitives",
+    "@gentleduck/motion",
+    "motion"
   ],
   "files": [
     {
