@@ -1,5 +1,13 @@
 # @gentleduck/registry-ui
 
+## 0.6.2
+
+### Patch Changes
+
+- 65728a4: `MotionTableRow`, `MotionAlertTitle`, `MotionAlertDescription` and `MotionTypographyListItem` bring their own `LazyMotion`. They need no context from their motion root, so they can sit in the plain `Table`, `Alert` or list, where nothing loaded Motion's features and their entrance animation never ran.
+- ee71f99: `toDirection` accepts only `ltr` and `rtl`. It checked `dir in DIRECTION_DICTIONARY`, which also matches keys inherited from `Object.prototype`, so `toDirection('toString')` returned `'toString'` as a direction.
+- cafcba7: `unsafeHtml` takes priority over `children` whenever it is passed, as its docs say. `PreviewPanel`, `MotionPreviewPanel` and `PreviewPanelDialog` tested its truthiness, so `unsafeHtml=""` rendered `children` instead.
+
 ## 0.6.1
 
 ### Patch Changes
