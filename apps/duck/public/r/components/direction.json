@@ -4,7 +4,7 @@
   ],
   "files": [
     {
-      "content": "import { DIRECTION_DICTIONARY, type IDirection } from '@gentleduck/primitives/direction'\n\n/** Narrow `dir` to `IDirection.Kind` via {@link DIRECTION_DICTIONARY}; invalid → undefined. */\nexport function toDirection(dir: unknown): IDirection.Kind | undefined {\n  if (typeof dir !== 'string') return undefined\n  return dir in DIRECTION_DICTIONARY ? (dir as IDirection.Kind) : undefined\n}\n",
+      "content": "import { DIRECTION_DICTIONARY, type IDirection } from '@gentleduck/primitives/direction'\n\n/** Narrow `dir` to `IDirection.Kind` via {@link DIRECTION_DICTIONARY}; invalid → undefined. */\nexport function toDirection(dir: unknown): IDirection.Kind | undefined {\n  // Compare values, not keys: `in` also matches inherited keys such as `toString`.\n  return dir === DIRECTION_DICTIONARY.ltr || dir === DIRECTION_DICTIONARY.rtl ? dir : undefined\n}\n",
       "path": "direction/direction.libs.ts",
       "target": "components/ui/direction.libs.ts",
       "type": "registry:ui"
