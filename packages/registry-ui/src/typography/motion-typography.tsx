@@ -156,16 +156,19 @@ const MotionTypographyListItem = React.forwardRef<
     IMotionIndexProps
 >(({ className, index = 0, ...props }, ref) => {
   const content = useTypographyMotion(index)
+  // Own LazyMotion, so this also animates inside a plain list.
   return (
-    <m.li
-      ref={ref}
-      data-slot="typography-list-item"
-      className={className}
-      initial={content.initial}
-      animate={content.animate}
-      transition={content.transition}
-      {...props}
-    />
+    <LazyMotion features={loadDomAnimation}>
+      <m.li
+        ref={ref}
+        data-slot="typography-list-item"
+        className={className}
+        initial={content.initial}
+        animate={content.animate}
+        transition={content.transition}
+        {...props}
+      />
+    </LazyMotion>
   )
 })
 MotionTypographyListItem.displayName = 'MotionTypographyListItem'

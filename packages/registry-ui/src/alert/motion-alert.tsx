@@ -44,16 +44,19 @@ const MotionAlertTitle = React.forwardRef<
   Omit<React.HTMLAttributes<HTMLDivElement>, 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart'>
 >(({ className, ...props }, ref) => {
   const content = useMotionPreset(scaleIn, { transition: springBouncy, delay: 0.1 })
+  // Own LazyMotion, so this also animates inside a plain `Alert`.
   return (
-    <m.div
-      ref={ref}
-      className={cn('col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight', className)}
-      data-slot="alert-title"
-      initial={content.initial}
-      animate={content.animate}
-      transition={content.transition}
-      {...props}
-    />
+    <LazyMotion features={loadDomAnimation}>
+      <m.div
+        ref={ref}
+        className={cn('col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight', className)}
+        data-slot="alert-title"
+        initial={content.initial}
+        animate={content.animate}
+        transition={content.transition}
+        {...props}
+      />
+    </LazyMotion>
   )
 })
 MotionAlertTitle.displayName = 'MotionAlertTitle'
@@ -63,19 +66,22 @@ const MotionAlertDescription = React.forwardRef<
   Omit<React.HTMLAttributes<HTMLDivElement>, 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart'>
 >(({ className, ...props }, ref) => {
   const content = useMotionPreset(scaleIn, { transition: springBouncy, delay: 0.18 })
+  // Own LazyMotion, so this also animates inside a plain `Alert`.
   return (
-    <m.div
-      ref={ref}
-      className={cn(
-        'col-start-2 grid justify-items-start gap-1 text-muted-foreground text-sm [&_p]:leading-relaxed',
-        className,
-      )}
-      data-slot="alert-description"
-      initial={content.initial}
-      animate={content.animate}
-      transition={content.transition}
-      {...props}
-    />
+    <LazyMotion features={loadDomAnimation}>
+      <m.div
+        ref={ref}
+        className={cn(
+          'col-start-2 grid justify-items-start gap-1 text-muted-foreground text-sm [&_p]:leading-relaxed',
+          className,
+        )}
+        data-slot="alert-description"
+        initial={content.initial}
+        animate={content.animate}
+        transition={content.transition}
+        {...props}
+      />
+    </LazyMotion>
   )
 })
 MotionAlertDescription.displayName = 'MotionAlertDescription'
