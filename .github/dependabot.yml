@@ -14,3 +14,7 @@ updates:
       interval: weekly
     labels:
       - ci
+    ignore:
+      # v2 refuses to run with @changesets/cli v2. Take it with the CLI v3 upgrade, then drop this.
+      - dependency-name: changesets/action
+        update-types: ["version-update:semver-major"]
