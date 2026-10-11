@@ -18,3 +18,9 @@ updates:
       # v2 refuses to run with @changesets/cli v2. Take it with the CLI v3 upgrade, then drop this.
       - dependency-name: changesets/action
         update-types: ["version-update:semver-major"]
+    groups:
+      # init and analyze must run the same version, so every codeql-action step moves in one PR.
+      codeql-action:
+        patterns:
+          - "github/codeql-action"
+          - "github/codeql-action/*"
