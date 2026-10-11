@@ -1,5 +1,11 @@
 # @gentleduck/docs
 
+## 3.0.3
+
+### Patch Changes
+
+- 1d53c95: Depend on `@gentleduck/md` `^0.6.4`, which warns, PW002, when a page's frontmatter YAML does not parse, instead of compiling the page as if it had no frontmatter.
+
 ## 3.0.2
 
 ### Patch Changes
