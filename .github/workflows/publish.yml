@@ -90,9 +90,9 @@ jobs:
       - name: Create Release Pull Request
         uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          version: bun run version-packages
-          title: "chore: version packages"
-          commit: "chore: version packages"
+          version-script: bun run version-packages
+          pr-title: "chore: version packages"
+          commit-message: "chore: version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -145,8 +145,8 @@ jobs:
       - name: Publish
         uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          publish: bunx changeset publish
+          publish-script: bunx changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          # setup-node's registry-url writes the .npmrc that reads this; v2 no longer writes one from NPM_TOKEN.
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
