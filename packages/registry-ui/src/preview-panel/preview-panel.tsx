@@ -367,7 +367,7 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, IPreviewPanelProps>(
           className="flex flex-1 items-center justify-center overflow-hidden"
           style={containerStyle}>
           {/* SEC-002: `unsafeHtml` is rendered verbatim and is the caller's responsibility to sanitise. */}
-          {unsafeHtml ? (
+          {unsafeHtml !== undefined ? (
             <div
               ref={contentRef}
               className="flex w-full items-center justify-center p-6"

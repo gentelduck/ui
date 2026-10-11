@@ -1,8 +1,10 @@
 import { describe, expect, test } from 'bun:test'
 import * as React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { MotionPreviewPanel } from '../motion-preview-panel'
 import { PreviewPanel } from '../preview-panel'
 import type { IPreviewPanelProps } from '../preview-panel.types'
+import { PreviewPanelDialog } from '../preview-panel-dialog'
 
 describe('registry-ui preview-panel', () => {
   test('exposes the explicit `unsafeHtml` prop, not `html` (SEC-002)', () => {
@@ -19,5 +21,38 @@ describe('registry-ui preview-panel', () => {
   test('renders `unsafeHtml` verbatim into the panel content', () => {
     const html = renderToStaticMarkup(<PreviewPanel unsafeHtml="<span>preview body</span>" showControls={false} />)
     expect(html).toContain('<span>preview body</span>')
+  })
+
+  test('`unsafeHtml` takes priority over children even when empty', () => {
+    const child = <span>child body</span>
+    for (const html of [
+      renderToStaticMarkup(
+        <PreviewPanel unsafeHtml="" showControls={false}>
+          {child}
+        </PreviewPanel>,
+      ),
+      renderToStaticMarkup(
+        <MotionPreviewPanel unsafeHtml="" showControls={false}>
+          {child}
+        </MotionPreviewPanel>,
+      ),
+      renderToStaticMarkup(
+        <PreviewPanelDialog unsafeHtml="" showControls={false}>
+          {child}
+        </PreviewPanelDialog>,
+      ),
+    ]) {
+      expect(html).toContain('data-slot="preview-panel"')
+      expect(html).not.toContain('child body')
+    }
+  })
+
+  test('children render when `unsafeHtml` is absent', () => {
+    const html = renderToStaticMarkup(
+      <PreviewPanelDialog showControls={false}>
+        <span>child body</span>
+      </PreviewPanelDialog>,
+    )
+    expect(html).toContain('<span>child body</span>')
   })
 })
