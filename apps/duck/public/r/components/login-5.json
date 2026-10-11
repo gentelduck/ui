@@ -3,6 +3,9 @@
     "authentications",
     "login"
   ],
+  "dependencies": [
+    "react-hook-form"
+  ],
   "files": [
     {
       "content": "import { LoginForm } from './components/login-form'\n\nexport default function LoginPage() {\n  return (\n    <div className=\"flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 md:p-10\">\n      <div className=\"w-full max-w-sm\">\n        <LoginForm />\n      </div>\n    </div>\n  )\n}\n",
@@ -23,8 +26,7 @@
     "input",
     "avatar",
     "separator",
-    "label",
-    "react-hook-form"
+    "label"
   ],
   "root_folder": "authentications/login-5",
   "source": "/registry-blocks/src/authentications/login-5",

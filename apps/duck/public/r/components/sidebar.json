@@ -4,7 +4,8 @@
     "@gentleduck/libs",
     "@gentleduck/primitives",
     "@gentleduck/variants",
-    "lucide-react"
+    "lucide-react",
+    "@gentleduck/vim"
   ],
   "files": [
     {

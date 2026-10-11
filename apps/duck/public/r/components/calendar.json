@@ -3,7 +3,8 @@
     "react-day-picker",
     "@gentleduck/libs",
     "@gentleduck/primitives",
-    "lucide-react"
+    "lucide-react",
+    "@gentleduck/calendar"
   ],
   "files": [
     {

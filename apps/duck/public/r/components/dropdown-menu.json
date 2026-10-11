@@ -2,7 +2,9 @@
   "dependencies": [
     "@gentleduck/primitives",
     "@gentleduck/libs",
-    "lucide-react"
+    "lucide-react",
+    "@gentleduck/motion",
+    "motion"
   ],
   "files": [
     {
@@ -25,7 +27,9 @@
     }
   ],
   "name": "dropdown-menu",
-  "registryDependencies": [],
+  "registryDependencies": [
+    "shortcut-binder"
+  ],
   "root_folder": "dropdown-menu",
   "source": "/registry-ui/src/dropdown-menu",
   "type": "registry:ui"

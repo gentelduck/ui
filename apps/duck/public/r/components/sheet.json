@@ -3,7 +3,9 @@
     "@gentleduck/primitives",
     "@gentleduck/libs",
     "@gentleduck/variants",
-    "lucide-react"
+    "lucide-react",
+    "@gentleduck/motion",
+    "motion"
   ],
   "files": [
     {
