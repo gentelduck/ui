@@ -29,7 +29,7 @@
         "@gentleduck/hooks": "workspace:*",
         "@gentleduck/lazy": "workspace:*",
         "@gentleduck/libs": "workspace:*",
-        "@gentleduck/md": "^0.6.3",
+        "@gentleduck/md": "^0.6.4",
         "@gentleduck/motion": "workspace:*",
         "@gentleduck/primitives": "workspace:*",
         "@gentleduck/registers": "workspace:*",
@@ -168,7 +168,7 @@
     },
     "packages/duck-calendar": {
       "name": "@gentleduck/calendar",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "devDependencies": {
         "@gentleduck/tsdown-config": "workspace:*",
         "@gentleduck/typescript-config": "workspace:*",
@@ -203,7 +203,7 @@
     },
     "packages/duck-cli": {
       "name": "@gentleduck/cli",
-      "version": "1.5.0",
+      "version": "1.5.1",
       "bin": {
         "duck-cli": "dist/index.mjs",
       },
@@ -247,9 +247,9 @@
     },
     "packages/duck-docs": {
       "name": "@gentleduck/docs",
-      "version": "3.0.0",
+      "version": "3.0.2",
       "dependencies": {
-        "@gentleduck/md": "^0.6.3",
+        "@gentleduck/md": "^0.6.4",
         "@types/unist": "^3.0.3",
         "zod": "4.3.6",
       },
@@ -395,10 +395,10 @@
     },
     "packages/duck-primitives": {
       "name": "@gentleduck/primitives",
-      "version": "0.3.1",
+      "version": "0.4.0",
       "dependencies": {
         "@floating-ui/react-dom": "^2.1.7",
-        "@gentleduck/calendar": "^0.4.0",
+        "@gentleduck/calendar": "^0.5.0",
         "aria-hidden": "^1.2.6",
         "react-remove-scroll": "^2.7.2",
       },
@@ -465,7 +465,7 @@
     },
     "packages/duck-registry-build": {
       "name": "@gentleduck/registry-build",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "bin": {
         "registry-build": "dist/cli.mjs",
       },
@@ -568,7 +568,7 @@
     },
     "packages/registry-examples": {
       "name": "@gentleduck/registry-examples",
-      "version": "0.2.13",
+      "version": "0.2.14",
       "dependencies": {
         "@gentleduck/calendar": "workspace:*",
         "@gentleduck/primitives": "workspace:*",
@@ -606,7 +606,7 @@
     },
     "packages/registry-internals": {
       "name": "@gentleduck/registry-internals",
-      "version": "0.2.16",
+      "version": "0.2.17",
       "dependencies": {
         "@gentleduck/primitives": "workspace:*",
         "@hookform/resolvers": "^5.2.2",
@@ -643,13 +643,13 @@
     },
     "packages/registry-ui": {
       "name": "@gentleduck/registry-ui",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "dependencies": {
-        "@gentleduck/calendar": "^0.4.0",
+        "@gentleduck/calendar": "^0.5.0",
         "@gentleduck/hooks": "^1.0.0",
         "@gentleduck/libs": "^1.0.0",
         "@gentleduck/motion": "^1.0.0",
-        "@gentleduck/primitives": "^0.3.0",
+        "@gentleduck/primitives": "^0.4.0",
         "@gentleduck/variants": "^1.0.0",
         "@gentleduck/vim": "^0.3.0",
         "embla-carousel-react": "8.6.0",
@@ -724,7 +724,7 @@
     },
   },
   "overrides": {
-    "@gentleduck/md": "^0.6.3",
+    "@gentleduck/md": "^0.6.4",
     "esbuild": ">=0.28.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -1053,7 +1053,7 @@
 
     "@gentleduck/libs": ["@gentleduck/libs@workspace:packages/duck-libs"],
 
-    "@gentleduck/md": ["@gentleduck/md@0.6.3", "", { "dependencies": { "rehype-raw": "^7", "rehype-stringify": "^10", "remark-frontmatter": "^5", "remark-mdx": "^3", "remark-parse": "^11", "remark-rehype": "^11", "remark-stringify": "^11", "unified": "^11" }, "optionalDependencies": { "chokidar": "^5", "tsx": "^4" }, "bin": { "duck-md": "bin/duck-md.mjs" } }, "sha512-mtdIy5Xif3LzALsbamTJRWHRG8uq1H9857fcahTsEwY6566lFWBC7yF23bljzGbzWDaH01AjhXSrBNlU1jtOCw=="],
+    "@gentleduck/md": ["@gentleduck/md@0.6.4", "", { "dependencies": { "rehype-raw": "^7", "rehype-stringify": "^10", "remark-frontmatter": "^5", "remark-mdx": "^3", "remark-parse": "^11", "remark-rehype": "^11", "remark-stringify": "^11", "unified": "^11" }, "optionalDependencies": { "chokidar": "^5", "tsx": "^4" }, "bin": { "duck-md": "bin/duck-md.mjs" } }, "sha512-uEhgsglrOaMCSzOln0gihQiXWAPEvCZm70ktxhTztlYY1Rnvk4zwm6sm2OCLkjR6ik5O5gPIs3eb3f1PAhW+dA=="],
 
     "@gentleduck/motion": ["@gentleduck/motion@workspace:packages/duck-motion"],
 
