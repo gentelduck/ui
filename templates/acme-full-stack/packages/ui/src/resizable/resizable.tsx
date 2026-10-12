@@ -14,7 +14,7 @@ const ResizablePanelGroup = React.forwardRef<
   const direction = useDirection(dir as IDirection.Kind)
   return (
     <ResizablePrimitive.Group
-      className={cn('flex h-full w-full', className)}
+      className={cn('flex size-full', className)}
       data-slot="panel-group"
       dir={direction}
       elementRef={ref}
@@ -50,7 +50,7 @@ const ResizableHandle = React.forwardRef<
       <div
         className="z-10 flex h-4 w-3 items-center justify-center rounded-xs border bg-background shadow-sm"
         data-slot="panel-handle">
-        <GripVertical aria-hidden="true" className="h-2.5 w-2.5" />
+        <GripVertical aria-hidden="true" className="size-2.5" />
       </div>
     )}
   </ResizablePrimitive.Separator>

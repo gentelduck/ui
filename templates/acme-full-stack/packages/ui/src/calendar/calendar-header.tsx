@@ -76,7 +76,7 @@ function VirtualizedDropdown({
               key={item.value}
               type="button"
               className={cn(
-                'flex w-full cursor-default select-none items-center gap-2 whitespace-nowrap rounded-sm ps-6 pe-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground',
+                'flex w-full cursor-default select-none items-center gap-2 whitespace-nowrap rounded-sm ps-6 pe-2 text-sm outline-hidden hover:bg-accent hover:text-accent-foreground',
                 isActive && 'bg-accent font-medium text-accent-foreground',
               )}
               style={{

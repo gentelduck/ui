@@ -58,7 +58,7 @@ const MotionSidebar = React.forwardRef<HTMLDivElement, ISidebarProps>(
               <SheetTitle>{mobileTitle}</SheetTitle>
               <SheetDescription>{mobileDescription}</SheetDescription>
             </SheetHeader>
-            <div className="flex h-full w-full flex-col">{children}</div>
+            <div className="flex size-full flex-col">{children}</div>
           </SheetContent>
         </Sheet>
       )

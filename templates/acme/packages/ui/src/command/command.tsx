@@ -17,7 +17,7 @@ const Command = React.forwardRef<
     ref={ref}
     data-slot="command"
     className={cn(
-      'flex h-full w-full max-w-162.5 flex-col overflow-hidden rounded-md bg-popover p-2 text-popover-foreground shadow-sm',
+      'flex size-full max-w-162.5 flex-col overflow-hidden rounded-md bg-popover p-2 text-popover-foreground shadow-sm',
       className,
     )}
     {...props}
@@ -39,7 +39,7 @@ const CommandInput = React.forwardRef<
       autoFocus={autoFocus}
       placeholder={placeholder}
       className={cn(
-        'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+        'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
         className,
       )}
       {...props}
@@ -60,7 +60,7 @@ const CommandList = React.forwardRef<
     data-slot="command-list"
     viewportClassName="overflow-x-hidden"
     viewportRef={scrollRef}>
-    <CommandPrimitive.List ref={ref} className={cn('max-h-75 focus:outline-none', className)} {...props} />
+    <CommandPrimitive.List ref={ref} className={cn('max-h-75 focus:outline-hidden', className)} {...props} />
   </ScrollArea>
 ))
 CommandList.displayName = CommandPrimitive.List.displayName
@@ -146,7 +146,7 @@ const CommandShortcut = React.forwardRef<HTMLElement, ICommandBadgeProps>(
     return (
       <kbd
         className={cn(
-          'focus:offset-2 pointer-events-none ms-auto inline-flex cursor-none select-none items-center gap-0.5 rounded-sm px-2 py-[.12rem] font-sans text-secondary-foreground text-sm tracking-widest transition-colors focus:outline-hidden focus:ring-2 focus:ring-ring [&_svg]:size-3',
+          'pointer-events-none ms-auto inline-flex select-none items-center gap-0.5 rounded-sm px-2 py-[.12rem] font-sans text-secondary-foreground text-sm tracking-widest [&_svg]:size-3',
           variant === 'secondary' && 'bg-secondary',
           className,
         )}

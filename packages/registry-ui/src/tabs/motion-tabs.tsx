@@ -122,7 +122,7 @@ const MotionTabsTrigger = React.forwardRef<
       transition={shake ? tweenShake : undefined}
       onAnimationComplete={() => shake && setShake(false)}
       className={cn(
-        'relative inline-flex h-[29.04px] items-center justify-center gap-2 whitespace-nowrap rounded-sm px-3 font-medium text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        'relative inline-flex h-[29.04px] items-center justify-center gap-2 whitespace-nowrap rounded-sm px-3 font-medium text-sm ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         disabled && 'cursor-not-allowed opacity-50',
         className,
       )}

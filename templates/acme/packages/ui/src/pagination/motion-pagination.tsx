@@ -78,7 +78,7 @@ const MotionPaginationPrevious = React.forwardRef<
     index={index}
     {...props}
     size="default">
-    <ChevronLeft aria-hidden="true" className="h-4 w-4 rtl:rotate-180" />
+    <ChevronLeft aria-hidden="true" className="size-4 rtl:rotate-180" />
     <span className="hidden sm:block">{text}</span>
   </MotionPaginationLink>
 ))
@@ -97,7 +97,7 @@ const MotionPaginationNext = React.forwardRef<
     {...props}
     size="default">
     <span className="hidden sm:block">{text}</span>
-    <ChevronRight aria-hidden="true" className="h-4 w-4 rtl:rotate-180" />
+    <ChevronRight aria-hidden="true" className="size-4 rtl:rotate-180" />
   </MotionPaginationLink>
 ))
 MotionPaginationNext.displayName = 'MotionPaginationNext'

@@ -97,7 +97,7 @@ export const MotionCalendarDayCell = React.memo(function MotionCalendarDayCell({
       data-selected={day.isSelected ? 'true' : undefined}
       data-focused={isFocused ? 'true' : undefined}
       className={cn(
-        'group/day relative aspect-square h-full w-full select-none p-0 text-center',
+        'group/day relative aspect-square size-full select-none p-0 text-center',
         day.isHidden && 'invisible',
         isInRange && 'overflow-hidden',
         day.isRangeStart && 'rounded-s-md bg-accent',

@@ -46,7 +46,7 @@ const MotionPopoverContent = React.forwardRef<
         <PopoverPrimitive.Content ref={ref} align={align} sideOffset={sideOffset} forceMount asChild {...props}>
           <m.div
             className={cn(
-              'z-50 w-72 origin-(--gentleduck-popover-content-transform-origin) rounded-md border bg-popover p-4 text-start text-popover-foreground shadow-md outline-none',
+              'z-50 w-72 origin-(--gentleduck-popover-content-transform-origin) rounded-md border bg-popover p-4 text-start text-popover-foreground shadow-md outline-hidden',
               className,
             )}
             initial={content.initial}

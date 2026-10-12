@@ -35,10 +35,8 @@ const MotionAlertDialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
   const { isOpen } = useMotionContent()
-  const overlay = useMotionPreset(fadeIn)
-  const content = useMotionPreset(scaleIn, {
-    transition: springStiff,
-  })
+  const overlay = useMotionPreset(fadeIn, { transition: springStiff })
+  const content = useMotionPreset(scaleIn, { transition: springStiff })
   const shouldRender = useMotionMount(isOpen)
 
   if (!shouldRender) return null

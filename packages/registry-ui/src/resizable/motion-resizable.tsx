@@ -26,9 +26,9 @@ const MotionResizablePanelGroup = React.forwardRef<
         initial={content.initial}
         animate={content.animate}
         transition={content.transition}
-        className={cn('h-full w-full', className)}>
+        className={cn('size-full', className)}>
         <ResizablePrimitive.Group
-          className={cn('flex h-full w-full')}
+          className={cn('flex size-full')}
           data-slot="panel-group"
           dir={direction}
           elementRef={ref}

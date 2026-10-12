@@ -161,7 +161,7 @@ const CarouselPrevious = React.forwardRef<
   return (
     <Button
       className={cn(
-        'absolute h-8 w-8 rounded-full',
+        'absolute size-8 rounded-full',
         orientation === 'horizontal'
           ? '-start-12 top-1/2 -translate-y-1/2'
           : '-top-12 left-1/2 -translate-x-1/2 rotate-90',
@@ -173,7 +173,7 @@ const CarouselPrevious = React.forwardRef<
       ref={ref}
       size={size}
       variant={variant}
-      icon={icon === undefined ? <ArrowLeft aria-hidden="true" className="h-4 w-4 rtl:rotate-180" /> : icon}
+      icon={icon === undefined ? <ArrowLeft aria-hidden="true" className="size-4 rtl:rotate-180" /> : icon}
       {...props}>
       <span className="sr-only">{text}</span>
     </Button>
@@ -190,7 +190,7 @@ const CarouselNext = React.forwardRef<
   return (
     <Button
       className={cn(
-        'absolute h-8 w-8 rounded-full',
+        'absolute size-8 rounded-full',
         orientation === 'horizontal'
           ? '-end-12 top-1/2 -translate-y-1/2'
           : '-bottom-12 left-1/2 -translate-x-1/2 rotate-90',
@@ -202,7 +202,7 @@ const CarouselNext = React.forwardRef<
       ref={ref}
       size={size}
       variant={variant}
-      icon={icon === undefined ? <ArrowRight aria-hidden="true" className="h-4 w-4 rtl:rotate-180" /> : icon}
+      icon={icon === undefined ? <ArrowRight aria-hidden="true" className="size-4 rtl:rotate-180" /> : icon}
       {...props}>
       <span className="sr-only">{text}</span>
     </Button>

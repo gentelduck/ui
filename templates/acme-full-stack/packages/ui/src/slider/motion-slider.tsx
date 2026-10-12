@@ -13,7 +13,7 @@ function MotionSliderThumb(props: React.ComponentPropsWithoutRef<typeof SliderPr
   return (
     <SliderPrimitive.Thumb
       data-slot="slider-thumb"
-      className="relative block size-4 shrink-0 select-none rounded-full border border-ring bg-white ring-ring/50 transition-[color,box-shadow,scale] after:absolute after:-inset-2 hover:ring-3 focus-visible:outline-hidden focus-visible:ring-3 active:scale-97 active:ring-3 disabled:pointer-events-none disabled:opacity-50"
+      className="relative block size-4 shrink-0 select-none rounded-full border border-ring bg-background ring-ring/50 transition-[color,box-shadow,scale] after:absolute after:-inset-2 hover:ring-3 focus-visible:outline-hidden focus-visible:ring-3 active:scale-97 active:ring-3 disabled:pointer-events-none disabled:opacity-50"
       {...props}
     />
   )

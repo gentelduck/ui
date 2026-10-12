@@ -90,7 +90,7 @@ export function JsonEditorView({
 
         <Textarea
           className={cn(
-            'w-full resize-y bg-transparent px-3 py-2 font-mono text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring',
+            'w-full resize-y bg-transparent px-3 py-2 font-mono text-sm outline-hidden placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring',
             lineNumbers ? 'ps-14' : '',
           )}
           data-slot="json-editor-textarea"

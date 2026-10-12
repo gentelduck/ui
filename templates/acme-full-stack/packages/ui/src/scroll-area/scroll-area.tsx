@@ -21,7 +21,7 @@ const ScrollArea = React.forwardRef<HTMLDivElement, IScrollAreaProps>(
         ref={ref}
         {...props}
         data-slot="scroll-area">
-        <div ref={viewportRef} className={cn('scrollbar-none h-full w-full overflow-auto', viewportClassName)}>
+        <div ref={viewportRef} className={cn('scrollbar-none size-full overflow-auto', viewportClassName)}>
           {children}
         </div>
       </div>

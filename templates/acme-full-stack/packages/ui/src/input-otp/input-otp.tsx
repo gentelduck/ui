@@ -38,7 +38,7 @@ const InputOTPSlot = React.forwardRef<
   <InputOTPPrimitive.Slot
     ref={ref}
     className={cn(
-      'relative -ms-px h-10 w-10 rounded-none border border-input border-y border-e text-center text-sm transition-all first:ms-0 first:rounded-s-md last:rounded-e-md focus:relative focus:z-10 focus:outline-none focus:ring-2 focus:ring-ring',
+      'relative -ms-px size-10 rounded-none border border-input text-center text-sm transition-[color,background-color,border-color,box-shadow] first:ms-0 first:rounded-s-md last:rounded-e-md focus:z-10 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
       className,
     )}
     data-slot="input-otp-slot"
