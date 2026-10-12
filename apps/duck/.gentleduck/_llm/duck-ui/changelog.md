@@ -1,3 +1,25 @@
+## 0.7.0
+
+### Minor Changes
+
+* 8d18fa6: Every component follows the direction set once with `DirectionProvider` or `<html dir>`. Physical sides (`left`/`right` on sheet, sidebar, toasts, and popups) mirror in RTL instead of staying put, arrows and chevrons flip where they point along the inline axis, and keyboard navigation in tabs, menubar, and calendar follows the visual order. Progress fills from the inline-start edge, charts keep their SVG labels anchored, carousel passes the direction to Embla, JSON stays LTR inside the JSON editor, and `Kbd` keeps key labels in typing order. Preview panel controls accept `zoomInText`, `zoomOutText`, and `resetText` for translated labels.
+* 22e853d: Add `Typeset`, prose styles for rendered HTML and markdown such as docs pages, blog posts, and streamed AI replies. Wrap content in `<Typeset>` (or add the `typeset` class) and headings, lists, tables, code, and quotes get consistent sizes and spacing driven by three variables: `--typeset-size`, `--typeset-leading`, and `--typeset-flow`. Blocks only take a top margin, so streamed content never shifts what is already on screen. Opt a subtree out with `not-typeset`. The styles ship as `@gentleduck/registry-ui/typeset.css`.
+* 27ffc5e: `TabsContent` takes `renderOnce`: the panel mounts the first time its tab opens and then stays mounted, hidden, so form input, scroll position, and fetched data survive tab switches. `forceMount` now keeps a panel mounted from the start, before its tab is ever opened. Kept panels get `display: none` and `aria-hidden`.
+
+  By default an inactive panel now unmounts. Before, every panel stayed mounted after its first open no matter which props you passed. If you relied on that to keep state across tab switches, add `renderOnce`.
+
+### Patch Changes
+
+* 2f92193: Components share one motion language. Popups and dialogs set enter and exit durations with `animation-duration-*` (200ms in and 150ms out; 300ms and 200ms for dialogs and sheets) on the shared `--gentleduck-motion-ease`. Transitions name the properties they animate instead of `transition-all`, and the sidebar, accordion, and collapsible use the same easing. Motion popovers use `springBouncy`, alert dialogs `springStiff` for both overlay and content, and the motion sheet overlay `tweenSlow`.
+* 33c4389: The `Command` shortcut docs use `mod+k`, which is Cmd on Mac and Ctrl elsewhere, instead of `ctrl+K`.
+* ed5fb65: The navigation menu viewport measures its content before the first paint, so opening a menu no longer flashes an empty 0x0 box for a frame. The styled viewport also fades as it zooms in and out.
+* c9fe51c: Tailwind classes use their v4 forms: `size-*` instead of matching `h-*`/`w-*` pairs, `outline-hidden` instead of `outline-none`, and `focus-visible:` rings on close buttons, so a mouse click no longer leaves a focus ring. Popover, tooltip, hover card, and dropdown menu set their border colour with a class instead of an inline style, and the slider thumb uses `bg-background` so it follows the theme.
+* 8ed39e5: `ScrollArea` shows the native scrollbar again. The viewport hard-coded `scrollbar-none`, so content scrolled with no visible bar, and a `viewportClassName` could not bring it back. The bar now uses your global `::-webkit-scrollbar` styles; pass `viewportClassName="scrollbar-none"` to hide it.
+* 1b0f91a: `SheetContent` renders its children before the close button, so the absolutely positioned button stays on top of full-bleed content and comes after it in tab order.
+* Updated dependencies \[ed5fb65]
+* Updated dependencies \[8d18fa6]
+  * @gentleduck/primitives@0.5.0
+
 ## 0.6.2
 
 ### Patch Changes

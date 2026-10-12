@@ -1,3 +1,9 @@
+## 1.0.2
+
+### Patch Changes
+
+* 247da24: Registry builds copy CSS and JSON files unchanged. They were parsed as TSX to strip source variables, which dropped their leading comment.
+
 ## 1.0.1
 
 ### Patch Changes
