@@ -110,7 +110,7 @@ export function ComponentPreview({
             </TabsList>
           )}
         </div>
-        <TabsContent className="relative min-w-2/5 rounded-md border" value="preview">
+        <TabsContent className="relative min-w-2/5 rounded-md border" renderOnce value="preview">
           <div className="absolute flex w-full items-center justify-between p-3">
             <span className="text-muted-foreground text-sm">{}</span>
             <div className="flex items-center gap-2">

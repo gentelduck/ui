@@ -34,4 +34,24 @@ describe('registry-ui tabs', () => {
 
     expect(html).toContain('data-slot="tabs" dir="rtl"')
   })
+
+  test('only the active panel renders its children by default; forceMount renders inactive ones too', () => {
+    const html = renderToStaticMarkup(
+      <Tabs defaultValue="a">
+        <TabsContent value="a">Panel A</TabsContent>
+        <TabsContent value="b">Panel B</TabsContent>
+        <TabsContent renderOnce value="c">
+          Panel C
+        </TabsContent>
+        <TabsContent forceMount value="d">
+          Panel D
+        </TabsContent>
+      </Tabs>,
+    )
+
+    expect(html).toContain('Panel A')
+    expect(html).not.toContain('Panel B')
+    expect(html).not.toContain('Panel C')
+    expect(html).toContain('Panel D')
+  })
 })

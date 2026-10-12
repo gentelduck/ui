@@ -164,6 +164,7 @@ export function CodePreview({ block }: { block: Block & { hasLiftMode: boolean }
       }>
       <TabsContent
         className="relative after:absolute after:inset-0 after:right-3 after:z-0 after:rounded-lg after:bg-muted"
+        renderOnce
         value="preview">
         <ResizablePanelGroup className="relative z-10" orientation="horizontal">
           <ResizablePanel

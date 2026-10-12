@@ -3,7 +3,6 @@
 import { cn } from '@gentleduck/libs/cn'
 import type { IDirection } from '@gentleduck/primitives/direction'
 import { useDirection } from '@gentleduck/primitives/direction'
-import { MountMinimal } from '@gentleduck/primitives/mount'
 import * as React from 'react'
 import { toDirection } from '../direction/direction.libs'
 
@@ -148,22 +147,29 @@ const TabsContent = React.forwardRef<
   HTMLDivElement,
   Omit<React.HTMLProps<HTMLDivElement>, 'ref'> & {
     value: string
+    /** Keep the panel mounted from the start, even before its tab is opened. */
     forceMount?: boolean
+    /** Mount the panel the first time its tab opens, then keep it mounted so its state survives tab switches. */
+    renderOnce?: boolean
   }
->(({ children, forceMount = false, className, value, ...props }, ref) => {
+>(({ children, forceMount = false, renderOnce = false, className, value, ...props }, ref) => {
   const { activeItem, tabsId } = useTabs()
   const localRef = React.useRef<HTMLDivElement>(null)
+  const isActive = activeItem === value
+  const [hasOpened, setHasOpened] = React.useState(isActive)
+  if (isActive && !hasOpened) setHasOpened(true)
+  const shouldRender = forceMount || isActive || (renderOnce && hasOpened)
 
   return (
     <div
       aria-labelledby={`${tabsId}-trigger-${value}`}
       className={cn(
         'mt-2 shrink-0 list-none ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        activeItem === value ? 'opacity-100' : 'hidden opacity-0',
+        isActive ? 'opacity-100' : 'hidden opacity-0',
         className,
       )}
       data-value={value}
-      aria-hidden={activeItem !== value}
+      aria-hidden={!isActive}
       id={`${tabsId}-content-${value}`}
       ref={(node) => {
         ;(localRef as React.RefObject<HTMLDivElement | null>).current = node
@@ -177,9 +183,7 @@ const TabsContent = React.forwardRef<
       tabIndex={-1}
       {...props}
       data-slot="tabs-content">
-      <MountMinimal forceMount={forceMount} open={activeItem === value} ref={null}>
-        {children}
-      </MountMinimal>
+      {shouldRender && children}
     </div>
   )
 })
