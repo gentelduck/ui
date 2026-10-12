@@ -57,7 +57,7 @@ function VirtualizedDropdown({
       className={cn(
         'overflow-y-auto rounded-md border bg-popover p-1 shadow-md',
         'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2 data-[state=closed]:slide-out-to-top-2 origin-top data-[state=closed]:hidden data-[state=closed]:animate-out data-[state=open]:animate-in',
-        'transition-all transition-discrete duration-150 ease-(--gentleduck-motion-ease)',
+        'animation-duration-200 data-[state=closed]:animation-duration-150 transition-[display] transition-discrete duration-150 ease-(--gentleduck-motion-ease)',
       )}
       style={{ height: LIST_HEIGHT, scrollBehavior: 'auto' }}
       onScroll={(e) => setScrollTop(e.currentTarget.scrollTop)}>

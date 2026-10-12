@@ -235,7 +235,7 @@ import {
 | --- | --- | --- | --- |
 | `tweenNormal` | 200ms | standard | Overlays, content reveals |
 | `tweenSlow` | 300ms | standard | Large layout changes, page transitions |
-| `tweenExit` | 200ms | exit | Closing menus and dialogs |
+| `tweenExit` | 150ms | exit | Closing menus and dialogs |
 | `tweenExpand` | 250ms | expo-out | Accordion, collapsible, height reveals |
 | `tweenShake` | 400ms | — | Error shake feedback |
 
@@ -262,7 +262,7 @@ import {
 | Name | Config | Use case |
 | --- | --- | --- |
 | `springDefault` | `visualDuration: 0.25, bounce: 0.2` | General-purpose spring |
-| `springSnappy` | `visualDuration: 0.2, bounce: 0.15` | Menus, dropdowns, popovers |
+| `springSnappy` | `visualDuration: 0.2, bounce: 0.15` | Small staggered reveals, such as breadcrumb items |
 | `springGentle` | `visualDuration: 0.35, bounce: 0.25` | Dialogs, sheets, drawers |
 | `springBouncy` | `stiffness: 500, damping: 28` | Menus and popovers with slight overshoot |
 | `springStiff` | `stiffness: 400, damping: 30` | Alert dialogs, destructive confirmations |
@@ -400,8 +400,8 @@ import { AnimVariants } from '@gentleduck/motion'
 
 | Variant | Values | Description |
 | --- | --- | --- |
-| `alive` | `'default'` | Applies `transition-all`, `duration`, and `ease` classes |
-| `pseudo` | `'animate' \| 'default'` | Applies GPU-accelerated pseudo-element transitions |
+| `alive` | `'default'` | Transitions opacity and transforms (not colours) over 200ms with `--gentleduck-motion-ease` |
+| `pseudo` | `'animate' \| 'default'` | Applies the same opacity/transform transition to `:before`/`:after`, inheriting the host's duration and easing |
 
 ### `checkersStylePattern`
 

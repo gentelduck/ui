@@ -68,7 +68,7 @@ export const tweenSlow: MotionTransitionConfig = {
 
 /** Fast aggressive tween for exit animations. Use for closing menus and dialogs where the exit should feel snappier. */
 export const tweenExit: MotionTransitionConfig = {
-  duration: duckMotionDuration.normal,
+  duration: duckMotionDuration.fast,
   ease: duckMotionEasing.exit,
 }
 

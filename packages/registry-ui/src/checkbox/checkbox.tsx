@@ -73,8 +73,8 @@ const Checkbox = React.forwardRef<HTMLInputElement, ICheckboxProps>(
                       : 'default',
               type: 'checkbox',
             }),
-            'transition-all transition-discrete duration-[200ms,150ms] ease-(--gentleduck-motion-ease)',
-            '[&:before,&:after]:transition-gpu [&:before,&:after]:duration-200 [&:before,&:after]:ease-[cubic-bezier(0.34,1.56,0.64,1)] [&:before,&:after]:will-change-[inherit]',
+            'transition-[color,background-color,border-color,box-shadow,opacity] duration-200 ease-(--gentleduck-motion-ease)',
+            '[&:before,&:after]:transition-[opacity,transform,translate,scale,rotate] [&:before,&:after]:duration-200 [&:before,&:after]:ease-[cubic-bezier(0.34,1.56,0.64,1)]',
             (indicatorReady && checkedIndicatorReady) || indicatorReady
               ? ''
               : 'after:mb-0.5 after:h-2.25 after:w-1 after:border-2 after:border-t-0 after:border-l-0 after:bg-transparent',

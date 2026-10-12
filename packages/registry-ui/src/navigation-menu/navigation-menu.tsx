@@ -78,7 +78,7 @@ const NavigationMenuTrigger = React.forwardRef<HTMLButtonElement, NavigationMenu
       {children}
       <ChevronDown
         aria-hidden="true"
-        className="relative top-[1px] ms-1 size-4 transition duration-300 group-data-[state=open]:rotate-180"
+        className="relative top-[1px] ms-1 size-4 transition-transform duration-200 ease-(--gentleduck-motion-ease) group-data-[state=open]:rotate-180"
       />
     </NavigationMenuPrimitive.Trigger>
   ),
@@ -107,8 +107,8 @@ const NavigationMenuViewport = React.forwardRef<HTMLDivElement, NavigationMenuVi
       <NavigationMenuPrimitive.Viewport
         ref={ref}
         className={cn(
-          'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 relative mt-1.5 h-(--radix-navigation-menu-viewport-height) w-full origin-top-center overflow-hidden rounded-md border bg-popover text-popover-foreground shadow data-[state=closed]:animate-out data-[state=open]:animate-in md:w-(--radix-navigation-menu-viewport-width)',
-          'transition-all transition-discrete duration-[200ms,150ms] ease-(--gentleduck-motion-ease)',
+          'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 relative mt-1.5 h-(--radix-navigation-menu-viewport-height) w-full origin-top-center overflow-hidden rounded-md border bg-popover text-popover-foreground shadow data-[state=closed]:animate-out data-[state=open]:animate-in md:w-(--radix-navigation-menu-viewport-width)',
+          'animation-duration-200 data-[state=closed]:animation-duration-150 transition-[width,height] duration-200 ease-(--gentleduck-motion-ease)',
           className,
         )}
         data-slot="navigation-menu-viewport"
@@ -140,6 +140,7 @@ const NavigationMenuIndicator = React.forwardRef<HTMLDivElement, NavigationMenuI
       ref={ref}
       className={cn(
         'data-[state=hidden]:fade-out data-[state=visible]:fade-in top-full z-1 flex h-1.5 items-end justify-center overflow-hidden data-[state=hidden]:animate-out data-[state=visible]:animate-in',
+        'animation-duration-200 data-[state=hidden]:animation-duration-150 ease-(--gentleduck-motion-ease)',
         className,
       )}
       data-slot="navigation-menu-indicator"

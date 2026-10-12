@@ -61,9 +61,8 @@ const RadioGroupItem = React.forwardRef<
           'justify-center after:text-[10px]',
           'after:scale-0 data-[state=checked]:after:scale-100',
           indicatorStateClass,
-          'transition-all transition-discrete duration-[200ms,150ms] ease-(--gentleduck-motion-ease)',
-          '[&:before,&:after]:transition-gpu [&:before,&:after]:duration-[inherit] [&:before,&:after]:ease-[inherit] [&:before,&:after]:will-change-[inherit]',
-          'rounded-full',
+          'transition-[color,background-color,border-color,box-shadow,opacity] duration-200 ease-(--gentleduck-motion-ease)',
+          '[&:before,&:after]:transition-[opacity,transform,translate,scale,rotate] [&:before,&:after]:duration-[inherit] [&:before,&:after]:ease-[inherit]',
           className,
         )}
         data-slot="radio-group-item"

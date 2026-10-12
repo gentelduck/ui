@@ -15,7 +15,7 @@ import * as React from 'react'
 import type { ISheetContentProps } from './sheet'
 import { SheetPortal } from './sheet'
 
-const OVERLAY_OPTIONS = {} as const
+const OVERLAY_OPTIONS = { transition: tweenSlow } as const
 
 function MotionSheet({
   children,

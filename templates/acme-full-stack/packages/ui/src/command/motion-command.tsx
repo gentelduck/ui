@@ -19,9 +19,7 @@ function MotionCommandDialog({
 }: React.ComponentPropsWithoutRef<typeof MotionDialog> & { shouldFilter?: boolean; contentClassName?: string }) {
   return (
     <MotionDialog {...props}>
-      <MotionDialogContent
-        className={cn('h-125 max-w-full p-0 transition-all duration-200 lg:w-175', contentClassName)}
-        hideClose>
+      <MotionDialogContent className={cn('h-125 max-w-full p-0 lg:w-175', contentClassName)} hideClose>
         <DialogTitle className="sr-only">Command palette</DialogTitle>
         <DialogDescription className="sr-only">Search for commands and navigation items</DialogDescription>
         <Command className="max-w-full" shouldFilter={shouldFilter}>

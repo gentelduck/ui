@@ -47,14 +47,14 @@ const AccordionTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        'group/accordion-trigger flex w-full cursor-pointer select-none items-center justify-between py-4 text-start font-medium font-sans text-base not-italic ring-offset-background transition-all hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        'group/accordion-trigger flex w-full cursor-pointer select-none items-center justify-between py-4 text-start font-medium font-sans text-base not-italic ring-offset-background transition-[color,background-color,border-color,box-shadow] hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         className,
       )}
       {...props}>
       <span>{children}</span>
       <span
         className={cn(
-          '[&>svg:not([class*=size-])]:size-4 [&>svg]:shrink-0 [&>svg]:transition-transform [&>svg]:duration-200 group-data-[state=open]/accordion-trigger:[&>svg]:rotate-180',
+          '[&>svg:not([class*=size-])]:size-4 [&>svg]:shrink-0 [&>svg]:transition-transform [&>svg]:duration-200 [&>svg]:ease-(--gentleduck-motion-ease) group-data-[state=open]/accordion-trigger:[&>svg]:rotate-180',
         )}
         data-slot="accordion-icon">
         {icon ? icon : <ChevronDown aria-hidden="true" />}
@@ -86,7 +86,7 @@ const AccordionContent = React.forwardRef<
       forceMount
       inert={!open || undefined}
       className={cn(
-        'block overflow-hidden font-sans text-base not-italic will-change-[height,opacity]',
+        'block overflow-hidden font-sans text-base not-italic',
         'data-[state=closed]:h-0 data-[state=open]:h-auto',
         'data-[state=closed]:opacity-0 data-[state=open]:opacity-100',
         'data-[state=closed]:pointer-events-none',
