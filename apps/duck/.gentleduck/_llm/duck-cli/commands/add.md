@@ -44,6 +44,7 @@ npx @gentleduck/cli add button --force
 2. **Walks dependency graph**: installs registry-level dependencies (e.g. `dialog` pulls in `button`).
 3. **Installs npm dependencies**: runs `bun add` / `npm install` for any external packages declared by the component.
 4. **Writes files** to the configured aliases (`<alias>/ui`, `<alias>/hooks`, `<alias>/libs`, ... - see [`init`](/duck-cli/commands/init)).
+5. **Imports stylesheets**: when a component ships a `.css` file (like `typeset`), the CLI adds an `@import` for it to your `tailwind.css` file, after the Tailwind import. Running `add` again never duplicates it.
 
 If a target file already exists, the CLI asks before overwriting unless `--force` or `--yes` is set.
 
