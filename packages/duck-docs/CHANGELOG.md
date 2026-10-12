@@ -1,5 +1,12 @@
 # @gentleduck/docs
 
+## 3.0.4
+
+### Patch Changes
+
+- 22e853d: Centered component previews fall back to the top when an example is taller than the preview, instead of overflowing above the scroll area.
+- 27ffc5e: Component and code previews keep the preview tab mounted when you switch to the code tab, so an example keeps its state when you come back.
+
 ## 3.0.3
 
 ### Patch Changes
