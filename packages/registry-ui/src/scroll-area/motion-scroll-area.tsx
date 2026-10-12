@@ -31,7 +31,7 @@ const MotionScrollArea = React.forwardRef<
         transition={content.transition}
         {...props}
         data-slot="scroll-area">
-        <div ref={viewportRef} className={cn('scrollbar-none size-full overflow-auto', viewportClassName)}>
+        <div ref={viewportRef} className={cn('size-full overflow-auto', viewportClassName)}>
           {children}
         </div>
       </m.div>
