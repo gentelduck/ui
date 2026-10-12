@@ -86,7 +86,7 @@ export default function Demo() {
             size="default">
             Button
 
-            +m
+            +i
 
           <p>Advanced button</p>
 

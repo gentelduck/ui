@@ -12,8 +12,8 @@ React
 const editorRegistry = new Registry()
 const editorHandler = new KeyHandler(editorRegistry, 600)
 
-editorRegistry.register('ctrl+s', saveCommand, { preventDefault: true })
-editorRegistry.register('ctrl+z', undoCommand, { preventDefault: true })
+editorRegistry.register('mod+s', saveCommand, { preventDefault: true })
+editorRegistry.register('mod+z', undoCommand, { preventDefault: true })
 
 const editorEl = document.getElementById('editor')!
 editorHandler.attach(editorEl)
@@ -23,7 +23,7 @@ editorHandler.attach(editorEl)
 function Editor() {
   const ref = useRef<HTMLDivElement>(null)
 
-  useKeyBind('ctrl+s', () => save(), {
+  useKeyBind('mod+s', () => save(), {
     preventDefault: true,
     targetRef: ref,
   })
@@ -127,8 +127,8 @@ function findConflicts(registry: Registry): Array<[string, string]> {
 Or use the `conflictBehavior` option during registration:
 
 ```ts
-registry.register('ctrl+k', command, { conflictBehavior: 'error' })
-// Throws if ctrl+k is already registered
+registry.register('mod+k', command, { conflictBehavior: 'error' })
+// Throws if mod+k is already registered
 ```
 
 ***
@@ -139,7 +139,7 @@ registry.register('ctrl+k', command, { conflictBehavior: 'error' })
   For one-shot actions like "Save", you might want the shortcut to fire only once until explicitly reset (to prevent double-saves from held keys).
 
 ```ts
-const handle = registry.register('ctrl+s', {
+const handle = registry.register('mod+s', {
   name: 'Save',
   execute: async () => {
     await saveDocument()
@@ -148,7 +148,7 @@ const handle = registry.register('ctrl+s', {
 }, { requireReset: true, preventDefault: true })
 ```
 
-Without `requireReset`, holding <Kbd>Ctrl+S</Kbd> would trigger `save()` on every `keydown` repeat event.
+Without `requireReset`, holding <Kbd>Mod+S</Kbd> would trigger `save()` on every `keydown` repeat event.
 
 ***
 

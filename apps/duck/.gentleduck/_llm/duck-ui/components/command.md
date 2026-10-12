@@ -171,7 +171,7 @@ export default function Demo() {
 
   useKeyCommands(
     {
-      'ctrl+j': {
+      'mod+j': {
         description: 'Open command menu',
         execute: () => {
           setOpen(true)
@@ -243,12 +243,12 @@ export function CommandMenu() {
 
   useKeyCommands(
     {
-      'ctrl+j': {
+      'mod+j': {
         description: 'Open command menu',
         execute: () => {
           setOpen(true)
         },
-        name: 'ctrl+j',
+        name: 'mod+j',
       },
     },
     { preventDefault: true },
@@ -323,7 +323,7 @@ Per-item context. Available via `useCommandItemContext()`.
 
 | Property | Type | Description |
 | --- | --- | --- |
-| `keys` | `string` (optional) | Keyboard shortcut string (e.g. `'ctrl+K'`). |
+| `keys` | `string` (optional) | Keyboard shortcut string (e.g. `'mod+k'`). |
 | `onKeysPressed` | `() => void` (optional) | Called when the shortcut is triggered. |
 | `variant` | `'default' \| 'secondary'` (optional) | Visual style. |
 | `...props` | `React.HTMLProps<HTMLElement>` | Native `kbd` element props. |
@@ -536,7 +536,7 @@ Renders a `div` with `role="status"` and `aria-live="polite"`. Hidden by default
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `keys` | `string` (optional) | - | Keyboard shortcut string (e.g. `"ctrl+K"`) |
+| `keys` | `string` (optional) | - | Keyboard shortcut string (e.g. `"mod+k"`) |
 | `onKeysPressed` | `() => void` (optional) | - | Triggered when shortcut is pressed |
 | `variant` | `'default' \| 'secondary'` | `'default'` | Visual style variant |
 | `...props` | `React.HTMLProps<HTMLElement>` | - | Additional props to spread to the kbd element |

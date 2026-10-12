@@ -134,7 +134,7 @@ function App() {
       name: 'Go to Settings',
       execute: () => navigate('/settings'),
     },
-    'ctrl+k': {
+    'mod+k': {
       name: 'Command Palette',
       execute: () => setOpen(true),
     },
@@ -169,13 +169,13 @@ Conditional
 Without KeyProvider
 
 ```tsx
-useKeyBind('ctrl+k', () => setOpen(true), { preventDefault: true })
+useKeyBind('mod+k', () => setOpen(true), { preventDefault: true })
 ```
 
 ```tsx
 const editorRef = useRef<HTMLDivElement>(null)
 
-useKeyBind('ctrl+s', () => save(), {
+useKeyBind('mod+s', () => save(), {
   preventDefault: true,
   targetRef: editorRef,
 })
@@ -211,8 +211,8 @@ function useKeySequence(
 // Press g, then d (within timeout)
 useKeySequence(['g', 'd'], () => navigate('/dashboard'))
 
-// Press Ctrl+K, then Ctrl+D
-useKeySequence(['ctrl+k', 'ctrl+d'], () => deleteAll())
+// Press Mod+K, then Mod+D
+useKeySequence(['mod+k', 'mod+d'], () => deleteAll())
 
 // Scoped to an element
 useKeySequence(['j', 'k'], () => scrollUp(), {

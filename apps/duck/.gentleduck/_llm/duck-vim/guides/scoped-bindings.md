@@ -1,9 +1,9 @@
 }>
-  Global bindings (attached to `document`) work well for app-wide shortcuts like <Kbd>Ctrl+K</Kbd>. But some shortcuts should only work when a specific element is focused.
+  Global bindings (attached to `document`) work well for app-wide shortcuts like <Kbd>Mod+K</Kbd>. But some shortcuts should only work when a specific element is focused.
 
 ## Why scope bindings?
 
-Global bindings work well for app-wide shortcuts like <Kbd>Ctrl+K</Kbd> for a command palette. But some shortcuts should only work when a specific element is focused, like <Kbd>Ctrl+S</Kbd> in an editor panel or arrow keys in a list.
+Global bindings work well for app-wide shortcuts like <Kbd>Mod+K</Kbd> for a command palette. But some shortcuts should only work when a specific element is focused, like <Kbd>Mod+S</Kbd> in an editor panel or arrow keys in a list.
 
 duck-vim supports scoped bindings in both vanilla and React usage.
 
@@ -19,7 +19,7 @@ import { Registry, KeyHandler } from '@gentleduck/vim/command'
 const registry = new Registry()
 const editorHandler = new KeyHandler(registry, 600)
 
-registry.register('ctrl+s', {
+registry.register('mod+s', {
   name: 'Save',
   execute: () => saveDocument(),
 }, { preventDefault: true })
@@ -41,7 +41,7 @@ For a quick one-off, use `createKeyBindHandler` and attach to any element:
 import { createKeyBindHandler } from '@gentleduck/vim/matcher'
 
 const handler = createKeyBindHandler({
-  binding: 'ctrl+enter',
+  binding: 'mod+enter',
   handler: () => submitForm(),
   options: { preventDefault: true },
 })
@@ -59,12 +59,12 @@ Both `useKeyBind` and `useKeySequence` accept a `targetRef` option:
 function Editor() {
   const editorRef = useRef<HTMLDivElement>(null)
 
-  useKeyBind('ctrl+s', () => save(), {
+  useKeyBind('mod+s', () => save(), {
     preventDefault: true,
     targetRef: editorRef,
   })
 
-  useKeyBind('ctrl+z', () => undo(), {
+  useKeyBind('mod+z', () => undo(), {
     preventDefault: true,
     targetRef: editorRef,
   })
@@ -99,7 +99,7 @@ function App() {
   useKeyBind('e', () => editSelected(), { targetRef: mainRef })
 
   // Global (no targetRef)
-  useKeyBind('ctrl+k', () => openPalette(), { preventDefault: true })
+  useKeyBind('mod+k', () => openPalette(), { preventDefault: true })
 
   return (
     <div className="flex">

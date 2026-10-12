@@ -13,7 +13,7 @@
       "type": "registry:ui"
     },
     {
-      "content": "export interface ICommandBadgeProps extends React.HTMLProps<HTMLElement> {\n  variant?: 'default' | 'secondary'\n  /** The keyboard shortcut keys (e.g., \"ctrl+K\"). */\n  keys?: string\n  /** Callback function that is invoked when the shortcut keys are pressed. */\n  onKeysPressed?: () => void\n}\n",
+      "content": "export interface ICommandBadgeProps extends React.HTMLProps<HTMLElement> {\n  variant?: 'default' | 'secondary'\n  /** The keyboard shortcut keys (e.g., \"mod+k\", which is Cmd on Mac and Ctrl elsewhere). */\n  keys?: string\n  /** Callback function that is invoked when the shortcut keys are pressed. */\n  onKeysPressed?: () => void\n}\n",
       "path": "command/command.types.ts",
       "target": "components/ui/command.types.ts",
       "type": "registry:ui"

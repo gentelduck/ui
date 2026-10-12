@@ -55,12 +55,12 @@ const registry = new Registry()
   ### Register the command
 
   ```ts
-  const handle = registry.register('ctrl+k', openPalette, {
+  const handle = registry.register('mod+k', openPalette, {
     preventDefault: true,
   })
   ```
 
-  This says: when the user presses <Kbd>Ctrl+K</Kbd>, run `openPalette.execute()` and call `event.preventDefault()` to stop the browser's default behavior (Chrome's address bar focus, for example).
+  This says: when the user presses <Kbd>Mod+K</Kbd> (<Kbd>Cmd+K</Kbd> on Mac, <Kbd>Ctrl+K</Kbd> elsewhere), run `openPalette.execute()` and call `event.preventDefault()` to stop the browser's default behavior (Chrome's address bar focus, for example).
 
   The returned `handle` lets you manage the binding:
 
@@ -81,7 +81,7 @@ const registry = new Registry()
   handler.attach(document)
   ```
 
-  Now the handler is listening for `keydown` events on `document`. When the user presses <Kbd>Ctrl+K</Kbd>, the handler builds a key descriptor (`'ctrl+k'`), looks it up in the registry, and calls the command's `execute` function.
+  Now the handler is listening for `keydown` events on `document`. When the user presses <Kbd>Mod+K</Kbd>, the handler builds a key descriptor (`'meta+k'` on Mac, `'ctrl+k'` elsewhere), looks it up in the registry, and calls the command's `execute` function.
 
   }>
     The second argument (`600`) is the sequence timeout in milliseconds. We'll use this in Lesson 5.
@@ -102,17 +102,17 @@ const registry = new Registry(true) // debug mode
 const handler = new KeyHandler(registry, 600)
 
 // 3. Register shortcuts
-registry.register('ctrl+k', {
+registry.register('mod+k', {
   name: 'Command Palette',
   execute: () => console.log('Palette!'),
 }, { preventDefault: true })
 
-registry.register('ctrl+s', {
+registry.register('mod+s', {
   name: 'Save',
   execute: () => console.log('Saved!'),
 }, { preventDefault: true })
 
-registry.register('ctrl+z', {
+registry.register('mod+z', {
   name: 'Undo',
   execute: () => console.log('Undo!'),
 }, { preventDefault: true })
@@ -120,7 +120,7 @@ registry.register('ctrl+z', {
 // 4. Start listening
 handler.attach(document)
 
-// Open your browser console and press Ctrl+K, Ctrl+S, or Ctrl+Z
+// Open your browser console and press Mod+K, Mod+S, or Mod+Z
 ```
 
 ***
@@ -137,7 +137,7 @@ registry.clear()         // Remove all bindings
 Or remove individual bindings:
 
 ```ts
-const handle = registry.register('ctrl+k', command)
+const handle = registry.register('mod+k', command)
 // Later:
 handle.unregister()
 ```
@@ -147,8 +147,8 @@ handle.unregister()
 ## Checking what's registered
 
 ```ts
-registry.hasCommand('ctrl+k') // true
-registry.getCommand('ctrl+k') // { name: 'Command Palette', execute: ... }
+registry.hasCommand('mod+k') // true
+registry.getCommand('mod+k') // { name: 'Command Palette', execute: ... }
 registry.getAllCommands()      // Map of all bindings
 
 for (const [binding, cmd] of registry.getAllCommands()) {
@@ -163,7 +163,7 @@ for (const [binding, cmd] of registry.getAllCommands()) {
 Create a new file, paste the complete example above.
 Open it in a browser.
 Open the console.
-Press <Kbd>Ctrl+K</Kbd>. You should see "Palette!" in the console.
+Press <Kbd>Mod+K</Kbd>. You should see "Palette!" in the console.
 Try enabling debug mode and watch the detailed logs as you press keys.
 
 ***

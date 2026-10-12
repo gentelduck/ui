@@ -48,7 +48,7 @@ document.addEventListener('keydown', (e) => {
 duck-vim uses a **registry pattern**. Instead of imperative event handlers, you declare bindings:
 
 ```ts
-registry.register('ctrl+k', {
+registry.register('mod+k', {
   name: 'Open Palette',
   execute: () => openPalette(),
 })

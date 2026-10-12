@@ -38,7 +38,7 @@ const goToDashboard: Command = {
   execute: () => (window.location.href = '/dashboard'),
 }
 
-registry.register('ctrl+k', openPalette, { preventDefault: true })
+registry.register('mod+k', openPalette, { preventDefault: true })
 registry.register('g+d', goToDashboard)
 ```
 
@@ -48,7 +48,7 @@ Start listening
 handler.attach(document)
 ```
 
-Press <Kbd>Ctrl+K</Kbd> to open the palette. Press <Kbd>g</Kbd> then <Kbd>d</Kbd> (within 600ms) to navigate to the dashboard.
+Press <Kbd>Mod+K</Kbd> to open the palette. Press <Kbd>g</Kbd> then <Kbd>d</Kbd> (within 600ms) to navigate to the dashboard.
 
 To stop listening:
 
@@ -69,7 +69,7 @@ function App() {
   const [open, setOpen] = useState(false)
 
   // Single key binding
-  useKeyBind('ctrl+k', () => setOpen(true), { preventDefault: true })
+  useKeyBind('mod+k', () => setOpen(true), { preventDefault: true })
 
   // Multi-key sequence: press g, then d
   useKeySequence(['g', 'd'], () => {
@@ -78,7 +78,7 @@ function App() {
 
   return (
     <div>
-      <p>Press Ctrl+K to open palette, or g then d to go to dashboard.</p>
+      <p>Press Mod+K to open palette, or g then d to go to dashboard.</p>
       {open && <CommandPalette onClose={() => setOpen(false)} />}
     </div>
   )

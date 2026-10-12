@@ -34,7 +34,7 @@ function CommandPalette() {
   const [query, setQuery] = useState('')
   const ctx = useContext(KeyContext)
 
-  useKeyBind('ctrl+k', () => setOpen(true), { preventDefault: true })
+  useKeyBind('mod+k', () => setOpen(true), { preventDefault: true })
   useKeyBind('escape', () => setOpen(false), { enabled: open })
 
   const items = useMemo(() => {
@@ -115,7 +115,7 @@ useKeyCommands({
     description: 'Open the settings page',
     execute: () => navigate('/settings'),
   },
-  'ctrl+s': {
+  'mod+s': {
     name: 'Save',
     description: 'Save the current document',
     execute: () => save(),

@@ -1,5 +1,5 @@
 }>
-  Multi-step keyboard sequence matching with timeout support. Handle complex shortcuts like <Kbd>Ctrl+K</Kbd> followed by <Kbd>Ctrl+D</Kbd>, or simple character sequences like <Kbd>g</Kbd> then <Kbd>d</Kbd>.
+  Multi-step keyboard sequence matching with timeout support. Handle complex shortcuts like <Kbd>Mod+K</Kbd> followed by <Kbd>Mod+D</Kbd>, or simple character sequences like <Kbd>g</Kbd> then <Kbd>d</Kbd>.
 
 ```ts
 import { SequenceManager, createSequenceMatcher } from '@gentleduck/vim/sequence'
@@ -21,7 +21,7 @@ The **Registry + KeyHandler** system supports sequences like `g+d` (single chara
 
 Use **SequenceManager** when you need:
 
-* Steps that are full key combinations (e.g. <Kbd>Ctrl+K</Kbd> then <Kbd>Ctrl+D</Kbd>)
+* Steps that are full key combinations (e.g. <Kbd>Mod+K</Kbd> then <Kbd>Mod+D</Kbd>)
 * Multiple sequences registered independently with separate handlers
 * Fine-grained state reporting (which step you are on)
 * Standalone sequence matching separate from the Registry
@@ -95,8 +95,8 @@ manager.register(registration: SequenceRegistration): SequenceHandle
 const manager = new SequenceManager()
 
 const handle = manager.register({
-  steps: [{ binding: 'ctrl+k' }, { binding: 'ctrl+d' }],
-  handler: () => console.log('Ctrl+K, Ctrl+D pressed!'),
+  steps: [{ binding: 'mod+k' }, { binding: 'mod+d' }],
+  handler: () => console.log('Mod+K, Mod+D pressed!'),
   options: { timeout: 800 },
 })
 

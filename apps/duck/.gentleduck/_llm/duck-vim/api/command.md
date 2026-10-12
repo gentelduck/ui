@@ -100,7 +100,7 @@ If the key is already registered, the `conflictBehavior` option controls what ha
 **Example:**
 
 ```ts
-const handle = registry.register('ctrl+k', {
+const handle = registry.register('mod+k', {
   name: 'Open Palette',
   execute: () => openPalette(),
 }, { preventDefault: true })
@@ -171,7 +171,7 @@ const handler = new KeyHandler(registry, 600, {
 })
 
 // Single-key shortcut
-registry.register('ctrl+k', {
+registry.register('mod+k', {
   name: 'Command Palette',
   execute: () => togglePalette(),
 }, { preventDefault: true })
@@ -183,7 +183,7 @@ registry.register('g+d', {
 })
 
 // One-shot binding (fires once until resetFired is called)
-const saveHandle = registry.register('ctrl+s', {
+const saveHandle = registry.register('mod+s', {
   name: 'Save',
   execute: () => save(),
 }, { preventDefault: true, requireReset: true })

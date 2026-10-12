@@ -48,7 +48,7 @@ export function useKeyBind(binding: string, execute: () => void, options?: KeyBi
 <script setup>
 import { useKeyBind } from './composables/useKeyBind'
 
-useKeyBind('ctrl+k', () => {
+useKeyBind('mod+k', () => {
   console.log('Palette opened!')
 }, { preventDefault: true })
 </script>
@@ -86,7 +86,7 @@ export function keybind(node: HTMLElement, params: { binding: string; handler: (
   import { keybind } from './actions/keybind'
 </script>
 
-<div use:keybind={{ binding: 'ctrl+k', handler: () => console.log('palette') }}>
+<div use:keybind={{ binding: 'mod+k', handler: () => console.log('palette') }}>
   App content
 </div>
 ```
@@ -130,7 +130,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(private keybind: KeyBindService) {}
 
   ngOnInit() {
-    this.handle = this.keybind.register('ctrl+k', {
+    this.handle = this.keybind.register('mod+k', {
       name: 'Open Palette',
       execute: () => this.openPalette(),
     }, { preventDefault: true })
