@@ -14,6 +14,11 @@ export function stripSourceVariables(options: {
     return options.content
   }
 
+  // Only script files declare variables. Parsing CSS or JSON as TSX drops its leading comment.
+  if (!/\.[cm]?[jt]sx?$/.test(options.filePath)) {
+    return options.content
+  }
+
   const sourceFile = options.project.createSourceFile(path.join('/virtual', options.filePath), options.content, {
     overwrite: true,
     scriptKind: ScriptKind.TSX,

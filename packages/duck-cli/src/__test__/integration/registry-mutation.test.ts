@@ -3,7 +3,12 @@ import os from 'node:os'
 import path from 'node:path'
 import { execa } from 'execa'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { processComponentDependencies, processComponentFiles } from '~/utils/registry-mutation/registry-mutation.lib'
+import {
+  addCssImports,
+  linkComponentStylesheets,
+  processComponentDependencies,
+  processComponentFiles,
+} from '~/utils/registry-mutation/registry-mutation.lib'
 import { createMockDuckUIConfig, createMockRegistryEntry } from '../helpers/fixtures'
 import { createMockFetch } from '../helpers/mock-fetch'
 import { createMockSpinner } from '../helpers/mock-spinner'
@@ -492,5 +497,73 @@ describe('processComponentDependencies', () => {
     const libsCount = installedPackages.filter((p: string) => p === '@gentleduck/libs').length
     expect(libsCount).toBe(1)
     expect(installedPackages).toHaveLength(3) // @gentleduck/libs, clsx, @types/react
+  })
+})
+
+describe('addCssImports', () => {
+  it('adds the import after the last existing @import', () => {
+    const css = '@import "tailwindcss";\n@import "tw-animate-css";\n\n:root {}\n'
+    expect(addCssImports(css, ['./ui/typeset/typeset.css'])).toBe(
+      '@import "tailwindcss";\n@import "tw-animate-css";\n@import "./ui/typeset/typeset.css";\n\n:root {}\n',
+    )
+  })
+
+  it('prepends when the file has no imports', () => {
+    expect(addCssImports(':root {}\n', ['./a.css'])).toBe('@import "./a.css";\n:root {}\n')
+  })
+
+  it('leaves the file alone when the import already exists', () => {
+    const css = "@import 'tailwindcss';\n@import url('./a.css');\n"
+    expect(addCssImports(css, ['./a.css'])).toBe(css)
+  })
+})
+
+describe('linkComponentStylesheets', () => {
+  let tmpDir: string
+
+  beforeEach(() => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'duck-cli-css-'))
+    fs.writeFileSync(path.join(tmpDir, 'duck-ui.config.json'), '{}')
+  })
+
+  afterEach(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true })
+  })
+
+  it('imports a written component stylesheet into tailwind.css once', async () => {
+    const config = createMockDuckUIConfig()
+    const component = createMockRegistryEntry({
+      name: 'typeset',
+      root_folder: 'typeset',
+      files: [
+        { path: 'typeset/typeset.tsx', target: 'typeset/typeset.tsx', type: 'registry:ui', content: 'x' },
+        { path: 'typeset/typeset.css', target: 'typeset/typeset.css', type: 'registry:ui', content: '.typeset {}' },
+      ],
+    })
+    fs.mkdirSync(path.join(tmpDir, 'src/ui/typeset'), { recursive: true })
+    fs.writeFileSync(path.join(tmpDir, 'src/ui/typeset/typeset.css'), '.typeset {}')
+    fs.writeFileSync(path.join(tmpDir, 'src/styles.css'), '@import "tailwindcss";\n')
+
+    const spinner = createMockSpinner()
+    await linkComponentStylesheets(config, [component], path.join(tmpDir, 'src'), tmpDir, spinner)
+    await linkComponentStylesheets(config, [component], path.join(tmpDir, 'src'), tmpDir, spinner)
+
+    expect(fs.readFileSync(path.join(tmpDir, 'src/styles.css'), 'utf8')).toBe(
+      '@import "tailwindcss";\n@import "./ui/typeset/typeset.css";\n',
+    )
+  })
+
+  it('warns with the line to add when tailwind.css is missing', async () => {
+    const component = createMockRegistryEntry({
+      root_folder: 'typeset',
+      files: [{ path: 'typeset/typeset.css', target: 'typeset/typeset.css', type: 'registry:ui', content: 'x' }],
+    })
+    fs.mkdirSync(path.join(tmpDir, 'src/ui/typeset'), { recursive: true })
+    fs.writeFileSync(path.join(tmpDir, 'src/ui/typeset/typeset.css'), 'x')
+
+    const spinner = createMockSpinner()
+    await linkComponentStylesheets(createMockDuckUIConfig(), [component], path.join(tmpDir, 'src'), tmpDir, spinner)
+
+    expect(spinner.warn).toHaveBeenCalledWith(expect.stringContaining('@import "./ui/typeset/typeset.css";'))
   })
 })

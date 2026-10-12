@@ -4,7 +4,7 @@ import fs from 'fs-extra'
 import type { Ora } from 'ora'
 import prompts from 'prompts'
 import { launchMergeGuiAndWait } from '~/gui'
-import { diffComponent } from '~/services/component.service'
+import { diffComponent, resolveWriteTypePath } from '~/services/component.service'
 import { buildComponentMergeState } from '~/services/merge.service'
 import { getPackageManager } from '../get-package-manager'
 import { getTsConfig } from '../get-project-info'
@@ -12,7 +12,7 @@ import { getRegistryItem, type Registry } from '../get-registry'
 import type { DuckUI } from '../preflight-configs/preflight-duckui'
 import { resolveWithinBase } from '../safe-path'
 import { highlighter } from '../text-styling'
-import { resolveProjectCwd, validateWorkspaceTarget } from '../workspace'
+import { findDuckuiRootCwd, resolveProjectCwd, validateWorkspaceTarget } from '../workspace'
 import type { DependenciesType, InstallOptions } from './registry-mutation.types'
 
 /** Resolve component write path from duck config + tsconfig aliases. Throws on error; `exit(0)` on user-decline. */
@@ -123,7 +123,15 @@ export async function processComponents(
     }
 
     const topLevelNames = new Set(components.map((c) => c.name.toLowerCase()))
-    await installRegistryDependencies(dependencies, spinner, writePath, skipPrompts, duckConfig, topLevelNames)
+    const registryComponents = await installRegistryDependencies(
+      dependencies,
+      spinner,
+      writePath,
+      skipPrompts,
+      duckConfig,
+      topLevelNames,
+    )
+    await linkComponentStylesheets(duckConfig, [...components, ...registryComponents], writePath, options.cwd, spinner)
     const projectCwd = resolveProjectCwd(options.cwd, duckConfig, options.workspace)
     const workspaceError = validateWorkspaceTarget(projectCwd, false)
     if (workspaceError) {
@@ -160,12 +168,8 @@ async function installComponent(
   if (!componentType) {
     throw new Error(`Invalid component type: "${component.type}"`)
   }
-  // `duckConfig.aliases.ui` is shape-validated by `duckUiSchema`. The first segment is the alias
-  // prefix (e.g. `~`), the rest is the on-disk subdir relative to the resolved `writePath`.
   const duckuiWritePath = duckConfig.aliases.ui.split('/').slice(1).join('/')
-  // Contain the alias-derived path within the resolved `writePath` (defence in depth even though
-  // `aliases.ui` is already shape-validated and `writePath` derives from the canonical tsconfig).
-  const writeTypePath = duckuiWritePath ? resolveWithinBase(writePath, duckuiWritePath) : path.resolve(writePath)
+  const writeTypePath = resolveWriteTypePath(duckConfig, writePath)
   // `root_folder` is registry-supplied; contain it within the install dir to block path traversal.
   const writeComponentPath = resolveWithinBase(writeTypePath, component.root_folder)
 
@@ -188,7 +192,7 @@ export async function installRegistryDependencies(
   force: boolean,
   duckConfig: DuckUI,
   exclude?: Set<string>,
-) {
+): Promise<Registry.Collection> {
   // Tracks already-resolved names so cycles in `registryDependencies` don't fetch/install twice.
   const visited = new Set<string>(exclude)
   const allComponents: Registry.Collection = []
@@ -249,6 +253,73 @@ export async function installRegistryDependencies(
       await installComponent(duckConfig, dependencies, index, component, true, allComponents, writePath, spinner, force)
     }
   }
+
+  return allComponents
+}
+
+/** `tailwind.css` lives in `cssWorkspace` when set, otherwise next to `duck-ui.config.json`. */
+export function resolveMainCssPath(duckConfig: DuckUI, configCwd: string): string {
+  const configDir = findDuckuiRootCwd(configCwd) ?? path.resolve(configCwd)
+  const { css, cssWorkspace } = duckConfig.tailwind
+  return resolveWithinBase(cssWorkspace ? path.resolve(configDir, cssWorkspace) : configDir, css)
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/** Adds missing `@import` lines after the last existing one, so they land after `@import "tailwindcss"`. */
+export function addCssImports(css: string, imports: string[]): string {
+  const missing = imports.filter((file) => !new RegExp(`@import\\s+(?:url\\()?["']${escapeRegExp(file)}["']`).test(css))
+  if (missing.length === 0) return css
+
+  const lines = missing.map((file) => `@import "${file}";`).join('\n')
+  let lastImportEnd = -1
+  for (const match of css.matchAll(/^@import\s[^;]*;.*$/gm)) {
+    lastImportEnd = match.index + match[0].length
+  }
+
+  if (lastImportEnd === -1) return `${lines}\n${css}`
+  return `${css.slice(0, lastImportEnd)}\n${lines}${css.slice(lastImportEnd)}`
+}
+
+/** Imports stylesheets shipped by components (e.g. `typeset.css`) into the project's main CSS file. */
+export async function linkComponentStylesheets(
+  duckConfig: DuckUI,
+  components: Registry.Collection,
+  writePath: string,
+  configCwd: string,
+  spinner: Ora,
+) {
+  const writeTypePath = resolveWriteTypePath(duckConfig, writePath)
+  const stylesheets = components
+    .flatMap((component) => component.files ?? [])
+    .filter((file) => file.path.endsWith('.css'))
+    .map((file) => resolveWithinBase(writeTypePath, file.path))
+    .filter((file) => fs.existsSync(file))
+  if (stylesheets.length === 0) return
+
+  const cssFile = resolveMainCssPath(duckConfig, configCwd)
+  const imports = [
+    ...new Set(
+      stylesheets.map((file) => {
+        const relative = path.relative(path.dirname(cssFile), file).split(path.sep).join('/')
+        return relative.startsWith('.') ? relative : `./${relative}`
+      }),
+    ),
+  ]
+
+  if (!fs.existsSync(cssFile)) {
+    spinner.warn(`Add ${imports.map((file) => `@import "${file}";`).join(' ')} to your main CSS file.`)
+    return
+  }
+
+  const css = await fs.readFile(cssFile, 'utf8')
+  const next = addCssImports(css, imports)
+  if (next === css) return
+
+  await fs.writeFile(cssFile, next, 'utf8')
+  spinner.succeed(`Imported ${highlighter.info(imports.join(', '))} in ${highlighter.info(duckConfig.tailwind.css)}`)
 }
 
 export async function processComponentFiles(
