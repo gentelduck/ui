@@ -91,6 +91,7 @@ export const duckUiSidebar = defineSidebar([
       { title: 'toggle', href: '/duck-ui/components/toggle' },
       { title: 'toggle-group', href: '/duck-ui/components/toggle-group' },
       { title: 'tooltip', href: '/duck-ui/components/tooltip' },
+      { title: 'typeset', href: '/duck-ui/components/typeset' },
       { title: 'typography', href: '/duck-ui/components/typography' },
     ],
   },

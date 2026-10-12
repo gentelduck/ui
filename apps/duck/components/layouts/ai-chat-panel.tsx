@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@gentleduck/libs/cn'
+import { Typeset } from '@gentleduck/registry-ui/typeset'
 import { ArrowLeft, ArrowUp, Check, Copy, FileText, Loader, Sparkles, Square, X } from 'lucide-react'
 import Link from 'next/link'
 import * as React from 'react'
@@ -223,7 +224,7 @@ const ShikiCodeBlock = React.memo(function ShikiCodeBlock({ code, language }: { 
   }, [code])
 
   return (
-    <div className="group/code relative my-4 overflow-hidden rounded-lg border bg-muted/30">
+    <div className="group/code relative overflow-hidden rounded-lg border bg-muted/30" data-not-typeset="">
       <div className="flex items-center justify-between border-b px-3 py-1.5">
         <span className="font-mono text-muted-foreground text-xs">{language || 'code'}</span>
         <button
@@ -260,105 +261,31 @@ function isInternalHref(href: string): boolean {
 }
 
 const markdownComponents = {
-  h1: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 className="mt-2 scroll-m-20 font-bold text-xl" {...props}>
-      {children}
-    </h1>
-  ),
-  h2: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 className="mt-6 scroll-m-20 border-b pb-2 font-semibold text-lg tracking-tight first:mt-0" {...props}>
-      {children}
-    </h2>
-  ),
-  h3: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="mt-4 scroll-m-20 font-semibold text-base tracking-tight" {...props}>
-      {children}
-    </h3>
-  ),
-  h4: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h4 className="mt-4 font-semibold text-sm tracking-tight" {...props}>
-      {children}
-    </h4>
-  ),
-  p: ({ children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
-    <p className="not-first:mt-3 leading-7" {...props}>
-      {children}
-    </p>
-  ),
   a: ({ href, children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
     if (href && isInternalHref(href)) {
       return (
-        <Link href={href} className="font-medium text-primary underline underline-offset-4" {...props}>
+        <Link href={href} {...props}>
           {children}
         </Link>
       )
     }
     return (
-      <a
-        href={href}
-        className="font-medium text-primary underline underline-offset-4"
-        target="_blank"
-        rel="noreferrer"
-        {...props}>
+      <a href={href} rel="noreferrer" target="_blank" {...props}>
         {children}
       </a>
     )
   },
-  ul: ({ children, ...props }: React.HTMLAttributes<HTMLUListElement>) => (
-    <ul className="my-3 ml-6 flex list-disc flex-col gap-1.5" {...props}>
-      {children}
-    </ul>
-  ),
-  ol: ({ children, ...props }: React.HTMLAttributes<HTMLOListElement>) => (
-    <ol className="my-3 ml-6 flex list-decimal flex-col gap-1.5" {...props}>
-      {children}
-    </ol>
-  ),
-  li: ({ children, ...props }: React.HTMLAttributes<HTMLLIElement>) => (
-    <li className="leading-7" {...props}>
-      {children}
-    </li>
-  ),
-  blockquote: ({ children, ...props }: React.HTMLAttributes<HTMLElement>) => (
-    <blockquote className="mt-4 border-l-2 pl-4 text-muted-foreground italic" {...props}>
-      {children}
-    </blockquote>
-  ),
-  hr: (props: React.HTMLAttributes<HTMLHRElement>) => <hr className="my-4" {...props} />,
-  strong: ({ children, ...props }: React.HTMLAttributes<HTMLElement>) => (
-    <strong className="font-semibold" {...props}>
-      {children}
-    </strong>
-  ),
   pre: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
   code: ({ className, children, ...props }: React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) => {
     const match = /language-(\w+)/.exec(className || '')
     const text = String(children).replace(/\n$/, '')
     if (match) return <ShikiCodeBlock code={text} language={match[1] ?? 'text'} />
-    return (
-      <code className="relative rounded-sm bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm" {...props}>
-        {children}
-      </code>
-    )
+    return <code {...props}>{children}</code>
   },
   table: ({ children, ...props }: React.HTMLAttributes<HTMLTableElement>) => (
-    <div className="my-4 w-full overflow-auto">
-      <table className="w-full text-sm" {...props}>
-        {children}
-      </table>
+    <div className="typeset-scroll">
+      <table {...props}>{children}</table>
     </div>
-  ),
-  th: ({ children, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
-    <th
-      className="border px-4 py-2 text-left font-semibold [[align=center]]:text-center [[align=right]]:text-right"
-      {...props}>
-      {children}
-    </th>
-  ),
-  td: ({ children, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => (
-    <td className="border px-4 py-2 text-left [[align=center]]:text-center [[align=right]]:text-right" {...props}>
-      {children}
-    </td>
   ),
 }
 
@@ -380,12 +307,12 @@ function MessageBubble({
             {message.content}
           </div>
         ) : (
-          <div className={cn('text-foreground text-sm', message.status === 'error' && 'text-destructive')}>
+          <Typeset className={cn(message.status === 'error' && 'text-destructive')} size="sm">
             <Markdown components={markdownComponents}>{message.content}</Markdown>
             {message.status === 'streaming' && (
               <span className="ml-0.5 inline-block h-4 w-0.5 animate-pulse bg-current align-middle" />
             )}
-          </div>
+          </Typeset>
         )}
 
         {isPicking && message.sources && message.sources.length > 0 && (

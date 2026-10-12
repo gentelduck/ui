@@ -44,8 +44,6 @@
   --code-number: oklch(0.546 0 0);
   --selection: oklch(0.145 0 0);
   --selection-foreground: oklch(1 0 0);
-  --duck-font-family:
-    var(--font-mono-font, "JetBrains Mono"), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 .dark {
@@ -99,26 +97,10 @@
 @theme inline {
   --breakpoint-3xl: 1600px;
   --breakpoint-4xl: 2000px;
-  --font-sans: var(
-    --duck-font-family,
-    var(--font-mono-font, "JetBrains Mono"),
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    monospace
-  );
-  --font-mono: var(
-    --duck-font-family,
-    var(--font-mono-font, "JetBrains Mono"),
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    monospace
-  );
+  --font-sans:
+    var(--font-mono-font, "JetBrains Mono"), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-mono:
+    var(--font-mono-font, "JetBrains Mono"), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --radius: 0.5rem;
 
   --color-background: var(--background);
@@ -162,8 +144,6 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --selection: oklch(0.922 0 0);
-  --selection-foreground: oklch(0.205 0 0);
   --color-surface: var(--surface);
   --color-surface-foreground: var(--surface-foreground);
   --color-code: var(--code);

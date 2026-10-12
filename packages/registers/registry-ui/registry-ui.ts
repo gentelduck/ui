@@ -520,4 +520,18 @@ export const registryUi: RegistryEntry[] = [
     root_folder: 'preview-panel',
     type: 'registry:ui',
   },
+  {
+    dependencies: ['@gentleduck/libs', '@gentleduck/primitives', '@gentleduck/variants'],
+    // Auto-discovery only picks up .ts/.tsx, so list the stylesheet by hand.
+    files: [
+      { path: 'typeset/index.ts', type: 'registry:ui' },
+      { path: 'typeset/typeset.constants.ts', type: 'registry:ui' },
+      { path: 'typeset/typeset.css', type: 'registry:ui' },
+      { path: 'typeset/typeset.tsx', type: 'registry:ui' },
+    ],
+    name: 'typeset',
+    registryDependencies: [],
+    root_folder: 'typeset',
+    type: 'registry:ui',
+  },
 ]

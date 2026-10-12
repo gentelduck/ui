@@ -32,6 +32,7 @@
     "typescript": "catalog:"
   },
   "exports": {
+    "./typeset.css": "./src/typeset/typeset.css",
     "./*": "./src/*/index.ts"
   },
   "name": "@gentleduck/registry-ui",

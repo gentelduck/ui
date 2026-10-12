@@ -1,7 +1,13 @@
+/*
+ * Order: imports, sources and variants, @theme, base (elements only), utilities, unlayered overrides.
+ * Component styles live next to their component (typeset.css, mdx.css), not here.
+ */
+
 @import "tailwindcss";
 @import "./base.css";
-@import "@gentleduck/docs/styles/mdx.css";
 @import "./themes.css";
+@import "@gentleduck/registry-ui/typeset.css";
+@import "@gentleduck/docs/styles/mdx.css";
 @import "@gentleduck/motion/css";
 @import "tw-animate-css";
 
@@ -14,36 +20,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* html overflow-y:scroll keeps scrollbar always — cancel react-remove-scroll-bar's incorrect compensation.
-   Higher specificity (html body vs body) beats the dynamically injected <style> tag.
-   position: static prevents body from becoming a containing block for sticky sidebars. */
-html body[data-scroll-locked] {
-  margin-right: 0;
-  padding-right: 0;
-  padding-left: 0;
-  padding-top: 0;
-  overflow: visible;
-  position: static;
-  overscroll-behavior: auto;
-}
-
-html:has(body[data-scroll-locked]) {
-  overflow: hidden;
-}
-
 @theme {
-  --animate-shine: shine 8s ease-in-out infinite;
   --animate-heart-pop: heart-pop 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
-
-  @keyframes shine {
-    from {
-      background-position: 200% 0;
-    }
-
-    to {
-      background-position: -200% 0;
-    }
-  }
 
   @keyframes heart-pop {
     0% {
@@ -71,22 +49,11 @@ html:has(body[data-scroll-locked]) {
 @layer base {
   * {
     @apply border-border;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    scroll-behavior: smooth;
-  }
-
-  html {
-    @apply scroll-smooth;
-  }
-
-  html {
-    --duck-font-family:
-      var(--font-mono-font, "JetBrains Mono"), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 
   /* Italic unless the header toggle sets data-font-italic="false". JetBrains Mono ships real italic faces. */
   html {
+    @apply scroll-smooth;
     --duck-font-style: italic;
   }
 
@@ -96,28 +63,29 @@ html:has(body[data-scroll-locked]) {
 
   html,
   body {
-    font-family: var(--duck-font-family, var(--font-mono));
     font-style: var(--duck-font-style, normal);
   }
 
-  .font-sans {
-    font-family: var(--font-sans);
+  body {
+    @apply bg-background font-sans text-foreground;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+    font-variant-numeric: tabular-nums;
+    text-rendering: optimizeLegibility;
   }
 
-  .font-mono {
-    font-family: var(--font-mono);
-    font-variant-numeric: tabular-nums;
+  ::selection {
+    background-color: var(--selection);
+    color: var(--selection-foreground);
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
     height: 6px;
+    width: 6px;
   }
 
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
+  ::-webkit-scrollbar-track,
   ::-webkit-scrollbar-corner {
     background: transparent;
   }
@@ -127,105 +95,41 @@ html:has(body[data-scroll-locked]) {
     border-radius: 5px;
   }
 
-  ::selection {
-    color: var(--selection-foreground);
-    background-color: var(--selection);
+  a:active,
+  button:active {
+    @apply opacity-60 md:opacity-100;
   }
 
-  body {
-    @apply bg-background text-foreground;
-    font-variant-numeric: tabular-nums;
-    font-feature-settings:
-      "rlig" 1,
-      "calt" 1;
-    /* The shipped families (JetBrains Mono Nerd, Inter, Inria Serif)
-       carry 400/500/700 only -- forbidding synthesis means utility
-       classes like `font-semibold` (600) and `font-bold` (700) on a
-       mono-preset body fail to render visibly bold on browsers that
-       resolve 600 via the descending side of the CSS Fonts 4 weight
-       match. Letting the UA synthesize fills the gap until the full
-       weight set ships. */
-    font-synthesis-weight: auto;
-    font-synthesis-style: auto;
-    text-rendering: optimizeLegibility;
-  }
-
-  /* biome-ignore lint/suspicious/noShorthandPropertyOverrides: browser feature detection query, not actual font shorthand */
   @supports (font: -apple-system-body) and (-webkit-appearance: none) {
     [data-wrapper] {
       @apply min-[1800px]:border-t;
     }
   }
-
-  image {
-    user-select: none;
-  }
-
-  a:active,
-  button:active {
-    @apply opacity-60 md:opacity-100;
-  }
 }
 
-@utility duck-truncate {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-}
-
+/* Plain class, not @utility, so it layers on top of Tailwind's built-in `container`. */
 @layer utilities {
+  .container {
+    @apply 3xl:max-w-screen-2xl mx-auto max-w-[1400px] px-4 lg:px-8;
+  }
+
+  /* Numbered docs steps (<Steps>/<Step> in mdx). */
   .step {
     counter-increment: step;
   }
 
   .step::before {
     content: counter(step);
-    @apply absolute w-9 h-9 bg-muted rounded-full font-mono font-medium text-center text-base inline-flex items-center justify-center -indent-px border-4 border-background;
-    @apply ml-[-50px] mt-[-4px];
+    @apply absolute inline-flex h-9 w-9 items-center justify-center rounded-full border-4 border-background bg-muted -indent-px text-center font-medium font-mono text-base;
+    @apply mt-[-4px] ml-[-50px];
   }
+}
 
-  .chunk-container {
-    @apply shadow-none;
-  }
+@utility border-grid {
+  @apply border-border/30 border-dashed dark:border-border;
 
-  .chunk-container::after {
-    content: "";
-    @apply absolute -inset-4 shadow-xl rounded-xl border;
-  }
-
-  .border-grid {
-    @apply border-border/30 dark:border-border border-dashed;
-  }
-
-  .border-grid .container {
+  & .container {
     @apply relative;
-  }
-
-  .container {
-    @apply 3xl:max-w-screen-2xl mx-auto max-w-[1400px] px-4 lg:px-8;
-  }
-}
-
-@media (max-width: 640px) {
-  .container {
-    @apply px-4;
-  }
-
-  [data-slot="abc"] {
-    @apply w-600;
-  }
-}
-
-@layer utilities {
-  .ellipsis {
-    display: grid;
-    -webkit-box-orient: vertical;
-    grid-template-columns: 1fr 1fr;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 1;
-    font-weight: 500;
-    white-space: nowrap;
   }
 }
 
@@ -238,15 +142,15 @@ html:has(body[data-scroll-locked]) {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-delay: -1ms;
-    animation-duration: 1ms;
-    animation-iteration-count: 1;
-    scroll-behavior: auto;
-    transition-delay: 0ms;
-    transition-duration: 1ms;
-  }
+/* Unlayered to beat react-remove-scroll-bar's injected <style>. Static position keeps sticky sidebars working. */
+html body[data-scroll-locked] {
+  margin-right: 0;
+  overflow: visible;
+  overscroll-behavior: auto;
+  padding: 0;
+  position: static;
+}
+
+html:has(body[data-scroll-locked]) {
+  overflow: hidden;
 }

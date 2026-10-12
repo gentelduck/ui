@@ -119,7 +119,8 @@ export function ComponentPreview({
           </div>
           <div
             className={cn('preview flex h-[502px] w-full justify-center overflow-auto p-10', {
-              'items-center': align === 'center',
+              // safe: tall examples fall back to the top instead of overflowing above the scroll area
+              'items-center-safe': align === 'center',
               'items-end': align === 'end',
               'items-start': align === 'start',
             })}

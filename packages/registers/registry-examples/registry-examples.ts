@@ -73,6 +73,7 @@ export const registryExamples: RegistryEntry[] = [
   example('json-editor', ['json-editor']),
   example('theme-toggle'),
   example('preview-panel', ['preview-panel']),
+  example('typeset', ['typeset', 'button']),
   example('sidebar', ['sidebar']),
   example('upload', ['upload']),
   example('form', [

@@ -70,7 +70,7 @@ export function SponsorsSection() {
             target="_blank">
             <Heart
               aria-hidden="true"
-              className="size-4 fill-transparent stroke-current transition-all duration-300 ease-out group-hover/support:animate-[heart-pop_420ms_cubic-bezier(0.22,1,0.36,1)_both] group-hover/support:fill-red-500/75 group-hover/support:stroke-red-400 group-hover/support:text-red-400"
+              className="size-4 fill-transparent stroke-current transition-all duration-300 ease-out group-hover/support:animate-heart-pop group-hover/support:fill-red-500/75 group-hover/support:stroke-red-400 group-hover/support:text-red-400"
             />
             Become a Sponsor
           </Link>
