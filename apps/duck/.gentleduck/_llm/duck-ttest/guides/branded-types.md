@@ -27,7 +27,7 @@ const post = '42' as PostId
 deleteUser(post)  // ← Error: Argument of type 'PostId' is not assignable to parameter of type 'UserId'.
 ```
 
-Runtime is unchanged — `post` is still the string `'42'`.
+Runtime is unchanged: `post` is still the string `'42'`.
 
 ## Constructing brands safely
 
@@ -44,7 +44,7 @@ function postId(raw: string): PostId {
 }
 ```
 
-Everywhere else, call `postId('...')` instead of the `as` cast — the validator runs once, the brand is conferred once, and the rest of the codebase relies on the type.
+Everywhere else, call `postId('...')` instead of the `as` cast: the validator runs once, the brand is conferred once, and the rest of the codebase relies on the type.
 
 ## Stripping a brand
 
@@ -57,7 +57,7 @@ type UserId = Brand<string, 'UserId'>
 type S = Unbrand<UserId>  // string
 
 function serialize(id: UserId): Unbrand<UserId> {
-  return id  // base type — no cast needed in the consumer.
+  return id  // base type: no cast needed in the consumer.
 }
 ```
 
@@ -69,7 +69,7 @@ Brand at the API boundary, not in your hot path:
 // Public input boundary
 export function createUser(name: string): UserId { /* ... */ }
 
-// Internal helpers can take the raw type — branding everywhere is noise.
+// Internal helpers can take the raw type: branding everywhere is noise.
 function hashId(id: string): string { /* ... */ }
 ```
 
@@ -92,9 +92,9 @@ Note: `Equal<UserId, string>` is `false` (and should be). Reach for `Unbrand` wh
 
 ## When *not* to brand
 
-* **Throwaway IDs in a script** — brand overhead isn't worth it.
+* **Throwaway IDs in a script**: brand overhead isn't worth it.
 * **Cross-package boundaries** where the consumer can't import the brand.
-* **High-fan-in primitives** like timestamps — you'd brand every `Date` field in the codebase.
+* **High-fan-in primitives** like timestamps: you'd brand every `Date` field in the codebase.
 
 ## Anti-patterns
 
@@ -107,7 +107,7 @@ function fetchUser(id: UserId) { /* ... */ }
 fetchUser('u_42' as UserId)  // ← `as` cast scattered everywhere
 ```
 
-Every `as UserId` cast is an opportunity to lie. Either centralize the cast in a single `userId(raw): UserId` constructor that validates, or accept `string` at the boundary and convert internally — the in-between is a footgun.
+Every `as UserId` cast is an opportunity to lie. Either centralize the cast in a single `userId(raw): UserId` constructor that validates, or accept `string` at the boundary and convert internally; the in-between is a footgun.
 
 ### Asserting `Equal<Branded, Base>`
 
@@ -133,4 +133,4 @@ If `LineNumber` is only ever produced and consumed inside the same module, you'v
 ## See also
 
 * [API / brand](/duck-ttest/api/brand)
-* [API / equality](/duck-ttest/api/equality) — why `Equal<UserId, string>` is `false`.
+* [API / equality](/duck-ttest/api/equality): why `Equal<UserId, string>` is `false`.

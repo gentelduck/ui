@@ -23,16 +23,16 @@ purpose (`P`), and result (`R`).
 import type { Contracts } from '@gentleduck/upload/core'
 import type { PostStrategy } from '@gentleduck/upload/strategies'
 
-// M — which strategies exist and the intent each returns
+// M: which strategies exist and the intent each returns
 type PhotoIntents = { post: PostStrategy.Intent }
 
-// C — resume state per strategy (POST has none)
+// C: resume state per strategy (POST has none)
 type PhotoCursors = { post?: PostStrategy.Cursor }
 
-// P — the kinds of uploads in the app
+// P: the kinds of uploads in the app
 type PhotoPurpose = 'photo'
 
-// R — what your backend returns from complete()
+// R: what your backend returns from complete()
 type PhotoResult = Contracts.Result.Base & { url: string }
 ```
 
@@ -91,7 +91,7 @@ Common events: `file.added`, `file.rejected`, `intent.creating`, `intent.created
 ## Reading state
 
 `getSnapshot()` returns immutable state with `items: Map<string, Engine.Item>`. Because
-`Engine.Item` is a discriminated union over `phase`, narrowing unlocks phase-specific fields:
+`Engine.Item` is a discriminated union over `phase`, narrowing gives you phase-specific fields:
 
 ```typescript
 for (const item of store.getSnapshot().items.values()) {
@@ -119,8 +119,8 @@ else if (outcome.status === 'error') console.log('failed', outcome.error)
 ```
 photoduck/
   src/
-    upload.ts   -- types + api + store
-    main.ts     -- dispatch + event listeners
+    upload.ts   : types + api + store
+    main.ts     : dispatch + event listeners
 ```
 
 Full `src/upload.ts`
@@ -181,7 +181,7 @@ comes from your backend inside the intent and identifies the file server-side.
 
 Can uploads start without startAll?
 
-Yes — set `config.autoStart`, either an array (`autoStart: ['photo']`) or a predicate
+Yes, set `config.autoStart`, either an array (`autoStart: ['photo']`) or a predicate
 (`autoStart: (p) => p !== 'draft'`). Matching files upload as soon as their intent is
 created.
 

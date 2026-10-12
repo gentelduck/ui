@@ -127,9 +127,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionAvatar` and `MotionAvatarGroup` for animated entrance powered by [motion](https://motion.dev). Avatars spin in with scale, rotate, and blur. The group staggers each avatar 80ms apart.
+Use `MotionAvatar` and `MotionAvatarGroup` for animated entrance powered by [motion](https://motion.dev). Avatars scale and blur in on mount. The group staggers each avatar 80ms apart.
 
 ```tsx title="components/avatar-3.tsx"
 // import from your project: import Demo from '@/components/avatar-3'
@@ -224,7 +224,7 @@ Content displayed when the image has not loaded. Typically initials or an icon.
 
 ### MotionAvatar
 
-Content spins in on mount with rotate, scale, and blur using the `spinIn` preset. Requires the `motion` package.
+Content scales and blurs in on mount using the `scaleIn` preset. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -232,7 +232,7 @@ Content spins in on mount with rotate, scale, and blur using the `spinIn` preset
 
 ### MotionAvatarGroup
 
-Each avatar staggers in 80ms apart with `spinIn` animation. The overflow counter staggers last. Requires the `motion` package.
+Each avatar staggers in 80ms apart with `scaleIn` animation. The overflow counter staggers last. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

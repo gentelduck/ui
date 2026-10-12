@@ -489,9 +489,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionButton` for subtle press feedback powered by [motion](https://motion.dev). The button scales to 0.97 on tap for a physical press feel.
+Use `MotionButton` for a mount entrance plus press feedback powered by [motion](https://motion.dev). The button uses a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition on mount, and scales to 0.97 on tap for a physical press feel.
 
 ```tsx title="components/button-10.tsx"
 // import from your project: import Demo from '@/components/button-10'
@@ -573,7 +573,7 @@ export default function Demo() {
 
 ### MotionButton
 
-Adds `whileTap` press feedback (scale 0.97) and animated icon/text transitions via `AnimatePresence`. `asChild` is not supported. Requires the `motion` package.
+Adds a `scaleIn` entrance (fade, scale, and blur) with a `springBouncy` transition on mount, `whileTap` press feedback (scale 0.97), and animated icon/text transitions via `AnimatePresence`. `asChild` is not supported. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

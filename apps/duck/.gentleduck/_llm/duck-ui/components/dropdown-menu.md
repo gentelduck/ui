@@ -263,7 +263,7 @@ export default function Demo() {
 
 ### Arrow
 
-Add a directional caret pointing at the trigger. Place `` anywhere inside `DropdownMenuContent` — it positions itself automatically.
+Add a directional caret pointing at the trigger. Place `` anywhere inside `DropdownMenuContent`: it positions itself automatically.
 
 ```tsx title="components/dropdown-menu-7.tsx"
 // import from your project: import Demo from '@/components/dropdown-menu-7'
@@ -390,7 +390,7 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
 Use `MotionDropdownMenu` and `MotionDropdownMenuContent` for smooth enter/exit animations powered by [motion](https://motion.dev). For animated sub-menus, use `MotionDropdownMenuSub` and `MotionDropdownMenuSubContent`.
 

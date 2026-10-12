@@ -751,9 +751,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionInputGroup` for a fade+blur entrance animation powered by [motion](https://motion.dev). Pass `index` for stagger delay when using multiple groups.
+Use `MotionInputGroup` for a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition, powered by [motion](https://motion.dev). Pass `index` for stagger delay when using multiple groups.
 
 ```tsx title="components/input-group-13.tsx"
 // import from your project: import Demo from '@/components/input-group-13'
@@ -834,4 +834,4 @@ The root container that wraps inputs and addons into a unified group with shared
 
 ### MotionInputGroup
 
-Same props as `InputGroup` plus an optional `index` prop for stagger delay (50ms per index). Adds fade+blur entrance animation. Requires the `motion` package.
+Same props as `InputGroup` plus an optional `index` prop for stagger delay (50ms per index). Adds a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition. Requires the `motion` package.

@@ -29,7 +29,7 @@ export const store = createUploadStore<Intents, Cursors, Purpose, Result>({
 
 | Option | Required | Description |
 | --- | --- | --- |
-| `api` | Yes | Backend contract — `Contracts.Api.Me<M, P, R>` |
+| `api` | Yes | Backend contract: `Contracts.Api.Me<M, P, R>` |
 | `strategies` | Yes | Strategy registry with your strategies registered |
 | `config` | No | Engine config (defaults applied by `resolveUploadConfig`) |
 | `transport` | No | HTTP transport. Defaults to `createXHRTransport()` |
@@ -83,7 +83,7 @@ const config = {
 ```
 
 When both `allowedTypes` and `allowedExtensions` are given, a file passes if it matches
-**either**. Rejected files never enter the state machine — they emit `file.rejected` with a
+**either**. Rejected files never enter the state machine; they emit `file.rejected` with a
 `Contracts.Validation.Rejection`.
 
 ### Retry policy
@@ -109,7 +109,7 @@ const config = {
 ## Plugins
 
 Plugins extend behavior without forking the engine. Each `Engine.Plugin` has a `name` and a
-`setup` that receives a minimal proxy — `on`, `off`, `dispatch`, `getSnapshot` — enough to
+`setup` that receives a minimal proxy (`on`, `off`, `dispatch`, `getSnapshot`): enough to
 observe and react, not enough to corrupt state.
 
 ```ts
@@ -137,7 +137,7 @@ and later plugins still initialize.
 ## Hooks
 
 Hooks are lower-level than plugins. `onInternalEvent` fires after every reducer event with the
-event and the resulting state — ideal for devtools and logging:
+event and the resulting state, ideal for devtools and logging:
 
 ```ts
 const store = createUploadStore({
@@ -181,9 +181,9 @@ shape. Without it, the engine's built-in normalizer classifies common HTTP/netwo
 
 ## Next
 
-* [Engine](/duck-upload/core/engine) — phases, scheduling, retry mechanics.
-* [Contracts](/duck-upload/core/contracts) — the API, transport, and strategy shapes.
-* [Persistence](/duck-upload/core/persistence) — configure resume across reloads.
+* [Engine](/duck-upload/core/engine): phases, scheduling, retry mechanics.
+* [Contracts](/duck-upload/core/contracts): the API, transport, and strategy shapes.
+* [Persistence](/duck-upload/core/persistence): configure resume across reloads.
 
 ***
 
@@ -198,7 +198,7 @@ When are config defaults applied?
 
 Once, at construction, by
 <code className="rounded bg-muted px-2 py-1">resolveUploadConfig()</code>. After that the
-runtime holds a fully-specified config — no optional fields to check per operation.
+runtime holds a fully-specified config, no optional fields to check per operation.
 
 What if a plugin throws during setup?
 

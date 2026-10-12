@@ -76,9 +76,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionProgress` for smooth value animations powered by [motion](https://motion.dev). The progress bar animates with a bouncy spring transition when the value changes.
+Use `MotionProgress` for smooth value animations powered by [motion](https://motion.dev). The bar scales in from the start edge and fades to full opacity over a 0.6s eased transition when the value changes, with a continuously looping shimmer highlight layered on top.
 
 ```tsx title="components/progress-3.tsx"
 // import from your project: import Demo from '@/components/progress-3'
@@ -117,7 +117,7 @@ export default function Demo() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `number` | (required) | Progress value from `0` to `100`. Value changes animate with a `springBouncy` spring transition. |
+| `value` | `number` | (required) | Progress value from `0` to `100`. Value changes animate the bar's scale and opacity over a 0.6s eased transition (not a spring). Includes a continuously looping shimmer overlay. |
 | `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
 | `className` | `string` | - | Additional CSS classes for the progress bar container |
 | `...props` | `Omit<React.HTMLProps<HTMLDivElement>, 'value'>` | - | Additional props to spread to the content div |

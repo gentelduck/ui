@@ -1,6 +1,6 @@
 ## Goal
 
-A user drops 20 photos, the tab crashes, they reopen — the uploads should still be there,
+A user drops 20 photos, the tab crashes, they reopen: the uploads should still be there,
 paused with progress intact. Add **persistence** so in-flight uploads survive reloads, and wire
 up **rebind** so users can re-select files and resume.
 
@@ -87,7 +87,7 @@ On load, the store hydrates from the snapshot. Restored items come back **paused
 
 `File` is missing after restore, so the user re-selects it. `rebind` computes the new file's
 fingerprint and compares `name`/`size`/`lastModified` against the stored one (not `type`). A
-mismatch is a silent no-op — the item stays paused without a file.
+mismatch is a silent no-op: the item stays paused without a file.
 
 ```tsx title="src/RebindPrompt.tsx"
 import { useUploaderActions } from '@gentleduck/upload/react'
@@ -171,14 +171,14 @@ restore).
 
 ### Why File objects can't be serialized
 
-A `File` is backed by an OS handle — it JSON-serializes to `{}`. The engine stores the
+A `File` is backed by an OS handle, so it JSON-serializes to `{}`. The engine stores the
 fingerprint so it can confirm the correct file on rebind.
 
 ### Deserialization checks
 
 For each stored item the default deserializer: validates the snapshot shape, checks `isPurpose`,
 checks `isIntent`, verifies the intent's `strategy` is registered, and verifies the cursor's
-strategy matches. Anything that fails is silently skipped — safe for snapshots from older app
+strategy matches. Anything that fails is silently skipped: safe for snapshots from older app
 versions.
 
 ## Checkpoint
@@ -243,12 +243,12 @@ and the store starts fresh.
 
 LocalStorageAdapter in production?
 
-Possible, but mind the ~5 MB cap — each item stores its intent and cursor. Prefer
+Possible, but mind the ~5 MB cap: each item stores its intent and cursor. Prefer
 `IndexedDBAdapter` for many uploads or large intent payloads.
 
 What if the user rebinds the wrong file?
 
-`rebind` compares the new file's fingerprint (`name`, `size`, `lastModified` — not `type`)
+`rebind` compares the new file's fingerprint (`name`, `size`, `lastModified`, not `type`)
 to the stored one. A mismatch is a silent no-op; the item stays paused without a file. After
 dispatching `rebind`, check whether `item.file` is now set, and if not, prompt the user to
 try again.
@@ -256,7 +256,7 @@ try again.
 Persistence under SSR?
 
 IndexedDB/localStorage are browser-only. Use `MemoryAdapter` on the server or in tests, or
-omit persistence — the store works fine without it and just starts empty each load.
+omit persistence: the store works fine without it and just starts empty each load.
 
 ***
 

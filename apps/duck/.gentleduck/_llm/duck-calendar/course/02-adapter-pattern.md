@@ -20,7 +20,7 @@ Without one, the engine would call `new Date()`, `date.getMonth()`, and friends 
 
 With one:
 
-* The engine is **date-library agnostic** — swap adapters without touching rendering code.
+* The engine is **date-library agnostic**, so you can swap adapters without touching rendering code.
 * You can write **isomorphic helpers** that work with any `TDate`.
 * The adapter is the **single source of truth** for date operations.
 
@@ -99,13 +99,13 @@ const dayjsAdapter: Adapter.IDateAdapter<Dayjs> = {
 ```
 
 } tone="warning">
-  Adapter methods must be **immutable**. Never mutate the input date — always return a new instance.
+  Adapter methods must be **immutable**. Never mutate the input date; always return a new instance.
 
 ***
 
 ## Key takeaways
 
-* The adapter is a plain object — no classes, no inheritance.
+* The adapter is a plain object, with no classes and no inheritance.
 * Every date operation runs through the adapter.
 * `NativeAdapter` is enough for most projects.
 * Custom adapters are ~30 lines.

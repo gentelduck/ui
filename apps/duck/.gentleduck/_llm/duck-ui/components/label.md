@@ -72,9 +72,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionLabel` for a fade+blur entrance animation powered by [motion](https://motion.dev). Pairs well with `MotionInput` for staggered form field entrance.
+Use `MotionLabel` for a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition, powered by [motion](https://motion.dev). Pairs well with `MotionInput` for staggered form field entrance.
 
 ```tsx title="components/label-4.tsx"
 // import from your project: import Demo from '@/components/label-4'
@@ -123,4 +123,4 @@ Renders an accessible label element associated with form controls.
 
 ### MotionLabel
 
-Same props as `Label` plus an optional `index` prop for stagger delay (50ms per index). Adds fade+blur entrance. Requires the `motion` package.
+Same props as `Label` plus an optional `index` prop for stagger delay (50ms per index). Adds a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition. Requires the `motion` package.

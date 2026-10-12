@@ -77,8 +77,8 @@ type c = IsRequired<{}>                  // true   (vacuously)
 Edge cases for all four predicates:
 
 * Empty objects (`{}`) trivially pass every modifier check.
-* These are *whole-object* predicates. For per-key arithmetic see [`extraction`](/duck-ttest/api/extraction) — `OptionalKeys`, `RequiredKeys`, `ReadonlyKeys`, `MutableKeys`.
+* These are *whole-object* predicates. For per-key arithmetic see [`extraction`](/duck-ttest/api/extraction): `OptionalKeys`, `RequiredKeys`, `ReadonlyKeys`, `MutableKeys`.
 * `IsRequired<any>` and `IsRequired<unknown>` are not meaningful. Narrow before checking.
 
 }>
-  **Renamed in v1.** This module was previously `@gentleduck/ttest/predictates` (typo). Update imports — see the [Migration guide](/duck-ttest/migration).
+  **Renamed in v1.** This module was previously `@gentleduck/ttest/predictates` (typo). Update imports: see the [Migration guide](/duck-ttest/migration).

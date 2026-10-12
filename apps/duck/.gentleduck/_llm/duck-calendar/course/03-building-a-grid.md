@@ -124,7 +124,7 @@ const months = buildMultiMonth(adapter, new Date(), 3, {
 | :--- | :--- | :--- | :--- |
 | `showOutsideDays` | `boolean` | `true` | When false, outside days are hidden and disabled |
 | `fixedWeeks` | `boolean` | `false` | Always produces 6 weeks |
-| `locale` | `CalendarLocaleConfig` | `{}` | Locale settings (see below) |
+| `locale` | `Calendar.ICalendarLocaleConfig` | - | Locale settings (see below) |
 
 `locale.weekStartDay` sets the first day of the week (0 = Sunday, 1 = Monday). Pass it inside `locale`:
 
@@ -135,7 +135,7 @@ buildCalendarMonth(adapter, date, {
 ```
 
 }>
-  `buildCalendarMonth` is pure — no state. The next lesson uses `useCalendar` to add interactivity.
+  `buildCalendarMonth` is pure, with no state. The next lesson uses `useCalendar` to add interactivity.
 
 }>
   Next: [Lesson 4 - Selection Modes](/duck-calendar/course/04-selection-modes)

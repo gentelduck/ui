@@ -4,7 +4,7 @@ import type {
 } from '@gentleduck/ttest/extraction'
 ```
 
-Per-key arithmetic on object types. The complement of [`predicates`](/duck-ttest/api/predicates) — those check the whole object, these extract the keys that satisfy each modifier.
+Per-key arithmetic on object types. The complement of [`predicates`](/duck-ttest/api/predicates); those check the whole object, these extract the keys that satisfy each modifier.
 
 ## KeysOfType
 
@@ -25,7 +25,7 @@ type StringKeys = KeysOfType<O, string>           // 'b'
 type Indexable  = KeysOfType<O, number | string>  // 'a' | 'b' | 'c'
 ```
 
-Edge case: distribution over a union in `T` is intentional — `KeysOfType<O, number | string>` returns keys whose value matches either side.
+Edge case: distribution over a union in `T` is intentional, so `KeysOfType<O, number | string>` returns keys whose value matches either side.
 
 ## OptionalKeys
 
@@ -93,4 +93,4 @@ type T = { readonly a: number; b: string }
 type k = MutableKeys<T>  // 'b'
 ```
 
-Edge case for all key extractors: `keyof any` (i.e. an index signature) is treated as one key, not as the full set. `OptionalKeys<Record<string, unknown>>` is `string` — the index-signature key — which can surprise downstream consumers. Use [`OmitIndexSignature`](/duck-ttest/api/object) first if you want only explicit keys.
+Edge case for all key extractors: `keyof any` (i.e. an index signature) is treated as one key, not as the full set. `OptionalKeys<Record<string, unknown>>` is `string` (the index-signature key), which can surprise downstream consumers. Use [`OmitIndexSignature`](/duck-ttest/api/object) first if you want only explicit keys.

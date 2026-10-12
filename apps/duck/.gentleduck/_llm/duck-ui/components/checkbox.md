@@ -353,7 +353,7 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
 Use `MotionCheckboxWithLabel` for staggered fade-up entrance animations powered by [motion](https://motion.dev). Pass `index` for stagger delay.
 
@@ -476,7 +476,7 @@ Wraps `Checkbox` with a bounce animation (scale + rotate) on check. Requires the
 | `index` | `number` | `0` | Stagger delay index (50ms per index) for entrance animation |
 | `...props` | `CheckboxWithLabelProps` | - | All props from `CheckboxWithLabel` are supported |
 
-Wraps `CheckboxWithLabel` with a staggered `scaleIn` entrance. Uses `MotionCheckbox` internally. Requires the `motion` package.
+Wraps `CheckboxWithLabel` with a staggered `scaleIn` entrance (fade, scale, and blur). Uses `MotionCheckbox` internally. Requires the `motion` package.
 
 ### MotionCheckboxGroup
 

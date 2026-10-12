@@ -406,7 +406,7 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
 Use `MotionCommandItem` for staggered entrance animations powered by [motion](https://motion.dev). Each item fades in with scale and blur, staggered by 30ms via the `index` prop.
 
@@ -561,7 +561,7 @@ Renders a `div` with `role="separator"` and `aria-hidden`. Visibility is automat
 
 ### MotionCommandItem
 
-Renders directly as `m.li` with a staggered `scaleIn` entrance using `springBouncy`. Drop-in replacement for `CommandItem`. Requires the `motion` package.
+Renders directly as `m.li` with a staggered `scaleIn` entrance (fade, scale, and blur) using `springBouncy`. Drop-in replacement for `CommandItem`. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

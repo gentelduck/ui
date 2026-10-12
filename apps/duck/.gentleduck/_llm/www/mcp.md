@@ -6,18 +6,18 @@ Instead of pasting documentation into the chat, MCP lets the AI client search, b
 
 ## What the gentleduck MCP server exposes
 
-The server indexes the entire `gentleduck` documentation site — every package, every component, every changelog. Your agent can pull live information on:
+The server indexes the entire `gentleduck` documentation site: every package, every component, every changelog. Your agent can pull live information on:
 
-* `@gentleduck/registry-ui` — 50+ styled Tailwind components.
-* `@gentleduck/primitives` — headless ARIA-correct primitives.
-* `@gentleduck/calendar` — calendar engine and date adapters.
-* `@gentleduck/cli` — commands, flags, scaffolding behaviors.
-* `@gentleduck/vim` — keyboard hooks and chord matching.
+* `@gentleduck/registry-ui`: 50+ styled Tailwind components.
+* `@gentleduck/primitives`: headless ARIA-correct primitives.
+* `@gentleduck/calendar`: calendar engine and date adapters.
+* `@gentleduck/cli`: commands, flags, scaffolding behaviors.
+* `@gentleduck/vim`: keyboard hooks and chord matching.
 * `@gentleduck/variants`, `@gentleduck/motion`, `@gentleduck/state`, `@gentleduck/hooks`, `@gentleduck/libs`, `@gentleduck/lazy`.
 * `@gentleduck/iam`, `@gentleduck/upload`, `@gentleduck/query`, `@gentleduck/gen`.
 * The changelog and ecosystem-wide news posts.
 
-The agent doesn't have to know about a specific package up front — it can discover what's available, read what's relevant, and stop pulling tokens for what it isn't using.
+The agent doesn't have to know about a specific package up front; it can discover what's available, read what's relevant, and stop pulling tokens for what it isn't using.
 
 ## Why use it
 
@@ -25,10 +25,10 @@ The agent doesn't have to know about a specific package up front — it can disc
 * Token-efficient: `get_component_api` returns only the props table. Responses over 4000 chars are truncated with guidance for narrower queries.
 * Fuzzy search handles typos (`"buton"` → `"button"`).
 * Ranked full-text search across the whole site.
-* Filter by category — components, installation, packages, changelog, news.
+* Filter by category: components, installation, packages, changelog, news.
 * `suggest_components` matches a description to the best-fit component.
 * CORS-enabled for browser-based MCP clients.
-* Publicly available — no auth, just point your client at the URL.
+* Publicly available: no auth, just point your client at the URL.
 
 ## Setup
 
@@ -119,7 +119,7 @@ Browse the documentation catalog with pagination. Returns a compact list of all 
 
 ### search\_docs
 
-Full-text search with **typo tolerance** across every package. Results are ranked by relevance — title matches score highest, then slug, then description, then body.
+Full-text search with **typo tolerance** across every package. Results are ranked by relevance: title matches score highest, then slug, then description, then body.
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -155,7 +155,7 @@ Shortcut that extracts **only the props/API table** from a component page. Most 
 
 ### get\_examples
 
-Get only the code examples from a documentation page. Returns all fenced code blocks without surrounding prose — saves tokens when you just need usage patterns.
+Get only the code examples from a documentation page. Returns all fenced code blocks without surrounding prose, saving tokens when you just need usage patterns.
 
 ### get\_changelog
 
@@ -163,7 +163,7 @@ Pull recent changelog entries across the whole organization, optionally filtered
 
 ### get\_installation
 
-Get the setup guide for a specific framework — Next.js, Vite, Astro, Remix, TanStack, Laravel, or manual.
+Get the setup guide for a specific framework: Next.js, Vite, Astro, Remix, TanStack, Laravel, or manual.
 
 ### suggest\_components
 
@@ -185,4 +185,4 @@ A typical agent flow looks like:
 3. `get_component_api({ component: "..." })` for the props.
 4. `get_examples({ slug: "..." })` for working code.
 
-Four calls, ~1500 tokens total — much smaller than a single dump of the page would have been. The server is designed for this pattern: pull only what you're about to use, then move on.
+Four calls, ~1500 tokens total, much smaller than a single dump of the page would have been. The server is designed for this pattern: pull only what you're about to use, then move on.

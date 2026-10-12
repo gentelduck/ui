@@ -153,9 +153,9 @@ import {
 ### Data Table
 
 You can use the `` component to build more complex data tables. Combine it with
-[@gentleduck/table](https://github.com/gentleeduck/gentleduck/tree/master/packages/duck-table) to create tables with sorting, filtering and pagination.
+[TanStack Table](https://tanstack.com/table) to add sorting, filtering, and pagination.
 
-See the [Data Table](/duck-ui/components/data-table) documentation for more information.
+See the [Data Table](/duck-ui/components/data-table) documentation for a full guide.
 
 You can also see data-table examples in the [Blocks Library](/blocks).
 
@@ -259,9 +259,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionTable` and `MotionTableRow` for staggered entrance animations powered by [motion](https://motion.dev). The table fades in with scale and blur, and each row staggers by 50ms via the `index` prop.
+Use `MotionTable` and `MotionTableRow` for staggered entrance animations powered by [motion](https://motion.dev). The table uses a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition, and each row staggers by 50ms via the `index` prop.
 
 ```tsx title="components/table-3.tsx"
 // import from your project: import Demo from '@/components/table-3'
@@ -392,7 +392,7 @@ export default function Demo() {
 
 ### MotionTable
 
-`scaleIn` entrance with `springBouncy` transition on mount. Requires the `motion` package.
+`scaleIn` entrance (fade, scale, and blur) with `springBouncy` transition on mount. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -400,7 +400,7 @@ export default function Demo() {
 
 ### MotionTableRow
 
-Staggered `scaleIn` entrance with `springBouncy` transition. Requires the `motion` package.
+Staggered `scaleIn` entrance (fade, scale, and blur) with `springBouncy` transition. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

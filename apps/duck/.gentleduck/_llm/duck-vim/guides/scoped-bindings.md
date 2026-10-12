@@ -84,7 +84,7 @@ function Editor() {
 
 ## Multiple scopes
 
-You can create isolated shortcut systems by using separate registries or by leveraging `useKeyBind` with different `targetRef` values:
+You can create isolated shortcut systems by using separate registries or by using `useKeyBind` with different `targetRef` values:
 
 ```tsx
 function App() {

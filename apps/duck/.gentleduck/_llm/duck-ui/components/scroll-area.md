@@ -198,9 +198,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionScrollArea` for a smooth entrance animation powered by [motion](https://motion.dev). The container fades in with scale and blur on mount using the shared `scaleIn` preset with a `springBouncy` transition.
+Use `MotionScrollArea` for a smooth entrance animation powered by [motion](https://motion.dev). The container uses the shared `scaleIn` preset (fade, scale, and blur) with a `springBouncy` transition on mount.
 
 ```tsx title="components/scroll-area-4.tsx"
 // import from your project: import Demo from '@/components/scroll-area-4'
@@ -247,7 +247,7 @@ export default function Demo() {
 
 ### MotionScrollArea
 
-`scaleIn` entrance with `springBouncy` transition on mount. Requires the `motion` package.
+`scaleIn` entrance (fade, scale, and blur) with `springBouncy` transition on mount. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

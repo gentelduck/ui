@@ -38,7 +38,7 @@ type c = IsString<number>   // false
 type IsObject<T>
 ```
 
-`true` if `T` is a plain object — not an array, function, or primitive.
+`true` if `T` is a plain object, not an array, function, or primitive.
 
 ## IsArray / IsReadonlyArray
 
@@ -69,7 +69,7 @@ type IsTrue<T>   // exactly the literal true
 type IsFalse<T>  // exactly the literal false
 ```
 
-Both reject `boolean` itself — they want the literal.
+Both reject `boolean` itself; they want the literal.
 
 ## Built-in object guards
 
@@ -95,7 +95,7 @@ type b = IsMap<Map<string, number>>  // true
 type IsRecord<T>
 ```
 
-Plain `Record<PropertyKey, unknown>` — excludes arrays, functions, `Date`, `RegExp`, `Error`, `Map`, `Set`, `WeakMap`, `WeakSet`.
+Plain `Record<PropertyKey, unknown>`: excludes arrays, functions, `Date`, `RegExp`, `Error`, `Map`, `Set`, `WeakMap`, `WeakSet`.
 
 ## IsIterable / IsAsyncIterable
 

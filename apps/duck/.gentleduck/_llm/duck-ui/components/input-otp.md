@@ -336,9 +336,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionInputOTP` for a scale+blur entrance animation on the entire OTP input powered by [motion](https://motion.dev).
+Use `MotionInputOTP` for a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition on the entire OTP input, powered by [motion](https://motion.dev).
 
 ```tsx title="components/input-otp-8.tsx"
 // import from your project: import Demo from '@/components/input-otp-8'
@@ -390,4 +390,4 @@ The root component that provides OTP context and manages slot focus, paste, and 
 
 ### MotionInputOTP
 
-Same props as `InputOTP`. Adds scale+blur entrance animation on the entire OTP container. Requires the `motion` package.
+Same props as `InputOTP`. Adds a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition on the entire OTP container. Requires the `motion` package.

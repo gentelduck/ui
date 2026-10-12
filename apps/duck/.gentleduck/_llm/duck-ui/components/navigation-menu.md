@@ -300,9 +300,9 @@ ListItem.displayName = 'ListItem'
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionNavigationMenu` for a spring-powered entrance animation with blur powered by [motion](https://motion.dev).
+Use `MotionNavigationMenu` for a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition, powered by [motion](https://motion.dev).
 
 ```tsx title="components/navigation-menu-3.tsx"
 // import from your project: import Demo from '@/components/navigation-menu-3'
@@ -529,4 +529,4 @@ import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
 
 ### MotionNavigationMenu
 
-Same props as `NavigationMenu`. Adds spring scaleIn+blur entrance animation via motion. Requires the `motion` package.
+Same props as `NavigationMenu`. Adds a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition via motion. Requires the `motion` package.

@@ -249,9 +249,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionToggleGroup` and `MotionToggleGroupItem` for staggered entrance animations and tap press feedback powered by [motion](https://motion.dev). Each item fades in with scale and blur, and presses to 0.97 on tap.
+Use `MotionToggleGroup` and `MotionToggleGroupItem` for a sliding active-item indicator and tap press feedback powered by [motion](https://motion.dev). A shared background indicator slides between items via `layoutId` as the pressed state changes, and each item presses to 0.97 on tap.
 
 ```tsx title="components/toggle-group-9.tsx"
 // import from your project: import Demo from '@/components/toggle-group-9'
@@ -322,7 +322,7 @@ export default function Demo() {
 
 ### MotionToggleGroup
 
-Staggered `scaleIn` entrance with `springBouncy` transition on each item. Requires the `motion` package.
+Wraps `ToggleGroup` in a `LayoutGroup` (scoped to a unique group ID) so its items can share the `layoutId`-based sliding indicator. Has no entrance animation of its own. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -330,7 +330,7 @@ Staggered `scaleIn` entrance with `springBouncy` transition on each item. Requir
 
 ### MotionToggleGroupItem
 
-Adds `whileTap` press feedback (scale 0.97). Requires the `motion` package.
+Adds `whileTap` press feedback (scale 0.97). When pressed (`data-state="on"`), renders a shared `layoutId` background indicator that slides smoothly between items using a `springSmooth` transition. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

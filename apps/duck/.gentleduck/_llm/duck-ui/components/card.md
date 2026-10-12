@@ -233,9 +233,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionCard`, `MotionCardHeader`, `MotionCardContent`, and `MotionCardFooter` for staggered fade-up entrance animations powered by [motion](https://motion.dev).
+Use `MotionCard`, `MotionCardHeader`, `MotionCardContent`, and `MotionCardFooter` for staggered scale-and-blur entrance animations powered by [motion](https://motion.dev).
 
 ```tsx title="components/card-4.tsx"
 // import from your project: import Demo from '@/components/card-4'
@@ -368,16 +368,16 @@ export default function Demo() {
 
 ### MotionCard
 
-Same props as `Card`. Adds fadeUp entrance animation. Requires the `motion` package.
+Same props as `Card`. Adds a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition. Requires the `motion` package.
 
 ### MotionCardHeader
 
-Same props as `CardHeader`. Adds fadeUp entrance with 50ms delay. Requires the `motion` package.
+Same props as `CardHeader`. Adds a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition and a 50ms delay. Requires the `motion` package.
 
 ### MotionCardContent
 
-Same props as `CardContent`. Adds fadeUp entrance with 100ms delay. Requires the `motion` package.
+Same props as `CardContent`. Adds a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition and a 100ms delay. Requires the `motion` package.
 
 ### MotionCardFooter
 
-Same props as `CardFooter`. Adds fadeUp entrance with 150ms delay. Requires the `motion` package.
+Same props as `CardFooter`. Adds a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition and a 150ms delay. Requires the `motion` package.

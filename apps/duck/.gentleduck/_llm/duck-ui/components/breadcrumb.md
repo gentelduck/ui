@@ -707,9 +707,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionBreadcrumbItem` for staggered fade-up entrance powered by [motion](https://motion.dev). Each breadcrumb item cascades in from left to right.
+Use `MotionBreadcrumbItem` for a staggered `scaleIn` entrance (fade, scale, and blur) powered by [motion](https://motion.dev). Each breadcrumb item cascades in from left to right.
 
 ```tsx title="components/breadcrumb-10.tsx"
 // import from your project: import Demo from '@/components/breadcrumb-10'
@@ -790,7 +790,7 @@ Wraps `BreadcrumbList` and auto-injects a stagger `index` into each `MotionBread
 
 ### MotionBreadcrumbItem
 
-Renders directly as `m.li` with a `scaleIn` entrance using `springSnappy` for a tight, responsive feel. Requires the `motion` package.
+Renders directly as `m.li` with a `scaleIn` entrance (fade, scale, and blur) using `springSnappy` for a tight, responsive feel. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

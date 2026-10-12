@@ -169,9 +169,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionToggle` for subtle press feedback powered by [motion](https://motion.dev). The toggle scales to 0.97 on tap for a physical press feel.
+Use `MotionToggle` for tap feedback and a staggered entrance animation powered by [motion](https://motion.dev). Each child is wrapped in a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition, staggered by 50ms per child, and the toggle scales to 0.97 on tap for a physical press feel.
 
 ```tsx title="components/toggle-9.tsx"
 // import from your project: import Demo from '@/components/toggle-9'
@@ -235,7 +235,7 @@ export default function Demo() {
 
 ### MotionToggle
 
-Adds `whileTap` press feedback and children fade-up animation on mount. Requires the `motion` package.
+Adds `whileTap` press feedback (scale 0.97) and a staggered `scaleIn` entrance (fade, scale, and blur) on each child, delayed 50ms per index, with a `springBouncy` transition. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

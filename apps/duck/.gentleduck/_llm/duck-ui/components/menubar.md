@@ -288,9 +288,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionMenubarContent` for a spring-powered enter animation with blur powered by [motion](https://motion.dev). Exit uses the primitive's built-in CSS animation.
+Use `MotionMenubarContent` for a `scaleIn` enter animation (fade, scale, and blur) with a bouncy spring transition, powered by [motion](https://motion.dev). Exit uses the primitive's built-in CSS animation.
 
 ```tsx title="components/menubar-3.tsx"
 // import from your project: import Demo from '@/components/menubar-3'
@@ -493,4 +493,4 @@ Components in this file wrap `@gentleduck/primitives/menubar`.
 
 ### MotionMenubarContent
 
-Same props as `MenubarContent`. Adds spring scaleIn+blur enter animation via motion. Exit uses the primitive's CSS animation. Requires the `motion` package.
+Same props as `MenubarContent`. Adds a `scaleIn` enter animation (fade, scale, and blur) with a bouncy spring transition via motion. Exit uses the primitive's CSS animation. Requires the `motion` package.

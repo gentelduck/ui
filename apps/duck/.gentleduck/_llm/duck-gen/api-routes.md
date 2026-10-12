@@ -81,7 +81,7 @@ Each decorator accepts an optional string path:
 
 } title="Full DTO vs named property">
   `@Body()` with no argument uses the **whole parameter type** as the body. `@Body('email')`
-  produces `{ email?: Type }` — an object with that one optional field. `@Query` and
+  produces `{ email?: Type }`, an object with that one optional field. `@Query` and
   `@Headers` follow the same rule.
 
 ## Path construction rules

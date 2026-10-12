@@ -23,9 +23,9 @@ You want a dialog to fade in on open and fade out on close. React unmounts the c
 
 Three phases:
 
-1. **Mount** — component enters the DOM, enter animation triggers
-2. **Present** — component is visible and interactive
-3. **Exit** — exit animation plays, component unmounts after it ends
+1. **Mount**: component enters the DOM, enter animation triggers
+2. **Present**: component is visible and interactive
+3. **Exit**: exit animation plays, component unmounts after it ends
 
 ***
 

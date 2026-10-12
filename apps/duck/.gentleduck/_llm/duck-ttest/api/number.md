@@ -13,7 +13,7 @@ import type {
 } from '@gentleduck/ttest/number'
 ```
 
-Arithmetic implemented via tuple-length recursion. TypeScript's recursion limit caps practical N at about 999 — most helpers note their effective cap.
+Arithmetic implemented via tuple-length recursion. TypeScript's recursion limit caps practical N at about 999; most helpers note their effective cap.
 
 ## Sign guards
 

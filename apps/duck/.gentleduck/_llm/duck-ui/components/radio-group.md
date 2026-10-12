@@ -206,9 +206,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionRadioGroup` and `MotionRadioGroupItem` for staggered entrance animations powered by [motion](https://motion.dev). Each item fades in with scale and blur, staggered by 50ms.
+Use `MotionRadioGroup` and `MotionRadioGroupItem` for staggered entrance animations powered by [motion](https://motion.dev). Each item uses a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition, staggered by 50ms.
 
 ```tsx title="components/radio-group-4.tsx"
 // import from your project: import Demo from '@/components/radio-group-4'
@@ -276,7 +276,7 @@ Wraps `RadioGroup` and auto-injects stagger `index` into `MotionRadioGroupItem` 
 | `index` | `number` | `0` | Stagger delay index (50ms per index) for entrance animation |
 | `...props` | `RadioGroupItemProps` | - | All props from `RadioGroupItem` are supported |
 
-Wraps `RadioGroupItem` with a staggered `scaleIn` entrance animation and a bounce (scale + rotate) on the radio circle when clicked. Requires the `motion` package.
+Wraps `RadioGroupItem` with a staggered `scaleIn` entrance animation (fade, scale, and blur) and a bounce (scale + rotate) on the radio circle when clicked. Requires the `motion` package.
 
 ## See also
 

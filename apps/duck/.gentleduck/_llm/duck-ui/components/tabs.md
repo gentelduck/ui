@@ -188,9 +188,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionTabs`, `MotionTabsList`, `MotionTabsTrigger`, and `MotionTabsContent` for a sliding active indicator and direction-aware content crossfade powered by [motion](https://motion.dev). The indicator slides between tabs via `layoutId` and content panels fade with a directional shift.
+Use `MotionTabs`, `MotionTabsList`, `MotionTabsTrigger`, and `MotionTabsContent` for a sliding active indicator and direction-aware content crossfade powered by [motion](https://motion.dev). The indicator slides between tabs via `layoutId` and content panels crossfade with a directional shift, a slight scale-down, and blur.
 
 ```tsx title="components/tabs-3.tsx"
 // import from your project: import Demo from '@/components/tabs-3'
@@ -467,7 +467,7 @@ Wrapper around all `MotionTabsContent` panels. Provides a single `AnimatePresenc
 | --- | --- | --- | --- |
 | `className` | `string` | - | Additional CSS class names |
 | `children` | `React.ReactNode` | - | `MotionTabsContent` elements |
-| `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the container div |
+| `...props` | `Omit<React.HTMLProps<HTMLDivElement>, 'onDrag' \| 'onDragStart' \| 'onDragEnd' \| 'onAnimationStart'>` | - | Additional props to spread to the container div, except motion event handlers |
 
 ### MotionTabsContent
 

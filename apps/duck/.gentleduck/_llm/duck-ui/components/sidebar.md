@@ -1934,9 +1934,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionSidebar` for smooth width animations powered by [motion](https://motion.dev). The sidebar width animates with expo-out easing when collapsing and expanding.
+Use `MotionSidebar` for smooth width animations powered by [motion](https://motion.dev). The sidebar width animates with a bouncy spring transition when collapsing and expanding.
 
 ```tsx title="components/sidebar-7.tsx"
 // import from your project: import Demo from '@/components/sidebar-7'
@@ -2394,4 +2394,4 @@ export default function Demo() {
 
 ### MotionSidebar
 
-Same props as `Sidebar`. Replaces CSS width transition with motion `m.div animate` using contentTransition (250ms expo-out). Handles icon collapse, offcanvas slide, and floating/inset variants. Requires the `motion` package.
+Same props as `Sidebar`. Replaces CSS width transition with motion `m.div animate` using a `springBouncy` spring transition. Handles icon collapse, offcanvas slide, and floating/inset variants. On mobile, renders through the regular (non-motion) `Sheet`/`SheetContent`. Requires the `motion` package.

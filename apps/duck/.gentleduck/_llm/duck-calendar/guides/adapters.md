@@ -20,17 +20,17 @@ The `NativeAdapter` implements every adapter method with `Date` plus `Intl.DateT
 
 ## Shipped adapters
 
-The package includes 7 ready-to-use adapters. Adapters marked with a peer dependency require you to install the underlying date library yourself.
+The package includes 7 ready-to-use adapters. The four with no dependency are exported from the package root and from `@gentleduck/calendar/adapter`. Each adapter for a date library lives at its own subpath, so importing one never loads the others; install that library yourself.
 
 | Adapter | Import | Description | Peer dependency |
 | :--- | :--- | :--- | :--- |
 | `NativeAdapter` | `@gentleduck/calendar` | Zero-dep adapter for the built-in `Date` object | None |
-| `DateFnsAdapter` | `@gentleduck/calendar/adapter` | Adapter for date-fns | `date-fns` |
-| `DayjsAdapter` | `@gentleduck/calendar/adapter` | Adapter for dayjs | `dayjs` |
-| `LuxonAdapter` | `@gentleduck/calendar/adapter` | Adapter for Luxon | `luxon` |
-| `PersianAdapter` | `@gentleduck/calendar/adapter` | Persian / Jalali calendar | None |
-| `IslamicAdapter` | `@gentleduck/calendar/adapter` | Islamic / Hijri calendar | None |
-| `HebrewAdapter` | `@gentleduck/calendar/adapter` | Hebrew calendar | None |
+| `DateFnsAdapter` | `@gentleduck/calendar/adapter/date-fns` | Adapter for date-fns | `date-fns` |
+| `DayjsAdapter` | `@gentleduck/calendar/adapter/dayjs` | Adapter for dayjs | `dayjs` |
+| `LuxonAdapter` | `@gentleduck/calendar/adapter/luxon` | Adapter for Luxon | `luxon` |
+| `PersianAdapter` | `@gentleduck/calendar` | Persian / Jalali calendar | None |
+| `IslamicAdapter` | `@gentleduck/calendar` | Islamic / Hijri calendar | None |
+| `HebrewAdapter` | `@gentleduck/calendar` | Hebrew calendar | None |
 
 ***
 

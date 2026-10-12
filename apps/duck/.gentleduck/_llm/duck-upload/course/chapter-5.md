@@ -47,7 +47,7 @@ dispatch({ type: 'remove', localId }) // drops the item from state
 ```
 
 Cancel aborts any in-flight request with mode `'cancel'` and is terminal. `remove` deletes
-the item entirely — handy for clearing terminal rows from the UI.
+the item entirely, handy for clearing terminal rows from the UI.
 
 **Automatic retry policy**
 
@@ -199,12 +199,12 @@ export function PhotoUploader() {
 
 What happens if I pause a queued item?
 
-It reverts to `ready` — no request is aborted because none started. Start it again later.
+It reverts to `ready`; no request is aborted because none started. Start it again later.
 
 Why does resume need a file?
 
 `File` objects can't be serialized, so items restored from persistence have
-`file: undefined`. Resume is a no-op without a file. Use `rebind` first — it checks the new
+`file: undefined`. Resume is a no-op without a file. Use `rebind` first: it checks the new
 file's fingerprint matches. Chapter 6 covers the flow.
 
 How does retry know where to re-enter?

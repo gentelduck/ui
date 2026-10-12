@@ -212,9 +212,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionTextarea` for a smooth entrance animation powered by [motion](https://motion.dev). The textarea fades in with scale and blur on mount using `springBouncy`.
+Use `MotionTextarea` for a smooth entrance animation powered by [motion](https://motion.dev). The textarea uses a `scaleIn` entrance (fade, scale, and blur) with a `springBouncy` transition on mount.
 
 ```tsx title="components/textarea-9.tsx"
 // import from your project: import Demo from '@/components/textarea-9'
@@ -240,7 +240,7 @@ export default function Demo() {
 
 ### MotionTextarea
 
-`scaleIn` entrance with `springBouncy` transition on mount. Requires the `motion` package.
+`scaleIn` entrance (fade, scale, and blur) with `springBouncy` transition on mount. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

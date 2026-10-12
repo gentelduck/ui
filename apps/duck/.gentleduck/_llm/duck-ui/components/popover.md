@@ -427,7 +427,7 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
 Use `MotionPopover` and `MotionPopoverContent` for smooth enter/exit animations powered by [motion](https://motion.dev). The transform origin matches the placement side automatically.
 
@@ -540,7 +540,7 @@ Wraps with `useMotionRoot` for exit animation support. Requires the `motion` pac
 
 ### MotionPopoverContent
 
-Adds scale, blur, and opacity enter/exit animation with `springBouncy` transition. Requires the `motion` package.
+Adds a `scaleIn` enter/exit animation (fade, scale, and blur) with a `springSnappy` transition. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

@@ -93,4 +93,4 @@ If exit motion is not visible:
 3. Validate behavior with reduced-motion enabled.
 
 }>
-  Next: [Lesson 7 - Accessibility Deep Dive](/duck-primitives/course/07-accessibility)
+  Next: [Lesson 7 - Accessibility Audits and Failure Modes](/duck-primitives/course/07-accessibility)

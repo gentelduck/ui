@@ -1,7 +1,7 @@
 ## Goal
 
 Turn the store into a React UI: a dropzone, a live list with progress bars, and per-item
-controls — all through `UploadProvider` and `useUploader`.
+controls, all through `UploadProvider` and `useUploader`.
 
 ## Step by step
 
@@ -17,14 +17,14 @@ export type PhotoPurpose = 'photo'
 export type PhotoResult = Contracts.Result.Base & { url: string }
 ```
 
-A tidy alternative — bind a typed hook once with `createUploadFactory`:
+A tidy alternative is binding a typed hook once with `createUploadFactory`:
 
 ```typescript title="src/upload.ts"
 import { createUploadFactory } from '@gentleduck/upload/react'
 export const usePhotoUploader = createUploadFactory(store)
 ```
 
-`usePhotoUploader()` is a `useUploader` pre-typed to your store — no generics or context
+`usePhotoUploader()` is a `useUploader` pre-typed to your store: no generics or context
 needed at the call site.
 
 **Wrap the app**
@@ -107,7 +107,7 @@ function Dropzone({ onFiles }: { onFiles: (files: File[]) => void }) {
 
 **Render items with progress and controls**
 
-`Engine.Item` is a discriminated union — narrow on `phase` before reading `progress`,
+`Engine.Item` is a discriminated union: narrow on `phase` before reading `progress`,
 `error`, etc.
 
 ```tsx title="src/PhotoUploader.tsx"
@@ -204,9 +204,9 @@ function StartAll() {
 ```
 photoduck/
   src/
-    upload.ts          -- types + store (+ optional usePhotoUploader)
-    App.tsx            -- UploadProvider
-    PhotoUploader.tsx  -- dropzone + rows + controls
+    upload.ts          : types + store (+ optional usePhotoUploader)
+    App.tsx            : UploadProvider
+    PhotoUploader.tsx  : dropzone + rows + controls
 ```
 
 ***
@@ -221,7 +221,7 @@ component that must not re-render on progress, use `useUploaderActions`.
 
 Can I have multiple providers?
 
-Yes — create separate stores with `createUploadStore` and nest a `UploadProvider` per area.
+Yes, create separate stores with `createUploadStore` and nest a `UploadProvider` per area.
 Often a single store with different purposes is enough; use multiple stores when pipelines
 are truly independent (different backends or persistence keys).
 
@@ -233,7 +233,7 @@ server rendering paths.
 
 Why is `failed` the `error` phase?
 
-`error` is a state, not a verdict — such items may be retryable. The hook exposes them as
+`error` is a state, not a verdict; such items may be retryable. The hook exposes them as
 `failed` for convenience, but when you check `item.phase`, use `'error'`.
 
 ***

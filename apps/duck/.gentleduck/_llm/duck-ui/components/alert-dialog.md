@@ -220,7 +220,7 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
 Use `MotionAlertDialog` and `MotionAlertDialogContent` for smooth enter/exit animations powered by [motion](https://motion.dev). Uses a stiffer spring to convey urgency compared to the regular dialog.
 
@@ -288,9 +288,8 @@ export default function Demo() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `asChild` | `boolean` | `false` | If `true`, renders using a `Slot` instead of a `button` element |
 | `children` | `React.ReactNode` | `--` | Content of the trigger |
-| `...props` | `React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Trigger>` | - | Additional props inherited from `AlertDialogPrimitive.Trigger` |
+| `...props` | `React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Trigger>` | - | Additional props inherited from `AlertDialogPrimitive.Trigger`. Always renders a native `button` element; there is no `asChild`/`Slot` support. |
 
 ### AlertDialogPortal
 
@@ -328,7 +327,7 @@ Same props as `AlertDialog`. Wraps with `useMotionRoot` for exit animation suppo
 | `className` | `string` | `-` | Additional class names to apply |
 | `children` | `React.ReactNode` | `-` | Content displayed inside the dialog |
 
-Requires `motion` package installed. Uses a spring transition (stiffness 400, damping 30) for a snappier feel that conveys urgency. Automatically respects `prefers-reduced-motion`.
+Requires `motion` package installed. Content uses a `scaleIn` entrance (fade, scale, and blur) with a spring transition (stiffness 400, damping 30) for a snappier feel that conveys urgency; the overlay fades in independently. Automatically respects `prefers-reduced-motion`.
 
 ### AlertDialogHeader
 

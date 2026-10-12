@@ -155,7 +155,7 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
 Use `MotionCollapsibleContent` for smooth height animations powered by [motion](https://motion.dev). The content animates from height 0 to auto with a blur fade.
 
@@ -241,8 +241,8 @@ const { open, onOpenChange } = useCollapsible()
 
 ### MotionCollapsibleContent
 
-Animates height from 0 to auto with staggered blur and opacity fade. Requires the `motion` package.
+Animates height from 0 to auto with a blur and opacity fade. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `...props` | `Omit<CollapsibleContentProps, 'onDrag' \| 'onDragStart' \| 'onDragEnd' \| 'onAnimationStart'>` | - | All props from `CollapsibleContent` except motion event handlers |
+| `...props` | `Omit<React.HTMLAttributes<HTMLDivElement>, 'onDrag' \| 'onDragStart' \| 'onDragEnd' \| 'onAnimationStart'>` | - | Additional props to spread to the underlying `section` element. This is a separate component from `CollapsibleContent`, not a wrapper around it, so it does not accept `forceMount`. |

@@ -29,9 +29,7 @@ const totalCostConfig = {
   css: { label: 'CSS (KB)', color: 'var(--chart-2)' },
 } satisfies ChartConfig
 
-const totalCost = (data as Record<string, unknown>)['totalCost'] as
-  | { name: string; js: number; css: number }[]
-  | undefined
+const totalCost = (data as Record<string, unknown>).totalCost as { name: string; js: number; css: number }[] | undefined
 
 export default function CalendarBenchmarkVs() {
   const [tab, setTab] = React.useState<Tab>('Bundle Size')
@@ -108,7 +106,7 @@ import data from '../../../../apps/duck/public/data/benchmarks/calendar.json'
 const tabs = ['vs react-day-picker', 'vs react-aria', 'vs react-datepicker', 'vs react-calendar'] as const
 type Tab = (typeof tabs)[number]
 
-const comparisons = (data as Record<string, unknown>)['libraryComparisons'] as
+const comparisons = (data as Record<string, unknown>).libraryComparisons as
   | {
       name: string
       comparison: { metric: string; gentleduck: string; competitor: string; winner: string }[]
@@ -248,7 +246,7 @@ const adapterConfig = {
   format: { label: 'format (μs)', color: 'var(--chart-3)' },
 } satisfies ChartConfig
 
-const modules = (data as Record<string, unknown>)['moduleSizes'] as { name: string; sizeKB: number }[] | undefined
+const modules = (data as Record<string, unknown>).moduleSizes as { name: string; sizeKB: number }[] | undefined
 const pieData = modules
   ? modules.map((m, i) => ({ name: m.name, size: m.sizeKB, fill: COLORS[i % COLORS.length] }))
   : []

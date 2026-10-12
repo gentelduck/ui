@@ -571,7 +571,7 @@ export default function Demo() {
 | --- | --- | --- | --- |
 | `className` | `string` | - | Additional CSS classes applied to the content container |
 | `children` | `React.ReactNode` | - | `CarouselItem` elements |
-| `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
+| `...props` | `React.HTMLAttributes<HTMLUListElement>` | - | Additional props to spread to the underlying `ul` element (wrapped in an unstyled `overflow-hidden` div that holds the Embla ref) |
 
 ### CarouselItem
 

@@ -51,7 +51,7 @@ const client = createDuckQuery<ApiRoutes>({
   baseURL: 'https://api.example.com',
 })
 
-// Fully typed — body shape, response type, route path
+// Fully typed: body shape, response type, route path
 const session = await client.post('/api/auth/signin', {
   body: { email: 'user@example.com', password: 'secret' },
 })
@@ -65,7 +65,7 @@ const session = await client.post('/api/auth/signin', {
 The output is a single `.d.ts` file with a complete route map:
 
 ```ts
-// generated/api-routes.d.ts — do not edit
+// generated/api-routes.d.ts: do not edit
 export interface ApiRoutes {
   '/api/auth/signin': {
     POST: { body: SigninDto; res: AuthSession }
@@ -80,7 +80,7 @@ export interface ApiRoutes {
 }
 ```
 
-A pure type file — no runtime code, no bundle impact. It disappears at compile time.
+A pure type file: no runtime code, no bundle impact. It disappears at compile time.
 
 ***
 
@@ -106,9 +106,9 @@ Save this as `duck-gen.json` in your project root. Duck Gen reads it automatical
 | | Duck Gen | tRPC | GraphQL Codegen |
 | --- | --- | --- | --- |
 | **Server framework** | NestJS (REST) | Custom router | GraphQL servers |
-| **Client coupling** | None — types only | Tight coupling | Schema-first |
+| **Client coupling** | None, types only | Tight coupling | Schema-first |
 | **Runtime cost** | Zero (.d.ts only) | Minimal | Varies |
-| **Migration effort** | Drop-in — no server changes | Full rewrite | Schema migration |
+| **Migration effort** | Drop-in, no server changes | Full rewrite | Schema migration |
 | **Existing REST APIs** | Works immediately | Not applicable | Not applicable |
 
 Duck Gen is for teams with existing REST APIs that want type safety without a server rewrite.
@@ -120,6 +120,6 @@ Duck Gen reads your existing NestJS controllers. No new decorators, no architect
 ## Getting Started
 
 ```bash
-bun add -d @gentleduck/gen    # Dev dependency — runs at build time
-bun add @gentleduck/query     # Runtime — typed HTTP client
+bun add -d @gentleduck/gen    # Dev dependency, runs at build time
+bun add @gentleduck/query     # Runtime, typed HTTP client
 ```

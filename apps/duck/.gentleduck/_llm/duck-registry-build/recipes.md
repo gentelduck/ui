@@ -212,7 +212,7 @@ Use split scripts so the raw CLI path remains available:
 Then for targeted local updates:
 
 ```bash
-bun run build:reg:cli - --changed-only --changed ../../packages/registry-ui/src/button/button.tsx
+bun run build:reg:cli -- --changed-only --changed ../../packages/registry-ui/src/button/button.tsx
 ```
 
 ***

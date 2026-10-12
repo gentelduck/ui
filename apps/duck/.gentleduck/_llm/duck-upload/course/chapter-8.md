@@ -1,7 +1,7 @@
 ## Goal
 
 Ship PhotoDuck. Add **typed results**, **checksum deduplication**, **multiple purposes** with
-distinct configs, and a **testing** approach — tying Chapters 1–7 into a production setup.
+distinct configs, and a **testing** approach, tying Chapters 1–7 into a production setup.
 
 ## Typed results
 
@@ -20,7 +20,7 @@ export type PhotoDuckResult = Contracts.Result.Base & {
 ```
 
 `R` flows through the whole store. With `createUploadStore<M, C, P, PhotoDuckResult>`, every
-`completed` item exposes `item.result: PhotoDuckResult` — no casts.
+`completed` item exposes `item.result: PhotoDuckResult`, no casts needed.
 
 **Type the intent and cursor maps**
 
@@ -104,13 +104,13 @@ export const photoDuckApi: Contracts.Api.Me<PhotoDuckIntents, PhotoDuckPurpose, 
 ```
 
 `createIntent` is the backend's decision point: it inspects size/purpose and returns the
-right intent. The engine never picks the strategy — the backend does.
+right intent. The engine never picks the strategy; the backend does.
 
 **Deduplicate by checksum**
 
 If the fingerprint carries a `checksum` and `findByChecksum` is implemented, the engine
 checks for an existing file during validation and, on a match, completes the item instantly
-with `completedBy: 'dedupe'` — no intent, no bytes.
+with `completedBy: 'dedupe'`: no intent, no bytes.
 
 The default fingerprint has **no** checksum, and the `fingerprint` option must be
 synchronous. So compute hashes **before** adding files, then look them up in `fingerprint`:
@@ -289,14 +289,14 @@ So `item.result.width` is typed all the way from the `R` you declared.
 
 Different result types per purpose?
 
-`R` is one type for the store. Use a union — `type R = PhotoResult | AvatarResult`, both
-extending `Contracts.Result.Base` — and narrow by a discriminant or by `item.purpose`.
+`R` is one type for the store. Use a union: `type R = PhotoResult | AvatarResult` (both
+extending `Contracts.Result.Base`), and narrow by a discriminant or by `item.purpose`.
 
 How does dedupe work internally?
 
 During validation, if the fingerprint has a `checksum` and `findByChecksum` is implemented,
 the engine calls it. A non-null result emits `dedupe.ok`, moving the item straight to
-`completed` with `completedBy: 'dedupe'` and that result — no intent, no bytes. `null`
+`completed` with `completedBy: 'dedupe'` and that result: no intent, no bytes. `null`
 continues normal validation.
 
 How does autoStart interact with validation?
@@ -312,7 +312,7 @@ keep a real strategy and mock HTTP (e.g. MSW).
 
 One store or many?
 
-One store, many purposes handles most apps — purpose threads through validation, autoStart,
+One store, many purposes handles most apps: purpose threads through validation, autoStart,
 batch commands, and persistence. Use separate stores only for truly isolated pipelines
 (different backends or persistence keys).
 

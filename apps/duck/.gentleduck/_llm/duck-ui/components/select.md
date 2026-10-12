@@ -302,9 +302,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionSelect` and `MotionSelectContent` for smooth enter/exit animations powered by [motion](https://motion.dev). The dropdown enters with a bouncy spring scale and blur, and exits with a matching reverse animation.
+Use `MotionSelect` and `MotionSelectContent` for smooth enter/exit animations powered by [motion](https://motion.dev). The dropdown enters and exits with a `scaleIn` preset (fade, scale, and blur) and a bouncy spring transition. `MotionSelectTrigger` adds tap feedback (scale 0.97) to the trigger button.
 
 ```tsx title="components/select-6.tsx"
 // import from your project: import Demo from '@/components/select-6'
@@ -341,7 +341,7 @@ export default function Demo() {
 ```
 
 }>
-  Requires the `motion` package. Use `MotionSelect` instead of `Select` and `MotionSelectContent` instead of `SelectContent`. All other sub-components stay the same.
+  Requires the `motion` package. Use `MotionSelect` instead of `Select` and `MotionSelectContent` instead of `SelectContent`. Optionally use `MotionSelectTrigger` instead of `SelectTrigger` for tap feedback. All other sub-components stay the same.
 
 ## API Reference
 
@@ -451,4 +451,12 @@ Same props as `Select`. Wraps the root with motion state management for enter/ex
 
 ### MotionSelectContent
 
-Same props as `SelectContent`. Adds spring-powered enter/exit animation (scale + blur) via `AnimatePresence`. Must be used with `MotionSelect` root. Requires the `motion` package.
+Same props as `SelectContent`. Adds a `scaleIn` enter/exit animation (fade, scale, and blur) with a `springBouncy` transition, mounted and unmounted via `useMotionRoot`/`useMotionMount` for exit-animation support. Must be used with `MotionSelect` root. Requires the `motion` package.
+
+### MotionSelectTrigger
+
+Same props as `SelectTrigger`. Wraps the trigger with `whileTap` press feedback (scale 0.97). Requires the `motion` package.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `...props` | `ISelectTriggerProps` | - | All props from `SelectTrigger` are supported |

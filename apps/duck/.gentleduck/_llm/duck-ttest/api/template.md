@@ -5,7 +5,7 @@ import type {
 } from '@gentleduck/ttest/template'
 ```
 
-String-shape transforms expressed as type-level recursion on template literals. The companion to [`object`](/duck-ttest/api/object) `*CaseKeys` — these operate on a single string, those operate on every key of an object.
+String-shape transforms expressed as type-level recursion on template literals. The companion to [`object`](/duck-ttest/api/object) `*CaseKeys`: these operate on a single string, those operate on every key of an object.
 
 ## TrimLeft
 
@@ -47,7 +47,7 @@ type a = Trim<'  hello  '>           // 'hello'
 type b = Trim<'\n  hello world  \t'> // 'hello world'
 ```
 
-Edge case: `Trim<string>` is `string`. Whitespace stripping only narrows literal types — a wide `string` passes through unchanged.
+Edge case: `Trim<string>` is `string`. Whitespace stripping only narrows literal types: a wide `string` passes through unchanged.
 
 ## CapitalizeWords
 
@@ -82,7 +82,7 @@ type d = SnakeToCamel<'noUnderscores'>       // 'noUnderscores'
 
 Edge cases:
 
-* `SnakeToCamel<'__double__'>` produces `'Double_'` — the helper assumes single underscores.
-* `SnakeToCamel<string>` is `string` — wide strings pass through.
+* `SnakeToCamel<'__double__'>` produces `'Double_'`: the helper assumes single underscores.
+* `SnakeToCamel<string>` is `string`: wide strings pass through.
 
-For object-key case conversion at scale see [`object`](/duck-ttest/api/object) — `CamelCaseKeys`, `SnakeCaseKeys`, and their deep variants build on these primitives.
+For object-key case conversion at scale see [`object`](/duck-ttest/api/object): `CamelCaseKeys`, `SnakeCaseKeys`, and their deep variants build on these primitives.

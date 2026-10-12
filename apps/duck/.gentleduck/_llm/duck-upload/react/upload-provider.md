@@ -1,5 +1,5 @@
 `UploadProvider` publishes an upload store on React context so any descendant can reach it with
-`useUploader`, `useUploaderActions`, or `useUploadStore` — no prop drilling.
+`useUploader`, `useUploaderActions`, or `useUploadStore`: no prop drilling.
 
 ## Usage
 
@@ -29,8 +29,8 @@ export function App() {
 
 ## Related hooks
 
-* `useUploadStore()` — returns the raw store from context, or throws if used outside a provider.
-* `isUploadStore(value)` — a runtime type guard that checks a value has the store shape
+* `useUploadStore()`: returns the raw store from context, or throws if used outside a provider.
+* `isUploadStore(value)`: a runtime type guard that checks a value has the store shape
   (`getSnapshot`, `subscribe`, `dispatch`, `on`, `off`, `waitFor`).
 
 ## Notes
@@ -40,5 +40,5 @@ export function App() {
   store directly to `useUploader(store)`.
 * Create the store in a module (or a stable ref), never inline in render, so it isn't recreated
   on every render.
-* All `useUploader` / `useUploaderActions` calls must be inside a descendant of the provider —
+* All `useUploader` / `useUploaderActions` calls must be inside a descendant of the provider,
   unless you pass a store to `useUploader` explicitly.

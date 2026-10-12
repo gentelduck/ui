@@ -97,7 +97,7 @@ Groups a trigger and its content into one menu entry.
 | `onInteractOutside` | `(event: PointerDownOutsideEvent \| FocusOutsideEvent) => void` | - | Called on any outside interaction |
 
 }>
-  The `forceMount`, `asChild`, `trapFocus`, `disableOutsidePointerEvents`, and `onPointerDownOutside` / `onFocusOutside` props give you full control over the content lifecycle. This is especially useful when integrating with animation libraries like [motion](https://motion.dev) — use `forceMount` + `asChild` to keep the content mounted during exit animations, and the outside-interaction handlers to prevent premature dismissal.
+  The `forceMount`, `asChild`, `trapFocus`, `disableOutsidePointerEvents`, and `onPointerDownOutside` / `onFocusOutside` props give you full control over the content lifecycle. This is especially useful when integrating with animation libraries like [motion](https://motion.dev): use `forceMount` + `asChild` to keep the content mounted during exit animations, and the outside-interaction handlers to prevent premature dismissal.
 
 ***
 

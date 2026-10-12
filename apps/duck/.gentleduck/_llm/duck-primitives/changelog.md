@@ -1,3 +1,14 @@
+## 0.4.0
+
+### Minor Changes
+
+* bfa58d9: Add `shiftCrossAxis` to `PopperContent`. When `true`, collision shifting also corrects along the side's own axis (vertically for `top` and `bottom` placements), not just along the alignment axis. It defaults to `false`, so existing placements do not move.
+
+### Patch Changes
+
+* Updated dependencies \[1681854]
+  * @gentleduck/calendar@0.5.0
+
 ## 0.3.1
 
 ### Patch Changes

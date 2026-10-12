@@ -1,5 +1,5 @@
 `PostStrategy` sends a file as a single `multipart/form-data` request using presigned form
-fields (S3 POST policy style). It is the simplest option and is **not** resumable — a failure
+fields (S3 POST policy style). It is the simplest option and is **not** resumable; a failure
 restarts from zero.
 
 ```ts

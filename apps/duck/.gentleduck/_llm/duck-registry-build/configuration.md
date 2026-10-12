@@ -1,6 +1,6 @@
 }>
   The full config reference. For new non-UI consumers, start with `collections`. The
-  older UI-shaped fields still work, but they're a compatibility surface — not the
+  older UI-shaped fields still work, but they're a compatibility surface, not the
   recommended starting point.
 
 ## Minimal generic shape
@@ -204,7 +204,7 @@ sources
 | `path` | `string` | Filesystem path relative to the config file |
 | `packageName` | `string` | Package base used for generated import paths |
 | `glob` | `string` | Discovery pattern, default `**/*.{ts,tsx}` |
-| `ignore` | `string[]` | Ignore globs for discovery, default `['**/__test__/**', '**/*.test.*', '**/*.spec.*']` |
+| `ignore` | `string[]` | Ignore globs for discovery, default `['**/__test__/**', '**/__tests__/**', '**/__snapshots__/**', '**/*.test.*', '**/*.spec.*']` |
 | `indexStrategy` | `'item' \| 'file'` | Emit one index record per registry item or per discovered file |
 | `referencePath` | `string` | Stable logical path stored in generated metadata |
 

@@ -88,4 +88,4 @@ interface RouteDescriptor<Pattern extends string, Query = Record<string, never>>
 }
 ```
 
-Combined path/query descriptor — useful for route registries.
+Combined path/query descriptor: useful for route registries.

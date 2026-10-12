@@ -24,7 +24,7 @@ type Truthy<T> = Exclude<T, Falsy>
 ```
 
 ```ts
-type T = Truthy<string | null>  // string  (but '' is allowed at runtime — Truthy excludes only the literal '')
+type T = Truthy<string | null>  // string  (but '' is allowed at runtime: Truthy excludes only the literal '')
 ```
 
 ## Nullish / NonNullish / Nullable / Maybe
@@ -48,7 +48,7 @@ type Builtin =
   | Function
 ```
 
-The recursion stop-set used by `DeepPartial`, `DeepReadonly`, etc. — types where "go deeper" doesn't make sense.
+The recursion stop-set used by `DeepPartial`, `DeepReadonly`, etc.: types where "go deeper" doesn't make sense.
 
 ## NonPrimitive
 
@@ -56,7 +56,7 @@ The recursion stop-set used by `DeepPartial`, `DeepReadonly`, etc. — types whe
 type NonPrimitive = Exclude<{}, Primitive>
 ```
 
-Anything that is not a primitive — objects, arrays, functions, class instances.
+Anything that is not a primitive: objects, arrays, functions, class instances.
 
 ## IsPrimitive
 
@@ -71,7 +71,7 @@ type Arrayable<T>              = T | readonly T[]
 type MultidimensionalArray<T>  = T | ReadonlyArray<MultidimensionalArray<T>>
 ```
 
-`Arrayable` is the common "T or T\[]" pattern. `MultidimensionalArray` is its recursive cousin — `T | T[] | T[][] | ...`.
+`Arrayable` is the common "T or T\[]" pattern. `MultidimensionalArray` is its recursive cousin: `T | T[] | T[][] | ...`.
 
 ## IsOptional
 

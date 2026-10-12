@@ -14,7 +14,7 @@ export default function Demo() {
 
 ## Philosophy
 
-Calendars are complex accessibility challenges disguised as simple grids. We own the entire calendar stack  -  from the headless engine ([`@gentleduck/calendar`](/duck-calendar)) to the compound primitives (`@gentleduck/primitives/calendar`) to this styled component. The adapter pattern lets you swap date libraries, the hook layer handles state management, and this component applies Tailwind styling via `data-*` attribute selectors.
+Calendars are complex accessibility challenges disguised as simple grids. We own the calendar stack from the headless engine ([`@gentleduck/calendar`](/duck-calendar)) to this styled component. The adapter pattern lets you swap date libraries, the hook layer handles state management, and this component applies Tailwind styling via `data-*` attribute selectors.
 
 ## How It's Built
 
@@ -33,9 +33,9 @@ Install the following dependencies:
 npm install @gentleduck/calendar @gentleduck/libs
 ```
 
-Add the `Button` and `Select` components to your project.
+Add the `Button` component to your project.
 
-The `Calendar` uses the [`Button`](/duck-ui/components/button) variant styles and the [`Select`](/duck-ui/components/select) component for month/year dropdowns.
+The `Calendar` uses the [`Button`](/duck-ui/components/button) variant styles for navigation. Month/year dropdowns are a self-contained virtualized list built into the component, not the shared [`Select`](/duck-ui/components/select) component.
 
 Copy and paste the following code into your project.
 
@@ -1419,9 +1419,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionCalendar` for smooth month navigation transitions and staggered day cell entry powered by [motion](https://motion.dev). The grid slides directionally when navigating months, and day cells fade in with a stagger effect.
+Use `MotionCalendar` for a mount entrance plus smooth month navigation transitions and staggered day cell entry powered by [motion](https://motion.dev). The whole calendar uses a `scaleIn` entrance (fade, scale, and blur) on mount, the grid slides directionally when navigating months, and day cells fade in with a stagger effect.
 
 ```tsx title="components/calendar-25.tsx"
 // import from your project: import Demo from '@/components/calendar-25'
@@ -1555,7 +1555,7 @@ The calendar uses `data-*` attributes on day cells for styling. Target these in 
 
 ### MotionCalendar
 
-Adds directional slide transitions on month navigation (with blur) and staggered day cell entry animation. Uses `LazyMotion` for a lightweight bundle (~5KB). Requires the `motion` package.
+Adds a `scaleIn` entrance (fade, scale, and blur) with a `springBouncy` transition on mount, directional slide transitions on month navigation (with blur), and staggered day cell entry animation. Uses `LazyMotion` for a lightweight bundle (~5KB). Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

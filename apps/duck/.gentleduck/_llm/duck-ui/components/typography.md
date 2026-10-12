@@ -96,7 +96,7 @@ export default function Demo() {
 
 ## Philosophy
 
-Typography *is* a system, not a single component. We ship a set of small, semantic wrappers — `TypographyH1`, `TypographyP`, `TypographyBlockquote`, `TypographyList`, `TypographyTable`, etc. — that render native HTML elements with a consistent set of utility classes. Your markup stays semantic, the bundle stays lean, and every `className` you pass is merged on top of the defaults via `cn()` so local overrides are trivial.
+Typography *is* a system, not a single component. We ship a set of small, semantic wrappers (`TypographyH1`, `TypographyP`, `TypographyBlockquote`, `TypographyList`, `TypographyTable`, etc.) that render native HTML elements with a consistent set of utility classes. Your markup stays semantic, the bundle stays lean, and every `className` you pass is merged on top of the defaults via `cn()` so local overrides are trivial.
 
 ## Installation
 
@@ -427,7 +427,7 @@ export default function Demo() {
 
 ## Motion
 
-Use the `Motion*` variants for a staggered entrance animation powered by [motion](https://motion.dev). Each component accepts an `index` prop — the entrance is delayed by `index * 0.05s` so a full page of typography cascades in from bottom to top with a subtle slide + blur.
+Use the `Motion*` variants for a staggered entrance animation powered by [motion](https://motion.dev). Each component accepts an `index` prop: the entrance is delayed by `index * 0.05s` so a full page of typography cascades in from bottom to top with a subtle slide + blur.
 
 ```tsx title="components/typography-16.tsx"
 // import from your project: import Demo from '@/components/typography-16'

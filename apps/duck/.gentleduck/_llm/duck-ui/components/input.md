@@ -192,9 +192,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionInput` for a fade+blur entrance animation powered by [motion](https://motion.dev). Pass `index` for stagger delay when used in forms.
+Use `MotionInput` for a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition, powered by [motion](https://motion.dev). Pass `index` for stagger delay when used in forms.
 
 ```tsx title="components/input-9.tsx"
 // import from your project: import Demo from '@/components/input-9'
@@ -230,7 +230,7 @@ A styled `<input>` element that accepts all standard HTML input attributes.
 
 ### MotionInput
 
-Same props as `Input` plus an optional `index` prop for stagger delay (50ms per index). Adds fade+blur entrance animation. Requires the `motion` package.
+Same props as `Input` plus an optional `index` prop for stagger delay (50ms per index). Adds a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition. Requires the `motion` package.
 
 ## See also
 

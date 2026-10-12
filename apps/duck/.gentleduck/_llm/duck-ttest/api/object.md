@@ -34,7 +34,7 @@ type Simplify<T> = { [K in keyof T]: T[K] } & {}
 type Prettify<T> = Simplify<T>
 ```
 
-Flatten an intersection into a single object — improves IDE hover output.
+Flatten an intersection into a single object: improves IDE hover output.
 
 ```ts
 type a = Simplify<{ a: 1 } & { b: 2 }>  // { a: 1; b: 2 }
@@ -60,7 +60,7 @@ type DeepWritable   <T> = DeepMutable<T>
 type DeepNonNullable<T>  // strip null|undefined recursively
 ```
 
-All stop at the `Builtin` lattice (`Date`, `Map`, `Set`, `Promise`, etc.) — they don't recurse into class instances.
+All stop at the `Builtin` lattice (`Date`, `Map`, `Set`, `Promise`, etc.): they don't recurse into class instances.
 
 ## Shallow mutability
 
@@ -94,7 +94,7 @@ type StrictPick<T, K extends keyof T> = Pick<T, K>
 type Except    <T, K extends keyof T> = Omit<T, K>
 ```
 
-Like `Omit` / `Pick` but constrained — `K` must be a real key of `T`.
+Like `Omit` / `Pick` but constrained: `K` must be a real key of `T`.
 
 ## Values, entries, key arithmetic
 
@@ -125,7 +125,7 @@ type Get     <T, Path extends string>
 type Paths   <T, D extends number = 6>
 ```
 
-Operate on `'a.b.c'`-style dotted paths. `Paths<T, D>` is depth-capped at `D = 6` by default — lower for very wide objects.
+Operate on `'a.b.c'`-style dotted paths. `Paths<T, D>` is depth-capped at `D = 6` by default: lower for very wide objects.
 
 ```ts
 type T = { a: { b: { c: number } } }
@@ -177,7 +177,7 @@ type OmitByType<T, U> = ConditionalExcept<T, U>
 type MergeExclusive<A, B>  // A xor B
 ```
 
-Mutually-exclusive merge — exactly one shape wins.
+Mutually-exclusive merge: exactly one shape wins.
 
 ## Case conversion
 

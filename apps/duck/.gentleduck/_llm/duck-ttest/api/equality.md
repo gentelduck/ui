@@ -35,7 +35,7 @@ Inverse of `Equal`. Use when negation reads cleaner.
 type ShallowEqual<X, Y> = X extends Y ? true : false
 ```
 
-One-way assignability — `X extends Y`.
+One-way assignability: `X extends Y`.
 
 ```ts
 type a = ShallowEqual<'admin', 'admin' | 'user'>  // true

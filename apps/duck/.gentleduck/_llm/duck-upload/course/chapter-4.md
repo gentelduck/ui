@@ -69,7 +69,7 @@ strategies.set(multipartStrategy({ maxPartConcurrency: 4 }))
 | `allowedHosts` | — | Host allow-list for signed part URLs |
 | `allowPrivateHosts` | `false` | Allow private/loopback IPs in signed URLs |
 
-Set `allowedHosts` in production — otherwise the strategy warns once that signed URLs are
+Set `allowedHosts` in production; otherwise the strategy warns once that signed URLs are
 host-unrestricted.
 
 **Implement the multipart backend methods**
@@ -173,7 +173,7 @@ Part-level concurrency (`maxPartConcurrency`) is separate from file-level concur
 
 1. **Queue** parts, skipping those already in `cursor.done`.
 2. **Upload** up to `maxPartConcurrency` at a time; sign each on demand.
-3. **Collect ETags** — expose them via CORS (`Access-Control-Expose-Headers: ETag`) or the
+3. **Collect ETags**: expose them via CORS (`Access-Control-Expose-Headers: ETag`) or the
    strategy throws "missing ETag".
 4. **Persist the cursor** after each part.
 5. **Finalize** with `completeMultipart`, then mark the cursor `completed`.
@@ -190,7 +190,7 @@ actually need get signed.
 
 `resumable: true`. Pausing aborts in-flight PUTs; the cursor already has every completed part.
 On resume the strategy reads `cursor.done`, skips those parts, and continues. If the cursor is
-`completed`, it also skips `completeMultipart` — no double assembly.
+`completed`, it also skips `completeMultipart`, avoiding double assembly.
 
 ## Checkpoint
 
@@ -273,8 +273,8 @@ export const store = createUploadStore<PhotoIntents, PhotoCursors, PhotoPurpose,
 
 When multipart over POST?
 
-For large files (~100 MB+). Multipart is resumable — a dropped connection loses one part,
-not the whole file — and parallel parts saturate fast links. The backend decides per file
+For large files (~100 MB+). Multipart is resumable (a dropped connection loses one part,
+not the whole file) and parallel parts saturate fast links. The backend decides per file
 in `createIntent`.
 
 "Missing ETag" errors?

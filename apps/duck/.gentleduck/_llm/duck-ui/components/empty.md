@@ -358,9 +358,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionEmpty`, `MotionEmptyMedia`, `MotionEmptyTitle`, `MotionEmptyDescription`, and `MotionEmptyContent` for staggered entrance animations powered by [motion](https://motion.dev). The media scales in while text elements fade up with increasing delays.
+Use `MotionEmpty`, `MotionEmptyMedia`, `MotionEmptyTitle`, `MotionEmptyDescription`, and `MotionEmptyContent` for staggered entrance animations powered by [motion](https://motion.dev). Every element shares the same `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition, staggered by increasing delays.
 
 ```tsx title="components/empty-8.tsx"
 // import from your project: import Demo from '@/components/empty-8'
@@ -401,7 +401,7 @@ export default function Demo() {
 ```
 
 }>
-  Requires the `motion` package. Replace each sub-component with its Motion variant. `EmptyHeader` stays the same — it's a layout wrapper with no visual animation.
+  Requires the `motion` package. Replace each sub-component with its Motion variant. `EmptyHeader` stays the same: it's a layout wrapper with no visual animation.
 
 ## API Reference
 
@@ -469,20 +469,20 @@ Use the `EmptyContent` component to display the content of the empty state such 
 
 ### MotionEmpty
 
-Same props as `Empty`. Adds fadeUp entrance animation. Requires the `motion` package.
+Same props as `Empty`. Adds a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition. Requires the `motion` package.
 
 ### MotionEmptyMedia
 
-Same props as `EmptyMedia`. Adds scaleBlur entrance with 50ms delay. Requires the `motion` package.
+Same props as `EmptyMedia`. Adds a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition and a 50ms delay. Requires the `motion` package.
 
 ### MotionEmptyTitle
 
-Same props as `EmptyTitle`. Adds fadeUp entrance with 100ms delay. Requires the `motion` package.
+Same props as `EmptyTitle`. Adds a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition and a 100ms delay. Requires the `motion` package.
 
 ### MotionEmptyDescription
 
-Same props as `EmptyDescription`. Adds fadeUp entrance with 150ms delay. Requires the `motion` package.
+Same props as `EmptyDescription`. Adds a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition and a 150ms delay. Requires the `motion` package.
 
 ### MotionEmptyContent
 
-Same props as `EmptyContent`. Adds fadeUp entrance with 200ms delay. Requires the `motion` package.
+Same props as `EmptyContent`. Adds a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition and a 200ms delay. Requires the `motion` package.

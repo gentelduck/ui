@@ -237,26 +237,26 @@ export default function DialogGuardedAsyncInternalExample() {
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger className={styles['trigger']}>Delete project</Dialog.Trigger>
+      <Dialog.Trigger className={styles.trigger}>Delete project</Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className={styles['overlay']} />
+        <Dialog.Overlay className={styles.overlay} />
         <Dialog.Content
-          className={styles['content']}
+          className={styles.content}
           onEscapeKeyDown={(event) => {
             if (busy) event.preventDefault()
           }}
           onInteractOutside={(event) => {
             if (busy) event.preventDefault()
           }}>
-          <Dialog.Title className={styles['title']}>Delete project?</Dialog.Title>
-          <Dialog.Description className={styles['description']}>This action cannot be undone.</Dialog.Description>
-          <div className={styles['actions']}>
+          <Dialog.Title className={styles.title}>Delete project?</Dialog.Title>
+          <Dialog.Description className={styles.description}>This action cannot be undone.</Dialog.Description>
+          <div className={styles.actions}>
             <Dialog.Close asChild>
-              <button className={styles['secondary']} disabled={busy} type="button">
+              <button className={styles.secondary} disabled={busy} type="button">
                 Cancel
               </button>
             </Dialog.Close>
-            <button className={styles['danger']} disabled={busy} onClick={onConfirm} type="button">
+            <button className={styles.danger} disabled={busy} onClick={onConfirm} type="button">
               {busy ? 'Deleting...' : 'Delete'}
             </button>
           </div>
@@ -279,22 +279,17 @@ import styles from './styles.module.css'
 export default function PopoverSideAwareInternalExample() {
   return (
     <Popover.Root>
-      <Popover.Trigger className={styles['trigger']}>Open filters</Popover.Trigger>
+      <Popover.Trigger className={styles.trigger}>Open filters</Popover.Trigger>
       <Popover.Portal>
-        <Popover.Content
-          align="start"
-          className={styles['content']}
-          collisionPadding={10}
-          side="bottom"
-          sideOffset={10}>
-          <h4 className={styles['title']}>Quick filters</h4>
-          <p className={styles['description']}>Uses side, align, offset, and collision padding.</p>
-          <div className={styles['chips']}>
+        <Popover.Content align="start" className={styles.content} collisionPadding={10} side="bottom" sideOffset={10}>
+          <h4 className={styles.title}>Quick filters</h4>
+          <p className={styles.description}>Uses side, align, offset, and collision padding.</p>
+          <div className={styles.chips}>
             <span>Recent</span>
             <span>Assigned</span>
             <span>Open</span>
           </div>
-          <Popover.Arrow className={styles['arrow']} />
+          <Popover.Arrow className={styles.arrow} />
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>
@@ -318,22 +313,22 @@ export default function DropdownMenuSelectionInternalExample() {
 
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger className={styles['trigger']}>View mode</DropdownMenu.Trigger>
+      <DropdownMenu.Trigger className={styles.trigger}>View mode</DropdownMenu.Trigger>
       <DropdownMenu.Portal>
-        <DropdownMenu.Content className={styles['content']} sideOffset={8}>
-          <DropdownMenu.Label className={styles['menuLabel']}>Display</DropdownMenu.Label>
+        <DropdownMenu.Content className={styles.content} sideOffset={8}>
+          <DropdownMenu.Label className={styles.menuLabel}>Display</DropdownMenu.Label>
           <DropdownMenu.RadioGroup onValueChange={(v) => setView(v as 'grid' | 'list')} value={view}>
-            <DropdownMenu.RadioItem className={styles['item']} value="grid">
+            <DropdownMenu.RadioItem className={styles.item} value="grid">
               Grid
             </DropdownMenu.RadioItem>
-            <DropdownMenu.RadioItem className={styles['item']} value="list">
+            <DropdownMenu.RadioItem className={styles.item} value="list">
               List
             </DropdownMenu.RadioItem>
           </DropdownMenu.RadioGroup>
-          <DropdownMenu.Separator className={styles['separator']} />
+          <DropdownMenu.Separator className={styles.separator} />
           <DropdownMenu.CheckboxItem
             checked={showDeleted}
-            className={styles['item']}
+            className={styles.item}
             onCheckedChange={(checked) => setShowDeleted(checked === true)}>
             Show deleted
           </DropdownMenu.CheckboxItem>
@@ -357,9 +352,9 @@ export default function TooltipDelayProviderInternalExample() {
   return (
     <Tooltip.TooltipProvider delayDuration={500} skipDelayDuration={280}>
       <Tooltip.Tooltip>
-        <Tooltip.TooltipTrigger className={styles['trigger']}>Hover trigger</Tooltip.TooltipTrigger>
+        <Tooltip.TooltipTrigger className={styles.trigger}>Hover trigger</Tooltip.TooltipTrigger>
         <Tooltip.TooltipPortal>
-          <Tooltip.TooltipContent className={styles['content']} side="top" sideOffset={8}>
+          <Tooltip.TooltipContent className={styles.content} side="top" sideOffset={8}>
             Delayed tooltip with shared provider timings.
           </Tooltip.TooltipContent>
         </Tooltip.TooltipPortal>
@@ -384,19 +379,19 @@ export default function SelectControlledInternalExample() {
 
   return (
     <Select.Select value={value} onValueChange={setValue}>
-      <Select.SelectTrigger className={styles['trigger']}>
+      <Select.SelectTrigger className={styles.trigger}>
         <Select.SelectValue placeholder="Choose fruit" />
       </Select.SelectTrigger>
       <Select.SelectPortal>
-        <Select.SelectContent className={styles['content']} sideOffset={8}>
+        <Select.SelectContent className={styles.content} sideOffset={8}>
           <Select.SelectViewport>
-            <Select.SelectItem className={styles['item']} value="apple">
+            <Select.SelectItem className={styles.item} value="apple">
               <Select.SelectItemText>Apple</Select.SelectItemText>
             </Select.SelectItem>
-            <Select.SelectItem className={styles['item']} value="banana">
+            <Select.SelectItem className={styles.item} value="banana">
               <Select.SelectItemText>Banana</Select.SelectItemText>
             </Select.SelectItem>
-            <Select.SelectItem className={styles['item']} value="orange">
+            <Select.SelectItem className={styles.item} value="orange">
               <Select.SelectItemText>Orange</Select.SelectItemText>
             </Select.SelectItem>
           </Select.SelectViewport>
@@ -418,20 +413,20 @@ import styles from './styles.module.css'
 
 export default function AlertDialogConfirmInternalExample() {
   return (
-    <div className={styles['frame']}>
-      <p className={styles['label']}>Destructive confirmation</p>
+    <div className={styles.frame}>
+      <p className={styles.label}>Destructive confirmation</p>
       <AlertDialog.AlertDialog>
-        <AlertDialog.AlertDialogTrigger className={styles['trigger']}>Open confirm</AlertDialog.AlertDialogTrigger>
+        <AlertDialog.AlertDialogTrigger className={styles.trigger}>Open confirm</AlertDialog.AlertDialogTrigger>
         <AlertDialog.AlertDialogPortal>
-          <AlertDialog.AlertDialogOverlay className={styles['overlay']} />
-          <AlertDialog.AlertDialogContent className={styles['content']}>
-            <AlertDialog.AlertDialogTitle className={styles['title']}>Delete resource?</AlertDialog.AlertDialogTitle>
-            <AlertDialog.AlertDialogDescription className={styles['description']}>
+          <AlertDialog.AlertDialogOverlay className={styles.overlay} />
+          <AlertDialog.AlertDialogContent className={styles.content}>
+            <AlertDialog.AlertDialogTitle className={styles.title}>Delete resource?</AlertDialog.AlertDialogTitle>
+            <AlertDialog.AlertDialogDescription className={styles.description}>
               This action is permanent and cannot be undone.
             </AlertDialog.AlertDialogDescription>
-            <div className={styles['actions']}>
-              <AlertDialog.AlertDialogCancel className={styles['secondary']}>Cancel</AlertDialog.AlertDialogCancel>
-              <AlertDialog.AlertDialogAction className={styles['danger']}>Delete</AlertDialog.AlertDialogAction>
+            <div className={styles.actions}>
+              <AlertDialog.AlertDialogCancel className={styles.secondary}>Cancel</AlertDialog.AlertDialogCancel>
+              <AlertDialog.AlertDialogAction className={styles.danger}>Delete</AlertDialog.AlertDialogAction>
             </div>
           </AlertDialog.AlertDialogContent>
         </AlertDialog.AlertDialogPortal>

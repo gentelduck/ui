@@ -31,7 +31,7 @@ performance: {
 }
 ```
 
-The cache directory is local build state — keep it ignored by Git.
+The cache directory is local build state, so keep it ignored by Git.
 
 ***
 
@@ -75,7 +75,7 @@ of checking every generated payload.
 ## Parallelism
 
 The builder uses bounded concurrency for discovery and generation. Default:
-`Math.max(1, Math.min(cpuCount, 8))` — CPU-aware, capped at 8.
+`Math.max(1, Math.min(cpuCount, 8))`, which is CPU-aware and capped at 8.
 
 Override it with:
 

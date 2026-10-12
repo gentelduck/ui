@@ -57,7 +57,7 @@ React.useEffect(() => on('upload.completed', ({ localId, result }) => {
 
 ## Adding files
 
-`useDropzone` gives you drag-and-drop and the native file picker without any markup — spread its
+`useDropzone` gives you drag-and-drop and the native file picker without any markup; spread its
 prop getters onto your own elements:
 
 ```tsx
@@ -70,6 +70,6 @@ const { getRootProps, getInputProps, isDragging } = useDropzone({ purpose: 'atta
 
 ## Next
 
-* [UploadProvider](/duck-upload/react/upload-provider) — the provider and context hook.
-* [useUploader](/duck-upload/react/use-uploader) — return shape, actions, and variants.
-* [useDropzone](/duck-upload/react/use-dropzone) — drag-and-drop and file-picker prop getters.
+* [UploadProvider](/duck-upload/react/upload-provider): the provider and context hook.
+* [useUploader](/duck-upload/react/use-uploader): return shape, actions, and variants.
+* [useDropzone](/duck-upload/react/use-dropzone): drag-and-drop and file-picker prop getters.

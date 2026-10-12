@@ -9,7 +9,7 @@ import type {
 } from '@gentleduck/ttest/format'
 ```
 
-Each type asserts a **structural** shape — the compiler verifies the pattern, not the underlying RFC semantics. A `UUID` that matches the layout but isn't a valid v4 UUID will still type-check.
+Each type asserts a **structural** shape: the compiler verifies the pattern, not the underlying RFC semantics. A `UUID` that matches the layout but isn't a valid v4 UUID will still type-check.
 
 ## UUID
 
@@ -82,7 +82,7 @@ type Semver =
 type PhoneE164 = `+${number}`
 ```
 
-International phone layout — leading `+` plus digits.
+International phone layout, leading `+` plus digits.
 
 ## Base64 / Slug
 
@@ -91,7 +91,7 @@ type Base64 = string & { readonly __format: 'base64' }
 type Slug   = string & { readonly __format: 'slug' }
 ```
 
-Branded `string` aliases — the compiler can't validate character sets at the type level.
+Branded `string` aliases: the compiler can't validate character sets at the type level.
 
 ## JWT
 

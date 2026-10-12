@@ -252,9 +252,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionTooltip` and `MotionTooltipContent` for smooth enter/exit animations powered by [motion](https://motion.dev). The tooltip fades in with a subtle scale and directional shift toward the trigger.
+Use `MotionTooltip` and `MotionTooltipContent` for smooth enter/exit animations powered by [motion](https://motion.dev). The tooltip fades in with a subtle scale, blur, and directional shift toward the trigger.
 
 ```tsx title="components/tooltip-5.tsx"
 // import from your project: import Demo from '@/components/tooltip-5'
@@ -350,7 +350,7 @@ Wraps with `useMotionRoot` for exit animation support. Requires the `motion` pac
 
 ### MotionTooltipContent
 
-Adds directional scale, blur, and opacity enter/exit animation with ultra-fast `tweenMicro` (100ms) transition. Requires the `motion` package.
+Adds directional scale, blur, and opacity enter/exit animation with a `springBouncy` transition. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

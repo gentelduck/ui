@@ -169,7 +169,7 @@ type AllMethods = RouteMethods
 
 ### PathsByMethod
 
-Filters route paths by HTTP method — returns only paths using that method.
+Filters route paths by HTTP method, returning only paths using that method.
 
 ```ts
 type GetPaths = PathsByMethod<'GET'>
@@ -250,7 +250,7 @@ Generated from `@duckgen` tagged constants.
 
 ### DuckgenMessageSources
 
-Maps group keys to their source types — the raw registry:
+Maps group keys to their source types, the raw registry:
 
 ```ts
 type DuckgenMessageSources = {
@@ -303,7 +303,7 @@ showError('UNKNOWN_KEY', 'en')          // error: type error
 
 ### DuckgenMessageDictionary
 
-A record mapping message keys to string values for a group — the shape of one
+A record mapping message keys to string values for a group, the shape of one
 translation file:
 
 ```ts

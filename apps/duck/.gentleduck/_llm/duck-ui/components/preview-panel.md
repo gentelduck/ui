@@ -20,7 +20,7 @@ export default function Demo() {
 * **Pan & zoom** via drag, scroll wheel, and pinch-to-zoom gestures
 * Built-in **zoom controls** with percentage badge
 * **Zero re-renders** during continuous interactions (ref-based transforms)
-* `html` prop for rendering raw HTML/SVG content directly
+* `unsafeHtml` prop for rendering raw HTML/SVG content directly (caller-sanitized; XSS sink)
 * **Fullscreen dialog** variant with `PreviewPanelDialog`
 * **Synced state** between inline and dialog panels via `syncPanels`
 * RAF-batched state emission for maximum performance
@@ -66,7 +66,7 @@ import { PreviewPanel } from '@/components/ui/preview-panel'
 ### With HTML content
 
 ```tsx
-<PreviewPanel html="<svg>...</svg>" maxHeight="400px" />
+<PreviewPanel unsafeHtml="<svg>...</svg>" maxHeight="400px" />
 ```
 
 ### With dialog and sync
@@ -85,7 +85,7 @@ import { PreviewPanelDialog } from '@/components/ui/preview-panel'
 
 ### HTML / SVG content
 
-Render raw HTML or SVG strings directly using the `html` prop.
+Render raw HTML or SVG strings directly using the `unsafeHtml` prop. The value is rendered verbatim via `dangerouslySetInnerHTML` and is not sanitized, so only pass HTML you fully trust.
 
 ```tsx title="components/preview-panel-2.tsx"
 // import from your project: import Demo from '@/components/preview-panel-2'
@@ -100,7 +100,7 @@ const SVG_HTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" 
 </svg>`
 
 export default function Demo() {
-  return <PreviewPanel html={SVG_HTML} maxHeight="350px" className="rounded-lg border bg-card" />
+  return <PreviewPanel unsafeHtml={SVG_HTML} maxHeight="350px" className="rounded-lg border bg-card" />
 }
 ```
 
@@ -182,9 +182,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionPreviewPanel` for a smooth entrance animation powered by [motion](https://motion.dev). The panel fades in with scale and blur on mount, and its internal controls (buttons, separators, badges, tooltips) use the full motion stack.
+Use `MotionPreviewPanel` for a smooth entrance animation powered by [motion](https://motion.dev). The panel uses a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition on mount, and its internal controls (buttons, separators, badges, tooltips) use the full motion stack.
 
 ```tsx title="components/preview-panel-6.tsx"
 // import from your project: import Demo from '@/components/preview-panel-6'
@@ -222,7 +222,7 @@ The core pan-zoom container.
 | `maxZoom` | `number` | `4` | Maximum zoom level |
 | `initialZoom` | `number` | `1` | Starting zoom level |
 | `showControls` | `boolean` | `true` | Whether to show the zoom controls overlay |
-| `html` | `string` | `--` | Raw HTML string to render inside the panel. Takes priority over `children` |
+| `unsafeHtml` | `string` | `--` | Raw HTML string rendered verbatim via `dangerouslySetInnerHTML`. Takes priority over `children`. Not sanitized: pass only HTML you fully trust, never user-, CMS-, or URL-derived markup |
 | `children` | `React.ReactNode` | `--` | Content to render inside the panel |
 | `className` | `string` | `--` | Additional CSS classes for the outer container |
 | `style` | `React.CSSProperties` | `--` | Inline styles for the outer container |
@@ -232,7 +232,7 @@ The core pan-zoom container.
 
 ### MotionPreviewPanel
 
-`scaleIn` entrance with `springBouncy` transition on mount. Zoom controls use `MotionButton`, `MotionBadge`, `MotionSeparator`, and `MotionTooltip` internally. Requires the `motion` package.
+`scaleIn` entrance (fade, scale, and blur) with `springBouncy` transition on mount. Zoom controls use `MotionButton`, `MotionBadge`, `MotionSeparator`, and `MotionTooltip` internally. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -246,7 +246,7 @@ Combines an inline `PreviewPanel` with a fullscreen `Dialog`. Includes an expand
 | --- | --- | --- | --- |
 | `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
 | `children` | `React.ReactNode` | - | Content rendered in both inline and dialog panels |
-| `html` | `string` | - | Raw HTML string. Takes priority over `children` |
+| `unsafeHtml` | `string` | - | Raw HTML string rendered verbatim via `dangerouslySetInnerHTML`. Takes priority over `children`. Not sanitized: pass only HTML you fully trust |
 | `className` | `string` | - | Class name for the outer wrapper |
 | `panelClassName` | `string` | - | Class name applied to both `PreviewPanel` instances |
 | `maxHeight` | `string` | - | Maximum height of the inline panel |

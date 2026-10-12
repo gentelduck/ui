@@ -48,7 +48,7 @@ type Names = EventNames<AppEvents>                  // 'user.login' | 'user.logo
 type EmitArgs<M extends EventMap, E extends keyof M> = M[E] extends void ? [] : [payload: M[E]]
 ```
 
-Variadic arg shape — `[]` for `void` payloads, `[payload]` otherwise.
+Variadic arg shape: `[]` for `void` payloads, `[payload]` otherwise.
 
 ## Emitter
 
@@ -73,7 +73,7 @@ interface PubSub<M extends EventMap> {
 }
 ```
 
-Publish/subscribe variant — `subscribeAll` receives every event with its name.
+Publish/subscribe variant; `subscribeAll` receives every event with its name.
 
 ## Handlers
 
@@ -81,7 +81,7 @@ Publish/subscribe variant — `subscribeAll` receives every event with its name.
 type Handlers<M extends EventMap, R = void> = { [E in keyof M]: (payload: M[E]) => R }
 ```
 
-Handler record — one function per event.
+Handler record: one function per event.
 
 ```ts
 const handlers: Handlers<AppEvents> = {

@@ -170,7 +170,7 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
 Use `MotionSwitch` for a physical-feeling toggle powered by [motion](https://motion.dev). The thumb slides with a bouncy spring, stretches in the direction of travel when pressed, and the track color crossfades between border and primary.
 
@@ -186,7 +186,7 @@ export default function Demo() {
 ```
 
 }>
-  Requires the `motion` package. Use `MotionSwitch` instead of `Switch`. The motion variant renders its own track + thumb so it does not support the `indicator` / `checkedIndicator` props — use the base `Switch` if you need custom SVG indicators.
+  Requires the `motion` package. Use `MotionSwitch` instead of `Switch`. The motion variant renders its own track + thumb so it does not support the `indicator` / `checkedIndicator` props: use the base `Switch` if you need custom SVG indicators.
 
 ## API Reference
 
@@ -206,7 +206,7 @@ export default function Demo() {
 
 ### MotionSwitch
 
-Renders its own motion-controlled track and thumb. The thumb slides with a bouncy spring, stretches in the direction of travel while pressed, and the track color crossfades between `border` and `primary`. Requires the `motion` package. Does **not** support the `indicator` / `checkedIndicator` props — use the base `Switch` for custom SVG indicators.
+Renders its own motion-controlled track and thumb. The thumb slides with a bouncy spring, stretches in the direction of travel while pressed, and the track color crossfades between `border` and `primary`. Requires the `motion` package. Does **not** support the `indicator` / `checkedIndicator` props: use the base `Switch` for custom SVG indicators.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

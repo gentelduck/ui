@@ -213,9 +213,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionResizablePanelGroup` for a smooth entrance animation powered by [motion](https://motion.dev). The panel group fades in with scale and blur on mount using `springBouncy`.
+Use `MotionResizablePanelGroup` for a smooth entrance animation powered by [motion](https://motion.dev). The panel group uses a `scaleIn` entrance (fade, scale, and blur) with a `springBouncy` transition on mount.
 
 ```tsx title="components/resizable-5.tsx"
 // import from your project: import Demo from '@/components/resizable-5'
@@ -290,11 +290,11 @@ Re-exports `Panel` from `react-resizable-panels` directly.
 | --- | --- | --- | --- |
 | `withHandle` | `boolean` | `true` | Whether to render the visible grip icon handle. Set to `false` to show only the thin line. |
 | `className` | `string` | `--` | Additional CSS classes for the resize handle |
-| `...props` | `React.ComponentPropsWithoutRef<typeof PanelResizeHandle>` | - | Additional props inherited from `Separator`. |
+| `...props` | `React.ComponentPropsWithoutRef<typeof Separator>` | - | Additional props inherited from `Separator`. |
 
 ### MotionResizablePanelGroup
 
-`scaleIn` entrance with `springBouncy` transition on mount. Wraps `ResizablePanelGroup`. Requires the `motion` package.
+`scaleIn` entrance (fade, scale, and blur) with `springBouncy` transition on mount. Wraps `ResizablePanelGroup`. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

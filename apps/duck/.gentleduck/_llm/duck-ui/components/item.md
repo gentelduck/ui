@@ -640,9 +640,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionItem` and `MotionItemGroup` for staggered fade-up entrance animations powered by [motion](https://motion.dev). Pass `index` to `MotionItem` for stagger delay.
+Use `MotionItem` and `MotionItemGroup` for staggered `scaleIn` entrance animations (fade, scale, and blur) powered by [motion](https://motion.dev). Pass `index` to `MotionItem` for stagger delay.
 
 ```tsx title="components/item-12.tsx"
 // import from your project: import Demo from '@/components/item-12'
@@ -840,8 +840,8 @@ Displays a footer spanning the full width of the item.
 
 ### MotionItem
 
-Same props as `Item` plus an optional `index` prop for stagger delay (40ms per index). Adds fadeUp entrance animation. Requires the `motion` package.
+Same props as `Item` plus an optional `index` prop for stagger delay (40ms per index). Adds a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition. Requires the `motion` package.
 
 ### MotionItemGroup
 
-Same props as `ItemGroup`. Adds fadeUp entrance animation. Requires the `motion` package.
+Same props as `ItemGroup`. Adds a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition. Requires the `motion` package.

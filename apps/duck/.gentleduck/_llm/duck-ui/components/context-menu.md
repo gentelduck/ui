@@ -203,7 +203,7 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
 Use `MotionContextMenu` and `MotionContextMenuContent` for smooth enter/exit animations powered by [motion](https://motion.dev). The transform origin is fixed to top-left since the menu appears at the cursor position. For animated sub-menus, use `MotionContextMenuSub` and `MotionContextMenuSubContent`.
 

@@ -97,9 +97,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionSkeleton` for staggered entrance animations powered by [motion](https://motion.dev). Each skeleton block fades in with scale and blur, staggered by 50ms via the `index` prop.
+Use `MotionSkeleton` for staggered entrance animations powered by [motion](https://motion.dev). Each skeleton block uses a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition, staggered by 50ms via the `index` prop.
 
 ```tsx title="components/skeleton-4.tsx"
 // import from your project: import Demo from '@/components/skeleton-4'
@@ -133,7 +133,7 @@ export default function Demo() {
 
 ### MotionSkeleton
 
-Staggered `scaleIn` entrance with `springBouncy` transition. Requires the `motion` package.
+Staggered `scaleIn` entrance (fade, scale, and blur) with `springBouncy` transition. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

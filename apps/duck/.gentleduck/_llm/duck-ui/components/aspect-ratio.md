@@ -88,7 +88,7 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
 Use `MotionAspectRatio` for a smooth scale + blur entrance animation powered by [motion](https://motion.dev). The content scales from 0.95 and unblurs on mount.
 
@@ -115,7 +115,7 @@ export default function Demo() {
 ```
 
 }>
-  Requires the `motion` package. Use `MotionAspectRatio` instead of `AspectRatio`. Same props. Note: `MotionAspectRatio` renders a `div` instead of using `Slot`/`asChild`.
+  Requires the `motion` package. Use `MotionAspectRatio` instead of `AspectRatio`. Same props. Note: `MotionAspectRatio` adds an animated `div` wrapper around `AspectRatio`; the inner `Slot`/`asChild` behavior is unchanged.
 
 ## API Reference
 
@@ -134,7 +134,7 @@ export default function Demo() {
 
 ### MotionAspectRatio
 
-Renders a `div` (not `Slot`) that scales from 0.95 with 8px blur fade on mount using `contentTransition` (250ms expo-out). Requires the `motion` package.
+Wraps `AspectRatio` in an animated `div` that scales from 0.95 with 8px blur fade on mount, using the `scaleIn` preset and a bouncy spring transition (stiffness 500, damping 28). The wrapped `AspectRatio` still renders its child via `Slot` internally. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

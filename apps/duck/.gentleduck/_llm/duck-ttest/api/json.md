@@ -23,11 +23,11 @@ type JSONArray  = JSONValue[]
 type JSONValue  = JSONPrimitive | JSONObject | JSONArray
 ```
 
-A recursive lattice. `JSONValue` is the closure — every shape produced by `JSON.parse` satisfies it.
+A recursive lattice. `JSONValue` is the closure: every shape produced by `JSON.parse` satisfies it.
 
 ```ts
 const ok:  JSONValue = { items: [1, 'two', { nested: null }] }
-const bad: JSONValue = { date: new Date() }  // Error — Date not assignable
+const bad: JSONValue = { date: new Date() }  // Error: Date not assignable
 ```
 
 ## Jsonify
@@ -39,7 +39,7 @@ type Jsonify<T>
 Recursively coerce `T` into a JSON-serializable shape. The rules:
 
 * Functions are dropped (set to `never`, which removes the key).
-* `Date` is dropped — even though `JSON.stringify` would coerce it to a string, the runtime type and the JSON shape diverge, so the helper is conservative.
+* `Date` is dropped, even though `JSON.stringify` would coerce it to a string, the runtime type and the JSON shape diverge, so the helper is conservative.
 * Keys literally named `password` or `toJSON` are dropped.
 * Arrays recurse on their element type.
 * Plain objects recurse on their values.
@@ -65,7 +65,7 @@ type Nested = Jsonify<{ items: { id: number; created: Date }[] }>
 Edge cases:
 
 * `Jsonify<Date>` is `never`. Coerce to `string` (ISO date) at the boundary if you need it.
-* `Jsonify<undefined>` is `never` — `undefined` is not part of `JSONPrimitive`. Wrap optional fields explicitly: `Jsonify<{ field: string | null }>`.
+* `Jsonify<undefined>` is `never`: `undefined` is not part of `JSONPrimitive`. Wrap optional fields explicitly: `Jsonify<{ field: string | null }>`.
 
 ## Jsonifiable
 
@@ -91,7 +91,7 @@ type D = Jsonifiable<Date>
 ```ts
 function send<T>(payload: Jsonifiable<T>) { /* ... */ }
 send({ id: 1, name: 'Ada' })  // ok
-send({ id: 1, callback: () => {} })  // accepted — callback is dropped at the type level
+send({ id: 1, callback: () => {} })  // accepted: callback is dropped at the type level
 ```
 
 Pick `Jsonify` when you model the *output* of a JSON round-trip and `Jsonifiable` when you model the *input*.
@@ -114,4 +114,4 @@ type _ = [
 ]
 ```
 
-Edge case: `IsJsonValue<any>` is `boolean`, not `true` — `any` distributes through both branches. Guard with [`IsAny`](/duck-ttest/api/any) if you suspect leaked `any`.
+Edge case: `IsJsonValue<any>` is `boolean`, not `true`; `any` distributes through both branches. Guard with [`IsAny`](/duck-ttest/api/any) if you suspect leaked `any`.

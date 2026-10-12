@@ -1,5 +1,5 @@
 `PutStrategy` sends the whole file as the body of one presigned HTTP `PUT` request. It is the
-most common direct-to-storage pattern — S3 `putObject`, GCS and Azure signed PUT — and the
+most common direct-to-storage pattern (S3 `putObject`, GCS and Azure signed PUT) and the
 lightest way to hand bytes to object storage. It is **not** resumable: a failure restarts from
 zero (but transient network errors are retried automatically).
 
@@ -20,7 +20,7 @@ PutStrategy({
 ```
 
 When `allowedHosts` is omitted the strategy warns once and every host is allowed. Set it to
-your storage host(s) to close the SSRF surface — see [Security](#security).
+your storage host(s) to close the SSRF surface; see [Security](#security).
 
 ## Intent shape
 

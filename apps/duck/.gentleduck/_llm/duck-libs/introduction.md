@@ -16,9 +16,10 @@ npm install @gentleduck/libs
 ## Available Utilities
 
 * `cn` - Utility for conditional className merging.
+* `cnMemo` - Memoized `cn` for primitive string inputs; for hot-path callers (LRU cache, bounded to 256 entries).
 * `filtered-object` - Create a new object by excluding specified keys.
-* `group-array` - Split an array into sub-arrays by numeric group sizes.
-* `group-data-by-numbers` - Group array elements into sub-arrays by specified chunk sizes.
+* `chunkByCounts` - Split an array into consecutive groups whose sizes are given by a sizes array.
+* `group-array`, `group-data-by-numbers` - Deprecated aliases for `chunkByCounts` with different parameter orders; use `chunkByCounts` instead.
 * `parse-date` - Parse strings or values into valid Date objects.
 * `generateArabicSlug` - Convert text to URL slugs preserving Arabic characters.
 * `getTodayDate` - Return today's date as a YYYY-MM-DD string.

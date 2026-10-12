@@ -24,7 +24,7 @@ type a = Render<'foo'>   // '[foo]'
 type b = Render<number>  // never
 ```
 
-Edge case: `If<boolean, A, B>` is `A | B` — `boolean` distributes through both branches. Pin to `true` or `false` first.
+Edge case: `If<boolean, A, B>` is `A | B`, because `boolean` distributes through both branches. Pin to `true` or `false` first.
 
 ## IfExtends
 
@@ -44,7 +44,7 @@ type Trim<S extends string> = IfExtends<S, ` ${infer R}`, Trim<R>, S>
 type a = Trim<'   hi'>  // 'hi'
 ```
 
-Edge case: `IfExtends` distributes over unions in `A`. `IfExtends<'a' | 'b', 'a', 1, 0>` is `1 | 0`. Wrap in `[A] extends [B]` if you want the no-distribute version — see [`equality`](/duck-ttest/api/equality) `ShallowEqual` for the standard pattern.
+Edge case: `IfExtends` distributes over unions in `A`. `IfExtends<'a' | 'b', 'a', 1, 0>` is `1 | 0`. Wrap in `[A] extends [B]` if you want the no-distribute version; see [`equality`](/duck-ttest/api/equality) `ShallowEqual` for the standard pattern.
 
 ## Switch
 
@@ -94,7 +94,7 @@ type d = Label<null>  // 'other'
 ```
 
 ```ts
-// Ordering matters — narrower cases first.
+// Ordering matters: narrower cases first.
 type ChainOrder<T> = Match<T, [
   [readonly [],         'empty'],
   [readonly [unknown],  'single'],

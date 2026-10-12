@@ -2,7 +2,7 @@
 
 This course builds **PhotoDuck**, a photo-sharing app, one upload feature at a time. You start
 with a single file transfer and finish with a production setup: multipart uploads, pause/resume,
-persistence, validation, plugins, typed results, and deduplication — all on the real
+persistence, validation, plugins, typed results, and deduplication, all on the real
 `@gentleduck/upload` API.
 
 First Upload"] --> CH2["Ch2Strategies"]
@@ -29,7 +29,7 @@ First Upload"] --> CH2["Ch2Strategies"]
 
 ## The mental model you'll carry
 
-Everything in the course rests on four type parameters — **`M`** (intent map), **`C`** (cursor
+Everything in the course rests on four type parameters: **`M`** (intent map), **`C`** (cursor
 map), **`P`** (purpose), **`R`** (result). You define them once and they thread through the API,
 the store, the events, and your components. Keep them in mind; each chapter adds to them.
 

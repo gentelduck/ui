@@ -1,5 +1,5 @@
 The core ships a handful of small helpers that the engine and strategies rely on. They are
-**internal** — used inside the library, not part of the public export surface — so this page is
+**internal** (used inside the library, not part of the public export surface), so this page is
 here to explain the machinery, not to hand you an import list. The public entry points are
 `@gentleduck/upload/core`, `/react`, and `/strategies`.
 
@@ -12,7 +12,7 @@ here to explain the machinery, not to hand you an import list. The public entry 
 | Identity | `generateId()` | Generates each item's `localId` |
 | Fingerprint | `computeFingerprint(file)`, `fingerprintMatches(a, b)` | Builds and compares the file identity signature (used for dedupe and rebind) |
 | Events | `createTypedEmitter()` | The fully-typed emitter behind `store.on`/`store.off` |
-| Hashing | `hashBlob(blob, opts)`, `sha256HexOfBlob(blob, opts)` | SHA-256 for content dedupe — inline for small files, off-thread and incremental for large ones |
+| Hashing | `hashBlob(blob, opts)`, `sha256HexOfBlob(blob, opts)` | SHA-256 for content dedupe: inline for small files, off-thread and incremental for large ones |
 | Constants | `DEFAULT_*` | The default config values (concurrency, attempts, throttle, etc.) |
 
 ## Why they matter to you
@@ -20,18 +20,18 @@ here to explain the machinery, not to hand you an import list. The public entry 
 Even though you don't import these directly, their behavior shapes the public API:
 
 * **Fingerprints** decide item identity. `computeFingerprint` reads `name`, `size`, `type`, and
-  `lastModified`. Supplying a `checksum` (via the `fingerprint` store option) is what unlocks
+  `lastModified`. Supplying a `checksum` (via the `fingerprint` store option) is what enables
   content-based deduplication through `findByChecksum`. `fingerprintMatches` is what the `rebind`
   command uses to confirm the user re-selected the same file.
 * **The typed emitter** is what makes `store.on('upload.completed', …)` type the payload
   precisely from `Engine.EventMap`.
 * **Content hashing** powers checksum dedupe. Files at or below `config.checksumMaxSize`
   (default 64 MiB) are hashed inline with native Web Crypto; larger files are hashed
-  **incrementally** in bounded slices — off the main thread in a Web Worker when the environment
+  **incrementally** in bounded slices, off the main thread in a Web Worker when the environment
   supports one, or inline-incremental otherwise. So `checksumMaxSize` is an inline/off-thread
   boundary, **not** a skip: large files are still deduplicated, and the UI never freezes on the
   digest. Web Crypto has no streaming digest, so the incremental hasher is a pure-JS SHA-256.
-* **`stripDangerousKeys`** hardens deserialization — persisted snapshots are untrusted input, so
+* **`stripDangerousKeys`** hardens deserialization: persisted snapshots are untrusted input, so
   prototype-polluting keys are removed before the data is used.
 * **The defaults** (`maxConcurrentUploads: 3`, `maxAttempts: 3`, `progressThrottleMs: 100`,
   `maxItems: 100`) are applied by `resolveUploadConfig` when you leave config fields unset.

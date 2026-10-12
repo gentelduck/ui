@@ -51,7 +51,8 @@ function MyComponent() {
 
 ### 2) Lazy Image
 
-The `DuckLazyImage` supports placeholders, accessibility attributes, and Next.js `next/image`.
+The `DuckLazyImage` supports placeholders and accessibility attributes. For Next.js image
+optimization, use `DuckLazyImageNext` instead (see [Integration with Next.js](#integration-with-nextjs) below).
 
 ```tsx
 import { DuckLazyImage } from '@gentleduck/lazy'
@@ -80,7 +81,8 @@ function MyImageComponent() {
 | `width` | `number` | `200` | Image width |
 | `height` | `number` | `200` | Image height |
 | `options` | `IntersectionObserverInit` | `{ rootMargin: '200px', threshold: 0.1 }` | IntersectionObserver options |
-| `nextImage` | `boolean` | - | Enables Next.js `next/image` optimization |
+
+For Next.js apps, use `DuckLazyImageNext` instead - see [Integration with Next.js](#integration-with-nextjs) below.
 
 ***
 
@@ -170,11 +172,14 @@ function MyImageComponent() {
 
 ## Integration with Next.js
 
-Enable Next.js image optimization with `nextImage`.
+Use `DuckLazyImageNext` for Next.js's built-in image optimization. It wraps `next/image`
+instead of a plain `<img>`, and lives at a separate subpath so non-Next.js apps never pull in
+`next/image`.
 
 ```tsx
-<DuckLazyImage
-  nextImage
+import { DuckLazyImageNext } from '@gentleduck/lazy/lazy-image-next'
+
+<DuckLazyImageNext
   src="https://example.com/image.jpg"
   placeholder="https://example.com/placeholder.jpg"
   alt="Next.js optimized image"
@@ -183,10 +188,24 @@ Enable Next.js image optimization with `nextImage`.
 />
 ```
 
+#### Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `src` | `string` | (required) | URL of the image |
+| `alt` | `string` | - | Accessible description |
+| `width` | `number` | `200` | Image width |
+| `height` | `number` | `200` | Image height |
+| `loading` | `'eager' \| 'lazy'` | `'lazy'` | Native `loading` attribute |
+| `placeholder` | `string` | - | Placeholder URL while loading |
+| `options` | `IntersectionObserverInit` | `{ rootMargin: '200px', threshold: 0.1 }` | IntersectionObserver options |
+| `className` | `string` | - | Class applied to the rendered image |
+| `style` | `React.CSSProperties` | - | Inline styles for the rendered image |
+
 Benefits:
 
-* Built-in Next.js optimization
-* Lazy loading via `next/image`
+* Built-in Next.js optimization via `next/image`
+* Same lazy-load behavior as `DuckLazyImage`, driven by `useLazyImage`
 
 ***
 

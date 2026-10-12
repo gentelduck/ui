@@ -31,7 +31,7 @@ type _ = [
 Edge cases:
 
 * The constraint is `extends true`, not `extends boolean`. `AssertTrue<boolean, ...>` fails because `boolean` is `true | false`.
-* `any` satisfies `extends true` — guard public types with [`IsAny`](/duck-ttest/api/any) before asserting.
+* `any` satisfies `extends true`; guard public types with [`IsAny`](/duck-ttest/api/any) before asserting.
 
 ## AssertFalse
 
@@ -58,7 +58,7 @@ type _no_leak = AssertFalse<IsAny<User['id']>, 'User.id must not be any'>
 
 Edge cases:
 
-* `AssertFalse<boolean, ...>` fails — `boolean` is not exactly `false`.
+* `AssertFalse<boolean, ...>` fails: `boolean` is not exactly `false`.
 * `AssertFalse<never, ...>` passes because `never extends false` holds vacuously. Prefer [`IsNever`](/duck-ttest/api/any) when `never` is the actual target.
 
 For the broader assertion workflow see [Core / Assertions](/duck-ttest/core/assertions).

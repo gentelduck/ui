@@ -215,9 +215,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionBadge` for a smooth fade-up entrance animation powered by [motion](https://motion.dev). The badge slides up with blur and opacity on mount.
+Use `MotionBadge` for a smooth pop-in entrance animation powered by [motion](https://motion.dev). The badge scales and fades in with a bouncy spring on mount.
 
 ```tsx title="components/badge-10.tsx"
 // import from your project: import Demo from '@/components/badge-10'
@@ -255,7 +255,7 @@ export default function Demo() {
 
 ### MotionBadge
 
-Fades up with blur on mount using the `fadeUp` preset and `contentTransition` (250ms expo-out). `asChild` is not supported. Requires the `motion` package.
+Pops in with a scale-and-fade animation on mount using the `popIn` preset and a `springBouncy` transition. `asChild` is not supported. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

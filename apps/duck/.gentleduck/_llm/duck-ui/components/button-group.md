@@ -747,9 +747,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionButtonGroup` for a smooth fade-up entrance animation powered by [motion](https://motion.dev).
+Use `MotionButtonGroup` for a smooth scale-and-blur entrance animation powered by [motion](https://motion.dev).
 
 ```tsx title="components/button-group-13.tsx"
 // import from your project: import Demo from '@/components/button-group-13'
@@ -853,7 +853,7 @@ export default function Demo() {
 
 ### MotionButtonGroup
 
-Fades up with blur on mount using the `fadeUp` preset. Requires the `motion` package.
+Scales up from 0.95 with blur on mount using the `scaleIn` preset and a bouncy spring transition. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

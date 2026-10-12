@@ -38,7 +38,7 @@ const bad:    CSSNamedColor = 'almostblue'     // Error
 type CSSSystemColor = 'Canvas' | 'CanvasText' | 'LinkText' | ...
 ```
 
-Theme-aware system colors. Capitalized — these are reserved keywords.
+Theme-aware system colors. Capitalized, because these are reserved keywords.
 
 ## CSSSpecialColor
 
@@ -134,7 +134,7 @@ A length expression: a number with a unit, the bare zero, or any `calc(...)` for
 const a: CSSLength = '1.5rem'
 const b: CSSLength = '0'                          // bare zero
 const c: CSSLength = 'calc(100% - 2px)'
-const d: CSSLength = '24'                          // Error — bare numbers other than 0 are rejected
+const d: CSSLength = '24'                          // Error: bare numbers other than 0 are rejected
 ```
 
 ## CSSVar

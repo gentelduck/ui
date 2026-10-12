@@ -57,7 +57,7 @@ registered for that id, the item fails with a `strategy_missing` error.
 
 **Implement a real presigned backend**
 
-Swap the Chapter 1 mock for real endpoints. Remember the second argument is `ctx` — use
+Swap the Chapter 1 mock for real endpoints. Remember the second argument is `ctx`: use
 `ctx.signal` to make requests cancelable.
 
 ```typescript title="src/upload.ts"
@@ -115,8 +115,8 @@ export const store = createUploadStore<PhotoIntents, PhotoCursors, PhotoPurpose,
 })
 ```
 
-With `autoStart: ['photo']`, photos upload as soon as their intent is created — no manual
-`startAll`.
+With `autoStart: ['photo']`, photos upload as soon as their intent is created. No manual
+`startAll` needed.
 
 **Upload from an input**
 
@@ -139,7 +139,7 @@ with progress → engine calls `complete`.
 
 ## Inside the POST strategy
 
-`start()` is small — it hands the file and presigned fields to the transport:
+`start()` is small. It hands the file and presigned fields to the transport:
 
 ```typescript
 async start(ctx) {
@@ -157,7 +157,7 @@ async start(ctx) {
 }
 ```
 
-`postForm` builds a `FormData` (fields first, file last — required by S3), POSTs via XHR, and
+`postForm` builds a `FormData` (fields first, file last, required by S3), POSTs via XHR, and
 reports progress. POST is `resumable: false`: a presigned POST is one atomic request; a failure
 restarts. For resumable transfers, see Chapter 4.
 
@@ -165,7 +165,7 @@ restarts. For resumable transfers, see Chapter 4.
 
 `Transport.Options` abstracts network calls (`put`, `postForm`, `patch`). `createXHRTransport()`
 is the browser implementation; the store installs it when you omit `transport`. Because the
-transport is injected into `ctx`, strategies never build their own requests — which makes them
+transport is injected into `ctx`, strategies never build their own requests, which makes them
 trivial to test with a mock transport.
 
 ## Writing a custom strategy
@@ -265,8 +265,8 @@ you use, and lets you add custom ones without forking.
 Can I register several strategies?
 
 Yes. Register as many as you need; the engine picks per file based on the intent's
-`strategy` field. Small files can use `post`, large files `multipart` — decided in your
-backend's `createIntent`.
+`strategy` field. Small files can use `post`, large files `multipart`: the choice is made
+in your backend's `createIntent`.
 
 What if the backend returns an unregistered strategy?
 

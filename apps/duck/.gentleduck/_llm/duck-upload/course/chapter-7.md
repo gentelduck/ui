@@ -16,7 +16,7 @@ You'll configure **per-purpose validation rules**, add a custom **`validateFile`
 Two validation layers exist, and the distinction matters:
 
 * **Built-in rules** (size, type, extension, `maxFiles`) run synchronously in `addFiles`.
-  Failures emit `file.rejected` and the file **never enters state** — listen via events.
+  Failures emit `file.rejected` and the file **never enters state**, so listen via events.
 * **`validateFile` and strict MIME** run after the file has entered (`validating` phase).
   Failures move the item to the `error` phase with `code: 'validation_failed'`.
 
@@ -143,8 +143,8 @@ const invalid = items.filter((i) => i.phase === 'error' && i.error.code === 'val
 
 **Write a plugin**
 
-A plugin is an `Engine.Plugin` — a `name` plus `setup` receiving `{ on, off, dispatch,
-    getSnapshot }`:
+A plugin is an `Engine.Plugin`, an object with a `name` plus `setup` receiving `{ on, off,
+    dispatch, getSnapshot }`:
 
 ```typescript title="src/plugins/analytics.ts"
 import type { Engine } from '@gentleduck/upload/core'
@@ -193,7 +193,7 @@ createUploadStore({
 | Count | array | single object |
 | Use for | extend behavior | observe / debug |
 
-A practical plugin — auto-retry on rate limits using the server's suggested delay:
+A practical plugin, auto-retrying on rate limits using the server's suggested delay:
 
 ```typescript title="src/plugins/rate-limit-retry.ts"
 import type { Engine } from '@gentleduck/upload/core'

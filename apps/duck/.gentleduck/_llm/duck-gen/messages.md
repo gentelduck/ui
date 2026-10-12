@@ -2,7 +2,7 @@
 
 The messages extension scans source files for exported constants tagged with a `@duckgen`
 JSDoc comment. It reads the keys from those constants and emits TypeScript types that
-describe the message registry — compile-time safety for i18n dictionaries, error codes,
+describe the message registry, giving compile-time safety for i18n dictionaries, error codes,
 or any string-keyed data declared on the server.
 
 ## What it scans
@@ -13,7 +13,7 @@ Duck Gen picks up **exported** `const` declarations that:
 2. Are an **array** or **object** with `as const`.
 
 ```ts
-// Array source — values become message keys
+// Array source: values become message keys
 /**
  * @duckgen messages auth
  */
@@ -23,7 +23,7 @@ export const AuthMessages = [
   'AUTH_USERNAME_INVALID',
 ] as const
 
-// Object source — keys become message keys
+// Object source: keys become message keys
 /**
  * @duckgen messages payments
  */
@@ -65,8 +65,8 @@ export const AuthMessages = [ ... ] as const
 ## Group key rules
 
 * Each group key must be **unique** project-wide.
-* Two constants with the same group key — the duplicate is **skipped** with a warning.
-* Two constants with the same **variable name** — the duplicate is skipped with a warning.
+* Two constants with the same group key: the duplicate is **skipped** with a warning.
+* Two constants with the same **variable name**: the duplicate is skipped with a warning.
 * Group keys are case-sensitive: `auth` and `Auth` are different groups.
 
 ## The `as const` requirement
@@ -75,10 +75,10 @@ export const AuthMessages = [ ... ] as const
 `string[]` or `Record<string, string>` and Duck Gen can't read the literal keys.
 
 ```ts
-// Without as const — keys become just `string`
+// Without as const: keys become just `string`
 export const Messages = ['MSG_ONE', 'MSG_TWO']
 
-// With as const — keys are literal types 'MSG_ONE' | 'MSG_TWO'
+// With as const: keys are literal types 'MSG_ONE' | 'MSG_TWO'
 export const Messages = ['MSG_ONE', 'MSG_TWO'] as const
 ```
 
@@ -115,7 +115,7 @@ export const AuthMessages = {
 } as const
 ```
 
-The object **keys** become the message keys. Values can be anything — Duck Gen only uses
+The object **keys** become the message keys. Values can be anything, since Duck Gen only uses
 the keys.
 
 ### Mixing shared constants
@@ -328,8 +328,8 @@ All three groups land in the generated types, accessible individually or togethe
 | --- | --- |
 | Keys are just `string` | Add `as const` to the array or object. |
 | Group missing | The constant must be **exported** and have a `@duckgen` JSDoc tag. |
-| Duplicate group warning | Two constants share the same group key — rename one. |
-| Duplicate const name | Two files export the same name — rename one. |
+| Duplicate group warning | Two constants share the same group key; rename one. |
+| Duplicate const name | Two files export the same name; rename one. |
 | Spread values missing | Duck Gen reads literal values only. Spreading a dynamic expression may lose them. Put `as const` on the source too. |
 
 ## Next steps

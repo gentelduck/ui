@@ -4,7 +4,7 @@
 npx @gentleduck/cli add [components...]
 ```
 
-Components are **copied as source files** into your project. You own the code afterward — patch, restyle, extend without forking.
+Components are **copied as source files** into your project. You own the code afterward: patch, restyle, extend without forking.
 
 ***
 
@@ -41,16 +41,18 @@ npx @gentleduck/cli add button --force
 ## How it works
 
 1. **Resolves** the component from the configured registry (`https://gentleduck.org/r` by default; override with `COMPONENTS_REGISTRY_URL`).
-2. **Walks dependency graph** — installs registry-level dependencies (e.g. `dialog` pulls in `button`).
-3. **Installs npm dependencies** — runs `bun add` / `npm install` for any external packages declared by the component.
-4. **Writes files** to the configured aliases (`@/components`, `@/hooks`, `@/lib`).
+2. **Walks dependency graph**: installs registry-level dependencies (e.g. `dialog` pulls in `button`).
+3. **Installs npm dependencies**: runs `bun add` / `npm install` for any external packages declared by the component.
+4. **Writes files** to the configured aliases (`<alias>/ui`, `<alias>/hooks`, `<alias>/libs`, ... - see [`init`](/duck-cli/commands/init)).
 
 If a target file already exists, the CLI asks before overwriting unless `--force` or `--yes` is set.
+
+Only `gentleduck.org` is trusted by default. An `https` registry outside that host is refused unless you opt in with `COMPONENTS_ALLOW_REGISTRY=<host>`; overriding via `COMPONENTS_REGISTRY_URL` implicitly trusts that host too (with a one-time warning), but plain `http` is still refused except for a `localhost` override.
 
 ***
 
 ## Notes
 
-* **No version drift** — your component is now your source. The registry won't push silent changes.
-* **Diff to track upstream** — see [`diff`](/duck-cli/commands/diff) to compare your copy against the latest registry version.
-* **Update with merge** — see [`update`](/duck-cli/commands/update) to pull upstream changes via the interactive merge TUI.
+* **No version drift**: your component is now your source. The registry won't push silent changes.
+* **Diff to track upstream**: see [`diff`](/duck-cli/commands/diff) to compare your copy against the latest registry version.
+* **Update with merge**: see [`update`](/duck-cli/commands/update) to pull upstream changes via the interactive merge TUI.

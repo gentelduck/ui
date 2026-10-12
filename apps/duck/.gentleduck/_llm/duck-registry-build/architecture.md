@@ -1,7 +1,7 @@
 }>
   The design is simple: static inputs live in config, the core runner produces
   deterministic base artifacts, and extensions add opt-in behavior after that base
-  state exists. New non-UI consumers should think in named collections first — legacy
+  state exists. New non-UI consumers should think in named collections first; legacy
   UI fields normalize into that model for compatibility.
 
 ## Lifecycle
@@ -24,7 +24,7 @@ It carries:
 * cache access
 * changed-only flags and resolved changed paths
 
-The pipeline stays explicit — phases and extensions don't rediscover global state on
+The pipeline stays explicit: phases and extensions don't rediscover global state on
 their own.
 
 ***
@@ -53,8 +53,8 @@ Zod.
 
 Extension-driven phases
 
-The core runner has no built-in phases. All processing — index building, component
-generation, validation, colors/themes, component indexes, banners — runs in
+The core runner has no built-in phases. All processing (index building, component
+generation, validation, colors/themes, component indexes, banners) runs in
 extensions registered in the `extensions` array.
 
 For UI registries, `indexBuildExtension()` materializes registry entries into
@@ -98,7 +98,7 @@ The cache stores:
 * file hashes
 * phase-specific manifest data
 
-The cache is local, incremental state. Not the source of truth — always safe to
+The cache is local, incremental state, not the source of truth, so it's always safe to
 delete.
 
 ### What the cache is for

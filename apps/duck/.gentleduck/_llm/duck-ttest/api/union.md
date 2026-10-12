@@ -21,7 +21,7 @@ type a = UnionToIntersection<{ a: 1 } | { b: 2 }>
 //   ^? { a: 1 } & { b: 2 }
 
 type b = UnionToIntersection<'x' | 'y'>
-//   ^? 'x' & 'y'   (= never — string literals are disjoint)
+//   ^? 'x' & 'y'   (= never: string literals are disjoint)
 ```
 
 ```ts
@@ -31,7 +31,7 @@ type Handlers<U> = UnionToIntersection<U extends { kind: infer K extends string 
   : never>
 ```
 
-Edge case: the helper consumes its input contravariantly. `UnionToIntersection<any>` is `any` and `UnionToIntersection<never>` is `unknown` — both are unhelpful, so check with [`IsAny`](/duck-ttest/api/any) / [`IsNever`](/duck-ttest/api/any) first.
+Edge case: the helper consumes its input contravariantly. `UnionToIntersection<any>` is `any` and `UnionToIntersection<never>` is `unknown`: both are unhelpful, so check with [`IsAny`](/duck-ttest/api/any) / [`IsNever`](/duck-ttest/api/any) first.
 
 ## ExcludeKeys
 

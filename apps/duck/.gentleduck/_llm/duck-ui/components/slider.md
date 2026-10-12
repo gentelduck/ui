@@ -9,7 +9,7 @@ export default function Demo() {
 
 ## Philosophy
 
-Sliders let users select values within a range through direct manipulation. We build on Radix's accessible foundation (keyboard arrows, ARIA attributes, RTL support) and add the visual track/range/thumb styling. The Root/Track/Range/Thumb decomposition lets you restyle any part without rebuilding the interaction logic.
+Sliders let users select values within a range through direct manipulation. The `@gentleduck/primitives/slider` layer provides its own accessible foundation (keyboard arrows, ARIA attributes, RTL support), and this component adds the visual track/range/thumb styling on top. The Root/Track/Range/Thumb decomposition lets you restyle any part without rebuilding the interaction logic.
 
 ## How It's Built
 
@@ -105,9 +105,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionSlider` for a smooth entrance animation powered by [motion](https://motion.dev). The slider fades in with scale and blur on mount using `springBouncy`.
+Use `MotionSlider` for a smooth entrance animation powered by [motion](https://motion.dev). The slider uses a `scaleIn` entrance (fade, scale, and blur) with a `springBouncy` transition on mount.
 
 ```tsx title="components/slider-6.tsx"
 // import from your project: import Demo from '@/components/slider-6'
@@ -140,7 +140,7 @@ A unified slider component that supports both single-thumb and multi-thumb (rang
 
 ### MotionSlider
 
-`scaleIn` entrance with `springBouncy` transition on mount. Requires the `motion` package.
+`scaleIn` entrance (fade, scale, and blur) with `springBouncy` transition on mount. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

@@ -57,7 +57,7 @@ Yes. Documentation, code examples, and real-world use cases. Written for develop
 
 What's the license?
 
-MIT license. Use it for anything — personal projects, commercial products, client work.
+MIT license. Use it for anything: personal projects, commercial products, client work.
 
 Does it support dark mode?
 

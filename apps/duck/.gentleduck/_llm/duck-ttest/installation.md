@@ -2,7 +2,7 @@
 
 * TypeScript **5.0+**. Several utilities rely on `infer ... extends ...` constraints and const type parameters.
 * A `tsc` invocation as part of your test or CI step. `tsc --noEmit` is the entire runner.
-* Bun, npm, pnpm, or yarn — duck-ttest is a plain TypeScript-only package.
+* Bun, npm, pnpm, or yarn: duck-ttest is a plain TypeScript-only package.
 
 ***
 
@@ -24,7 +24,7 @@ pnpm add -D @gentleduck/ttest
 yarn add -D @gentleduck/ttest
 ```
 
-duck-ttest is a `devDependency` — its types are erased at compile time, so it never reaches your production bundle.
+duck-ttest is a `devDependency`: its types are erased at compile time, so it never reaches your production bundle.
 
 Import a sub-path
 
@@ -90,7 +90,7 @@ import type { Emitter, EventMap, Handlers } from '@gentleduck/ttest/emitter'
 // http / json / literal / locale / number / pattern / predicates / promise / template
 ```
 
-Always use `import type` (or enable `verbatimModuleSyntax`) — every export is a pure type.
+Always use `import type` (or enable `verbatimModuleSyntax`): every export is a pure type.
 
 ***
 
@@ -114,9 +114,9 @@ If the type-check passes, the install is correct.
 
 ## Next steps
 
-* [Getting started](/duck-ttest/getting-started) — a five-minute tutorial.
-* [Core / Assertions](/duck-ttest/core/assertions) — the full assertion API.
-* [API reference](/duck-ttest/api/any) — every exported type, grouped by module.
+* [Getting started](/duck-ttest/getting-started): a five-minute tutorial.
+* [Core / Assertions](/duck-ttest/core/assertions): the full assertion API.
+* [API reference](/duck-ttest/api/any): every exported type, grouped by module.
 
 ***
 
@@ -134,7 +134,7 @@ Several utilities rely on <code className="rounded bg-muted px-2 py-1">infer X e
 
 Can I import everything from the package root?
 
-No — duck-ttest only exports sub-paths (<code className="rounded bg-muted px-2 py-1">@gentleduck/ttest/\<module></code>).
+No, duck-ttest only exports sub-paths (<code className="rounded bg-muted px-2 py-1">@gentleduck/ttest/\<module></code>).
 This keeps the type-checker from materializing utility modules you don't use.
 
 What if my project still uses <code>moduleResolution: node</code>?

@@ -270,9 +270,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionAccordionItem`, `MotionAccordionTrigger`, and `MotionAccordionContent` for smooth height animations powered by [motion](https://motion.dev). The content animates from height 0 to auto with a fade, using a 200ms ease-out curve.
+Use `MotionAccordionItem`, `MotionAccordionTrigger`, and `MotionAccordionContent` for smooth height animations powered by [motion](https://motion.dev). The content animates from height 0 to auto with a fade, using a 250ms expo-out curve.
 
 ```tsx title="components/accordion-7.tsx"
 // import from your project: import Demo from '@/components/accordion-7'
@@ -365,7 +365,7 @@ Wraps `Accordion` and auto-injects a stagger `index` into each `MotionAccordionI
 
 ### MotionAccordionItem
 
-Replaces `AccordionItem`. Keeps the `<details>` element open for motion height animation, and renders with a staggered `scaleIn` entrance (50ms per index). Requires the `motion` package.
+Replaces `AccordionItem`. Keeps the `<details>` element open for motion height animation, and renders with a staggered `scaleIn` entrance (fade, scale, and blur; 50ms per index). Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -374,7 +374,7 @@ Replaces `AccordionItem`. Keeps the `<details>` element open for motion height a
 
 ### MotionAccordionTrigger
 
-Replaces `AccordionTrigger`. Chevron rotation driven by motion instead of CSS `group-open`. Requires the `motion` package.
+Replaces `AccordionTrigger`. The trigger label uses a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition, and chevron rotation is driven by motion instead of CSS `group-open`. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

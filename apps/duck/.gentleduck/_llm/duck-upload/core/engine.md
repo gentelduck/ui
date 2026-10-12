@@ -21,7 +21,7 @@ its union.
 | `canceled` | Canceled by the user |
 
 `Engine.Item` is a discriminated union over `phase`, so checking `item.phase === 'uploading'`
-narrows the type and unlocks `item.progress`, `item.intent`, and friends.
+narrows the type and gives you `item.progress`, `item.intent`, and friends.
 
 ## State machine
 
@@ -63,7 +63,7 @@ When more items are ready than there are slots, the extras sit in `queued` until
 
 ## The event layer
 
-State-derived public events emit from one place after transitions — not inside individual
+State-derived public events emit from one place after transitions, never from inside individual
 handlers. This guarantees no duplicate events and consistent ordering. Internal reducer events
 map to the public `Engine.EventMap` names you subscribe to with `store.on(...)`:
 
@@ -87,14 +87,14 @@ The events actually emitted are: `file.added`, `file.rejected`, `validation.ok`/
 `upload.completing`, `upload.completed`, and `upload.error`.
 
 > `Engine.EventMap` also declares `upload.removed`, `rebind.ok`, and `rebind.failed`, but the
-> engine does not currently emit them — don't rely on subscribing to those. After a `rebind`,
+> engine does not currently emit them. Don't rely on subscribing to those. After a `rebind`,
 > read the snapshot to see whether `item.file` was attached.
 
 ## Retry model
 
 Retry decisions are centralized. When a phase fails, the engine consults `config.retryPolicy`
 (or the default exponential backoff) for an `Engine.RetryDecision`, and `maxAttempts` caps the
-total. Handlers never hardcode retry logic — they ask for a decision. Where a retry re-enters
+total. Handlers never hardcode retry logic; they ask for a decision. Where a retry re-enters
 depends on how far the item got:
 
 * No intent yet → back to `creating_intent`.
@@ -118,4 +118,4 @@ for (const item of store.getSnapshot().items.values()) {
 ## Awaiting outcomes
 
 `store.waitFor(localIds)` resolves with `Engine.Outcome` values once each item reaches a
-terminal phase — `completed`, `error`, `canceled`, or `missing`.
+terminal phase: `completed`, `error`, `canceled`, or `missing`.

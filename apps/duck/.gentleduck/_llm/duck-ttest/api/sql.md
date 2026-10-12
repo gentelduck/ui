@@ -15,7 +15,7 @@ import type {
 } from '@gentleduck/ttest/sql'
 ```
 
-The most ambitious module — a type-level SQL DDL parser.
+The most ambitious module: a type-level SQL DDL parser.
 
 ## SQLTypeMap
 
@@ -112,7 +112,7 @@ Constraint-aware nullability and optionality based on the column string.
 * **Optional**: column has `DEFAULT`, or is a primary-key `AUTO_INCREMENT`, or lacks `NOT NULL`.
 
 }>
-  These are SQL-level — not the same as the TS-level [`IsOptional`](/duck-ttest/api/primitive) / [`IsNullable`](/duck-ttest/api/primitive). The SQL-prefix rename happened in v1; see [Migration](/duck-ttest/migration).
+  These are SQL-level, not the same as the TS-level [`IsOptional`](/duck-ttest/api/primitive) / [`IsNullable`](/duck-ttest/api/primitive). The SQL-prefix rename happened in v1; see [Migration](/duck-ttest/migration).
 
 ## End-to-end pipeline
 
@@ -133,7 +133,7 @@ type ResolveRef   <T, Schemas extends Record<string, unknown>>
 type ResolveFields<T, Schemas extends Record<string, unknown>>
 ```
 
-Resolve `Ref<Table, Column>` placeholders against a registry of schemas — useful for multi-table inference.
+Resolve `Ref<Table, Column>` placeholders against a registry of schemas: useful for multi-table inference.
 
 ## Deprecated re-exports
 

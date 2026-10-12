@@ -138,9 +138,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionAlert` for a smooth fade-up entrance animation powered by [motion](https://motion.dev). The alert slides up with blur and opacity on mount.
+Use `MotionAlert` for a staggered entrance animation powered by [motion](https://motion.dev). The alert, title, and description each use a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition, staggered by delay.
 
 ```tsx title="components/alert-5.tsx"
 // import from your project: import Demo from '@/components/alert-5'
@@ -200,7 +200,7 @@ export default function Demo() {
 
 ### MotionAlert
 
-Animates on mount with fade-up (slide up 6px + blur + opacity) using the `fadeUp` preset and `contentTransition` (250ms expo-out). Requires the `motion` package.
+`scaleIn` entrance (fade, scale, and blur) with a `springBouncy` transition on mount. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -208,7 +208,7 @@ Animates on mount with fade-up (slide up 6px + blur + opacity) using the `fadeUp
 
 ### MotionAlertTitle
 
-Fades up with blur at 100ms delay after the container. Requires the `motion` package.
+`scaleIn` entrance (fade, scale, and blur) with a `springBouncy` transition, delayed 100ms after the container. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -216,7 +216,7 @@ Fades up with blur at 100ms delay after the container. Requires the `motion` pac
 
 ### MotionAlertDescription
 
-Fades up with blur at 180ms delay after the title. Requires the `motion` package.
+`scaleIn` entrance (fade, scale, and blur) with a `springBouncy` transition, delayed 180ms after the title. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

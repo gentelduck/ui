@@ -187,9 +187,9 @@ export default function Demo() {
 ## Motion
 
 } title="Alpha: Motion Compositions" tone="warning">
-  Motion components work standalone, but some compositions may behave unexpectedly — this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionPagination` with `MotionPaginationLink`, `MotionPaginationPrevious`, and `MotionPaginationNext` for staggered entrance animations and tap feedback powered by [motion](https://motion.dev). Each link fades in with scale and blur, staggered by 50ms via the `index` prop.
+Use `MotionPagination` with `MotionPaginationLink`, `MotionPaginationPrevious`, and `MotionPaginationNext` for staggered entrance animations and tap feedback powered by [motion](https://motion.dev). Each link uses a `scaleIn` entrance (fade, scale, and blur) with a bouncy spring transition, staggered by 50ms via the `index` prop.
 
 ```tsx title="components/pagination-4.tsx"
 // import from your project: import Demo from '@/components/pagination-4'
@@ -322,7 +322,7 @@ You can pass `dir: 'rtl'` through `wrapper` to make wrapper controls direction-a
 
 ### MotionPagination
 
-`scaleIn` entrance with `springBouncy` transition on mount. Requires the `motion` package.
+`scaleIn` entrance (fade, scale, and blur) with `springBouncy` transition on mount. Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -330,7 +330,7 @@ You can pass `dir: 'rtl'` through `wrapper` to make wrapper controls direction-a
 
 ### MotionPaginationLink
 
-Staggered `scaleIn` entrance + `whileTap` press feedback (scale 0.97). Requires the `motion` package.
+Staggered `scaleIn` entrance (fade, scale, and blur) + `whileTap` press feedback (scale 0.97). Requires the `motion` package.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

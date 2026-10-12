@@ -66,7 +66,7 @@ import type { AssertTrue } from '@gentleduck/ttest/assert'
 type _ = AssertTrue<IsDiscriminated<Event, 'kind'>, 'kind discriminates Event'>
 ```
 
-Useful in regression suites — if someone collapses the tag to a wider literal type, the assertion breaks.
+Useful in regression suites: if someone collapses the tag to a wider literal type, the assertion breaks.
 
 ## Common pitfalls
 
@@ -78,7 +78,7 @@ type Bad =
   | { ok: boolean; error: string }
 ```
 
-`boolean` isn't literal enough — both variants have `ok: boolean`. Use `true` / `false` instead:
+`boolean` isn't literal enough; both variants have `ok: boolean`. Use `true` / `false` instead:
 
 ```ts
 type Good =
@@ -96,7 +96,7 @@ type Bad =
   | { kind: 'foo'; ... }
 ```
 
-`IsDiscriminated` will return `false` — TypeScript can't narrow on a wide string.
+`IsDiscriminated` will return `false`: TypeScript can't narrow on a wide string.
 
 ### Discriminating on a brand
 
@@ -108,7 +108,7 @@ type Done    = Brand<{ ok: true }, 'Done'>
 type State   = Pending | Done
 ```
 
-Branded shapes share the same runtime properties — `IsDiscriminated` returns `false` because both variants resolve to `ok: true`. Brands are a *compile-time* discriminator, not a runtime one. Use a literal `kind` field instead:
+Branded shapes share the same runtime properties; `IsDiscriminated` returns `false` because both variants resolve to `ok: true`. Brands are a *compile-time* discriminator, not a runtime one. Use a literal `kind` field instead:
 
 ```ts
 type State =
@@ -119,5 +119,5 @@ type State =
 ## See also
 
 * [API / discriminated](/duck-ttest/api/discriminated)
-* [API / result](/duck-ttest/api/result) — `Ok` / `Err` are discriminated by `ok: true | false`.
-* [API / emitter](/duck-ttest/api/emitter) — `EventAction<M>` builds a discriminated union from an `EventMap`.
+* [API / result](/duck-ttest/api/result); `Ok` / `Err` are discriminated by `ok: true | false`.
+* [API / emitter](/duck-ttest/api/emitter): `EventAction<M>` builds a discriminated union from an `EventMap`.
