@@ -26,7 +26,7 @@ export default function Demo() {
 
 ## Philosophy
 
-Native scrollbars break visual consistency across platforms. ScrollArea provides custom-styled scrollbars that behave identically everywhere while preserving native scroll physics. We keep the API minimal  -  just `viewportClassName`  -  because scrolling should be invisible infrastructure, not a feature you configure.
+ScrollArea keeps the browser's own scrolling and scrollbar, so scroll physics, keyboard scrolling, and screen readers work as they do everywhere else. You style the scrollbar once in your global CSS and every ScrollArea picks it up. The API stays small (`viewportClassName` and `viewportRef`) because scrolling should be invisible infrastructure, not a feature you configure.
 
 ## Installation
 
@@ -165,6 +165,18 @@ export default function Demo() {
 }
 ```
 
+## Scrollbar
+
+The viewport shows the native scrollbar, styled by the `::-webkit-scrollbar` rules from the installation step. Chromium and Safari use those rules; Firefox ignores them and draws its own thin scrollbar.
+
+To keep scrolling but hide the bar, pass `scrollbar-none` to the viewport. Use it sparingly: without a bar, nothing tells people the content scrolls.
+
+```tsx
+<ScrollArea className="h-48" viewportClassName="scrollbar-none">
+  ...
+</ScrollArea>
+```
+
 ## RTL Support
 
 Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the scroll area follows it. No `dir` prop or `rtl:` classes needed.
@@ -241,7 +253,7 @@ export default function Demo() {
 | --- | --- | --- | --- |
 | `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `viewportRef` | `React.Ref<HTMLDivElement>` | - | Ref forwarded to the inner scrollable viewport element |
-| `viewportClassName` | `string` | `--` | Additional CSS classes for the inner scrollable viewport |
+| `viewportClassName` | `string` | `--` | Additional CSS classes for the inner scrollable viewport. Pass `scrollbar-none` to hide the scrollbar |
 | `className` | `string` | `--` | Additional CSS classes for the outer container |
 | `style` | `React.CSSProperties` | `--` | Inline styles for the outer container |
 | `children` | `React.ReactNode` | `--` | Scrollable content |
