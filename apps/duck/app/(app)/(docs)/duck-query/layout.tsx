@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck Query'
 const description =
-  'Typed Axios client. Pair it with a Duck Gen route map or supply your own. Bodies, params, queries, and responses are all typed.'
+  'A typed Axios client. Feed it a Duck Gen route map or your own, and bodies, params, queries, and responses are all typed.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-query') },

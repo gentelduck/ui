@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck Primitives'
 const description =
-  'Headless, accessibility-first React primitives. Shared Slot, Presence, Popper, and focus-scope load once, so Alert Dialog ships at 1.6 KB and Popover at 2.4 KB.'
+  'Headless React primitives with roles, focus, and keyboard handled for you. Shared internals keep Alert Dialog at 1.6 KB and Popover at 2.4 KB.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-primitives') },

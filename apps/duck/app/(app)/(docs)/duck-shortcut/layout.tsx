@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck Shortcut'
 const description =
-  'Deprecated React keyboard shortcut hook — superseded by @gentleduck/vim. Still documented for existing users.'
+  'A React hook for keyboard shortcuts, now deprecated in favor of @gentleduck/vim. The docs stay up for existing users.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-shortcut') },

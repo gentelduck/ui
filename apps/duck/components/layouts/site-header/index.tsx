@@ -168,7 +168,7 @@ function GitHubStarsButton() {
     </Link>
   )
 }
-const fontItalicAtom = atomWithStorage<boolean>(FONT_ITALIC_STORAGE_KEY, false)
+const fontItalicAtom = atomWithStorage<boolean>(FONT_ITALIC_STORAGE_KEY, true)
 
 export function FontStyleButton() {
   const [italic, setItalic] = useAtom(fontItalicAtom)
@@ -179,7 +179,7 @@ export function FontStyleButton() {
 
   return (
     <button
-      aria-label={italic ? 'Switch to JetBrains Mono regular' : 'Switch to JetBrains Mono italic'}
+      aria-label={italic ? 'Use regular text' : 'Use italic text'}
       aria-pressed={italic}
       className={cn(buttonVariants({ size: 'icon', variant: 'ghost' }), 'size-8')}
       onClick={() => setItalic((v) => !v)}

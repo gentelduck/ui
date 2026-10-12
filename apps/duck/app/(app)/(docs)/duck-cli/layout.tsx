@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck CLI'
 const description =
-  'Command-line tool for scaffolding projects and installing gentleduck/ui components. Five commands: init, add, update, diff, list.'
+  'Scaffold a project and copy gentleduck/ui components into it. Five commands: init, add, update, diff, and list.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-cli') },

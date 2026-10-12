@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck TTLog'
 const description =
-  'High-performance, low-allocation Rust logging framework. Lock-free ring buffer, compile-time macros, crash-safe snapshots.'
+  'A fast, low-allocation logging framework for Rust. Lock-free ring buffer, compile-time macros, and snapshots that survive a crash.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-ttlog') },

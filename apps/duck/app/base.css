@@ -46,7 +46,6 @@
   --selection-foreground: oklch(1 0 0);
   --duck-font-family:
     var(--font-mono-font, "JetBrains Mono"), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --duck-font-style: normal;
 }
 
 .dark {

@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck Vim'
 const description =
-  'Typed keyboard command engine for React. Hotkey parser, sequence matcher, chord bindings, key recorder, and platform-aware `Mod`.'
+  'A typed keyboard engine for React. Hotkeys, sequences, chords, a key recorder, and a Mod key that fits each platform.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-vim') },

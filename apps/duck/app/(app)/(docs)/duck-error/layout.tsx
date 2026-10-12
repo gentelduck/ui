@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = '@gentleduck/error'
 const description =
-  'Typed, registry-driven error classes for TypeScript. Branded codes, secret-safe serialization, framework-agnostic, zero dependencies.'
+  'Typed error classes built from a registry of codes. Secrets stay out of your logs, and it runs anywhere with zero dependencies.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-error') },

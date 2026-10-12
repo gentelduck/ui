@@ -85,7 +85,8 @@ html:has(body[data-scroll-locked]) {
       var(--font-mono-font, "JetBrains Mono"), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 
-  html[data-font-italic="true"] {
+  /* Italic unless the header toggle sets data-font-italic="false". JetBrains Mono ships real italic faces. */
+  html {
     --duck-font-style: italic;
   }
 

@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck Registry Build'
 const description =
-  'Extension-driven build system for component registries. Configurable pipeline, typed sources, and a UI preset ready to use.'
+  'A build system for component registries, driven by extensions. Typed sources, a configurable pipeline, and a UI preset to start from.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-registry-build') },

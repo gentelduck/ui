@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck Template'
 const description =
-  'Rust-powered project scaffolder. JSON-driven templates with variants, remote configs, and flag injection.'
+  'A project scaffolder written in Rust. Templates are JSON, with variants, remote configs, and CLI flags passed straight into your files.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-template') },

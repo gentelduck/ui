@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck UI'
 const description =
-  '55+ styled Tailwind components built on @gentleduck/primitives. The CLI copies source into your project so you own every file.'
+  'Styled Tailwind components built on @gentleduck/primitives. The CLI copies the source into your project, so every file is yours.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-ui') },

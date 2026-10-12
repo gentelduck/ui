@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck Calendar'
 const description =
-  'Headless calendar engine. Ships Gregorian, Islamic, Persian, and Hebrew systems, seven date adapters, full keyboard and ARIA support. ~5 KB gzipped.'
+  'Headless date logic with full keyboard and ARIA support. Four calendar systems and seven date adapters in about 5 KB gzipped.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-calendar') },

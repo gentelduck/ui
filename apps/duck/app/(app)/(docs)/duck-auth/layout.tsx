@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck Auth'
 const description =
-  'Faceted, framework-agnostic authentication for TypeScript. Password, magic-link, OAuth, passkey, API keys, SAML. Express, Hono, Next.js, Fastify, Koa, Elysia, NestJS, gRPC.'
+  'Passwords, magic links, OAuth, passkeys, API keys, and SAML behind one typed engine. Bring your own framework, database, and mailer.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-auth') },

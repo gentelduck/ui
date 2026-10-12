@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck Upload'
 const description =
-  'Strategy-based file upload engine with React bindings. Pause, resume, retry, and persist uploads across reloads.'
+  'A file upload engine with React bindings. Pause, resume, and retry uploads, and pick them up again after a reload.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-upload') },

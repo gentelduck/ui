@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck State'
 const description =
-  'Atom-based state management for React — Jotai-inspired primitives, auto dependency tracking, derived atoms, and a standalone store.'
+  'Atom-based state for React, inspired by Jotai. Derived atoms track their own dependencies, and the store works outside React too.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-state') },

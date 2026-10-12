@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck Motion'
 const description =
-  'Animation tokens, easing presets, spring configs, and reduced-motion helpers. Optional feature loaders for the motion library.'
+  'Duration tokens, easing curves, springs, and presets that respect reduced motion. Optional loaders keep the motion library light.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-motion') },

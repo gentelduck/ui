@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck IAM'
 const description =
-  'ABAC + RBAC access control engine. Server adapters for Express, NestJS, Hono, and Next.js. Client bindings for React and Vue.'
+  'Roles and attribute rules in one access control engine. Enforce policies on Express, NestJS, Hono, or Next.js, and reuse them in React or Vue.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-iam') },

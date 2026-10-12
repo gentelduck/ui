@@ -126,7 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var raw=localStorage.getItem('fontItalic');var italic=raw?JSON.parse(raw)===true:false;document.documentElement.setAttribute('data-font-italic',italic?'true':'false');document.documentElement.style.setProperty('--duck-font-style',italic?'italic':'normal');}catch(e){}})();`,
+            __html: `(function(){try{var raw=localStorage.getItem('fontItalic');var italic=raw?JSON.parse(raw)!==false:true;document.documentElement.setAttribute('data-font-italic',italic?'true':'false');document.documentElement.style.setProperty('--duck-font-style',italic?'italic':'normal');}catch(e){}})();`,
           }}
         />
       </head>

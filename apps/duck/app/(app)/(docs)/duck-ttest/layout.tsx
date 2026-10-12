@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck TType'
 const description =
-  'Compile-time type testing plus 200+ TypeScript utility types. Primitives, predicates, tuples, brands, and more.'
+  'Compile-time type tests and more than 200 utility types for TypeScript. No test runner and no runtime cost.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-ttest') },

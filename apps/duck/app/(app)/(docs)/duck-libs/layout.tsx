@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck Libs'
 const description =
-  'Shared utilities for the gentleduck ecosystem. cn(), filteredObject, groupArray, parseDate. Each helper lives on its own subpath.'
+  'cn(), filteredObject, groupArray, parseDate, and the other small utilities gentleduck runs on. Each helper has its own subpath.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-libs') },

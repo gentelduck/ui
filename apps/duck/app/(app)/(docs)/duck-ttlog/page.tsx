@@ -1,67 +1,47 @@
-import { Badge } from '@gentleduck/registry-ui/badge'
-import { Button } from '@gentleduck/registry-ui/button'
 import { Cpu, FileArchive, Gauge, Layers, ShieldAlert, Zap } from 'lucide-react'
-import Link from 'next/link'
-import { codeToHtml } from 'shiki'
-import { CopyButton } from '~/components/copy-button'
-import { OpenSourceSection } from '~/components/layouts/open-source-section'
-import { PageHeader, PageHeaderDescription, PageHeaderHeading } from '~/components/layouts/page-header'
+import { type IPackageFeature, PackageLanding } from '~/components/layouts/package-landing'
 
 export const dynamic = 'force-static'
 export const revalidate = false
 
-const title = 'Duck TTLog'
+const title = 'Logging that never blocks'
 const description =
-  'High-performance, low-allocation Rust logging framework. Lock-free ring buffer, compile-time macros, crash-safe snapshots.'
+  'A fast, low-allocation logging framework for Rust. Lock-free ring buffer, compile-time macros, and snapshots that survive a crash.'
 
-const features = [
+const features: IPackageFeature[] = [
   {
+    description:
+      '`info!`, `debug!`, `warn!`, and `error!` do most of their work at expansion time. At runtime, a log call is a ring-buffer write.',
     icon: Zap,
     title: 'Compile-time macros',
-    description:
-      'info!, debug!, warn!, error! do most work at macro-expansion time. Runtime cost is a ring-buffer write, not a formatter call.',
-    bg: 'bg-blue-500/10',
-    color: 'text-blue-500',
   },
   {
+    description:
+      'Log calls never block. Events land in an in-memory ring buffer, and a writer thread drains it in the background.',
     icon: Cpu,
     title: 'Lock-free ring buffer',
-    description:
-      'Log calls never block. Events land in an in-memory ring buffer a writer thread drains asynchronously.',
-    bg: 'bg-violet-500/10',
-    color: 'text-violet-500',
   },
   {
+    description:
+      'Repeated messages, file paths, module paths, and keys are stored once. Memory stays flat under sustained load.',
     icon: Layers,
     title: 'String interning',
-    description:
-      'Repeated messages, file paths, module paths, and keys are stored once. Memory use stays flat under sustained load.',
-    bg: 'bg-emerald-500/10',
-    color: 'text-emerald-500',
   },
   {
+    description: 'Stdout, file, and network listeners run on their own thread. Your code never waits on logging IO.',
     icon: Gauge,
-    title: 'Decoupled listeners',
-    description:
-      'Listeners (stdout, file, network) run on their own thread. Application code never waits on IO from logging.',
-    bg: 'bg-orange-500/10',
-    color: 'text-orange-500',
+    title: 'Separate listeners',
   },
   {
+    description: 'Recent events flush to a compressed snapshot on disk whenever you ask, and on panic or SIGTERM.',
     icon: FileArchive,
-    title: 'Snapshot buffer',
-    description:
-      'A ring of recent events flushes to a compressed on-disk snapshot on demand — and automatically on panic or SIGTERM.',
-    bg: 'bg-pink-500/10',
-    color: 'text-pink-500',
+    title: 'Snapshots',
   },
   {
-    icon: ShieldAlert,
-    title: 'Crash + signal capture',
     description:
-      'Panic hook and signal handler write a snapshot before the process dies. Post-mortem has the last N events in context.',
-    bg: 'bg-sky-500/10',
-    color: 'text-sky-500',
+      'A panic hook and a signal handler write a snapshot before the process exits. Post-mortems start with the last N events.',
+    icon: ShieldAlert,
+    title: 'Crash capture',
   },
 ]
 
@@ -75,88 +55,19 @@ use ttlog::{Trace, info};
 Trace::init();
 info!("hello from ttlog");`
 
-export default async function DuckTtlogPage() {
-  const highlightedCode = await codeToHtml(INSTALL_CODE, {
-    lang: 'rust',
-    themes: {
-      dark: 'catppuccin-mocha',
-      light: 'github-light',
-    },
-    defaultColor: 'dark',
-    transformers: [
-      {
-        pre(node) {
-          node.properties.class =
-            'no-scrollbar min-w-0 overflow-x-auto px-4 py-3.5 outline-none !bg-transparent text-sm font-mono'
-        },
-      },
-    ],
-  })
-
+export default function DuckTtlogPage() {
   return (
-    <div className="container pt-24 pb-8">
-      <PageHeader>
-        <PageHeaderHeading>{title}</PageHeaderHeading>
-        <PageHeaderDescription>{description}</PageHeaderDescription>
-        <div className="flex gap-3">
-          <Button asChild>
-            <Link href="/duck-ttlog/introduction">Get Started</Link>
-          </Button>
-          <Button asChild variant="outline">
-            <Link href="/duck-ttlog/core">Core Engine</Link>
-          </Button>
-        </div>
-      </PageHeader>
-      <div className="relative space-y-20">
-        <div>
-          <div className="mb-10 text-center">
-            <div className="mb-3 flex items-center justify-center gap-2">
-              <Badge variant="secondary" className="text-xs">
-                Rust · lock-free
-              </Badge>
-            </div>
-            <h2 className="mb-3 font-semibold text-2xl leading-tight tracking-tight sm:text-3xl">
-              Logs fast enough to leave in production
-            </h2>
-            <p className="mx-auto max-w-lg text-base text-muted-foreground leading-relaxed">
-              A logging framework built for high-throughput Rust. Non-blocking writes, interned strings, decoupled IO,
-              and a snapshot buffer that survives a crash.
-            </p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map(({ icon: Icon, title, description, bg, color }) => (
-              <div
-                key={title}
-                className="flex items-start gap-3 rounded-xl border border-border/50 bg-card p-4 transition-colors hover:border-border">
-                <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${bg} ${color}`}>
-                  <Icon className="h-4 w-4" />
-                </div>
-                <div className="min-w-0">
-                  <h3 className="mb-1 font-mono font-semibold text-sm">{title}</h3>
-                  <p className="text-muted-foreground text-xs leading-relaxed">{description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <div className="mb-8 flex flex-col items-center gap-1 text-center">
-            <h2 className="font-semibold text-xl leading-tight tracking-tight">Quick setup</h2>
-            <p className="text-muted-foreground text-sm">Add to Cargo. Init once. Log from anywhere.</p>
-          </div>
-          <div className="relative mx-auto max-w-2xl">
-            <CopyButton value={INSTALL_CODE} variant="ghost" className="absolute top-3 right-3" />
-            <div
-              className="overflow-hidden rounded-lg border border-border/50 bg-muted/30 [&_pre]:bg-transparent!"
-              // biome-ignore lint/security/noDangerouslySetInnerHtml: shiki output
-              dangerouslySetInnerHTML={{ __html: highlightedCode }}
-            />
-          </div>
-        </div>
-
-        <OpenSourceSection className="px-0!" />
-      </div>
-    </div>
+    <PackageLanding
+      actions={[
+        { href: '/duck-ttlog/introduction', label: 'Get started' },
+        { href: '/duck-ttlog/core', label: 'Core engine' },
+      ]}
+      description={description}
+      features={features}
+      install={{ code: INSTALL_CODE, description: 'Add it to Cargo.toml, init once, and log from anywhere.' }}
+      packageName="ttlog"
+      slug="duck-ttlog"
+      title={title}
+    />
   )
 }

@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck Hooks'
 const description =
-  'Tree-shakeable React utility hooks. Each hook lives on its own subpath: debounce, media queries, clipboard, composed refs, stable IDs.'
+  'Debounce, media queries, clipboard, composed refs, and stable IDs. Each hook has its own subpath, so you only bundle what you import.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-hooks') },

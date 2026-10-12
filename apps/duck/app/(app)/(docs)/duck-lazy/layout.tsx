@@ -3,7 +3,7 @@ import { absoluteUrl } from '~/lib'
 
 const title = 'Duck Lazy'
 const description =
-  'Lazy-loading components and images for React. Built on IntersectionObserver. SSR-safe. Zero dependencies.'
+  'Lazy-load components and images in React with IntersectionObserver. SSR-safe, with zero dependencies.'
 
 export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/duck-lazy') },
