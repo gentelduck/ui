@@ -1,5 +1,12 @@
 # @gentleduck/registers
 
+## 1.0.2
+
+### Patch Changes
+
+- 0a36950: The `sheet` item depends on `direction`, since the motion sheet now imports its helpers. Adding `sheet` installs `direction` too instead of leaving a broken import.
+- 22e853d: Register the `typeset` component, including its stylesheet, and its example.
+
 ## 1.0.1
 
 ### Patch Changes

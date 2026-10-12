@@ -1,5 +1,15 @@
 # @gentleduck/registry-examples
 
+## 0.2.15
+
+### Patch Changes
+
+- Updated dependencies [8d18fa6]
+- Updated dependencies [ed5fb65]
+- Updated dependencies [8d18fa6]
+  - @gentleduck/calendar@0.5.1
+  - @gentleduck/primitives@0.5.0
+
 ## 0.2.14
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @gentleduck/cli
 
+## 1.6.0
+
+### Minor Changes
+
+- 247da24: `add` imports the stylesheets a component ships. When a registry item includes a `.css` file (such as `typeset`), the CLI writes it next to the component and adds an `@import` for it to your Tailwind CSS file, right after the Tailwind import. Running `add` again never duplicates the import.
+
+### Patch Changes
+
+- 8d18fa6: When `init` sets up Tailwind CSS, the CSS file it writes now includes `rtl` and `ltr` custom variants. The nearest `dir` wins, so an LTR section inside an RTL page drops its `rtl:` styles. They use `[dir]` attribute selectors because Tailwind's CSS optimizer rewrites `:dir()` to `:lang()`.
+
 ## 1.5.1
 
 ### Patch Changes
