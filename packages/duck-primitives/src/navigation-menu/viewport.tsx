@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useLayoutEffect } from '../hooks/use-layout-effect'
 import { composeEventHandlers } from '../libs/compose-event-handler'
 import { composeRefs, useComposedRefs } from '../libs/compose-ref'
 import { Presence } from '../presence'
@@ -58,6 +59,9 @@ const NavigationMenuViewportImpl = React.forwardRef<
     if (content) setSize({ width: content.offsetWidth, height: content.offsetHeight })
   }
   useResizeObserver(content, handleSizeChange)
+  // the observer reports a frame late, so measure before the first paint or the
+  // viewport flashes at 0x0 (its content is absolutely positioned)
+  useLayoutEffect(handleSizeChange, [content])
 
   return (
     <Primitive.div
