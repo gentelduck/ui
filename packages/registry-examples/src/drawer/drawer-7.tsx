@@ -42,18 +42,18 @@ export default function Demo() {
         <DrawerContent>
           <div className="mx-auto w-full max-w-sm">
             <DrawerHeader>
-              <DrawerTitle>تحريك الهدف</DrawerTitle>
-              <DrawerDescription>حدد هدف نشاطك اليومي.</DrawerDescription>
+              <DrawerTitle>هدفك اليومي</DrawerTitle>
+              <DrawerDescription>حدّد هدف نشاطك اليومي.</DrawerDescription>
             </DrawerHeader>
             <div className="p-4 pb-0">
-              <div className="flex items-center justify-center space-x-2">
+              <div className="flex items-center justify-center gap-2">
                 <Button className="h-8 w-8" disabled={goal <= 200} onClick={() => onClick(-10)} variant="outline">
-                  <Minus aria-hidden="true" className="h-4 w-4" />
+                  <Minus aria-hidden="true" className="size-4" />
                   <span className="sr-only">تقليل</span>
                 </Button>
                 <div className="flex-1 text-center">
                   <div className="font-bold text-7xl tracking-tighter">{goal}</div>
-                  <div className="text-[0.70rem] text-muted-foreground uppercase">سعرة حرارية/يوم</div>
+                  <div className="text-[0.70rem] text-muted-foreground">سعرة حرارية في اليوم</div>
                 </div>
                 <Button className="h-8 w-8" disabled={goal >= 400} onClick={() => onClick(10)} variant="outline">
                   <Plus aria-hidden="true" />
@@ -75,9 +75,9 @@ export default function Demo() {
               </div>
             </div>
             <DrawerFooter>
-              <Button>ارسال</Button>
+              <Button>إرسال</Button>
               <DrawerClose asChild>
-                <Button variant="outline">الغاء</Button>
+                <Button variant="outline">إلغاء</Button>
               </DrawerClose>
             </DrawerFooter>
           </div>

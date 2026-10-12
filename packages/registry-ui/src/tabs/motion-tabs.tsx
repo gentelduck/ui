@@ -9,7 +9,14 @@ import { useDirection } from '@gentleduck/primitives/direction'
 import { AnimatePresence, LayoutGroup, LazyMotion, m } from 'motion/react'
 import * as React from 'react'
 import { toDirection } from '../direction/direction.libs'
-import { type ITabsListProps, type ITabsProps, type ITabsTriggerProps, TabsContext, useTabs } from './tabs'
+import {
+  type ITabsListProps,
+  type ITabsProps,
+  type ITabsTriggerProps,
+  TabsContext,
+  useTabs,
+  useTabsListKeyDown,
+} from './tabs'
 
 const BLUR = `blur(${blurLight}px)`
 const MOTION_TABS_VARIANTS = {
@@ -59,10 +66,12 @@ const MotionTabs = React.forwardRef<HTMLDivElement, ITabsProps>(
     }, [activeItem, onValueChange])
 
     const tabsValue = React.useMemo(
-      () => ({ activeItem, setActiveItem: wrappedSetActiveItem, tabsId }),
-      [activeItem, wrappedSetActiveItem, tabsId],
+      () => ({ activeItem, dir: resolvedDir, setActiveItem: wrappedSetActiveItem, tabsId }),
+      [activeItem, resolvedDir, wrappedSetActiveItem, tabsId],
     )
-    const motionCtx = React.useMemo(() => ({ direction: motionDir, registerTrigger }), [motionDir, registerTrigger])
+    // Later tabs sit on the left in RTL, so content slides in from the opposite side.
+    const slideDir = resolvedDir === 'rtl' ? -motionDir : motionDir
+    const motionCtx = React.useMemo(() => ({ direction: slideDir, registerTrigger }), [slideDir, registerTrigger])
 
     return (
       <TabsContext.Provider value={tabsValue}>
@@ -79,8 +88,9 @@ const MotionTabs = React.forwardRef<HTMLDivElement, ITabsProps>(
 )
 MotionTabs.displayName = 'MotionTabs'
 
-const MotionTabsList = React.forwardRef<HTMLDivElement, ITabsListProps>(({ className, ...props }, ref) => {
+const MotionTabsList = React.forwardRef<HTMLDivElement, ITabsListProps>(({ className, onKeyDown, ...props }, ref) => {
   const { tabsId } = useTabs()
+  const handleKeyDown = useTabsListKeyDown(onKeyDown)
   return (
     <LayoutGroup id={`tabs-${tabsId}`}>
       <div
@@ -88,6 +98,7 @@ const MotionTabsList = React.forwardRef<HTMLDivElement, ITabsListProps>(({ class
           'inline-flex w-fit items-center justify-center gap-2 rounded-md bg-muted p-1 text-muted-foreground',
           className,
         )}
+        onKeyDown={handleKeyDown}
         ref={ref}
         role="tablist"
         {...props}

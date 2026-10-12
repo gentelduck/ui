@@ -98,9 +98,11 @@
   --breakpoint-3xl: 1600px;
   --breakpoint-4xl: 2000px;
   --font-sans:
-    var(--font-mono-font, "JetBrains Mono"), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    var(--font-mono-font, "JetBrains Mono"), var(--font-arabic), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
   --font-mono:
-    var(--font-mono-font, "JetBrains Mono"), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    var(--font-mono-font, "JetBrains Mono"), var(--font-arabic), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
   --radius: 0.5rem;
 
   --color-background: var(--background);

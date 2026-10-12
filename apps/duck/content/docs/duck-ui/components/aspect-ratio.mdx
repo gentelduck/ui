@@ -83,7 +83,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the aspect ratio follows it. No `dir` prop or `rtl:` classes needed.
 
 <ComponentPreview
   name="aspect-ratio-2"
@@ -116,7 +116,7 @@ Requires the `motion` package. Use `MotionAspectRatio` instead of `AspectRatio`.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `ratio` | `number` | (required) | Aspect ratio of the container, e.g. `16/9`, `4/3` |
 | `className` | `string` | `--` | Additional class names to apply to the container |
 | `style` | `React.CSSProperties` | `--` | Inline styles applied to the container (aspect-ratio is merged automatically) |

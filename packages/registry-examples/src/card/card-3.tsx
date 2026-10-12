@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export default function Demo() {
   return (
     <DirectionProvider dir="rtl">
-      <Card className="w-[350px]" dir="rtl">
+      <Card className="w-[350px]">
         <CardHeader>
           <CardTitle>إنشاء مشروع</CardTitle>
           <CardDescription>انشر مشروعك الجديد بنقرة واحدة.</CardDescription>
@@ -17,16 +17,16 @@ export default function Demo() {
         <CardContent>
           <form>
             <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="name">الاسم</Label>
-                <Input id="name" placeholder="اسم مشروعك" />
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="card-rtl-name">الاسم</Label>
+                <Input id="card-rtl-name" placeholder="اسم مشروعك" />
               </div>
 
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="framework">نوع المشروع</Label>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="card-rtl-type">نوع المشروع</Label>
 
-                <Select dir="rtl">
-                  <SelectTrigger id="framework" className="w-full">
+                <Select>
+                  <SelectTrigger id="card-rtl-type" className="w-full">
                     <SelectValue placeholder="اختر نوع المشروع" />
                   </SelectTrigger>
 
@@ -36,7 +36,7 @@ export default function Demo() {
                     <SelectItem value="ecommerce">متجر إلكتروني</SelectItem>
                     <SelectItem value="portfolio">معرض أعمال</SelectItem>
                     <SelectItem value="blog">مدونة</SelectItem>
-                    <SelectItem value="mobile-app">تطبيق موبايل</SelectItem>
+                    <SelectItem value="mobile-app">تطبيق جوال</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -44,7 +44,7 @@ export default function Demo() {
           </form>
         </CardContent>
 
-        <CardFooter className="flex">
+        <CardFooter>
           <Button variant="outline">إلغاء</Button>
           <Button>نشر</Button>
         </CardFooter>

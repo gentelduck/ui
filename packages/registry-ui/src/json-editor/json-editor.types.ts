@@ -32,6 +32,7 @@ export interface IJsonTextareaFieldProps<TFieldValues extends FieldValues> {
   lang?: string
 
   expandMode?: JsonEditorExpandMode
+  /** Edge the expand sheet slides in from. Defaults to the inline-end edge: right in LTR, left in RTL. */
   sheetSide?: 'left' | 'right'
   sheetTitle?: string
 

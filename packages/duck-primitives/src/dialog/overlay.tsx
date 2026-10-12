@@ -38,8 +38,8 @@ const DialogOverlayImpl = React.forwardRef<DialogOverlayImplElement, IDialog.IOv
         <Primitive.div
           data-slot="dialog-overlay"
           data-state={getState(context.open)}
-          dir={context.dir}
           {...overlayProps}
+          dir={overlayProps.dir ?? context.dir}
           ref={forwardedRef}
           style={{ pointerEvents: 'auto', ...overlayProps.style }}
         />

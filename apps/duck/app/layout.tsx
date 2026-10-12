@@ -12,7 +12,7 @@ import { ThemeWrapper } from '~/components/themes'
 import { docsConfig } from '~/config/docs'
 import { METADATA } from '~/config/metadata'
 import { siteConfig } from '~/config/site'
-import { fontMono } from '~/lib/fonts'
+import { fontArabic, fontMono } from '~/lib/fonts'
 
 export const metadata: Metadata = {
   ...METADATA,
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      className={fontMono.variable}
+      className={cn(fontMono.variable, fontArabic.variable)}
       dir="ltr"
       lang="en"
       style={{ overflowY: 'scroll', scrollbarGutter: 'stable' }}

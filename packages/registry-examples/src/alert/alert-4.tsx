@@ -8,21 +8,21 @@ export default function Demo() {
       <div className="grid w-full max-w-xl items-start gap-4">
         <Alert>
           <CheckCircle2Icon aria-hidden="true" />
-          <AlertTitle>تم بنجاح! تم حفظ التغييرات الخاصة بك</AlertTitle>
-          <AlertDescription>هذا تنبيه يحتوي على أيقونة وعنوان ووصف.</AlertDescription>
+          <AlertTitle>تم حفظ التغييرات بنجاح</AlertTitle>
+          <AlertDescription>تنبيه يضم أيقونة وعنوانًا ووصفًا.</AlertDescription>
         </Alert>
         <Alert>
           <PopcornIcon aria-hidden="true" />
-          <AlertTitle>هذا التنبيه يحتوي على عنوان وأيقونة. بدون وصف.</AlertTitle>
+          <AlertTitle>تنبيه بعنوان وأيقونة فقط، دون وصف.</AlertTitle>
         </Alert>
         <Alert variant="destructive">
           <AlertCircleIcon aria-hidden="true" />
-          <AlertTitle>تعذرت معالجة عملية الدفع الخاصة بك.</AlertTitle>
+          <AlertTitle>تعذّر إتمام عملية الدفع.</AlertTitle>
           <AlertDescription>
-            <p>يرجى التحقق من معلومات الفوترة والمحاولة مرة أخرى.</p>
+            <p>يرجى مراجعة بيانات الفوترة ثم المحاولة مرة أخرى.</p>
             <ul className="list-inside list-disc text-sm">
-              <li>تحقق من تفاصيل بطاقتك</li>
-              <li>تأكد من توفر رصيد كاف</li>
+              <li>تحقق من بيانات البطاقة</li>
+              <li>تأكد من توفر رصيد كافٍ</li>
               <li>تحقق من عنوان الفوترة</li>
             </ul>
           </AlertDescription>

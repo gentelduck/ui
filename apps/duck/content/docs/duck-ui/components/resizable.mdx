@@ -162,7 +162,7 @@ export default function Example() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the panel group follows it: panels mirror, and dragging and arrow keys follow the visual layout. No `dir` prop or `rtl:` classes needed.
 
 <ComponentPreview
   name="resizable-4"

@@ -5,7 +5,9 @@ import { loadDomAnimation } from '@gentleduck/motion/motion-features'
 import { useMotionPreset } from '@gentleduck/motion/motion-presets'
 import { scaleIn } from '@gentleduck/motion/presets/scale-in'
 import { slideFromLeft } from '@gentleduck/motion/presets/slide-from-left'
+import { slideFromRight } from '@gentleduck/motion/presets/slide-from-right'
 import { springSnappy } from '@gentleduck/motion/transitions/springs'
+import { useDirection } from '@gentleduck/primitives/direction'
 import { ChevronRight } from 'lucide-react'
 import { LazyMotion, m } from 'motion/react'
 import * as React from 'react'
@@ -41,12 +43,13 @@ const MotionBreadcrumbSeparator = React.forwardRef<
   }
 >(({ children, className, index = 0, ...props }, ref) => {
   const options = React.useMemo(() => ({ transition: springSnappy, delay: index * 0.035 }), [index])
-  const content = useMotionPreset(slideFromLeft, options)
+  const direction = useDirection()
+  const content = useMotionPreset(direction === 'rtl' ? slideFromRight : slideFromLeft, options)
   return (
     <LazyMotion features={loadDomAnimation}>
       <m.li
         ref={ref}
-        className={cn('[&>svg:not([class*=size-])]:size-3.5', className)}
+        className={cn('[&>svg:not([class*=size-])]:size-3.5 rtl:[&>svg]:rotate-180', className)}
         initial={content.initial}
         animate={content.animate}
         transition={content.transition}
@@ -54,7 +57,7 @@ const MotionBreadcrumbSeparator = React.forwardRef<
         role="presentation"
         {...props}
         data-slot="breadcrumb-separator">
-        {children ?? <ChevronRight className="rtl:rotate-180" />}
+        {children ?? <ChevronRight />}
       </m.li>
     </LazyMotion>
   )

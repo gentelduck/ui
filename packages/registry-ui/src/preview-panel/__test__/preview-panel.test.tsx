@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 import * as React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import { DirectionProvider } from '../../direction'
 import { MotionPreviewPanel } from '../motion-preview-panel'
 import { PreviewPanel } from '../preview-panel'
 import type { IPreviewPanelProps } from '../preview-panel.types'
@@ -54,5 +55,30 @@ describe('registry-ui preview-panel', () => {
       </PreviewPanelDialog>,
     )
     expect(html).toContain('<span>child body</span>')
+  })
+
+  test('follows DirectionProvider and forwards control labels', () => {
+    for (const html of [
+      renderToStaticMarkup(
+        <DirectionProvider dir="rtl">
+          <PreviewPanel resetText="إعادة الضبط" zoomInText="تكبير" zoomOutText="تصغير" />
+        </DirectionProvider>,
+      ),
+      renderToStaticMarkup(
+        <DirectionProvider dir="rtl">
+          <MotionPreviewPanel resetText="إعادة الضبط" zoomInText="تكبير" zoomOutText="تصغير" />
+        </DirectionProvider>,
+      ),
+      renderToStaticMarkup(
+        <DirectionProvider dir="rtl">
+          <PreviewPanelDialog resetText="إعادة الضبط" zoomInText="تكبير" zoomOutText="تصغير" />
+        </DirectionProvider>,
+      ),
+    ]) {
+      expect(html).toMatch(/data-slot="preview-panel"[^>]*dir="rtl"|dir="rtl"[^>]*data-slot="preview-panel"/)
+      expect(html).toContain('aria-label="تكبير"')
+      expect(html).toContain('aria-label="تصغير"')
+      expect(html).toContain('aria-label="إعادة الضبط"')
+    }
   })
 })

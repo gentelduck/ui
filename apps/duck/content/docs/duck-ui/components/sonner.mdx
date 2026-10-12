@@ -165,7 +165,7 @@ toast('Event has been created.')
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `<html dir="rtl">` (or a `DirectionProvider` around the `Toaster`) and toasts follow: text, icons and the action button mirror, and left/right positions mirror, so the default `bottom-right` becomes `bottom-left`.
 
 <ComponentPreview
   name="sonner-6"
@@ -180,7 +180,8 @@ The `Toaster` component wraps the `Sonner` `Toaster` from the `sonner` library, 
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
+| `position` | `ToasterProps['position']` | `'bottom-right'` | Corner the toasts stack in. Left and right mirror in RTL |
 | `theme` | `'light' \| 'dark' \| 'system'` | `'system'` | Toast theme. Auto-detected from `next-themes` `useTheme()` |
 | `...props` | `ToasterProps` | - | Additional props inherited from the `sonner` toaster. |
 

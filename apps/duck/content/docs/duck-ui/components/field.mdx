@@ -214,7 +214,7 @@ The `Field` family is designed for composing accessible forms. A typical field i
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `Field` and the controls inside it follow. No `dir` prop or `rtl:` classes needed.
 
 <ComponentPreview
   name="field-13"
@@ -250,7 +250,7 @@ Container that renders a semantic `fieldset` with spacing presets.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | `--` | Additional CSS classes |
 | `children` | `React.ReactNode` | `--` | Fieldset content |
 | `...props` | `React.HTMLProps<HTMLFieldSetElement>` | - | Additional props to spread to the fieldset element |

@@ -130,7 +130,7 @@ import {
 
 ## RTL Support
 
-Every `Typography*` component inherits the RTL styles it needs from Tailwind's `rtl:` variant. Wrap the composition in an element with `dir="rtl"` (or set `DirectionProvider` at app/root level for global RTL/LTR) and the blockquote border, list indent, and table alignment automatically flip.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the typography follows it: the blockquote border, list indent, and table alignment flip automatically. No `dir` prop or `rtl:` classes needed.
 
 <ComponentPreview
   name="typography-15"
@@ -166,8 +166,8 @@ Every base `Typography*` component is a thin `forwardRef` wrapper around the mat
 | `TypographyH3` | `h3` | `scroll-m-20 font-semibold text-2xl tracking-tight` |
 | `TypographyH4` | `h4` | `scroll-m-20 font-semibold text-xl tracking-tight` |
 | `TypographyP` | `p` | `leading-7 [&:not(:first-child)]:mt-6` |
-| `TypographyBlockquote` | `blockquote` | `mt-6 border-l-2 pl-6 italic` (flips in RTL) |
-| `TypographyList` | `ul` | `my-6 ml-6 list-disc [&>li]:mt-2` (flips in RTL) |
+| `TypographyBlockquote` | `blockquote` | `mt-6 border-s-2 ps-6 italic rtl:not-italic` |
+| `TypographyList` | `ul` | `my-6 ms-6 list-disc [&>li]:mt-2` |
 | `TypographyInlineCode` | `code` | `relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono font-semibold text-sm` |
 | `TypographyLead` | `p` | `text-muted-foreground text-xl` |
 | `TypographyLarge` | `div` | `font-semibold text-lg` |
@@ -175,8 +175,8 @@ Every base `Typography*` component is a thin `forwardRef` wrapper around the mat
 | `TypographyMuted` | `p` | `text-muted-foreground text-sm` |
 | `TypographyTable` | `div > table` | wrapper + `w-full` (accepts `wrapperClassName` for the outer div) |
 | `TypographyTr` | `tr` | `m-0 border-t p-0 even:bg-muted` |
-| `TypographyTh` | `th` | `border px-4 py-2 text-left font-bold rtl:text-right` |
-| `TypographyTd` | `td` | `border px-4 py-2 text-left rtl:text-right` |
+| `TypographyTh` | `th` | `border px-4 py-2 text-start font-bold` |
+| `TypographyTd` | `td` | `border px-4 py-2 text-start` |
 
 ### Motion variants
 

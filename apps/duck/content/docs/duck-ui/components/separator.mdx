@@ -61,7 +61,7 @@ import { Separator } from "@/components/ui/separator"
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the separator follows it. No `dir` prop or `rtl:` classes needed.
 
 <ComponentPreview
   name="separator-2"
@@ -95,7 +95,7 @@ Requires the `motion` package. Use `MotionSeparator` instead of `Separator`. Sam
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Controls the orientation of the separator line |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS class names |
 | `...props` | `React.HTMLProps<HTMLHRElement>` | - | Additional props to spread to the hr element |
 

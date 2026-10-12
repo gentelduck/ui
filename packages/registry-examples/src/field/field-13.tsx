@@ -25,20 +25,20 @@ export default function Demo() {
               <FieldDescription>جميع المعاملات آمنة ومشفرة</FieldDescription>
               <FieldGroup>
                 <Field>
-                  <FieldLabel htmlFor="checkout-7j9-card-name-43j">الاسم على البطاقة</FieldLabel>
-                  <Input id="checkout-7j9-card-name-43j" placeholder="احمد خالد" required />
+                  <FieldLabel htmlFor="checkout-rtl-7j9-card-name-43j">الاسم على البطاقة</FieldLabel>
+                  <Input id="checkout-rtl-7j9-card-name-43j" placeholder="أحمد خالد" required />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="checkout-7j9-card-number-uw1">رقم البطاقة</FieldLabel>
-                  <Input id="checkout-7j9-card-number-uw1" placeholder="1234 5678 9012 3456" required />
-                  <FieldDescription>ادخل رقم البطاقة المكون من 16 رقما</FieldDescription>
+                  <FieldLabel htmlFor="checkout-rtl-7j9-card-number-uw1">رقم البطاقة</FieldLabel>
+                  <Input id="checkout-rtl-7j9-card-number-uw1" placeholder="0000 0000 0000 0000" required />
+                  <FieldDescription>أدخل رقم البطاقة المكوّن من 16 رقمًا</FieldDescription>
                 </Field>
                 <div className="grid grid-cols-3 gap-4">
                   <Field>
-                    <FieldLabel htmlFor="checkout-exp-month-ts6">الشهر</FieldLabel>
+                    <FieldLabel htmlFor="checkout-rtl-exp-month-ts6">الشهر</FieldLabel>
                     <Select defaultValue="">
-                      <SelectTrigger id="checkout-exp-month-ts6">
-                        <SelectValue placeholder="MM" />
+                      <SelectTrigger id="checkout-rtl-exp-month-ts6">
+                        <SelectValue placeholder="اختر" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="01">01</SelectItem>
@@ -57,10 +57,10 @@ export default function Demo() {
                     </Select>
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="checkout-7j9-exp-year-f59">السنة</FieldLabel>
+                    <FieldLabel htmlFor="checkout-rtl-7j9-exp-year-f59">السنة</FieldLabel>
                     <Select defaultValue="">
-                      <SelectTrigger id="checkout-7j9-exp-year-f59">
-                        <SelectValue placeholder="YYYY" />
+                      <SelectTrigger id="checkout-rtl-7j9-exp-year-f59">
+                        <SelectValue placeholder="اختر" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="2024">2024</SelectItem>
@@ -73,8 +73,8 @@ export default function Demo() {
                     </Select>
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="checkout-7j9-cvv">CVV</FieldLabel>
-                    <Input id="checkout-7j9-cvv" placeholder="123" required />
+                    <FieldLabel htmlFor="checkout-rtl-7j9-cvv">رمز الأمان</FieldLabel>
+                    <Input id="checkout-rtl-7j9-cvv" placeholder="123" required />
                   </Field>
                 </div>
               </FieldGroup>
@@ -85,9 +85,9 @@ export default function Demo() {
               <FieldDescription>عنوان الفواتير المرتبط بطريقة الدفع الخاصة بك</FieldDescription>
               <FieldGroup>
                 <Field orientation="horizontal">
-                  <Checkbox defaultChecked id="checkout-7j9-same-as-shipping-wgm" />
-                  <FieldLabel className="font-normal" htmlFor="checkout-7j9-same-as-shipping-wgm">
-                    نفس عنوان الشحن
+                  <Checkbox defaultChecked id="checkout-rtl-7j9-same-as-shipping-wgm" />
+                  <FieldLabel className="font-normal" htmlFor="checkout-rtl-7j9-same-as-shipping-wgm">
+                    مطابق لعنوان الشحن
                   </FieldLabel>
                 </Field>
               </FieldGroup>
@@ -95,19 +95,19 @@ export default function Demo() {
             <FieldSet>
               <FieldGroup>
                 <Field>
-                  <FieldLabel htmlFor="checkout-7j9-optional-comments">تعليقات</FieldLabel>
+                  <FieldLabel htmlFor="checkout-rtl-7j9-optional-comments">تعليقات</FieldLabel>
                   <Textarea
                     className="resize-none"
-                    id="checkout-7j9-optional-comments"
-                    placeholder="اضف اي تعليقات اضافية"
+                    id="checkout-rtl-7j9-optional-comments"
+                    placeholder="أضف أي تعليقات إضافية"
                   />
                 </Field>
               </FieldGroup>
             </FieldSet>
             <Field orientation="horizontal">
-              <Button type="submit">ارسال</Button>
+              <Button type="submit">إرسال</Button>
               <Button type="button" variant="outline">
-                الغاء
+                إلغاء
               </Button>
             </Field>
           </FieldGroup>

@@ -113,9 +113,9 @@ const HoverCardContentImpl = React.forwardRef<HoverCardContentImplElement, IHove
         onDismiss={context.onDismiss}>
         <PopperPrimitive.Content
           data-slot="hover-card-content"
+          dir={context.dir}
           {...popperScope}
           {...contentProps}
-          dir={context.dir}
           onPointerDown={composeEventHandlers(contentProps.onPointerDown, (event) => {
             // contain text selection to this layer
             if (event.currentTarget.contains(event.target as HTMLElement)) {

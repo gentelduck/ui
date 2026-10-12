@@ -1,7 +1,9 @@
 import { describe, expect, test } from 'bun:test'
 import * as React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { SidebarTrigger } from '../sidebar'
+import { DirectionProvider } from '../../direction'
+import { Sidebar, SidebarTrigger } from '../sidebar'
+import { getPhysicalSidebarSide } from '../sidebar.constants'
 import { SidebarContext } from '../sidebar.hooks'
 
 const sidebarContextValue = {
@@ -35,5 +37,28 @@ describe('registry-ui sidebar', () => {
     )
 
     expect(html).toContain('lucide-panel-left')
+  })
+
+  test('getPhysicalSidebarSide treats `side` as flow-relative', () => {
+    expect(getPhysicalSidebarSide('left', 'ltr')).toBe('left')
+    expect(getPhysicalSidebarSide('right', 'ltr')).toBe('right')
+    expect(getPhysicalSidebarSide('left', 'rtl')).toBe('right')
+    expect(getPhysicalSidebarSide('right', 'rtl')).toBe('left')
+  })
+
+  test('Sidebar pins itself with logical insets so an RTL ancestor mirrors it', () => {
+    const html = renderToStaticMarkup(
+      <DirectionProvider dir="rtl">
+        <SidebarContext.Provider value={{ ...sidebarContextValue, dir: 'rtl' }}>
+          <Sidebar>content</Sidebar>
+        </SidebarContext.Provider>
+      </DirectionProvider>,
+    )
+
+    expect(html).toContain('data-side="left"')
+    expect(html).toContain('dir="rtl"')
+    expect(html).toContain('data-[side=left]:start-0')
+    expect(html).toContain('group-data-[side=left]:border-e')
+    expect(html).not.toContain('data-[side=left]:left-0')
   })
 })

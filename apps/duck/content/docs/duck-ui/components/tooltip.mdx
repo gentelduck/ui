@@ -185,15 +185,17 @@ Use `arrowPadding` to match the content's `border-radius` so the arrow never sli
 
 ## RTL Support
 
-Set `dir="rtl"` on `Tooltip` for a local override, or set `DirectionProvider` once at app/root level for global direction. This mirrors tooltip positioning in right-to-left layouts.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the tooltip follows. The portaled content gets the resolved `dir`, and `side="left"`/`side="right"` and `align="start"`/`align="end"` mirror with it.
 
 ```tsx
-<TooltipProvider>
-  <Tooltip dir="rtl">
-    <TooltipTrigger>مرر الماوس</TooltipTrigger>
-    <TooltipContent>نص التلميح</TooltipContent>
-  </Tooltip>
-</TooltipProvider>
+<DirectionProvider dir="rtl">
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger>مرّر المؤشر</TooltipTrigger>
+      <TooltipContent>نص التلميح</TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+</DirectionProvider>
 ```
 
 <ComponentPreview
@@ -243,7 +245,7 @@ Requires the `motion` package. Use `MotionTooltip` instead of `Tooltip` and `Mot
 | `onOpenChange` | `(open: boolean) => void` | - | Callback when open state changes |
 | `delayDuration` | `number` | `700` | Per-tooltip delay override |
 | `disableHoverableContent` | `boolean` | `false` | Per-tooltip hover-content behavior override |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `...props` | `React.ComponentPropsWithRef<typeof TooltipPrimitive.Root>` | - | Additional root props |
 
 ### TooltipTrigger

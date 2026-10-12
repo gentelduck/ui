@@ -28,52 +28,53 @@ export default function Demo() {
           <InputGroup>
             <InputGroupInput placeholder="تصفية السجلات..." />
             <InputGroupAddon>
-              <FilterIcon />
+              <FilterIcon aria-hidden="true" />
             </InputGroupAddon>
-            <InputGroupAddon align="inline-end">24 سجل</InputGroupAddon>
+            <InputGroupAddon align="inline-end">24 سجلًا</InputGroupAddon>
           </InputGroup>
           <InputGroup>
-            <InputGroupInput className="!pr-1" placeholder="github.com/acme/repo" />
+            <InputGroupInput inputMode="decimal" placeholder="0.00" />
             <InputGroupAddon>
-              <InputGroupText>git clone </InputGroupText>
+              <InputGroupText>المبلغ</InputGroupText>
             </InputGroupAddon>
             <InputGroupAddon align="inline-end">
+              <InputGroupText>ر.س</InputGroupText>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <InputGroupButton aria-label="Info" className="rounded-full" size="icon-xs">
+                  <InputGroupButton aria-label="معلومات" className="rounded-full" size="icon-xs">
                     <IconInfoCircle aria-hidden="true" />
                   </InputGroupButton>
                 </TooltipTrigger>
-                <TooltipContent>سيتم استنساخ المستودع الى ~/projects.</TooltipContent>
+                <TooltipContent>المبلغ شامل ضريبة القيمة المضافة.</TooltipContent>
               </Tooltip>
             </InputGroupAddon>
           </InputGroup>
           <InputGroup>
-            <InputGroupTextarea placeholder="صف مشكلتك..." />
+            <InputGroupTextarea placeholder="اشرح مشكلتك..." />
             <InputGroupAddon align="block-end">
-              <InputGroupButton aria-label="Attach file" className="rounded-full" size="icon-xs" variant="outline">
+              <InputGroupButton aria-label="إرفاق ملف" className="rounded-full" size="icon-xs" variant="outline">
                 <IconPaperclip aria-hidden="true" />
               </InputGroupButton>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <InputGroupButton variant="ghost">منخفض</InputGroupButton>
+                  <InputGroupButton variant="ghost">منخفضة</InputGroupButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="[--radius:0.95rem]" side="top">
-                  <DropdownMenuItem>منخفض</DropdownMenuItem>
-                  <DropdownMenuItem>متوسط</DropdownMenuItem>
-                  <DropdownMenuItem>عالي</DropdownMenuItem>
+                  <DropdownMenuItem>منخفضة</DropdownMenuItem>
+                  <DropdownMenuItem>متوسطة</DropdownMenuItem>
+                  <DropdownMenuItem>عالية</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <InputGroupText className="mr-auto">3 مرفقات</InputGroupText>
+              <InputGroupText className="ms-auto">3 مرفقات</InputGroupText>
               <Separator className="!h-4" orientation="vertical" />
               <InputGroupButton className="rounded-full" disabled size="icon-xs" variant="default">
                 <ArrowUpIcon aria-hidden="true" />
-                <span className="sr-only">ارسال</span>
+                <span className="sr-only">إرسال</span>
               </InputGroupButton>
             </InputGroupAddon>
           </InputGroup>
           <InputGroup>
-            <InputGroupInput placeholder="team-alpha" />
+            <InputGroupInput placeholder="فريق ألفا" />
             <InputGroupAddon align="inline-end">
               <div className="flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <IconCheck className="size-3" />

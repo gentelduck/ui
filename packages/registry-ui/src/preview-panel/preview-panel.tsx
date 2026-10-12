@@ -107,6 +107,9 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, IPreviewPanelProps>(
       onStateChange,
       syncState,
       dir,
+      zoomInText,
+      zoomOutText,
+      resetText,
       ...rest
     },
     ref,
@@ -359,7 +362,15 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, IPreviewPanelProps>(
         {...rest}>
         {showControls && (
           <div className="absolute end-3 top-3 z-10">
-            <ZoomControls onZoomIn={handleZoomIn} onZoomOut={handleZoomOut} onReset={handleReset} zoom={displayZoom} />
+            <ZoomControls
+              onReset={handleReset}
+              onZoomIn={handleZoomIn}
+              onZoomOut={handleZoomOut}
+              resetText={resetText}
+              zoom={displayZoom}
+              zoomInText={zoomInText}
+              zoomOutText={zoomOutText}
+            />
           </div>
         )}
         <div

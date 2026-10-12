@@ -7,8 +7,16 @@ import React from 'react'
 import { Toaster as Sonner, type ToasterProps } from 'sonner'
 import { toDirection } from '../direction/direction.libs'
 
+/** Left and right corners mirror in RTL, like every other physical side in the library. */
+function mirrorPosition(position: NonNullable<ToasterProps['position']>, dir: 'ltr' | 'rtl') {
+  if (dir !== 'rtl') return position
+  if (position.endsWith('-left')) return position.replace('-left', '-right') as typeof position
+  if (position.endsWith('-right')) return position.replace('-right', '-left') as typeof position
+  return position
+}
+
 const Toaster = React.forwardRef<React.ComponentRef<typeof Sonner>, ToasterProps>(
-  ({ dir, className, ...props }, ref) => {
+  ({ dir, className, position, ...props }, ref) => {
     const { theme = 'system' } = useTheme()
     const direction = useDirection(toDirection(dir))
 
@@ -17,6 +25,7 @@ const Toaster = React.forwardRef<React.ComponentRef<typeof Sonner>, ToasterProps
         ref={ref}
         className={cn('toaster group [&_li>div]:w-full', className)}
         dir={direction}
+        position={mirrorPosition(position ?? 'bottom-right', direction)}
         style={
           {
             '--normal-bg': 'var(--popover)',

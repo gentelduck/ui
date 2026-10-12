@@ -1,6 +1,7 @@
 import { describe, expect, it, mock } from 'bun:test'
 import { fireEvent, render } from '@testing-library/react'
 import * as React from 'react'
+import { DirectionProvider } from '../../direction'
 import {
   Dialog,
   DialogClose,
@@ -165,5 +166,26 @@ describe('Dialog', () => {
       </Dialog>,
     )
     expect(ref.current).toBeInstanceOf(HTMLButtonElement)
+  })
+
+  // --- Direction ---
+
+  it('portaled overlay and content inherit dir from DirectionProvider', () => {
+    const { baseElement, unmount } = render(
+      <DirectionProvider dir="rtl">
+        <Dialog defaultOpen>
+          <DialogPortal>
+            <DialogOverlay data-testid="dir-overlay" />
+            <DialogContent data-testid="dir-content">
+              <DialogTitle>Title</DialogTitle>
+              <DialogDescription>Description</DialogDescription>
+            </DialogContent>
+          </DialogPortal>
+        </Dialog>
+      </DirectionProvider>,
+    )
+    expect(baseElement.querySelector('[data-testid="dir-overlay"]')?.getAttribute('dir')).toBe('rtl')
+    expect(baseElement.querySelector('[data-testid="dir-content"]')?.getAttribute('dir')).toBe('rtl')
+    unmount()
   })
 })

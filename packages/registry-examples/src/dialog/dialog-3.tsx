@@ -21,25 +21,25 @@ export default function Demo() {
           <DialogTrigger asChild>
             <Button variant={'outline'}>فتح النافذة</Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[425px]" closeText="إغلاق">
             <DialogHeader>
               <DialogTitle>تعديل الملف الشخصي</DialogTitle>
-              <DialogDescription>قم باجراء التعديلات على ملفك الشخصي هنا. انقر على حفظ عند الانتهاء.</DialogDescription>
+              <DialogDescription>عدّل بيانات ملفك الشخصي هنا، ثم اضغط على حفظ عند الانتهاء.</DialogDescription>
             </DialogHeader>
 
             <div className="grid gap-4">
               <div className="grid gap-3">
                 <Label htmlFor="name-1">الاسم</Label>
-                <Input defaultValue="احمد خالد" id="name-1" name="name" />
+                <Input defaultValue="أحمد خالد" id="name-1" name="name" />
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="username-1">اسم المستخدم</Label>
-                <Input defaultValue="@ahmad" id="username-1" name="username" />
+                <Input defaultValue="ahmad_khaled" id="username-1" name="username" />
               </div>
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant={'outline'}>الغاء</Button>
+                <Button variant={'outline'}>إلغاء</Button>
               </DialogClose>
               <Button type="submit">حفظ التغييرات</Button>
             </DialogFooter>

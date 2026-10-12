@@ -129,7 +129,7 @@ Style the trigger to appear active while the select dropdown is open using `data
 
 ## RTL Support
 
-Set `dir="rtl"` on `Select` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the select follows. The portaled listbox gets the resolved `dir`, so text, the check indicator, and alignment mirror without any extra props.
 
 <ComponentPreview
   name="select-4"
@@ -170,7 +170,7 @@ The root component that manages open/closed state, value state, and provides con
 | `open` | `boolean` | - | Controlled open state |
 | `defaultOpen` | `boolean` | `false` | Initial open state (uncontrolled) |
 | `onOpenChange` | `(open: boolean) => void` | - | Callback fired when dropdown open state changes |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `name` | `string` | - | Name attribute for native form submission |
 | `disabled` | `boolean` | - | Disables the entire select |
 | `required` | `boolean` | - | Marks the select as required for form validation |

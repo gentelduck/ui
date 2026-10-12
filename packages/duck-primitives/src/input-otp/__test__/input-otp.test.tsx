@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'bun:test'
-import { render } from '@testing-library/react'
+import { act, fireEvent, render } from '@testing-library/react'
 import * as React from 'react'
+import { DirectionProvider } from '../../direction'
 import { InputOTP, InputOTPGroup, InputOTPSlot, REGEXP_ONLY_DIGITS } from '../index'
+
+const nextTick = () => act(() => new Promise<void>((resolve) => setTimeout(resolve, 0)))
 
 describe('InputOTP', () => {
   it('renders with data-slot="input-otp"', () => {
@@ -125,5 +128,45 @@ describe('InputOTP', () => {
       </InputOTP>,
     )
     expect(container.querySelector('[data-slot="input-otp"]')?.getAttribute('dir')).toBe('ltr')
+  })
+
+  it('ArrowRight moves to the next slot in LTR', async () => {
+    const { container } = render(
+      <InputOTP maxLength={3}>
+        <InputOTPGroup>
+          <InputOTPSlot />
+          <InputOTPSlot />
+          <InputOTPSlot />
+        </InputOTPGroup>
+      </InputOTP>,
+    )
+    const slots = container.querySelectorAll('input')
+    slots[1]!.focus()
+    fireEvent.keyDown(slots[1]!, { key: 'ArrowRight' })
+    await nextTick()
+    expect(document.activeElement).toBe(slots[2]!)
+  })
+
+  it('flips arrow navigation under a DirectionProvider without a dir prop', async () => {
+    const { container } = render(
+      <DirectionProvider dir="rtl">
+        <InputOTP maxLength={3}>
+          <InputOTPGroup>
+            <InputOTPSlot />
+            <InputOTPSlot />
+            <InputOTPSlot />
+          </InputOTPGroup>
+        </InputOTP>
+      </DirectionProvider>,
+    )
+    expect(container.querySelector('[data-slot="input-otp"]')?.getAttribute('dir')).toBe('rtl')
+    const slots = container.querySelectorAll('input')
+    slots[1]!.focus()
+    fireEvent.keyDown(slots[1]!, { key: 'ArrowLeft' })
+    await nextTick()
+    expect(document.activeElement).toBe(slots[2]!)
+    fireEvent.keyDown(slots[2]!, { key: 'ArrowRight' })
+    await nextTick()
+    expect(document.activeElement).toBe(slots[1]!)
   })
 })

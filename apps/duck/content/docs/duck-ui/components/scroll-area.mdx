@@ -125,7 +125,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the scroll area follows it. No `dir` prop or `rtl:` classes needed.
 
 <ComponentPreview
   name="scroll-area-3"
@@ -158,7 +158,7 @@ Requires the `motion` package. Use `MotionScrollArea` instead of `ScrollArea`. S
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `viewportRef` | `React.Ref<HTMLDivElement>` | - | Ref forwarded to the inner scrollable viewport element |
 | `viewportClassName` | `string` | `--` | Additional CSS classes for the inner scrollable viewport |
 | `className` | `string` | `--` | Additional CSS classes for the outer container |

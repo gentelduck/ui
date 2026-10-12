@@ -88,13 +88,13 @@ const MotionAccordionTrigger = React.forwardRef<
             initial={content.initial}
             animate={content.animate}
             transition={content.transition}
-            className="flex-1 text-left">
+            className="flex-1 text-start">
             {children}
           </m.span>
           <m.span
             animate={{ rotate: open ? 180 : 0 }}
             transition={tweenExpand}
-            className="ml-2 [&>svg:not([class*='size-'])]:size-4 [&>svg]:shrink-0"
+            className="ms-2 [&>svg:not([class*='size-'])]:size-4 [&>svg]:shrink-0"
             data-slot="accordion-icon">
             {icon ? icon : <ChevronDown aria-hidden="true" />}
           </m.span>

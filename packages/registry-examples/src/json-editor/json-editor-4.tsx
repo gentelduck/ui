@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@gentleduck/registry-ui/button'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import type { JsonEditorText } from '@gentleduck/registry-ui/json-editor'
 import { JsonTextareaField } from '@gentleduck/registry-ui/json-editor'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -49,7 +50,7 @@ export default function Demo() {
   function onSubmit(values: JsonEditorValues) {
     toast('تم حفظ الإعدادات', {
       description: (
-        <pre dir="ltr" className="max-w-[560px] overflow-x-auto rounded-md border bg-muted p-3 text-left text-xs">
+        <pre className="max-w-[560px] overflow-x-auto rounded-md border bg-muted p-3 text-xs" dir="ltr">
           {JSON.stringify(values.settings, null, 2)}
         </pre>
       ),
@@ -57,32 +58,33 @@ export default function Demo() {
   }
 
   return (
-    <FormProvider {...form}>
-      <form className="w-full max-w-2xl space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-        <JsonTextareaField
-          control={form.control}
-          description={'قم بتعديل إعدادات التطبيق بصيغة JSON صالحة.'}
-          dir="rtl"
-          label={'الإعدادات'}
-          lang="ar"
-          name="settings"
-          rows={14}
-          sheetTitle={'تعديل إعدادات JSON'}
-          text={AR_TEXT}
-        />
+    <DirectionProvider dir="rtl">
+      <FormProvider {...form}>
+        <form className="w-full max-w-2xl space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <JsonTextareaField
+            control={form.control}
+            description={'قم بتعديل إعدادات التطبيق بصيغة JSON صالحة.'}
+            label={'الإعدادات'}
+            lang="ar"
+            name="settings"
+            rows={14}
+            sheetTitle={'تعديل إعدادات JSON'}
+            text={AR_TEXT}
+          />
 
-        <div className="flex items-center justify-end gap-2" dir="rtl">
-          <Button type="submit">{'حفظ الإعدادات'}</Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              form.reset({ settings: DEFAULT_SETTINGS })
-            }}>
-            {'إعادة تعيين'}
-          </Button>
-        </div>
-      </form>
-    </FormProvider>
+          <div className="flex items-center justify-end gap-2">
+            <Button type="submit">{'حفظ الإعدادات'}</Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                form.reset({ settings: DEFAULT_SETTINGS })
+              }}>
+              {'إعادة تعيين'}
+            </Button>
+          </div>
+        </form>
+      </FormProvider>
+    </DirectionProvider>
   )
 }

@@ -1,5 +1,10 @@
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Slider } from '@gentleduck/registry-ui/slider'
 
 export default function Demo() {
-  return <Slider defaultValue={[75]} max={100} step={1} className="mx-auto w-full max-w-xs" dir="rtl" />
+  return (
+    <DirectionProvider dir="rtl">
+      <Slider className="mx-auto w-full max-w-xs" defaultValue={[75]} max={100} step={1} />
+    </DirectionProvider>
+  )
 }

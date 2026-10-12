@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { render } from '@testing-library/react'
+import { act, render } from '@testing-library/react'
 import * as React from 'react'
 import { DirectionProvider, useDirection } from '../direction'
 
@@ -41,5 +41,27 @@ describe('IDirection.Kind', () => {
     const wrapper = container.querySelector('div[dir="rtl"]')
     expect(wrapper).not.toBeNull()
     expect(wrapper?.style.direction).toBe('rtl')
+    expect(wrapper?.style.display).toBe('contents')
+  })
+
+  it('falls back to the html dir attribute and follows changes', () => {
+    document.documentElement.dir = 'rtl'
+    try {
+      const { container } = render(<DirectionDisplay />)
+      expect(container.querySelector('[data-testid="dir"]')?.textContent).toBe('rtl')
+    } finally {
+      document.documentElement.removeAttribute('dir')
+    }
+  })
+
+  it('re-renders when the html dir attribute changes', async () => {
+    const { container } = render(<DirectionDisplay />)
+    expect(container.querySelector('[data-testid="dir"]')?.textContent).toBe('ltr')
+    await act(async () => {
+      document.documentElement.dir = 'rtl'
+      await new Promise((resolve) => setTimeout(resolve, 0))
+    })
+    expect(container.querySelector('[data-testid="dir"]')?.textContent).toBe('rtl')
+    document.documentElement.removeAttribute('dir')
   })
 })

@@ -266,6 +266,8 @@ When `loading` is `true`, `Button` renders a `lucide-react` `<Loader />` with `a
 
 ## RTL Support
 
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `Button` follows it: `icon` sits at the start and `secondIcon` at the end. Icons you pass render as-is, so choose ones that point the right way, such as `ChevronRight` for "Previous" in RTL.
+
 <ComponentPreview
   name="button-21"
   description="button with RTL direction support"

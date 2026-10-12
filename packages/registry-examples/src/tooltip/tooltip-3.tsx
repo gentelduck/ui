@@ -8,11 +8,11 @@ export default function Demo() {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="outline">{'تمرير'}</Button>
+            <Button variant="outline">مرّر المؤشر</Button>
           </TooltipTrigger>
 
           <TooltipContent>
-            <p>{'أضف إلى المكتبة'}</p>
+            <p>أضف إلى المكتبة</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

@@ -51,6 +51,9 @@ export const TAILWINDCSS_BOILERPLATE = `@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+/* Nearest dir wins, so an LTR section inside an RTL page drops rtl: styles. Attribute selectors only: the CSS optimizer rewrites :dir() to :lang(). */
+@custom-variant rtl (&:where([dir="rtl"], [dir="rtl"] *):not(:where([dir="ltr"], [dir="rtl"] [dir="ltr"] *)));
+@custom-variant ltr (&:not(:where([dir="rtl"], [dir="rtl"] *):not(:where([dir="ltr"], [dir="rtl"] [dir="ltr"] *))));
 `
 
 export const BASE_LAYER_STYLES = `@layer base {

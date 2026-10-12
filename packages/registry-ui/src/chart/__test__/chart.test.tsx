@@ -2,6 +2,7 @@ import { describe, expect, test } from 'bun:test'
 import * as React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { Bar, BarChart, XAxis } from 'recharts'
+import { DirectionProvider } from '../../direction'
 import { ChartContainer } from '../chart'
 
 const data = [{ name: 'alpha', value: 12 }]
@@ -71,5 +72,20 @@ describe('registry-ui chart', () => {
     expect(html).not.toContain('[data-chart=x]')
     // The safe entry is still emitted.
     expect(html).toContain('--color-value: #aabbcc;')
+  })
+
+  test('ChartContainer follows the surrounding direction and keeps SVG labels anchored in RTL', () => {
+    const html = renderToStaticMarkup(
+      <DirectionProvider dir="rtl">
+        <ChartContainer config={{ value: { color: 'hsl(var(--chart-1))', label: 'Value' } }}>
+          <BarChart data={data}>
+            <Bar dataKey="value" />
+          </BarChart>
+        </ChartContainer>
+      </DirectionProvider>,
+    )
+
+    expect(html).toContain('dir="rtl"')
+    expect(html).toContain('rtl:[&amp;_text[text-anchor=end]]:[text-anchor:start]')
   })
 })

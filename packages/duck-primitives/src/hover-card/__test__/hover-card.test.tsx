@@ -1,7 +1,8 @@
 import { describe, expect, it, mock } from 'bun:test'
 import { fireEvent, render } from '@testing-library/react'
 import * as React from 'react'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '../index'
+import { DirectionProvider } from '../../direction'
+import { HoverCard, HoverCardContent, HoverCardPortal, HoverCardTrigger } from '../index'
 
 function renderHoverCard(props: Record<string, unknown> = {}) {
   return render(
@@ -75,5 +76,33 @@ describe('HoverCard', () => {
   it('open=false shows data-state closed', () => {
     const { container } = renderHoverCard({ open: false })
     expect(container.querySelector('[data-slot="hover-card-trigger"]')?.getAttribute('data-state')).toBe('closed')
+  })
+
+  it('portaled content inherits dir from DirectionProvider', () => {
+    const { baseElement, unmount } = render(
+      <DirectionProvider dir="rtl">
+        <HoverCard open>
+          <HoverCardTrigger href="#">Hover target</HoverCardTrigger>
+          <HoverCardPortal>
+            <HoverCardContent data-testid="dir-content">Card content</HoverCardContent>
+          </HoverCardPortal>
+        </HoverCard>
+      </DirectionProvider>,
+    )
+    expect(baseElement.querySelector('[data-testid="dir-content"]')?.getAttribute('dir')).toBe('rtl')
+    unmount()
+  })
+
+  it('an explicit dir on content overrides the inherited one', () => {
+    const { baseElement, unmount } = render(
+      <HoverCard dir="rtl" open>
+        <HoverCardTrigger href="#">Hover target</HoverCardTrigger>
+        <HoverCardContent data-testid="dir-content" dir="ltr">
+          Card content
+        </HoverCardContent>
+      </HoverCard>,
+    )
+    expect(baseElement.querySelector('[data-testid="dir-content"]')?.getAttribute('dir')).toBe('ltr')
+    unmount()
   })
 })

@@ -11,6 +11,7 @@ import {
   useFloating,
 } from '@floating-ui/react-dom'
 import * as React from 'react'
+import { useDirection } from '../direction'
 import { useCallbackRef } from '../hooks/use-callback-ref'
 import { useLayoutEffect } from '../hooks/use-layout-effect'
 import { useSize } from '../hooks/use-size'
@@ -55,7 +56,13 @@ export const PopperContent = React.forwardRef<PopperContentElement, IPopper.ICon
     const arrowWidth = arrowSize?.width ?? 0
     const arrowHeight = arrowSize?.height ?? 0
 
-    const desiredPlacement = (side + (align !== 'center' ? `-${align}` : '')) as Placement
+    // `left`/`right` mirror in RTL, like every other physical side in the library.
+    const direction = useDirection(
+      contentProps.dir === 'rtl' || contentProps.dir === 'ltr' ? contentProps.dir : undefined,
+    )
+    const placementSide =
+      direction === 'rtl' && side === 'left' ? 'right' : direction === 'rtl' && side === 'right' ? 'left' : side
+    const desiredPlacement = (placementSide + (align !== 'center' ? `-${align}` : '')) as Placement
 
     const collisionPadding =
       typeof collisionPaddingProp === 'number'
@@ -181,8 +188,8 @@ function isNotNull<T>(value: T | null): value is T {
 const transformOrigin = (options: { arrowWidth: number; arrowHeight: number }): Middleware => ({
   name: 'transformOrigin',
   options,
-  fn(data) {
-    const { placement, rects, middlewareData } = data
+  async fn(data) {
+    const { placement, rects, middlewareData, platform, elements } = data
 
     const cannotCenterArrow = middlewareData.arrow?.centerOffset !== 0
     const isArrowHidden = cannotCenterArrow
@@ -191,7 +198,11 @@ const transformOrigin = (options: { arrowWidth: number; arrowHeight: number }): 
     const arrowHeight = isArrowHidden ? 0 : options.arrowHeight
 
     const [placedSide, placedAlign] = getSideAndAlignFromPlacement(placement)
-    const noArrowAlign = { start: '0%', center: '50%', end: '100%' }[placedAlign]
+    // Floating UI aligns `start`/`end` to the right/left edge on top/bottom placements in RTL.
+    const isRTL = (await platform.isRTL?.(elements.floating)) ?? false
+    const isVertical = placedSide === 'top' || placedSide === 'bottom'
+    const [startOrigin, endOrigin] = isRTL && isVertical ? ['100%', '0%'] : ['0%', '100%']
+    const noArrowAlign = { start: startOrigin, center: '50%', end: endOrigin }[placedAlign]
 
     const arrowXCenter = (middlewareData.arrow?.x ?? 0) + arrowWidth / 2
     const arrowYCenter = (middlewareData.arrow?.y ?? 0) + arrowHeight / 2

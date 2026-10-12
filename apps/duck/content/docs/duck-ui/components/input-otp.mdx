@@ -170,7 +170,7 @@ You can use the `value` and `onValueChange` props to control the input value.
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `InputOTP` follows it: the first slot is on the right and the Left/Right arrow keys flip. No `dir` prop needed.
 
 <ComponentPreview
   name="input-otp-7"

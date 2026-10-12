@@ -1,4 +1,6 @@
+import type { IDirection } from '@gentleduck/primitives/direction'
 import { cva } from '@gentleduck/variants'
+import type { ISidebarProps } from './sidebar.types'
 
 export const SIDEBAR_COOKIE_NAME = 'sidebar_state'
 export const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -17,6 +19,18 @@ export function persistSidebarOpen(open: boolean): void {
   const isSecure = typeof location !== 'undefined' && location.protocol === 'https:'
   const secure = isSecure ? '; Secure' : ''
   document.cookie = `${SIDEBAR_COOKIE_NAME}=${open}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; SameSite=Lax${secure}`
+}
+
+/**
+ * `side` is flow-relative: `left` is the inline-start edge, so it lands on the right in RTL.
+ * Returns the physical edge for the motion offsets, which only speak physical sides.
+ */
+export function getPhysicalSidebarSide(
+  side: NonNullable<ISidebarProps['side']>,
+  dir: IDirection.Kind,
+): NonNullable<ISidebarProps['side']> {
+  if (dir === 'ltr') return side
+  return side === 'left' ? 'right' : 'left'
 }
 
 export const sidebarMenuButtonVariants = cva(

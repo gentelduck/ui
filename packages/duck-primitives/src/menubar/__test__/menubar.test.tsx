@@ -1,7 +1,18 @@
-import { describe, expect, it, mock } from 'bun:test'
+import { afterEach, describe, expect, it, mock } from 'bun:test'
 import { fireEvent, render } from '@testing-library/react'
 import * as React from 'react'
-import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarPortal, MenubarTrigger } from '../index'
+import { DirectionProvider } from '../../direction'
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarPortal,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from '../index'
 
 function renderMenubar() {
   return render(
@@ -99,5 +110,107 @@ describe('Menubar', () => {
       </Menubar>,
     )
     expect(ref.current).toBeInstanceOf(HTMLDivElement)
+  })
+})
+
+const mounted: Array<() => void> = []
+
+function renderNestedMenubar(dir?: 'ltr' | 'rtl') {
+  const menubar = (
+    <Menubar>
+      <MenubarMenu value="archive">
+        <MenubarTrigger>Archive</MenubarTrigger>
+        <MenubarPortal>
+          <MenubarContent>
+            <MenubarItem>Create</MenubarItem>
+            <MenubarSub>
+              <MenubarSubTrigger>Forward</MenubarSubTrigger>
+              <MenubarPortal>
+                <MenubarSubContent>
+                  <MenubarItem>Mail</MenubarItem>
+                </MenubarSubContent>
+              </MenubarPortal>
+            </MenubarSub>
+          </MenubarContent>
+        </MenubarPortal>
+      </MenubarMenu>
+      <MenubarMenu value="modify">
+        <MenubarTrigger>Modify</MenubarTrigger>
+        <MenubarPortal>
+          <MenubarContent>
+            <MenubarItem>Revert</MenubarItem>
+          </MenubarContent>
+        </MenubarPortal>
+      </MenubarMenu>
+      <MenubarMenu value="display">
+        <MenubarTrigger>Display</MenubarTrigger>
+        <MenubarPortal>
+          <MenubarContent>
+            <MenubarItem>Magnify</MenubarItem>
+          </MenubarContent>
+        </MenubarPortal>
+      </MenubarMenu>
+    </Menubar>
+  )
+  const utils = render(dir ? <DirectionProvider dir={dir}>{menubar}</DirectionProvider> : menubar)
+  mounted.push(utils.unmount)
+  const triggerState = (label: string) =>
+    utils.getByText(label, { selector: '[data-slot="menubar-trigger"]' }).getAttribute('data-state')
+  fireEvent.keyDown(utils.getByText('Archive', { selector: '[data-slot="menubar-trigger"]' }), { key: 'Enter' })
+  return { ...utils, triggerState }
+}
+
+describe('Menubar keyboard direction', () => {
+  afterEach(() => {
+    for (const unmount of mounted.splice(0)) unmount()
+  })
+
+  it('moves to the next menu with ArrowRight in LTR', () => {
+    const { getByText, triggerState } = renderNestedMenubar()
+    fireEvent.keyDown(getByText('Create'), { key: 'ArrowRight' })
+    expect(triggerState('Modify')).toBe('open')
+  })
+
+  it('moves to the next menu with ArrowLeft in RTL', () => {
+    const { getByText, triggerState } = renderNestedMenubar('rtl')
+    fireEvent.keyDown(getByText('Create'), { key: 'ArrowLeft' })
+    expect(triggerState('Modify')).toBe('open')
+  })
+
+  it('moves to the previous menu with ArrowRight in RTL', () => {
+    const { getByText, triggerState } = renderNestedMenubar('rtl')
+    fireEvent.keyDown(getByText('Create'), { key: 'ArrowRight' })
+    expect(triggerState('Display')).toBe('open')
+  })
+
+  it('opens a submenu with ArrowLeft in RTL without leaving the menu', () => {
+    const { getByText, queryByText, triggerState } = renderNestedMenubar('rtl')
+    fireEvent.keyDown(getByText('Forward'), { key: 'ArrowLeft' })
+    expect(triggerState('Archive')).toBe('open')
+    expect(queryByText('Mail')).not.toBeNull()
+  })
+
+  it('places the submenu on the left in RTL', () => {
+    const { getByText } = renderNestedMenubar('rtl')
+    fireEvent.keyDown(getByText('Forward'), { key: 'ArrowLeft' })
+    const subContent = getByText('Mail').closest('[role="menu"]')
+    expect(subContent?.getAttribute('dir')).toBe('rtl')
+    expect(subContent?.getAttribute('data-side')).toBe('left')
+  })
+
+  it('closes a submenu with ArrowRight in RTL without leaving the menu', () => {
+    const { getByText, queryByText, triggerState } = renderNestedMenubar('rtl')
+    fireEvent.keyDown(getByText('Forward'), { key: 'ArrowLeft' })
+    fireEvent.keyDown(getByText('Mail'), { key: 'ArrowRight' })
+    expect(triggerState('Archive')).toBe('open')
+    expect(queryByText('Mail')).toBeNull()
+  })
+
+  it('closes a submenu with ArrowLeft in LTR without leaving the menu', () => {
+    const { getByText, queryByText, triggerState } = renderNestedMenubar()
+    fireEvent.keyDown(getByText('Forward'), { key: 'ArrowRight' })
+    fireEvent.keyDown(getByText('Mail'), { key: 'ArrowLeft' })
+    expect(triggerState('Archive')).toBe('open')
+    expect(queryByText('Mail')).toBeNull()
   })
 })

@@ -8,7 +8,7 @@ import { LazyMotion, m } from 'motion/react'
 import * as React from 'react'
 import { toDirection } from '../direction/direction.libs'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../sheet'
-import { SIDEBAR_WIDTH_MOBILE } from './sidebar.constants'
+import { getPhysicalSidebarSide, SIDEBAR_WIDTH_MOBILE } from './sidebar.constants'
 import { useSidebar } from './sidebar.hooks'
 import type { ISidebarProps } from './sidebar.types'
 
@@ -29,6 +29,7 @@ const MotionSidebar = React.forwardRef<HTMLDivElement, ISidebarProps>(
   ) => {
     const { isMobile, state, openMobile, setOpenMobile, open } = useSidebar()
     const direction = useDirection(toDirection(dir))
+    const physicalSide = getPhysicalSidebarSide(side, direction)
 
     if (collapsible === 'none') {
       return (
@@ -104,20 +105,20 @@ const MotionSidebar = React.forwardRef<HTMLDivElement, ISidebarProps>(
             animate={{
               width: containerWidth,
               ...(isOffcanvas
-                ? side === 'left'
+                ? physicalSide === 'left'
                   ? { left: 'calc(-16rem)' }
                   : { right: 'calc(-16rem)' }
-                : side === 'left'
+                : physicalSide === 'left'
                   ? { left: 0 }
                   : { right: 0 }),
             }}
             transition={springBouncy}
             className={cn(
               'fixed inset-y-0 z-10 hidden h-svh md:flex',
-              side === 'right' ? 'right-0' : 'left-0',
+              physicalSide === 'right' ? 'right-0' : 'left-0',
               variant === 'floating' || variant === 'inset'
                 ? 'p-2'
-                : cn(side === 'left' && 'border-r', side === 'right' && 'border-l'),
+                : cn(physicalSide === 'left' && 'border-r', physicalSide === 'right' && 'border-l'),
               className,
             )}>
             <div

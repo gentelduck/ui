@@ -1,5 +1,6 @@
 'use client'
 
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Progress } from '@gentleduck/registry-ui/progress'
 import * as React from 'react'
 
@@ -11,5 +12,9 @@ export default function Demo() {
     return () => clearTimeout(timer)
   }, [])
 
-  return <Progress className="w-[60%] rtl:rotate-180" value={progress} dir="rtl" />
+  return (
+    <DirectionProvider dir="rtl">
+      <Progress className="w-[60%]" value={progress} />
+    </DirectionProvider>
+  )
 }

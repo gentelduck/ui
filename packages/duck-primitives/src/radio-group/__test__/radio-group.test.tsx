@@ -1,7 +1,10 @@
 import { describe, expect, it, mock } from 'bun:test'
-import { fireEvent, render } from '@testing-library/react'
+import { act, fireEvent, render } from '@testing-library/react'
 import * as React from 'react'
+import { DirectionProvider } from '../../direction'
 import { RadioGroup, RadioGroupIndicator, RadioGroupItem } from '../index'
+
+const nextTick = () => act(() => new Promise<void>((resolve) => setTimeout(resolve, 0)))
 
 function renderRadioGroup(props: Record<string, unknown> = {}) {
   return render(
@@ -229,5 +232,31 @@ describe('RadioGroup', () => {
     const items = container.querySelectorAll('[role="radio"]')
     expect((items[0] as HTMLButtonElement).disabled).toBe(true)
     expect((items[1] as HTMLButtonElement).disabled).toBe(false)
+  })
+
+  it('flips horizontal arrow keys under a DirectionProvider without a dir prop', async () => {
+    const { container } = render(
+      <DirectionProvider dir="rtl">
+        <RadioGroup defaultValue="b" orientation="horizontal">
+          <RadioGroupItem value="a" />
+          <RadioGroupItem value="b" />
+          <RadioGroupItem value="c" />
+        </RadioGroup>
+      </DirectionProvider>,
+    )
+    expect(container.querySelector('[role="radiogroup"]')?.getAttribute('dir')).toBe('rtl')
+    const items = container.querySelectorAll<HTMLButtonElement>('[role="radio"]')
+    // Assert the first focus target: focus traps left open by other suites can pull focus away afterwards.
+    const focused: Element[] = []
+    for (const item of items) item.addEventListener('focus', () => focused.push(item))
+    items[1]!.focus()
+    focused.length = 0
+    fireEvent.keyDown(items[1]!, { key: 'ArrowLeft' })
+    await nextTick()
+    expect(focused[0]).toBe(items[2]!)
+    focused.length = 0
+    fireEvent.keyDown(items[2]!, { key: 'ArrowRight' })
+    await nextTick()
+    expect(focused[0]).toBe(items[1]!)
   })
 })

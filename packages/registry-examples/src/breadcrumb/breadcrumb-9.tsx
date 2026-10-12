@@ -7,6 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@gentleduck/registry-ui/breadcrumb'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +18,7 @@ import Link from 'next/link'
 
 export default function Demo() {
   return (
-    <div dir="rtl">
+    <DirectionProvider dir="rtl">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -30,7 +31,7 @@ export default function Demo() {
             <DropdownMenu onOpenChange={() => {}}>
               <DropdownMenuTrigger className="flex items-center gap-1">
                 <BreadcrumbEllipsis className="size-4" />
-                <span className="sr-only">تبديل القائمة</span>
+                <span className="sr-only">عرض المزيد من الصفحات</span>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" side="top">
                 <DropdownMenuItem>التوثيق</DropdownMenuItem>
@@ -51,6 +52,6 @@ export default function Demo() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-    </div>
+    </DirectionProvider>
   )
 }

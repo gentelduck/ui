@@ -2,6 +2,7 @@
 
 import { Button } from '@gentleduck/registry-ui/button'
 import { CommandShortcut } from '@gentleduck/registry-ui/command'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gentleduck/registry-ui/tooltip'
 import { ArrowBigUpDash, Command } from 'lucide-react'
 import React from 'react'
@@ -11,7 +12,7 @@ export default function Demo() {
   const [open, setOpen] = React.useState<boolean>(false)
 
   return (
-    <div dir="rtl">
+    <DirectionProvider dir="rtl">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -41,6 +42,6 @@ export default function Demo() {
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-    </div>
+    </DirectionProvider>
   )
 }

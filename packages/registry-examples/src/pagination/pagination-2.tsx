@@ -1,3 +1,4 @@
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import {
   Pagination,
   PaginationContent,
@@ -10,34 +11,36 @@ import {
 
 export default function Demo() {
   return (
-    <Pagination dir="rtl">
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious href="#" text="السابق" />
-        </PaginationItem>
+    <DirectionProvider dir="rtl">
+      <Pagination aria-label="التنقل بين الصفحات">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious aria-label="الانتقال إلى الصفحة السابقة" href="#" text="السابق" />
+          </PaginationItem>
 
-        <PaginationItem>
-          <PaginationLink href="#">١</PaginationLink>
-        </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#">١</PaginationLink>
+          </PaginationItem>
 
-        <PaginationItem>
-          <PaginationLink href="#" isActive>
-            ٢
-          </PaginationLink>
-        </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#" isActive>
+              ٢
+            </PaginationLink>
+          </PaginationItem>
 
-        <PaginationItem>
-          <PaginationLink href="#">٣</PaginationLink>
-        </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#">٣</PaginationLink>
+          </PaginationItem>
 
-        <PaginationItem>
-          <PaginationEllipsis text="صفحات أخرى" />
-        </PaginationItem>
+          <PaginationItem>
+            <PaginationEllipsis text="صفحات أخرى" />
+          </PaginationItem>
 
-        <PaginationItem>
-          <PaginationNext href="#" text="التالي" />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
+          <PaginationItem>
+            <PaginationNext aria-label="الانتقال إلى الصفحة التالية" href="#" text="التالي" />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </DirectionProvider>
   )
 }

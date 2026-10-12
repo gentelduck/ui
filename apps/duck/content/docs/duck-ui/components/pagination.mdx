@@ -147,7 +147,7 @@ const PaginationLink = ({...props }: ) => (
 
 ## RTL Support
 
-Use the `text` prop on `PaginationPrevious`, `PaginationNext`, and `PaginationEllipsis` to provide translated labels. Set `dir="rtl"` on `Pagination` for a local override, or set `DirectionProvider` once at app/root level for global direction. Keep markup in logical order (`Previous`, pages, `Next`): visual mirroring is handled automatically.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the pagination mirrors itself: keep markup in logical order (`Previous`, pages, `Next`) and the chevrons flip automatically. Use the `text` and `aria-label` props on `PaginationPrevious`, `PaginationNext`, and `PaginationEllipsis` to translate the labels.
 
 <ComponentPreview
   name="pagination-2"
@@ -180,7 +180,7 @@ Requires the `motion` package. Use the `Motion*` variants instead of the base co
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | `--` | Additional CSS classes for the `nav` element |
 | `...props` | `React.ComponentPropsWithoutRef<'nav'>` | - | Additional props to spread to the nav element |
 
@@ -246,7 +246,7 @@ Extends `PaginationLink` with `aria-label="Go to next page"`, text "Next", and r
 | `left` | `React.ComponentPropsWithoutRef<typeof Button>` | - | Props for the "Previous" button |
 | `maxLeft` | `React.ComponentPropsWithoutRef<typeof Button>` | - | Props for the "First" button |
 
-You can pass `dir: 'rtl'` through `wrapper` to make wrapper controls direction-aware:
+The wrapper follows `DirectionProvider` (or `<html dir>`) like the other parts. Pass `dir` through `wrapper` only to override it locally:
 
 ```tsx
 <PaginationWrapper wrapper={{ dir: 'rtl' }} />

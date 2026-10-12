@@ -69,10 +69,13 @@ const MenubarContent = React.forwardRef<MenubarContentElement, IMenubar.IContent
                 target.closest('[data-gentleduck-menubar-subtrigger]') !== null
               const isKeyDownInsideSubMenu = target.closest('[role="menu"]') !== event.currentTarget
 
-              const isPrevKey = event.key === 'ArrowLeft' || event.key === 'h'
-              const isNextKey = event.key === 'ArrowRight' || event.key === 'l'
+              const isLeftKey = event.key === 'ArrowLeft' || event.key === 'h'
+              const isPrevKey = context.dir === 'rtl' ? !isLeftKey : isLeftKey
+              const isNextKey = !isPrevKey
 
               if (isNextKey && targetIsSubTrigger && !isKeyDownInsideSubMenu) return
+              // the sub content closes itself on the prev arrow; stay on the current menu
+              if (isPrevKey && isKeyDownInsideSubMenu && event.key.startsWith('Arrow')) return
 
               const items = getItems().filter((item) => !item.disabled)
               let candidateValues = items.map((item) => item.value)

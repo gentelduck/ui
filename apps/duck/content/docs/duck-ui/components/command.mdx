@@ -21,7 +21,7 @@ Command palettes are the power user's best friend  -  they surface every action 
 
 This component is built on top of the [@gentleduck/primitives](https://github.com/gentleeduck/gentleduck/tree/master/packages/duck-primitives) command primitive, following the same Radix-style context/collection pattern used by Select and other primitives. The registry-layer components are thin styling wrappers around the primitives.
 
-Direction (`dir`) is resolved once at the root `Command` primitive via `useDirection` and stored in context. Every child primitive  -  `CommandInput`, `CommandList`, `CommandItem`, `CommandGroup`, `CommandEmpty`, and `CommandSeparator`  -  reads `dir` from context and applies it to its DOM element automatically. Use local `dir` on `Command` when needed, or set `DirectionProvider` at app/root level for global direction.
+Direction (`dir`) is resolved once at the root `Command` primitive via `useDirection` and stored in context. Every child primitive  -  `CommandInput`, `CommandList`, `CommandItem`, `CommandGroup`, `CommandEmpty`, and `CommandSeparator`  -  reads `dir` from context and applies it to its DOM element automatically. Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the command follows.
 
 **Features:**
 
@@ -32,7 +32,7 @@ Direction (`dir`) is resolved once at the root `Command` primitive via `useDirec
 * **Typeahead Search:** Type printable characters to jump to matching items in the list.
 * **Custom Shortcuts:** Optional shortcut labels shown beside each command item.
 * **Empty State Handling:** Automatically displays a fallback when no items match the query.
-* **RTL Support:** Full right-to-left layout via local `dir` override or global `DirectionProvider`.
+* **RTL Support:** Follows the direction set once with `DirectionProvider` or `<html dir="rtl">`.
 * **Accessible & Composable:** ARIA roles (`listbox`, `option`, `combobox`, `status`) and headless architecture for complete flexibility.
 * **Responsive Design:** Adapts gracefully to different screen sizes and containers.
 * **Dialog or Inline Support:** Can be used as a floating dialog or embedded inline.
@@ -255,17 +255,19 @@ Per-item context. Available via `useCommandItemContext()`.
 
 ## RTL Support
 
-RTL is handled at the primitive layer. Set `dir="rtl"` on the root `Command` for a local override, or set `DirectionProvider` once at app/root level for global direction. Child primitives inherit direction automatically.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the command follows. Child primitives, including the ones inside `CommandDialog`, get the resolved `dir` automatically.
 
 ```tsx
-<Command dir="rtl">
-  <CommandInput placeholder="..." />
-  <CommandList>
-    <CommandGroup heading="...">
-      <CommandItem>...</CommandItem>
-    </CommandGroup>
-  </CommandList>
-</Command>
+<DirectionProvider dir="rtl">
+  <Command>
+    <CommandInput placeholder="..." />
+    <CommandList>
+      <CommandGroup heading="...">
+        <CommandItem>...</CommandItem>
+      </CommandGroup>
+    </CommandList>
+  </Command>
+</DirectionProvider>
 ```
 
 <ComponentPreview
@@ -299,7 +301,7 @@ Requires the `motion` package. Use `MotionCommandItem` instead of `CommandItem`.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`) and inherited by children. |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`) and inherited by children. |
 | `className` | `string` | - | Additional CSS classes applied to the command container |
 | `children` | `React.ReactNode` | - | Command content (`CommandInput`, `CommandList`, etc.) |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the root div |

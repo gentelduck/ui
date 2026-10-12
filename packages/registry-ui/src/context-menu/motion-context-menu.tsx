@@ -54,10 +54,9 @@ const MotionContextMenuContent = React.forwardRef<
           {...props}>
           <m.div
             className={cn(
-              'z-50 max-h-(--gentleduck-context-menu-content-available-height) min-w-32 overflow-y-auto overflow-x-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
+              'z-50 max-h-(--gentleduck-context-menu-content-available-height) min-w-32 origin-top-left overflow-y-auto overflow-x-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md rtl:origin-top-right',
               className,
             )}
-            style={{ transformOrigin: 'top left' }}
             initial={content.initial}
             animate={isOpen ? content.animate : { ...content.exit, pointerEvents: 'none' }}
             transition={content.transition}>

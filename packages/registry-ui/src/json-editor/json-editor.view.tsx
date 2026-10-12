@@ -72,7 +72,8 @@ export function JsonEditorView({
 
   return (
     <div className="overflow-hidden rounded-md border bg-background" data-slot="json-editor-shell" dir={direction}>
-      <div className="relative" data-slot="json-editor-container">
+      {/* JSON is LTR in any locale; the gutter shares that dir so it stays beside line starts, off the scrollbar. */}
+      <div className="relative" data-slot="json-editor-container" dir="ltr">
         {lineNumbers ? (
           <div className="absolute inset-y-0 start-0 w-12 border-e bg-muted/30" data-slot="json-editor-gutter">
             <pre

@@ -1,4 +1,5 @@
 import { Button } from '@gentleduck/registry-ui/button'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import {
   Empty,
   EmptyContent,
@@ -8,34 +9,32 @@ import {
   EmptyTitle,
 } from '@gentleduck/registry-ui/empty'
 import { IconInbox } from '@tabler/icons-react'
-import { ArrowUpRightIcon } from 'lucide-react'
+import { ArrowUpLeftIcon } from 'lucide-react'
 
 export default function Demo() {
   return (
-    <div dir="rtl">
+    <DirectionProvider dir="rtl">
       <Empty>
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <IconInbox />
           </EmptyMedia>
           <EmptyTitle>صندوق الوارد فارغ</EmptyTitle>
-          <EmptyDescription>
-            لا توجد رسائل في انتظارك. ستظهر المحادثات الجديدة هنا عندما يتواصل معك شخص ما.
-          </EmptyDescription>
+          <EmptyDescription>لا توجد رسائل جديدة. ستظهر هنا المحادثات الجديدة فور تواصل أحد معك.</EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
           <div className="flex gap-2">
-            <Button>كتابة رسالة</Button>
-            <Button variant="outline">عرض المؤرشف</Button>
+            <Button>رسالة جديدة</Button>
+            <Button variant="outline">عرض الأرشيف</Button>
           </div>
         </EmptyContent>
         <Button asChild className="text-muted-foreground" size="sm" variant="link">
           {/* biome-ignore lint/a11y/useValidAnchor: placeholder href in demo component */}
           <a href="#">
-            ادارة التفضيلات <ArrowUpRightIcon />
+            إدارة الإعدادات <ArrowUpLeftIcon />
           </a>
         </Button>
       </Empty>
-    </div>
+    </DirectionProvider>
   )
 }

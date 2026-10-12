@@ -199,10 +199,10 @@ The main `Sidebar` component used to render a collapsible sidebar.
 
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |
-| `side` | `'left' \| 'right'` | `'left'` | The side of the sidebar. |
+| `side` | `'left' \| 'right'` | `'left'` | The side of the sidebar. Flow-relative: `left` is the inline-start edge, so it sits on the right in RTL. |
 | `variant` | `'sidebar' \| 'floating' \| 'inset'` | `'sidebar'` | The variant of the sidebar. |
 | `collapsible` | `'offcanvas' \| 'icon' \| 'none'` | `'offcanvas'` | Collapsible state of the sidebar. |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection`. |
+| `dir` | `'ltr' \| 'rtl'` | - | Direction override. Defaults to the nearest `DirectionProvider`, then `<html dir>`. |
 | `mobileTitle` | `string` | `'Sidebar'` | Title for the mobile sheet dialog. |
 | `mobileDescription` | `string` | `'Displays the mobile sidebar.'` | Description for the mobile sheet dialog. |
 
@@ -620,7 +620,7 @@ Show an action when the menu button is active:
 
 ## RTL Support
 
-Set `dir="rtl"` on `Sidebar` for a local override, or set `DirectionProvider` once at app/root level for global direction. Trigger icon and rail positioning adjust automatically.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the sidebar follows. `side` is flow-relative: the default `left` is the inline-start edge, so in RTL the sidebar moves to the right together with its border, rail, collapse animation, mobile sheet, and trigger icon. `side="right"` puts it on the inline-end edge.
 
 <ComponentPreview
   name="sidebar-6"
@@ -629,9 +629,11 @@ Set `dir="rtl"` on `Sidebar` for a local override, or set `DirectionProvider` on
 />
 
 ```tsx
-<Sidebar dir="rtl" side="right">
-  {/* ... */}
-</Sidebar>
+<DirectionProvider dir="rtl">
+  <SidebarProvider>
+    <Sidebar>{/* ... */}</Sidebar>
+  </SidebarProvider>
+</DirectionProvider>
 ```
 
 ## Motion

@@ -118,7 +118,7 @@ import {
 
 ## RTL Support
 
-Set `dir="rtl"` on `ContextMenu` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the context menu follows. It opens to the left of the pointer, sub-menus open to the left, and the arrow keys that open and close sub-menus swap.
 
 <ComponentPreview name="context-menu-2" description="A context menu with RTL support." />
 
@@ -131,7 +131,7 @@ Set `dir="rtl"` on `ContextMenu` for a local override, or set `DirectionProvider
 Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 </Callout>
 
-Use `MotionContextMenu` and `MotionContextMenuContent` for smooth enter/exit animations powered by [motion](https://motion.dev). The transform origin is fixed to top-left since the menu appears at the cursor position. For animated sub-menus, use `MotionContextMenuSub` and `MotionContextMenuSubContent`.
+Use `MotionContextMenu` and `MotionContextMenuContent` for smooth enter/exit animations powered by [motion](https://motion.dev). The transform origin is fixed to the top corner at the cursor (top-left, or top-right in RTL). For animated sub-menus, use `MotionContextMenuSub` and `MotionContextMenuSubContent`.
 
 <ComponentPreview name="context-menu-3" description="A context menu with motion-powered spring animations." />
 
@@ -149,7 +149,7 @@ Components in this file wrap `@gentleduck/primitives/context-menu`.
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | - | Context menu content (trigger + menu content) |
 | `modal` | `boolean` | `true` | Whether interaction outside the menu is blocked while open |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `onOpenChange` | `(open: boolean) => void` | - | Callback fired when open state changes |
 | `...props` | `React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Root>` | - | Additional props inherited from `ContextMenuPrimitive.Root` |
 

@@ -297,7 +297,7 @@ You can use the `<Calendar>` component to build a date picker. See the [Date Pic
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the calendar follows: the grid runs right-to-left, the month chevrons swap, and ArrowLeft/ArrowRight move in the direction you see. Pass `locale` for localized month names and numerals.
 
 <ComponentPreview
   name="calendar-9"
@@ -344,7 +344,7 @@ Requires the `motion` package. Use `MotionCalendar` instead of `Calendar`. All p
 | `showDropdowns` | `boolean` | `true` | Show month/year dropdown selectors |
 | `yearRange` | `{ from: number; to: number }` | `{ from: now-100, to: now+10 }` | Range of years in the year dropdown |
 | `locale` | `string` | - | BCP 47 locale tag (e.g. `'ar-SA'`, `'ja-JP'`) |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override |
+| `dir` | `'ltr' \| 'rtl'` | - | Direction override. Defaults to the nearest `DirectionProvider`, then `<html dir>`. |
 | `fromDate` | `Date` | - | Earliest selectable date |
 | `toDate` | `Date` | - | Latest selectable date |
 | `buttonVariant` | `string` | `'ghost'` | Variant style for navigation buttons |

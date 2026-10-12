@@ -84,6 +84,26 @@ describe('useKeyboard', () => {
     })
   })
 
+  describe('rtl', () => {
+    it('ArrowLeft moves focus +1 day, matching the right-to-left grid', () => {
+      pressKey(makeConfig({ direction: 'rtl' }), 'ArrowLeft')
+      const result: Date = onFocusChange.mock.calls[0][0]
+      expect(result.getDate()).toBe(16)
+    })
+
+    it('ArrowRight moves focus -1 day', () => {
+      pressKey(makeConfig({ direction: 'rtl' }), 'ArrowRight')
+      const result: Date = onFocusChange.mock.calls[0][0]
+      expect(result.getDate()).toBe(14)
+    })
+
+    it('leaves vertical keys alone', () => {
+      pressKey(makeConfig({ direction: 'rtl' }), 'ArrowUp')
+      const result: Date = onFocusChange.mock.calls[0][0]
+      expect(result.getDate()).toBe(8)
+    })
+  })
+
   describe('page keys', () => {
     it('PageUp moves focus -1 month', () => {
       pressKey(makeConfig(), 'PageUp')

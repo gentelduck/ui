@@ -100,6 +100,9 @@ const chartData = [
   { date: '2024-06-30', desktop: 446, mobile: 400 },
 ]
 
+// Latin digits keep the axis, header totals, and tooltip values consistent.
+const LOCALE = 'ar-u-nu-latn'
+
 const chartConfig = {
   desktop: {
     color: 'var(--chart-1)',
@@ -127,11 +130,11 @@ export default function Demo() {
 
   return (
     <DirectionProvider dir="rtl">
-      <Card className="rounded-sm border-none" dir="rtl">
+      <Card className="rounded-sm border-none">
         <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
           <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
             <CardTitle>مخطط شريطي - تفاعلي</CardTitle>
-            <CardDescription>عرض إجمالي الزوار لآخر 3 أشهر</CardDescription>
+            <CardDescription>إجمالي الزوار خلال آخر 3 أشهر</CardDescription>
           </div>
           <div className="flex">
             {['desktop', 'mobile'].map((key) => {
@@ -146,7 +149,7 @@ export default function Demo() {
                   type="button">
                   <span className="text-muted-foreground text-xs">{chartConfig[chart].label}</span>
                   <span className="font-bold text-lg leading-none sm:text-3xl">
-                    {total[key as keyof typeof total].toLocaleString()}
+                    {total[key as keyof typeof total].toLocaleString(LOCALE)}
                   </span>
                 </button>
               )
@@ -168,7 +171,7 @@ export default function Demo() {
                 minTickGap={32}
                 tickFormatter={(value) => {
                   const date = new Date(value)
-                  return date.toLocaleDateString('ar-SA', {
+                  return date.toLocaleDateString(LOCALE, {
                     day: 'numeric',
                     month: 'short',
                   })
@@ -181,7 +184,7 @@ export default function Demo() {
                   <ChartTooltipContent
                     className="w-[150px]"
                     labelFormatter={(value) => {
-                      return new Date(value).toLocaleDateString('ar-SA', {
+                      return new Date(value).toLocaleDateString(LOCALE, {
                         day: 'numeric',
                         month: 'short',
                         year: 'numeric',

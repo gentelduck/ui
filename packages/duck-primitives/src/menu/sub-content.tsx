@@ -33,7 +33,7 @@ const MenuSubContent = React.forwardRef<MenuSubContentElement, IMenu.ISubContent
               {...subContentProps}
               ref={composedRefs}
               align="start"
-              side={rootContext.dir === 'rtl' ? 'left' : 'right'}
+              side="right"
               disableOutsidePointerEvents={false}
               disableOutsideScroll={false}
               trapFocus={false}

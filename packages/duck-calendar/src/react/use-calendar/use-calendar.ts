@@ -229,6 +229,7 @@ export function useCalendar<TDate, M extends Selection.SelectionMode = 'single'>
     isDisabled: isDisabledFn,
     adapter,
     weekStartDay: locale?.weekStartDay ?? 0,
+    direction: localeDirection,
   })
 
   const getDayProps = useCallback(

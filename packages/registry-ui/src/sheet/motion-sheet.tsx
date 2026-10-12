@@ -8,14 +8,25 @@ import { fadeIn } from '@gentleduck/motion/presets/fade-in'
 import { createSlideEdge } from '@gentleduck/motion/presets/slide-edge'
 import { tweenSlow } from '@gentleduck/motion/transitions/tweens'
 import { MotionRootContext, useMotionContent, useMotionMount, useMotionRoot } from '@gentleduck/motion/use-motion-root'
+import { type IDirection, useDirection } from '@gentleduck/primitives/direction'
 import * as SheetPrimitive from '@gentleduck/primitives/sheet'
 import { X } from 'lucide-react'
 import { LazyMotion, m } from 'motion/react'
 import * as React from 'react'
+import { toDirection } from '../direction/direction.libs'
 import type { ISheetContentProps } from './sheet'
 import { SheetPortal } from './sheet'
 
 const OVERLAY_OPTIONS = { transition: tweenSlow } as const
+
+/** Carries the root `dir` prop to the content, which needs a physical side for the slide offset. */
+const MotionSheetDirContext = React.createContext<IDirection.Kind | undefined>(undefined)
+
+function resolveSheetSide(side: ISheetContentProps['side'], dir: IDirection.Kind): DirectionalSide {
+  const physical = (Array.isArray(side) ? side[0] : (side ?? 'right')) as DirectionalSide
+  if (dir !== 'rtl') return physical
+  return physical === 'left' ? 'right' : physical === 'right' ? 'left' : physical
+}
 
 function MotionSheet({
   children,
@@ -27,9 +38,11 @@ function MotionSheet({
   const { rootProps, contextValue } = useMotionRoot({ open, defaultOpen, onOpenChange })
   return (
     <MotionRootContext.Provider value={contextValue}>
-      <SheetPrimitive.Root {...rootProps} {...rest}>
-        {children}
-      </SheetPrimitive.Root>
+      <MotionSheetDirContext.Provider value={rest.dir}>
+        <SheetPrimitive.Root {...rootProps} {...rest}>
+          {children}
+        </SheetPrimitive.Root>
+      </MotionSheetDirContext.Provider>
     </MotionRootContext.Provider>
   )
 }
@@ -41,7 +54,9 @@ const MotionSheetContent = React.forwardRef<
 >(({ side = 'right', className, children, closeText = 'Close', hideClose = false, ...props }, ref) => {
   const { isOpen } = useMotionContent()
   const overlay = useMotionPreset(fadeIn, OVERLAY_OPTIONS)
-  const resolvedSide = (Array.isArray(side) ? side[0] : (side ?? 'right')) as DirectionalSide
+  const rootDir = React.useContext(MotionSheetDirContext)
+  const direction = useDirection(toDirection(props.dir) ?? rootDir)
+  const resolvedSide = resolveSheetSide(side, direction)
   const slide = React.useMemo(() => createSlideEdge(resolvedSide), [resolvedSide])
   const shouldRender = useMotionMount(isOpen, 320)
 

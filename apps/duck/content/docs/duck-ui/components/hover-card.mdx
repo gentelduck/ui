@@ -108,15 +108,15 @@ Add a caret pointing at the trigger. The arrow moves along the content edge when
 
 ## RTL Support
 
-Set `dir="rtl"` on `HoverCard` for a local override, or set `DirectionProvider` once at app/root level for global direction. This mirrors hover-card positioning for right-to-left layouts.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the hover card follows. The portaled content gets the resolved `dir`, and `side="left"`/`side="right"` and `align="start"`/`align="end"` mirror with it.
 
 ```tsx
-<HoverCard dir="rtl">
-  <HoverCardTrigger>مرر الماوس</HoverCardTrigger>
-  <HoverCardContent>
-    محتوى البطاقة هنا.
-  </HoverCardContent>
-</HoverCard>
+<DirectionProvider dir="rtl">
+  <HoverCard>
+    <HoverCardTrigger>مرّر المؤشر</HoverCardTrigger>
+    <HoverCardContent>محتوى البطاقة هنا.</HoverCardContent>
+  </HoverCard>
+</DirectionProvider>
 ```
 
 <ComponentPreview
@@ -160,7 +160,7 @@ Root wrapper that provides hover-card state and context. Wraps `HoverCardPrimiti
 | `delayDuration` | `number` | - | Alias for `openDelay`. If both are provided, `openDelay` takes precedence |
 | `skipDelayDuration` | `number` | - | Reserved for future use (currently ignored) |
 | `placement` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'top'` | Accepted but has no effect on the base `HoverCard`/`HoverCardContent` pairing; only takes effect with `MotionHoverCard`/`MotionHoverCardContent`, which read it via context to pick the entrance direction |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `children` | `React.ReactNode` | `--` | HoverCard sub-components |
 | `...props` | `React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Root>` | - | Additional props inherited from `HoverCard.Root`. |
 

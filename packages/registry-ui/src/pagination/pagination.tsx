@@ -133,7 +133,7 @@ const PaginationWrapper = (props: IDuckPaginationProps) => {
   const EndDoubleIcon = direction === 'rtl' ? ChevronsLeftIcon : ChevronsRightIcon
 
   return (
-    <Pagination className={cn('justify-end', wrapperClassName)} {...wrapperProps}>
+    <Pagination className={cn('justify-end', wrapperClassName)} dir={direction} {...wrapperProps}>
       <PaginationContent className={cn('gap-2', contentClassName)} {...contentProps}>
         <PaginationItem className={cn(itemClassName)} {...itemProps}>
           <Button

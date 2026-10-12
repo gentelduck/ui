@@ -101,7 +101,7 @@ import { Slider } from "@/components/ui/slider"
 
 ## RTL Support
 
-Set `dir="rtl"` on `Slider` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `Slider` follows it: the range fills from the right, and `ArrowRight` decreases the value while `ArrowLeft` increases it. No `dir` prop needed.
 
 <ComponentPreview
   name="slider-5"
@@ -140,7 +140,7 @@ A unified slider component that supports both single-thumb and multi-thumb (rang
 | `defaultValue` | `number[]` | - | Uncontrolled initial values. When omitted (and `value` is also omitted), two thumbs are rendered at `[min, max]`. |
 | `value` | `number[]` | - | Controlled values array |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Slider orientation |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`) and inherited by slider parts. |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`) and inherited by slider parts. |
 | `min` | `number` | `0` | Minimum allowed value |
 | `max` | `number` | `100` | Maximum allowed value |
 | `...props` | `React.ComponentProps<typeof SliderPrimitive.Root>` | - | All other props from `SliderPrimitive.Root` |

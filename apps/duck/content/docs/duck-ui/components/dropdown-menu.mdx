@@ -151,7 +151,7 @@ Add a directional caret pointing at the trigger. Place `<DropdownMenuArrow />` a
 
 ## RTL Support
 
-Set `dir="rtl"` on `DropdownMenu` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the dropdown menu follows. The portaled content gets the resolved `dir`, sub-menus open to the left, the sub-menu chevron flips, and the arrow keys that open and close sub-menus swap.
 
 <ComponentPreview
   name="dropdown-menu-4"
@@ -189,7 +189,7 @@ The root component that manages open/closed state and provides context to all ch
 | `open` | `boolean` | - | Controlled open state |
 | `defaultOpen` | `boolean` | `false` | Initial open state (uncontrolled) |
 | `onOpenChange` | `(open: boolean) => void` | - | Callback when open state changes |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `modal` | `boolean` | `true` | When true, interaction with outside elements is disabled and only menu content is visible to screen readers |
 
 ### DropdownMenuTrigger

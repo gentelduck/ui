@@ -88,9 +88,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
     A --> D[TabsContent]
 `} />
 
+## Keyboard Navigation
+
+| Key | Description |
+| --- | --- |
+| `ArrowRight` | Move focus to the next tab and select it (previous tab in RTL) |
+| `ArrowLeft` | Move focus to the previous tab and select it (next tab in RTL) |
+| `Home` | Move focus to the first tab and select it |
+| `End` | Move focus to the last tab and select it |
+| `Tab` | Move focus onto the active tab, then out of the tab list |
+
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the tabs follow it: the list mirrors, arrow keys move in the visual direction, and motion content slides from the matching side. No `dir` prop or `rtl:` classes needed.
 
 <ComponentPreview
   name="tabs-2"
@@ -135,7 +145,7 @@ Requires the `motion` package. Replace `Tabs` with `MotionTabs`, `TabsList` with
 | `value` | `string` | - | Controlled active tab value. Must be used alongside `onValueChange` |
 | `defaultValue` | `string` | - | Uncontrolled initial tab value |
 | `onValueChange` | `(value: string) => void` | - | Callback fired when the active tab changes |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `...props` | `Omit<React.HTMLProps<HTMLDivElement>, 'defaultValue'>` | - | Additional props to spread to the content div |
 
 ### TabsList

@@ -58,6 +58,8 @@ function buildActionMap<TDate>(): Record<string, Action<TDate>> {
 // built once, outside the hook  -  no re-creation on render
 const ACTION_MAP: Record<string, Action<unknown>> = buildActionMap<unknown>()
 
+const RTL_ARROW_KEYS: Record<string, string> = { ArrowLeft: 'ArrowRight', ArrowRight: 'ArrowLeft' }
+
 export function useKeyboard<TDate>(config: UseKeyboard.IKeyboardConfig<TDate>): UseKeyboard.IKeyboardReturn {
   // Keep config in a ref to avoid recreating the callback on every prop change
   const configRef = React.useRef(config)
@@ -66,7 +68,8 @@ export function useKeyboard<TDate>(config: UseKeyboard.IKeyboardConfig<TDate>): 
   const onKeyDown: React.KeyboardEventHandler = useCallback(
     (e) => {
       const cfg = configRef.current
-      const key = e.shiftKey && (e.key === 'PageUp' || e.key === 'PageDown') ? `Shift+${e.key}` : e.key
+      const rawKey = e.shiftKey && (e.key === 'PageUp' || e.key === 'PageDown') ? `Shift+${e.key}` : e.key
+      const key = cfg.direction === 'rtl' ? (RTL_ARROW_KEYS[rawKey] ?? rawKey) : rawKey
 
       // Enter / Space  -  select
       if (key === 'Enter' || key === ' ') {

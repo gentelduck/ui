@@ -1,7 +1,17 @@
-import { describe, expect, it, mock } from 'bun:test'
+import { afterEach, describe, expect, it, mock } from 'bun:test'
 import { fireEvent, render } from '@testing-library/react'
 import * as React from 'react'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuTrigger } from '../index'
+import { DirectionProvider } from '../../direction'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from '../index'
 
 function renderDropdown(props: Record<string, unknown> = {}) {
   return render(
@@ -108,5 +118,60 @@ describe('DropdownMenu', () => {
       </DropdownMenu>,
     )
     expect(container.querySelector('.my-trigger')).not.toBeNull()
+  })
+})
+
+describe('DropdownMenu direction', () => {
+  const mounted: Array<() => void> = []
+
+  afterEach(() => {
+    for (const unmount of mounted.splice(0)) unmount()
+  })
+
+  function renderWithSub(dir: 'ltr' | 'rtl') {
+    const utils = render(
+      <DirectionProvider dir={dir}>
+        <DropdownMenu defaultOpen>
+          <DropdownMenuTrigger>Options</DropdownMenuTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuContent>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>More tools</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem>Nested tool</DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+            </DropdownMenuContent>
+          </DropdownMenuPortal>
+        </DropdownMenu>
+      </DirectionProvider>,
+    )
+    mounted.push(utils.unmount)
+    return utils
+  }
+
+  it('sets dir on portaled content from DirectionProvider', () => {
+    const { getByText } = renderWithSub('rtl')
+    expect(getByText('More tools').closest('[role="menu"]')?.getAttribute('dir')).toBe('rtl')
+  })
+
+  it('opens the submenu to the left with ArrowLeft in RTL and closes it with ArrowRight', () => {
+    const { getByText, queryByText } = renderWithSub('rtl')
+    fireEvent.keyDown(getByText('More tools'), { key: 'ArrowRight' })
+    expect(queryByText('Nested tool')).toBeNull()
+    fireEvent.keyDown(getByText('More tools'), { key: 'ArrowLeft' })
+    const subContent = getByText('Nested tool').closest('[role="menu"]')
+    expect(subContent?.getAttribute('data-side')).toBe('left')
+    expect(subContent?.getAttribute('dir')).toBe('rtl')
+    fireEvent.keyDown(getByText('Nested tool'), { key: 'ArrowRight' })
+    expect(queryByText('Nested tool')).toBeNull()
+  })
+
+  it('opens the submenu to the right with ArrowRight in LTR', () => {
+    const { getByText } = renderWithSub('ltr')
+    fireEvent.keyDown(getByText('More tools'), { key: 'ArrowRight' })
+    expect(getByText('Nested tool').closest('[role="menu"]')?.getAttribute('data-side')).toBe('right')
   })
 })

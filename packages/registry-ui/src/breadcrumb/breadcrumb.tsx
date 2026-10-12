@@ -83,13 +83,13 @@ BreadcrumbPage.displayName = 'BreadcrumbPage'
 const BreadcrumbSeparator = React.forwardRef<HTMLLIElement, React.ComponentPropsWithoutRef<'li'>>(
   ({ children, className, ...props }, ref) => (
     <li
-      className={cn('[&>svg:not([class*=size-])]:size-3.5', className)}
+      className={cn('[&>svg:not([class*=size-])]:size-3.5 rtl:[&>svg]:rotate-180', className)}
       ref={ref}
       {...props}
       aria-hidden="true"
       data-slot="breadcrumb-separator"
       role="presentation">
-      {children ?? <ChevronRight className="rtl:rotate-180" />}
+      {children ?? <ChevronRight />}
     </li>
   ),
 )

@@ -100,7 +100,7 @@ import {
 
 ## RTL Support
 
-Set `dir="rtl"` on `Menubar` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the menubar follows. Menus align to the right edge of their triggers, sub-menus open to the left, and `ArrowLeft`/`ArrowRight` move between menus in visual order.
 
 <ComponentPreview
   name="menubar-2"
@@ -136,7 +136,7 @@ Components in this file wrap `@gentleduck/primitives/menubar`.
 | `defaultValue` | `string` | `''` | Initial open menu value for uncontrolled usage |
 | `onValueChange` | `(value: string) => void` | - | Callback when open menu value changes |
 | `loop` | `boolean` | `true` | Loops roving focus across triggers |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS classes |
 | `...props` | `React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Root>` | - | Additional props inherited from `MenubarPrimitive.Root` |
 

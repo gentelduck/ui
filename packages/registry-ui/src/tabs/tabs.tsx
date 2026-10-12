@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@gentleduck/libs/cn'
+import type { IDirection } from '@gentleduck/primitives/direction'
 import { useDirection } from '@gentleduck/primitives/direction'
 import { MountMinimal } from '@gentleduck/primitives/mount'
 import * as React from 'react'
@@ -8,6 +9,7 @@ import { toDirection } from '../direction/direction.libs'
 
 export interface ITabsContextProps {
   activeItem: string
+  dir: IDirection.Kind
   setActiveItem: React.Dispatch<React.SetStateAction<string>>
   tabsId: string
 }
@@ -39,7 +41,7 @@ const Tabs = React.forwardRef<HTMLDivElement, ITabsProps>(
     }, [activeItem, onValueChange])
 
     return (
-      <TabsContext.Provider value={{ activeItem, setActiveItem, tabsId }}>
+      <TabsContext.Provider value={{ activeItem, dir: direction, setActiveItem, tabsId }}>
         <div {...props} data-slot="tabs" dir={direction} ref={ref} />
       </TabsContext.Provider>
     )
@@ -47,20 +49,55 @@ const Tabs = React.forwardRef<HTMLDivElement, ITabsProps>(
 )
 Tabs.displayName = 'Tabs'
 
+/** Index of the tab an arrow/Home/End key moves to; arrows follow the visual order, so they swap in RTL. */
+export function getTabsKeyTarget(key: string, index: number, count: number, dir: IDirection.Kind): number | null {
+  const forward = dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight'
+  const backward = dir === 'rtl' ? 'ArrowRight' : 'ArrowLeft'
+  if (key === forward) return (index + 1) % count
+  if (key === backward) return (index - 1 + count) % count
+  if (key === 'Home') return 0
+  if (key === 'End') return count - 1
+  return null
+}
+
+/** Roving focus for a tablist: moves focus to the next enabled tab and selects it. */
+export function useTabsListKeyDown(onKeyDown?: React.KeyboardEventHandler<HTMLDivElement>) {
+  const context = React.useContext(TabsContext)
+  return (event: React.KeyboardEvent<HTMLDivElement>) => {
+    onKeyDown?.(event)
+    if (event.defaultPrevented || !context) return
+    const tabs = Array.from(
+      event.currentTarget.querySelectorAll<HTMLElement>('[role="tab"]:not(:disabled):not([aria-disabled="true"])'),
+    )
+    const index = tabs.indexOf(event.target as HTMLElement)
+    if (index === -1) return
+    const target = getTabsKeyTarget(event.key, index, tabs.length, context.dir)
+    const tab = target === null ? undefined : tabs[target]
+    if (!tab?.dataset.value) return
+    event.preventDefault()
+    tab.focus()
+    context.setActiveItem(tab.dataset.value)
+  }
+}
+
 export interface ITabsListProps extends Omit<React.HTMLProps<HTMLDivElement>, 'ref' | 'role'> {}
 
-const TabsList = React.forwardRef<HTMLDivElement, ITabsListProps>(({ className, ...props }, ref) => (
-  <div
-    className={cn(
-      'inline-flex w-fit items-center justify-center gap-2 rounded-md bg-muted p-1 text-muted-foreground',
-      className,
-    )}
-    ref={ref}
-    role="tablist"
-    {...props}
-    data-slot="tabs-list"
-  />
-))
+const TabsList = React.forwardRef<HTMLDivElement, ITabsListProps>(({ className, onKeyDown, ...props }, ref) => {
+  const handleKeyDown = useTabsListKeyDown(onKeyDown)
+  return (
+    <div
+      className={cn(
+        'inline-flex w-fit items-center justify-center gap-2 rounded-md bg-muted p-1 text-muted-foreground',
+        className,
+      )}
+      onKeyDown={handleKeyDown}
+      ref={ref}
+      role="tablist"
+      {...props}
+      data-slot="tabs-list"
+    />
+  )
+})
 TabsList.displayName = 'TabsList'
 
 export interface ITabsTriggerProps extends Omit<React.HTMLProps<HTMLButtonElement>, 'ref' | 'value'> {

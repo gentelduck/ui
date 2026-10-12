@@ -1,18 +1,21 @@
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { ToggleGroup, ToggleGroupItem } from '@gentleduck/registry-ui/toggle-group'
 import { Bold, Italic, Underline } from 'lucide-react'
 
 export default function Demo() {
   return (
-    <ToggleGroup type="single" dir="rtl">
-      <ToggleGroupItem aria-label="تبديل الخط العريض" value="bold">
-        <Bold className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem aria-label="تبديل الخط المائل" value="italic">
-        <Italic className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem aria-label="تبديل التسطير" value="underline">
-        <Underline className="h-4 w-4" />
-      </ToggleGroupItem>
-    </ToggleGroup>
+    <DirectionProvider dir="rtl">
+      <ToggleGroup type="multiple" variant="outline">
+        <ToggleGroupItem aria-label="غامق" value="bold">
+          <Bold />
+        </ToggleGroupItem>
+        <ToggleGroupItem aria-label="مائل" value="italic">
+          <Italic />
+        </ToggleGroupItem>
+        <ToggleGroupItem aria-label="تسطير" value="underline">
+          <Underline />
+        </ToggleGroupItem>
+      </ToggleGroup>
+    </DirectionProvider>
   )
 }

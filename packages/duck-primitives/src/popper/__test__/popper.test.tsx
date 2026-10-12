@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'bun:test'
 import { render } from '@testing-library/react'
 import * as React from 'react'
+import { DirectionProvider } from '../../direction'
 import { Popper, PopperAnchor, PopperContent } from '../index'
 
 describe('Popper', () => {
@@ -52,5 +53,30 @@ describe('Popper', () => {
       </Popper>,
     )
     expect(ref.current).toBeInstanceOf(HTMLDivElement)
+  })
+
+  it('mirrors left and right sides in RTL', () => {
+    const renderSide = (dir: 'ltr' | 'rtl', side: 'left' | 'right' | 'top') =>
+      render(
+        <DirectionProvider dir={dir}>
+          <Popper>
+            <PopperAnchor>anchor</PopperAnchor>
+            <PopperContent dir={dir} side={side}>
+              content
+            </PopperContent>
+          </Popper>
+        </DirectionProvider>,
+      )
+    const cases = [
+      ['ltr', 'right', 'right'],
+      ['rtl', 'right', 'left'],
+      ['rtl', 'left', 'right'],
+      ['rtl', 'top', 'top'],
+    ] as const
+    for (const [dir, side, expected] of cases) {
+      const { container, unmount } = renderSide(dir, side)
+      expect(container.querySelector('[data-slot="popper-content"]')?.getAttribute('data-side')).toBe(expected)
+      unmount()
+    }
   })
 })

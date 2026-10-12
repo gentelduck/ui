@@ -94,7 +94,7 @@ import {
 
 ### Side
 
-Use the `side` property to `<SheetContent />` to indicate the edge of the screen where the component will appear. The values can be `top`, `right`, `bottom` or `left`.
+Use the `side` property to `<SheetContent />` to indicate the edge of the screen where the component will appear. The values can be `top`, `right`, `bottom` or `left`. The default is `right`; `left` and `right` mirror in RTL.
 
 <ComponentPreview name="sheet-2" description="A sheet that can slide in from each of the four sides - top, right, bottom, and left." />
 
@@ -139,6 +139,8 @@ Style the trigger to appear active while the sheet is open using `data-[state=op
 `} />
 
 ## RTL Support
+
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the sheet follows. In RTL, `left` and `right` mirror, so the default `side="right"` slides in from the left.
 
 <ComponentPreview
   name="sheet-3"
@@ -205,13 +207,13 @@ Requires the `motion` package. Use `MotionSheet` instead of `Sheet` and `MotionS
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `side` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'right'` | The side from which the sheet slides in |
+| `side` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'right'` | The side from which the sheet slides in. `left` and `right` mirror in RTL |
 | `closeText` | `string` | `'Close'` | Screen-reader label for the built-in close button |
 | `className` | `string` | - | Additional CSS class names |
 | `children` | `React.ReactNode` | - | Sheet content |
 | `...props` | `React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content> & VariantProps<typeof sheetVariants>` | - | Additional props inherited from `SheetPrimitive.Content` and the local `sheetVariants` |
 
-`SheetContent` renders a built-in close button in the top-right corner.
+`SheetContent` renders a built-in close button in the top-end corner (top-right in LTR, top-left in RTL).
 
 ### SheetHeader
 

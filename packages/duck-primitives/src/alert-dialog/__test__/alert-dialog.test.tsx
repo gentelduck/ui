@@ -1,6 +1,7 @@
 import { describe, expect, it, mock } from 'bun:test'
 import { fireEvent, render } from '@testing-library/react'
 import * as React from 'react'
+import { DirectionProvider } from '../../direction'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -131,5 +132,22 @@ describe('AlertDialog', () => {
     for (const btn of buttons) {
       expect(btn.getAttribute('type')).toBe('button')
     }
+  })
+
+  it('portaled content inherits dir from DirectionProvider', () => {
+    const { baseElement, unmount } = render(
+      <DirectionProvider dir="rtl">
+        <AlertDialog defaultOpen>
+          <AlertDialogPortal>
+            <AlertDialogContent data-testid="dir-content">
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+            </AlertDialogContent>
+          </AlertDialogPortal>
+        </AlertDialog>
+      </DirectionProvider>,
+    )
+    expect(baseElement.querySelector('[data-testid="dir-content"]')?.getAttribute('dir')).toBe('rtl')
+    unmount()
   })
 })

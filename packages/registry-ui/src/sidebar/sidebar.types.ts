@@ -23,6 +23,7 @@ export interface ISidebarProviderProps extends React.ComponentProps<'div'> {
 export type SidebarProviderProps = ISidebarProviderProps
 
 export interface ISidebarProps extends React.ComponentProps<'div'> {
+  /** Flow-relative edge: `left` is inline-start and `right` is inline-end, so both mirror in RTL. */
   side?: 'left' | 'right'
   variant?: 'sidebar' | 'floating' | 'inset'
   collapsible?: 'offcanvas' | 'icon' | 'none'

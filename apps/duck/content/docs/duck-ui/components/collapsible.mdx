@@ -111,7 +111,7 @@ Style the trigger to appear active while the collapsible is expanded using `data
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the collapsible follows it. No `dir` prop or `rtl:` classes needed.
 
 <ComponentPreview
   name="collapsible-2"
@@ -147,7 +147,7 @@ Requires the `motion` package. Replace `CollapsibleContent` with `MotionCollapsi
 | `open` | `boolean` | - | Controlled open state |
 | `onOpenChange` | `(open: boolean) => void` | - | Callback fired when open state changes |
 | `defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
 
 ### CollapsibleTrigger

@@ -1,7 +1,10 @@
 import { describe, expect, it, mock } from 'bun:test'
-import { fireEvent, render } from '@testing-library/react'
+import { act, fireEvent, render } from '@testing-library/react'
 import * as React from 'react'
+import { DirectionProvider } from '../../direction'
 import { ToggleGroup, ToggleGroupItem } from '../index'
+
+const nextTick = () => act(() => new Promise<void>((resolve) => setTimeout(resolve, 0)))
 
 describe('ToggleGroup (single)', () => {
   it('renders with data-slot="toggle-group"', () => {
@@ -195,5 +198,31 @@ describe('ToggleGroup (shared)', () => {
       </ToggleGroup>,
     )
     expect(ref.current).toBeInstanceOf(HTMLDivElement)
+  })
+
+  it('flips horizontal arrow keys under a DirectionProvider without a dir prop', async () => {
+    const { container } = render(
+      <DirectionProvider dir="rtl">
+        <ToggleGroup type="single" orientation="horizontal">
+          <ToggleGroupItem value="a">A</ToggleGroupItem>
+          <ToggleGroupItem value="b">B</ToggleGroupItem>
+          <ToggleGroupItem value="c">C</ToggleGroupItem>
+        </ToggleGroup>
+      </DirectionProvider>,
+    )
+    expect(container.querySelector('[data-slot="toggle-group"]')?.getAttribute('dir')).toBe('rtl')
+    const items = container.querySelectorAll<HTMLButtonElement>('[data-slot="toggle-group-item"]')
+    // Assert the first focus target: focus traps left open by other suites can pull focus away afterwards.
+    const focused: Element[] = []
+    for (const item of items) item.addEventListener('focus', () => focused.push(item))
+    items[1]!.focus()
+    focused.length = 0
+    fireEvent.keyDown(items[1]!, { key: 'ArrowLeft' })
+    await nextTick()
+    expect(focused[0]).toBe(items[2]!)
+    focused.length = 0
+    fireEvent.keyDown(items[2]!, { key: 'ArrowRight' })
+    await nextTick()
+    expect(focused[0]).toBe(items[1]!)
   })
 })

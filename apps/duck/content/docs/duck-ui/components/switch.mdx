@@ -85,7 +85,7 @@ import { Switch } from "@/components/ui/switch"
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `Switch` follows it: the thumb starts on the right and slides left when checked. No `dir` prop or `rtl:` classes needed.
 
 <ComponentPreview
   name="switch-3"
@@ -118,7 +118,7 @@ Requires the `motion` package. Use `MotionSwitch` instead of `Switch`. The motio
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional class names for the checkbox input |
 | `indicator` | `React.ReactElement` | - | Custom element for the unchecked state indicator |
 | `checkedIndicator` | `React.ReactElement` | - | Custom element for the checked state indicator |

@@ -32,6 +32,12 @@ export interface IPreviewPanelProps extends React.HTMLProps<HTMLDivElement> {
   onStateChange?: (state: IPreviewPanelState) => void
   /** External state to apply. When set, the panel syncs to this state. */
   syncState?: IPreviewPanelState
+  /** Label for the zoom-in control. Default 'Zoom in'. */
+  zoomInText?: string
+  /** Label for the zoom-out control. Default 'Zoom out'. */
+  zoomOutText?: string
+  /** Label for the reset control. Default 'Reset view'. */
+  resetText?: string
 }
 
 export interface IPreviewPanelDialogProps {
@@ -61,4 +67,10 @@ export interface IPreviewPanelDialogProps {
   showControls?: boolean
   /** Whether to sync zoom and position between inline and dialog panels. Default true. */
   syncPanels?: boolean
+  /** Label for the zoom-in control. Default 'Zoom in'. */
+  zoomInText?: string
+  /** Label for the zoom-out control. Default 'Zoom out'. */
+  zoomOutText?: string
+  /** Label for the reset control. Default 'Reset view'. */
+  resetText?: string
 }

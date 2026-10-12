@@ -1,15 +1,15 @@
 ---
 title: direction
-description: Resolve and provide RTL/LTR direction using the shared primitives direction context.
+description: Set RTL or LTR once and every component follows.
 component: true
 section: Misc
 order: 10
 ---
-<ComponentPreview name="direction-1" description="DirectionProvider using the exported direction dictionary." />
+<ComponentPreview name="direction-1" description="An Arabic settings card. Only the DirectionProvider sets the direction." />
 
 ## Philosophy
 
-Direction is cross-cutting state. Instead of passing `dir` through every component manually, set it once at the boundary and let components/hooks resolve it predictably.
+Direction is cross-cutting state. Set it once and every component works out the rest: layout, spacing, icons, keyboard arrows, and where overlays open. You do not pass `dir` to components or add `rtl:` classes.
 
 ## Installation
 
@@ -51,12 +51,34 @@ npm install @gentleduck/primitives
 
 ## Usage
 
-```tsx
-import { DIRECTION_DICTIONARY, DirectionProvider, useDirection } from '@/components/ui/direction'
-```
+Set the direction on the document:
 
 ```tsx
-<DirectionProvider dir={DIRECTION_DICTIONARY.rtl}>{children}</DirectionProvider>
+<html dir="rtl" lang="ar">
+```
+
+Or wrap your app, or any part of it, in `DirectionProvider`:
+
+```tsx
+import { DirectionProvider } from '@/components/ui/direction'
+
+<DirectionProvider dir="rtl">{children}</DirectionProvider>
+```
+
+Components resolve direction from their own `dir` prop, then the nearest `DirectionProvider`, then `<html dir>`. Changes to `<html dir>` are picked up at runtime. On the server the document is not available, so in server-rendered apps use `DirectionProvider` (it can sit right inside `<html dir="rtl">`) to get the right direction on first paint.
+
+### Custom components
+
+Use `useDirection` when your own component needs the direction in JavaScript, such as picking an icon or flipping a key. For layout, prefer logical classes (`ms-*`, `pe-*`, `start-*`, `text-start`), which follow `dir` without any code.
+
+```tsx
+import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { useDirection } from '@/components/ui/direction'
+
+function NextIcon() {
+  const dir = useDirection()
+  return dir === 'rtl' ? <ArrowLeft /> : <ArrowRight />
+}
 ```
 
 ## API Reference
@@ -68,6 +90,7 @@ import { DIRECTION_DICTIONARY, DirectionProvider, useDirection } from '@/compone
 | `DIRECTION_DICTIONARY` | `{ ltr: 'ltr'; rtl: 'rtl' }` | Canonical direction values |
 | `DirectionProvider` | `React.FC<{ dir: 'ltr' \| 'rtl'; children?: ReactNode }>` | Provides direction to descendants |
 | `Provider` | `React.FC<{ dir: 'ltr' \| 'rtl'; children?: ReactNode }>` | Alias for `DirectionProvider` |
-| `useDirection` | `(localDir?: 'ltr' \| 'rtl') => 'ltr' \| 'rtl'` | Resolves `localDir` -> context -> `'ltr'` |
+| `useDirection` | `(localDir?: 'ltr' \| 'rtl') => 'ltr' \| 'rtl'` | Resolves `localDir` -> nearest `DirectionProvider` -> `<html dir>` |
 | `DirectionContext` | `React.Context<'ltr' \| 'rtl' \| undefined>` | Underlying context object |
+| `toDirection` | `(dir: unknown) => 'ltr' \| 'rtl' \| undefined` | Narrows an arbitrary `dir` value; anything else becomes `undefined` |
 

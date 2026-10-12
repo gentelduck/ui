@@ -84,8 +84,7 @@ function VirtualizedDropdown({
                 position: 'absolute',
                 top: (startIndex + i) * ITEM_HEIGHT,
                 height: ITEM_HEIGHT,
-                left: 0,
-                right: 0,
+                insetInline: 0,
               }}
               onClick={() => onSelect(item.value)}>
               {isActive && <CheckIcon className="absolute start-1.5 size-3.5" />}
@@ -102,7 +101,6 @@ function DropdownTrigger({ label, open, onClick }: { label: string; open: boolea
   return (
     <m.button
       type="button"
-      dir="ltr"
       aria-expanded={open}
       onClick={onClick}
       whileTap={tapScale}

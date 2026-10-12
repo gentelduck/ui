@@ -343,7 +343,7 @@ See the [Embla Carousel docs](https://www.embla-carousel.com/api/plugins/) for m
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the carousel follows: Embla scrolls right-to-left, the previous/next buttons and arrows swap sides, and the arrow keys match what you see. No `opts.direction` needed.
 
 <ComponentPreview
   name="carousel-7"
@@ -359,7 +359,7 @@ Direction is resolved through the shared primitives direction module. Use a loca
 | `opts` | `CarouselOptions` | - | Configuration options passed to `embla-carousel` |
 | `plugins` | `CarouselPlugin` | - | Array of Embla plugins |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Carousel axis direction |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `setApi` | `(api: CarouselApi) => void` | - | Callback to expose the Embla API |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
 

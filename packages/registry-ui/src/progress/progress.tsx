@@ -10,6 +10,8 @@ const Progress = React.forwardRef<
   Omit<React.HTMLProps<HTMLDivElement>, 'value' | 'ref'> & { value: number }
 >(({ className, value, dir, ...props }, ref) => {
   const direction = useDirection(toDirection(dir))
+  // Shift the bar toward the inline-start edge so the fill grows from it in either direction.
+  const offset = 100 - (value ?? 0)
   return (
     <div
       className={cn('relative h-2 w-full overflow-hidden rounded-full bg-secondary', className)}
@@ -23,7 +25,7 @@ const Progress = React.forwardRef<
       role="progressbar">
       <div
         className="size-full flex-1 bg-primary transition-transform duration-200 ease-(--gentleduck-motion-ease)"
-        style={{ transform: `translateX(-${100 - (value ?? 0)}%)` }}
+        style={{ transform: `translateX(${direction === 'rtl' ? offset : -offset}%)` }}
       />
     </div>
   )

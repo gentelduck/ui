@@ -1,6 +1,7 @@
 import { describe, expect, it, mock } from 'bun:test'
-import { render } from '@testing-library/react'
+import { fireEvent, render } from '@testing-library/react'
 import * as React from 'react'
+import { DirectionProvider } from '../../direction'
 import { Slider, SliderRange, SliderThumb, SliderTrack } from '../index'
 
 function renderSlider(props: Record<string, unknown> = {}) {
@@ -125,5 +126,56 @@ describe('Slider', () => {
   it('sets dir attribute', () => {
     const { container } = renderSlider({ dir: 'rtl' })
     expect(container.querySelector('[data-slot="slider"]')?.getAttribute('dir')).toBe('rtl')
+  })
+
+  it('ArrowRight increases and ArrowLeft decreases in LTR', () => {
+    const { container } = renderSlider({ defaultValue: [50] })
+    const thumb = container.querySelector('[role="slider"]')!
+    fireEvent.keyDown(thumb, { key: 'ArrowRight' })
+    expect(thumb.getAttribute('aria-valuenow')).toBe('51')
+    fireEvent.keyDown(thumb, { key: 'ArrowLeft' })
+    fireEvent.keyDown(thumb, { key: 'ArrowLeft' })
+    expect(thumb.getAttribute('aria-valuenow')).toBe('49')
+  })
+
+  it('flips horizontal arrow keys under a DirectionProvider without a dir prop', () => {
+    const { container } = render(
+      <DirectionProvider dir="rtl">
+        <Slider defaultValue={[50]}>
+          <SliderTrack>
+            <SliderRange />
+          </SliderTrack>
+          <SliderThumb />
+        </Slider>
+      </DirectionProvider>,
+    )
+    const thumb = container.querySelector('[role="slider"]')!
+    expect(container.querySelector('[data-slot="slider"]')?.getAttribute('dir')).toBe('rtl')
+    fireEvent.keyDown(thumb, { key: 'ArrowRight' })
+    expect(thumb.getAttribute('aria-valuenow')).toBe('49')
+    fireEvent.keyDown(thumb, { key: 'ArrowLeft' })
+    fireEvent.keyDown(thumb, { key: 'ArrowLeft' })
+    expect(thumb.getAttribute('aria-valuenow')).toBe('51')
+    fireEvent.keyDown(thumb, { key: 'ArrowUp' })
+    expect(thumb.getAttribute('aria-valuenow')).toBe('52')
+  })
+
+  it('anchors the range and thumb to the right edge in RTL', () => {
+    const { container } = render(
+      <DirectionProvider dir="rtl">
+        <Slider defaultValue={[25]}>
+          <SliderTrack>
+            <SliderRange />
+          </SliderTrack>
+          <SliderThumb />
+        </Slider>
+      </DirectionProvider>,
+    )
+    const range = container.querySelector('[data-slot="slider-range"]') as HTMLElement
+    expect(range.style.right).toBe('0%')
+    expect(range.style.left).toBe('75%')
+    const thumbWrapper = container.querySelector('[role="slider"]')!.parentElement as HTMLElement
+    expect(thumbWrapper.style.right).not.toBe('')
+    expect(thumbWrapper.style.left).toBe('')
   })
 })

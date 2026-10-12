@@ -164,18 +164,20 @@ To use the `Dialog` component from within a `Context Menu` or `Dropdown Menu`, y
 
 ## RTL Support
 
-Set `dir="rtl"` on `Dialog` for a local override, or set `DirectionProvider` once at app/root level for global direction. Dialog content parts inherit direction automatically.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the dialog follows. The portaled overlay and content get the resolved `dir`, so text, the close button and the footer order mirror without any extra props.
 
 ```tsx
-<Dialog dir="rtl">
-  <DialogTrigger>Open</DialogTrigger>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>عنوان الحوار</DialogTitle>
-      <DialogDescription>وصف الحوار هنا.</DialogDescription>
-    </DialogHeader>
-  </DialogContent>
-</Dialog>
+<DirectionProvider dir="rtl">
+  <Dialog>
+    <DialogTrigger>فتح</DialogTrigger>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>عنوان النافذة</DialogTitle>
+        <DialogDescription>وصف النافذة هنا.</DialogDescription>
+      </DialogHeader>
+    </DialogContent>
+  </Dialog>
+</DirectionProvider>
 ```
 
 <ComponentPreview
@@ -213,7 +215,7 @@ Requires the `motion` package. Use `MotionDialog` instead of `Dialog` and `Motio
 | `open` | `boolean` | - | Controlled open state |
 | `onOpenChange` | `(open: boolean) => void` | - | Callback when open state changes |
 | `modal` | `boolean` | `true` | Enables modal focus/interaction behavior (focus trapping, scroll blocking) |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `children` | `React.ReactNode` | - | Dialog sub-components (`DialogTrigger`, `DialogContent`, etc.) |
 | `...props` | `React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root>` | - | Additional props inherited from `DialogPrimitive.Root` |
 
@@ -250,7 +252,7 @@ Requires the `motion` package. Use `MotionDialog` instead of `Dialog` and `Motio
 | `children` | `React.ReactNode` | - | Dialog inner content |
 | `...props` | `React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>` | - | Additional props inherited from `DialogPrimitive.Content` |
 
-`DialogContent` renders a built-in close button in the top-right corner. Set `hideClose` to remove it when you handle closing via other UI (e.g. a custom header with its own close button).
+`DialogContent` renders a built-in close button in the top-end corner (top-right in LTR, top-left in RTL). Set `hideClose` to remove it when you handle closing via other UI (e.g. a custom header with its own close button).
 
 ### DialogHeader
 

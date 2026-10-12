@@ -1,6 +1,7 @@
-import { describe, expect, it, mock } from 'bun:test'
+import { afterEach, describe, expect, it, mock } from 'bun:test'
 import { fireEvent, render } from '@testing-library/react'
 import * as React from 'react'
+import { DirectionProvider } from '../../direction'
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuPortal, ContextMenuTrigger } from '../index'
 
 function renderContextMenu(props: Record<string, unknown> = {}) {
@@ -98,5 +99,41 @@ describe('ContextMenu', () => {
   it('trigger renders children as text', () => {
     const { container } = renderContextMenu()
     expect(container.querySelector('[data-slot="context-menu-trigger"]')?.textContent).toBe('Right click me')
+  })
+})
+
+describe('ContextMenu direction', () => {
+  const mounted: Array<() => void> = []
+
+  afterEach(() => {
+    for (const unmount of mounted.splice(0)) unmount()
+  })
+
+  function openWith(dir: 'ltr' | 'rtl') {
+    const utils = render(
+      <DirectionProvider dir={dir}>
+        <ContextMenu>
+          <ContextMenuTrigger>Canvas area</ContextMenuTrigger>
+          <ContextMenuPortal>
+            <ContextMenuContent>
+              <ContextMenuItem>Inspect</ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenuPortal>
+        </ContextMenu>
+      </DirectionProvider>,
+    )
+    mounted.push(utils.unmount)
+    fireEvent.contextMenu(utils.getByText('Canvas area'))
+    return utils.getByText('Inspect').closest('[role="menu"]')
+  }
+
+  it('opens to the right of the pointer in LTR', () => {
+    expect(openWith('ltr')?.getAttribute('data-side')).toBe('right')
+  })
+
+  it('opens to the left of the pointer and sets dir in RTL', () => {
+    const menu = openWith('rtl')
+    expect(menu?.getAttribute('data-side')).toBe('left')
+    expect(menu?.getAttribute('dir')).toBe('rtl')
   })
 })

@@ -1,6 +1,7 @@
 import { describe, expect, it, mock } from 'bun:test'
 import { fireEvent, render } from '@testing-library/react'
 import * as React from 'react'
+import { DirectionProvider } from '../../direction'
 import { Popover, PopoverClose, PopoverContent, PopoverPortal, PopoverTrigger } from '../index'
 
 function renderPopover(props: Record<string, unknown> = {}) {
@@ -142,5 +143,22 @@ describe('PopoverClose', () => {
       </Popover>,
     )
     expect(ref.current).toBeInstanceOf(HTMLButtonElement)
+  })
+
+  it('portaled content inherits dir from DirectionProvider', () => {
+    const { baseElement, unmount } = render(
+      <DirectionProvider dir="rtl">
+        <Popover defaultOpen>
+          <PopoverTrigger>Open</PopoverTrigger>
+          <PopoverPortal>
+            <PopoverContent data-testid="dir-content">Popover content</PopoverContent>
+          </PopoverPortal>
+        </Popover>
+      </DirectionProvider>,
+    )
+    const content = baseElement.querySelector('[data-testid="dir-content"]')
+    expect(content?.getAttribute('dir')).toBe('rtl')
+    expect(content?.closest('[data-slot="popper-content-wrapper"]')?.getAttribute('dir')).toBe('rtl')
+    unmount()
   })
 })

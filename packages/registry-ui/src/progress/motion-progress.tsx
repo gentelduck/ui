@@ -8,6 +8,7 @@ import * as React from 'react'
 import { toDirection } from '../direction/direction.libs'
 
 const MOTION_PROGRESS_BAR_STYLE = { originX: 0 } as const
+const MOTION_PROGRESS_BAR_STYLE_RTL = { originX: 1 } as const
 const MOTION_PROGRESS_BAR_INITIAL = { scaleX: 0, opacity: 0.5 } as const
 const MOTION_PROGRESS_BAR_TRANSITION = {
   scaleX: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
@@ -15,6 +16,8 @@ const MOTION_PROGRESS_BAR_TRANSITION = {
 } as const
 const MOTION_PROGRESS_SHIMMER_INITIAL = { x: '-100%' } as const
 const MOTION_PROGRESS_SHIMMER_ANIMATE = { x: '200%' } as const
+const MOTION_PROGRESS_SHIMMER_INITIAL_RTL = { x: '100%' } as const
+const MOTION_PROGRESS_SHIMMER_ANIMATE_RTL = { x: '-200%' } as const
 const MOTION_PROGRESS_SHIMMER_TRANSITION = {
   duration: 2,
   ease: 'easeInOut',
@@ -27,6 +30,7 @@ const MotionProgress = React.forwardRef<
   Omit<React.HTMLProps<HTMLDivElement>, 'value' | 'ref'> & { value: number }
 >(({ className, value, dir, ...props }, ref) => {
   const direction = useDirection(toDirection(dir))
+  const isRtl = direction === 'rtl'
   const safeValue = Math.max(0, Math.min(100, value ?? 0))
   const barAnimate = React.useMemo(() => ({ scaleX: safeValue / 100, opacity: 1 }), [safeValue])
   return (
@@ -43,15 +47,15 @@ const MotionProgress = React.forwardRef<
         role="progressbar">
         <m.div
           className="relative h-full bg-primary"
-          style={MOTION_PROGRESS_BAR_STYLE}
+          style={isRtl ? MOTION_PROGRESS_BAR_STYLE_RTL : MOTION_PROGRESS_BAR_STYLE}
           initial={MOTION_PROGRESS_BAR_INITIAL}
           animate={barAnimate}
           transition={MOTION_PROGRESS_BAR_TRANSITION}>
           <m.span
             aria-hidden="true"
             className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.25)_50%,transparent_100%)]"
-            initial={MOTION_PROGRESS_SHIMMER_INITIAL}
-            animate={MOTION_PROGRESS_SHIMMER_ANIMATE}
+            initial={isRtl ? MOTION_PROGRESS_SHIMMER_INITIAL_RTL : MOTION_PROGRESS_SHIMMER_INITIAL}
+            animate={isRtl ? MOTION_PROGRESS_SHIMMER_ANIMATE_RTL : MOTION_PROGRESS_SHIMMER_ANIMATE}
             transition={MOTION_PROGRESS_SHIMMER_TRANSITION}
           />
         </m.div>

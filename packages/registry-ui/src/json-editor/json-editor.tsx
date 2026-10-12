@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@gentleduck/libs/cn'
+import { useDirection } from '@gentleduck/primitives/direction'
 import { Portal } from '@gentleduck/primitives/portal'
 import { Maximize } from 'lucide-react'
 import * as React from 'react'
@@ -18,6 +19,7 @@ import {
   AlertDialogTitle,
 } from '../alert-dialog'
 import { Button } from '../button'
+import { toDirection } from '../direction/direction.libs'
 import { Field, FieldDescription, FieldError, FieldLabel } from '../field'
 import { Popover, PopoverContent, PopoverTrigger } from '../popover'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../sheet'
@@ -56,7 +58,7 @@ export function JsonTextareaField<TFieldValues extends FieldValues>(
     dir,
     lang,
     expandMode = 'sheet',
-    sheetSide = 'right',
+    sheetSide,
     sheetTitle = 'Edit JSON',
     text: textProp,
     onExpandEditor,
@@ -64,6 +66,8 @@ export function JsonTextareaField<TFieldValues extends FieldValues>(
   } = props
 
   const C = componentOverrides ?? defaultComponents
+  // Resolved here because the sheet, popover, and dialog portal out of the DOM subtree that carries `dir`.
+  const direction = useDirection(toDirection(dir))
 
   const t: Required<IJsonEditorText> = {
     format: textProp?.format ?? 'Format',
@@ -261,7 +265,7 @@ export function JsonTextareaField<TFieldValues extends FieldValues>(
   const inlineEditor = (
     <div className="space-y-2" data-slot="json-editor-inline">
       <JsonEditorView
-        dir={dir}
+        dir={direction}
         lang={lang}
         lineHeightPx={lineHeightPx}
         lineNumbers={lineNumbers}
@@ -288,7 +292,7 @@ export function JsonTextareaField<TFieldValues extends FieldValues>(
   )
 
   return (
-    <Field className={cn('space-y-3', className)} data-slot="json-editor-field" dir={dir}>
+    <Field className={cn('space-y-3', className)} data-slot="json-editor-field" dir={direction}>
       <div className="mb-1 flex items-start justify-between gap-4" data-slot="json-editor-header">
         <div className="space-y-1">
           <FieldLabel className="font-semibold text-base">{label}</FieldLabel>
@@ -330,13 +334,15 @@ export function JsonTextareaField<TFieldValues extends FieldValues>(
           inlineEditor
         ) : (
           <div data-slot="json-editor-popover">
-            <C.Popover onOpenChange={setPopoverOpen} open={popoverOpen}>
+            <C.Popover dir={direction} onOpenChange={setPopoverOpen} open={popoverOpen}>
               <PopoverTrigger asChild>
                 <C.Button
                   className="w-full justify-start overflow-hidden text-start font-mono text-xs"
                   type="button"
                   variant="outline">
-                  <span className="truncate">{preview}</span>
+                  <span className="truncate" dir="ltr">
+                    {preview}
+                  </span>
                 </C.Button>
               </PopoverTrigger>
               <C.PopoverContent className="w-[min(96vw,720px)] p-2">{inlineEditor}</C.PopoverContent>
@@ -349,6 +355,7 @@ export function JsonTextareaField<TFieldValues extends FieldValues>(
 
       {expandMode === 'sheet' ? (
         <C.Sheet
+          dir={direction}
           onOpenChange={(nextOpen) => {
             if (nextOpen) {
               openSheet()
@@ -358,14 +365,14 @@ export function JsonTextareaField<TFieldValues extends FieldValues>(
             requestCloseSheet()
           }}
           open={sheetOpen}>
-          <C.SheetContent className="w-full sm:max-w-3xl" dir={dir} side={sheetSide}>
+          <C.SheetContent className="w-full sm:max-w-3xl" side={sheetSide ?? 'right'}>
             <SheetHeader>
               <SheetTitle>{sheetTitle}</SheetTitle>
             </SheetHeader>
 
             <div className="mt-4 space-y-3" data-slot="json-editor-sheet-content">
               <JsonEditorView
-                dir={dir}
+                dir={direction}
                 lang={lang}
                 lineHeightPx={lineHeightPx}
                 lineNumbers={lineNumbers}
@@ -410,7 +417,7 @@ export function JsonTextareaField<TFieldValues extends FieldValues>(
       ) : null}
 
       <Portal>
-        <AlertDialog onOpenChange={setConfirmDiscardOpen} open={confirmDiscardOpen}>
+        <AlertDialog dir={direction} onOpenChange={setConfirmDiscardOpen} open={confirmDiscardOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>{t.discardTitle}</AlertDialogTitle>

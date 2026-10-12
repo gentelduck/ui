@@ -113,7 +113,7 @@ export function NavigationMenuDemo() {
 
 ## RTL Support
 
-Set `dir="rtl"` on `NavigationMenu` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the navigation menu follows. Content aligns to the right, slides in from the side of the trigger you moved to, and arrow keys move through the list in visual order.
 
 <ComponentPreview
   name="navigation-menu-2"
@@ -154,7 +154,7 @@ Root container that wraps the navigation menu and optionally renders the viewpor
 | `defaultValue` | `string` | - | Default active value for uncontrolled usage |
 | `onValueChange` | `(value: string) => void` | - | Callback when the active value changes |
 | `viewport` | `boolean` | `true` | Whether to render the `NavigationMenuViewport` automatically |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`) and inherited by descendants. |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`) and inherited by descendants. |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | The orientation of the menu |
 | `delayDuration` | `number` | `200` | Duration in ms from when the pointer enters a trigger until the content opens |
 | `skipDelayDuration` | `number` | `300` | Duration in ms a user has to enter another trigger without incurring a delay again |

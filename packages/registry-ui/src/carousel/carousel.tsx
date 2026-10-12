@@ -28,6 +28,8 @@ const Carousel = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLDivEleme
       {
         ...opts,
         axis: orientation === 'horizontal' ? 'x' : 'y',
+        // Embla reads `direction` for its scroll math; the `dir` attribute below handles layout.
+        direction: opts?.direction ?? direction,
       },
       plugins,
     )
@@ -173,7 +175,13 @@ const CarouselPrevious = React.forwardRef<
       ref={ref}
       size={size}
       variant={variant}
-      icon={icon === undefined ? <ArrowLeft aria-hidden="true" className="size-4 rtl:rotate-180" /> : icon}
+      icon={
+        icon === undefined ? (
+          <ArrowLeft aria-hidden="true" className={cn('size-4', orientation === 'horizontal' && 'rtl:rotate-180')} />
+        ) : (
+          icon
+        )
+      }
       {...props}>
       <span className="sr-only">{text}</span>
     </Button>
@@ -202,7 +210,13 @@ const CarouselNext = React.forwardRef<
       ref={ref}
       size={size}
       variant={variant}
-      icon={icon === undefined ? <ArrowRight aria-hidden="true" className="size-4 rtl:rotate-180" /> : icon}
+      icon={
+        icon === undefined ? (
+          <ArrowRight aria-hidden="true" className={cn('size-4', orientation === 'horizontal' && 'rtl:rotate-180')} />
+        ) : (
+          icon
+        )
+      }
       {...props}>
       <span className="sr-only">{text}</span>
     </Button>

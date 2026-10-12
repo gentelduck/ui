@@ -607,7 +607,7 @@ This prop adds keyboard access and screen reader support to your charts.
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the chart follows: the tooltip and legend lay out right-to-left, and axis labels stay anchored where Recharts placed them. The axes themselves are not mirrored; use Recharts' `reversed` and `orientation` props if you want that.
 
 <ComponentPreview
   name="chart-8"
@@ -624,7 +624,7 @@ The top-level wrapper component for all charts. Provides chart context and appli
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `config` | `ChartConfig` | - | (required) Chart configuration object mapping data keys to labels, icons, and colors. |
 | `id` | `string` | - | Optional id used to scope CSS custom properties. Auto-generated when omitted. |
 | `children` | `React.ComponentProps<typeof ResponsiveContainer>['children']` | - | (required) Recharts chart element(s) to render inside the responsive container. |

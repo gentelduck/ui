@@ -1,3 +1,4 @@
+import { IBM_Plex_Sans_Arabic } from 'next/font/google'
 import localFont from 'next/font/local'
 
 export const fontMono = localFont({
@@ -37,4 +38,13 @@ export const fontMono = localFont({
   display: 'swap',
   preload: true,
   fallback: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+})
+
+/** Arabic glyphs only; JetBrains Mono has none. Listed after it in the font stacks, so Latin text is untouched. */
+export const fontArabic = IBM_Plex_Sans_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-arabic',
+  display: 'swap',
+  preload: false,
 })

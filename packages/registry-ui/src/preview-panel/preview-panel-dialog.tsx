@@ -23,6 +23,9 @@ const PreviewPanelDialog = React.forwardRef<HTMLDivElement, IPreviewPanelDialogP
       showControls = true,
       syncPanels = true,
       fullscreenText = 'Open fullscreen',
+      zoomInText,
+      zoomOutText,
+      resetText,
     },
     ref,
   ) => {
@@ -63,7 +66,10 @@ const PreviewPanelDialog = React.forwardRef<HTMLDivElement, IPreviewPanelDialogP
             showControls={showControls}
             className={panelClassName}
             onStateChange={handleStateChange}
+            resetText={resetText}
             syncState={syncPanels ? sharedState : undefined}
+            zoomInText={zoomInText}
+            zoomOutText={zoomOutText}
           />
 
           <TooltipProvider>
@@ -91,7 +97,10 @@ const PreviewPanelDialog = React.forwardRef<HTMLDivElement, IPreviewPanelDialogP
                   showControls={showControls}
                   className={dialogPanelClassName}
                   onStateChange={handleStateChange}
+                  resetText={resetText}
                   syncState={syncPanels ? sharedState : undefined}
+                  zoomInText={zoomInText}
+                  zoomOutText={zoomOutText}
                 />
               </DialogContent>
             </Dialog>

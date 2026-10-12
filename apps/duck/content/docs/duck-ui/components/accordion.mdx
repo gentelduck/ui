@@ -116,7 +116,7 @@ Style the trigger to appear highlighted when its section is expanded using `data
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the accordion follows it. No `dir` prop or `rtl:` classes needed.
 
 <ComponentPreview
   name="accordion-5"
@@ -155,7 +155,7 @@ Requires the `motion` package. Replace `AccordionItem` with `MotionAccordionItem
 | `onValueChange` | `(value: string \| string[]) => void` | - | Callback fired when open state changes |
 | `collapsible` | `boolean` | `true` | Allows collapsing the currently open item by clicking again (single type only) |
 | `renderOnce` | `boolean` | `false` | Mounts content only on first expand and preserves it afterward |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS classes applied to the root div |
 | `children` | `React.ReactNode` | - | AccordionItem elements to render inside the accordion |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |

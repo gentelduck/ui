@@ -32,4 +32,11 @@ describe('registry-ui pagination', () => {
     expect(html).toContain('lucide-chevrons-left')
     expect(html).toContain('lucide-chevrons-right')
   })
+
+  test('PaginationWrapper applies a wrapper dir override to the nav and mirrors the default icons', () => {
+    const html = renderToStaticMarkup(<PaginationWrapper wrapper={{ dir: 'rtl' }} />)
+
+    expect(html).toContain('dir="rtl"')
+    expect(html.indexOf('lucide-chevrons-right')).toBeLessThan(html.indexOf('lucide-chevrons-left'))
+  })
 })

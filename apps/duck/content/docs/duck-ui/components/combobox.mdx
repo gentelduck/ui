@@ -202,7 +202,7 @@ You can create a responsive combobox by using the `<Popover />` on desktop and t
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the combobox follows. The popover content and the command list inside it get the resolved `dir` without any extra props.
 
 <ComponentPreview
   name="combobox-7"

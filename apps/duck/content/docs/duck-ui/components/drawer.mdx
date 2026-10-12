@@ -184,7 +184,7 @@ Right-side drawer with a long, scrollable body. The scroll container fills remai
 
 ## RTL Support
 
-Set `dir="rtl"` on `Drawer` for a local override, or set `DirectionProvider` once at app/root level for global direction. Horizontal drawers (`left`/`right`) are resolved automatically for RTL/LTR.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the drawer follows. The portaled content gets the resolved `dir`, and horizontal drawers (`left`/`right`) are mirrored in RTL.
 
 <ComponentPreview
   name="drawer-7"
@@ -198,7 +198,7 @@ Set `dir="rtl"` on `Drawer` for a local override, or set `DirectionProvider` onc
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `shouldScaleBackground` | `boolean` | `true` | Whether to scale the background when drawer is open |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction used to resolve horizontal drawer side in RTL/LTR. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override, used to mirror horizontal drawers in RTL. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `...props` | `React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Root>` | - | Additional props inherited from `Drawer.Root`. |
 
 ### DrawerTrigger
@@ -242,7 +242,7 @@ Wrapper around `DrawerPrimitive.Close`. Closes the drawer when clicked.
 | --- | --- | --- | --- |
 | `className` | `string` | - | Additional CSS classes applied to the content panel |
 | `children` | `React.ReactNode` | - | Drawer inner content |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `overlayProps` | `React.ComponentPropsWithoutRef<typeof DrawerOverlay>` | - | Props forwarded to the `DrawerOverlay` |
 | `...props` | `React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>` | - | Additional props inherited from `Drawer.Content`. |
 
@@ -258,7 +258,7 @@ Wrapper around `DrawerPrimitive.Close`. Closes the drawer when clicked.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS classes applied to the footer |
 | `children` | `React.ReactNode` | - | Footer content |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
@@ -267,7 +267,7 @@ Wrapper around `DrawerPrimitive.Close`. Closes the drawer when clicked.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS classes applied to the title |
 | `children` | `React.ReactNode` | - | Title text |
 | `...props` | `React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>` | - | Additional props inherited from `Drawer.Title`. |
@@ -276,7 +276,7 @@ Wrapper around `DrawerPrimitive.Close`. Closes the drawer when clicked.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS classes applied to the description |
 | `children` | `React.ReactNode` | - | Description text |
 | `...props` | `React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Description>` | - | Additional props inherited from `Drawer.Description`. |

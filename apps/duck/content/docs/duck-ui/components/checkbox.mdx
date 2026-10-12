@@ -120,7 +120,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `Checkbox` follows it. No `dir` prop or `rtl:` classes needed.
 
 <ComponentPreview
   name="checkbox-9"
@@ -158,7 +158,7 @@ Requires the `motion` package. Use `MotionCheckboxWithLabel` instead of `Checkbo
 | `checked` | `boolean \| 'indeterminate'` | - | Controlled checked state |
 | `defaultChecked` | `boolean \| 'indeterminate'` | `false` | Initial checked state if uncontrolled |
 | `onCheckedChange` | `(checked: boolean \| 'indeterminate') => void` | - | Callback fired when checked state changes |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS classes applied to the checkbox input |
 | `style` | `React.CSSProperties` | - | Inline styles merged with internal indicator styles |
 | `ref` | `React.Ref<HTMLInputElement>` | - | Ref forwarded to the native checkbox input |

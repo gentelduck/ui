@@ -7,31 +7,31 @@ import { Label } from '@gentleduck/registry-ui/label'
 export default function Demo() {
   return (
     <DirectionProvider dir="rtl">
-      <div className="flex flex-col gap-6" dir="rtl">
+      <div className="flex flex-col gap-6">
         <div className="flex items-center gap-3">
-          <Checkbox id="terms" />
-          <Label htmlFor="terms">قبول الشروط والاحكام</Label>
+          <Checkbox id="terms-rtl" />
+          <Label htmlFor="terms-rtl">أوافق على الشروط والأحكام</Label>
         </div>
         <div className="flex items-start gap-3">
-          <Checkbox defaultChecked id="terms-2" />
+          <Checkbox defaultChecked id="terms-rtl-2" />
           <div className="grid gap-2">
-            <Label htmlFor="terms-2">قبول الشروط والاحكام</Label>
-            <p className="text-muted-foreground text-sm">بالنقر على هذا المربع، فانك توافق على الشروط والاحكام.</p>
+            <Label htmlFor="terms-rtl-2">أوافق على الشروط والأحكام</Label>
+            <p className="text-muted-foreground text-sm">بتحديد هذا المربع، فإنك توافق على الشروط والأحكام.</p>
           </div>
         </div>
         <div className="flex items-start gap-3">
-          <Checkbox disabled id="toggle" />
-          <Label htmlFor="toggle">تفعيل الاشعارات</Label>
+          <Checkbox disabled id="notifications-rtl" />
+          <Label htmlFor="notifications-rtl">تفعيل الإشعارات</Label>
         </div>
-        <Label className="flex items-start gap-3 rounded-lg border p-3 hover:bg-accent/50 has-aria-checked:border-blue-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-blue-900 dark:has-aria-checked:bg-blue-950">
+        <Label className="flex items-start gap-3 rounded-lg border p-3 hover:bg-accent/50 has-checked:border-blue-600 has-checked:bg-blue-50 dark:has-checked:border-blue-900 dark:has-checked:bg-blue-950">
           <Checkbox
-            className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
+            className="text-white checked:border-blue-600 checked:bg-blue-600 dark:checked:border-blue-700 dark:checked:bg-blue-700"
             defaultChecked
-            id="toggle-2"
+            id="notifications-rtl-2"
           />
           <div className="grid gap-1.5 font-normal">
-            <p className="font-medium text-sm leading-none">تفعيل الاشعارات</p>
-            <p className="text-muted-foreground text-sm">يمكنك تفعيل او تعطيل الاشعارات في اي وقت.</p>
+            <p className="font-medium text-sm leading-none">تفعيل الإشعارات</p>
+            <p className="text-muted-foreground text-sm">يمكنك تفعيل الإشعارات أو إيقافها في أي وقت.</p>
           </div>
         </Label>
       </div>

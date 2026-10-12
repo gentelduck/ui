@@ -1,7 +1,8 @@
 import { describe, expect, it, mock } from 'bun:test'
 import { fireEvent, render } from '@testing-library/react'
 import * as React from 'react'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../index'
+import { DirectionProvider } from '../../direction'
+import { Tooltip, TooltipContent, TooltipPortal, TooltipProvider, TooltipTrigger } from '../index'
 
 function renderTooltip(props: Record<string, unknown> = {}, triggerProps: Record<string, unknown> = {}) {
   return render(
@@ -116,5 +117,22 @@ describe('Tooltip', () => {
     const { container } = renderTooltip({ open: true, onOpenChange })
     fireEvent.click(container.querySelector('[data-slot="tooltip-trigger"]')!)
     expect(onOpenChange).toHaveBeenCalledWith(false)
+  })
+
+  it('portaled content inherits dir from DirectionProvider', () => {
+    const { baseElement, unmount } = render(
+      <DirectionProvider dir="rtl">
+        <TooltipProvider>
+          <Tooltip open>
+            <TooltipTrigger>Hover me</TooltipTrigger>
+            <TooltipPortal>
+              <TooltipContent data-testid="dir-content">Tooltip text</TooltipContent>
+            </TooltipPortal>
+          </Tooltip>
+        </TooltipProvider>
+      </DirectionProvider>,
+    )
+    expect(baseElement.querySelector('[data-testid="dir-content"]')?.getAttribute('dir')).toBe('rtl')
+    unmount()
   })
 })

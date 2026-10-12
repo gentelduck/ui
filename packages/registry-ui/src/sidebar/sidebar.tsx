@@ -187,10 +187,10 @@ const Sidebar = React.forwardRef<HTMLDivElement, ISidebarProps>(
           data-slot="sidebar-container"
           data-side={side}
           className={cn(
-            'fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-(--gentleduck-motion-ease) data-[side=right]:right-0 data-[side=left]:left-0 data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)] data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] md:flex',
+            'fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-(--gentleduck-motion-ease) data-[side=left]:start-0 data-[side=right]:end-0 data-[side=left]:group-data-[collapsible=offcanvas]:start-[calc(var(--sidebar-width)*-1)] data-[side=right]:group-data-[collapsible=offcanvas]:end-[calc(var(--sidebar-width)*-1)] md:flex',
             variant === 'floating' || variant === 'inset'
               ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
-              : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
+              : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=right]:border-s group-data-[side=left]:border-e',
             className,
           )}
           {...props}>
@@ -254,12 +254,12 @@ const SidebarRail = React.forwardRef<HTMLButtonElement, React.ComponentPropsWith
         onClick={toggleSidebar}
         dir={direction}
         className={cn(
-          'absolute inset-y-0 z-20 hidden w-4 transition-[translate,left,right,background-color] duration-200 ease-(--gentleduck-motion-ease) after:absolute after:inset-y-0 after:start-1/2 after:w-0.5 hover:after:bg-sidebar-border group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex ltr:-translate-x-1/2 rtl:-translate-x-1/2',
-          'in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize',
-          '[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize',
-          'group-data-[collapsible=offcanvas]:translate-x-0 hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:after:left-full',
-          '[[data-side=left][data-collapsible=offcanvas]_&]:-right-2',
-          '[[data-side=right][data-collapsible=offcanvas]_&]:-left-2',
+          'absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-[translate,left,right,background-color] duration-200 ease-(--gentleduck-motion-ease) after:absolute after:inset-y-0 after:start-1/2 after:w-0.5 hover:after:bg-sidebar-border group-data-[side=right]:start-0 group-data-[side=left]:-end-4 sm:flex rtl:translate-x-1/2',
+          'in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize rtl:in-data-[side=left]:cursor-e-resize rtl:in-data-[side=right]:cursor-w-resize',
+          '[[data-side=left][data-state=collapsed]_&]:cursor-e-resize rtl:[[data-side=left][data-state=collapsed]_&]:cursor-w-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize rtl:[[data-side=right][data-state=collapsed]_&]:cursor-e-resize',
+          'group-data-[collapsible=offcanvas]:translate-x-0 hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:after:start-full',
+          '[[data-side=left][data-collapsible=offcanvas]_&]:-end-2',
+          '[[data-side=right][data-collapsible=offcanvas]_&]:-start-2',
           className,
         )}
         {...props}
@@ -516,7 +516,6 @@ const SidebarMenuButton = React.forwardRef<
     const Comp = asChild ? Slot : 'button'
     const { isMobile, state } = useSidebar()
     const direction = useDirection(toDirection(dir))
-    const fallbackTooltipSide = direction === 'rtl' ? 'left' : 'right'
 
     const button = (
       <Comp
@@ -539,12 +538,7 @@ const SidebarMenuButton = React.forwardRef<
     return (
       <Tooltip dir={direction}>
         <TooltipTrigger asChild>{button}</TooltipTrigger>
-        <TooltipContent
-          side={fallbackTooltipSide}
-          align="center"
-          hidden={state !== 'collapsed' || isMobile}
-          {...tooltipProps}
-        />
+        <TooltipContent side="right" align="center" hidden={state !== 'collapsed' || isMobile} {...tooltipProps} />
       </Tooltip>
     )
   },

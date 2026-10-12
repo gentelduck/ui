@@ -113,6 +113,9 @@ const MotionPreviewPanel = React.forwardRef<
       onStateChange,
       syncState,
       dir,
+      zoomInText,
+      zoomOutText,
+      resetText,
       ...rest
     },
     ref,
@@ -337,10 +340,13 @@ const MotionPreviewPanel = React.forwardRef<
           {showControls && (
             <div className="absolute end-3 top-3 z-10">
               <MotionZoomControls
+                onReset={handleReset}
                 onZoomIn={handleZoomIn}
                 onZoomOut={handleZoomOut}
-                onReset={handleReset}
+                resetText={resetText}
                 zoom={displayZoom}
+                zoomInText={zoomInText}
+                zoomOutText={zoomOutText}
               />
             </div>
           )}
