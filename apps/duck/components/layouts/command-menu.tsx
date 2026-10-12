@@ -234,7 +234,7 @@ export function CommandMenu() {
         <span className="hidden md:inline-flex lg:hidden">Search...</span>
         <CommandShortcut
           className="hidden bg-secondary md:flex"
-          keys={'ctrl+k'}
+          keys={'mod+k'}
           onKeysPressed={() => {
             setOpen((prev) => !prev)
           }}>
@@ -604,13 +604,13 @@ function CommandFooter({ selectedLabel, sidebarNav }: { selectedLabel: string; s
   const selectedNavItem = sidebarItems.find((item) => item.title === selectedLabel)
   useKeyCommands(
     {
-      'ctrl+shift+c': {
+      'mod+shift+c': {
         description: 'Copy command',
         execute: () => {
           if (!selectedLabel) return
           navigator.clipboard.writeText(`bunx @gentleduck/cli add ${selectedLabel.toLowerCase().replace(/ /g, '-')}`)
         },
-        name: 'ctrl+shift+c',
+        name: 'mod+shift+c',
       },
     },
     { preventDefault: true },

@@ -120,8 +120,8 @@ import { SequenceManager } from '@gentleduck/vim/sequence'
 const manager = new SequenceManager()
 
 manager.register({
-  steps: [{ binding: 'ctrl+k' }, { binding: 'ctrl+d' }],
-  handler: () => console.log('Ctrl+K then Ctrl+D'),
+  steps: [{ binding: 'mod+k' }, { binding: 'mod+d' }],
+  handler: () => console.log('Mod+K then Mod+D'),
   options: { timeout: 800 },
 })
 

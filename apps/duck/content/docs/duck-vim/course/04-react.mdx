@@ -134,13 +134,13 @@ For explicit multi-step sequences where each step can be a full key combination:
 import { useKeySequence } from '@gentleduck/vim/react'
 
 function Editor() {
-  // Press Ctrl+K, then Ctrl+C to comment
-  useKeySequence(['ctrl+k', 'ctrl+c'], () => {
+  // Press Mod+K, then Mod+C to comment
+  useKeySequence(['mod+k', 'mod+c'], () => {
     commentSelection()
   })
 
-  // Press Ctrl+K, then Ctrl+U to uncomment
-  useKeySequence(['ctrl+k', 'ctrl+u'], () => {
+  // Press Mod+K, then Mod+U to uncomment
+  useKeySequence(['mod+k', 'mod+u'], () => {
     uncommentSelection()
   })
 }

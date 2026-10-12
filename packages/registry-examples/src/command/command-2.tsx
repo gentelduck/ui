@@ -20,7 +20,7 @@ export default function Demo() {
 
   useKeyCommands(
     {
-      'ctrl+j': {
+      'mod+j': {
         description: 'Open command menu',
         execute: () => {
           setOpen(true)

@@ -32,12 +32,12 @@ duck-vim offers two systems for multi-key sequences, each suited for different u
     ```ts
     const manager = new SequenceManager()
     manager.register({
-      steps: [{ binding: 'ctrl+k' }, { binding: 'ctrl+c' }],
+      steps: [{ binding: 'mod+k' }, { binding: 'mod+c' }],
       handler: () => commentSelection(),
     })
     ```
 
-    **Best for:** VS Code-style chord sequences (<Kbd>Ctrl+K</Kbd>, <Kbd>Ctrl+C</Kbd>).
+    **Best for:** VS Code-style chord sequences (<Kbd>Mod+K</Kbd>, <Kbd>Mod+C</Kbd>).
   </TabsContent>
 </Tabs>
 
@@ -90,11 +90,11 @@ import { SequenceManager } from '@gentleduck/vim/sequence'
 
 const manager = new SequenceManager()
 
-// Ctrl+K, then Ctrl+C
+// Mod+K, then Mod+C
 manager.register({
   steps: [
-    { binding: 'ctrl+k' },
-    { binding: 'ctrl+c' },
+    { binding: 'mod+k' },
+    { binding: 'mod+c' },
   ],
   handler: () => console.log('Comment!'),
   options: { timeout: 800 },
@@ -167,7 +167,7 @@ function Editor() {
   useKeySequence(['g', 'd'], () => navigate('/dashboard'))
 
   // Chord sequence with modifiers
-  useKeySequence(['ctrl+k', 'ctrl+c'], () => commentSelection())
+  useKeySequence(['mod+k', 'mod+c'], () => commentSelection())
 
   // With options
   useKeySequence(['z', 'z'], () => centerView(), {
@@ -214,12 +214,12 @@ registry.register('g+s', goSettings)
 registry.register('g+p', goProfile)
 ```
 
-### VS Code chords (<Kbd>Ctrl+K</Kbd> prefix)
+### VS Code chords (<Kbd>Mod+K</Kbd> prefix)
 
 ```ts
-useKeySequence(['ctrl+k', 'ctrl+c'], commentLine)
-useKeySequence(['ctrl+k', 'ctrl+u'], uncommentLine)
-useKeySequence(['ctrl+k', 'ctrl+f'], formatDocument)
+useKeySequence(['mod+k', 'mod+c'], commentLine)
+useKeySequence(['mod+k', 'mod+u'], uncommentLine)
+useKeySequence(['mod+k', 'mod+f'], formatDocument)
 ```
 
 ### Vim-style double-tap
@@ -234,7 +234,7 @@ registry.register('y+y', yankLine)
 ## Exercises
 
 1. Register three navigation shortcuts that share the <Kbd>G</Kbd> prefix.
-2. Create a VS Code-style chord: <Kbd>Ctrl+K</Kbd>, <Kbd>Ctrl+S</Kbd> to save all files.
+2. Create a VS Code-style chord: <Kbd>Mod+K</Kbd>, <Kbd>Mod+S</Kbd> to save all files.
 3. Build a sequence state indicator that shows when a sequence is in progress.
 
 <Callout icon={<MapIcon />}>

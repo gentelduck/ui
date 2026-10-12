@@ -137,7 +137,7 @@ import { Registry, KeyHandler } from '@gentleduck/vim/command'
 const registry = new Registry()
 const handler = new KeyHandler(registry)
 
-registry.register('ctrl+k', {
+registry.register('mod+k', {
   name: 'Open Palette',
   execute: () => document.getElementById('palette')?.focus(),
 })
@@ -147,6 +147,6 @@ handler.attach(document)
 
 <Callout icon={<Zap />}>
 
-Press <Kbd>Ctrl+K</Kbd> and the command fires. No React, no framework, no config files.
+Press <Kbd>Mod+K</Kbd> and the command fires. No React, no framework, no config files.
 
 </Callout>

@@ -28,14 +28,14 @@ export default function Demo() {
           </TooltipTrigger>
           <TooltipContent forceMount side="top" className="flex items-center gap-2">
             <CommandShortcut
-              keys="ctrl+m"
+              keys="mod+i"
               onKeysPressed={() => {
                 setOpen((prev) => !prev)
                 toast.success('زر متقدم')
               }}
               variant="secondary">
               <Command />
-              +m
+              +i
             </CommandShortcut>
             <p>زر متقدم</p>
           </TooltipContent>
