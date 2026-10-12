@@ -167,30 +167,32 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the scroll area follows it. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/scroll-area-3.tsx"
 // import from your project: import Demo from '@/components/scroll-area-3'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { ScrollArea } from '@gentleduck/registry-ui/scroll-area'
 import { Separator } from '@gentleduck/registry-ui/separator'
+import * as React from 'react'
 
 const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`)
 
 export default function Demo() {
   return (
-    <ScrollArea className="h-72 w-48 rounded-md border" dir="rtl">
-      <div className="p-4">
-        <h4 className="mb-4 font-medium text-sm leading-none">الوسوم</h4>
-        {tags.map((tag) => (
-          <>
-            <div className="text-sm" key={tag}>
-              {tag}
-            </div>
-            <Separator className="my-2" />
-          </>
-        ))}
-      </div>
-    </ScrollArea>
+    <DirectionProvider dir="rtl">
+      <ScrollArea className="h-72 w-48 rounded-md border">
+        <div className="p-4">
+          <h4 className="mb-4 font-medium text-sm leading-none">الإصدارات</h4>
+          {tags.map((tag) => (
+            <React.Fragment key={tag}>
+              <div className="text-sm">{tag}</div>
+              <Separator className="my-2" />
+            </React.Fragment>
+          ))}
+        </div>
+      </ScrollArea>
+    </DirectionProvider>
   )
 }
 ```
@@ -237,7 +239,7 @@ export default function Demo() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `viewportRef` | `React.Ref<HTMLDivElement>` | - | Ref forwarded to the inner scrollable viewport element |
 | `viewportClassName` | `string` | `--` | Additional CSS classes for the inner scrollable viewport |
 | `className` | `string` | `--` | Additional CSS classes for the outer container |

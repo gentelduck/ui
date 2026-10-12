@@ -61,26 +61,30 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the aspect ratio follows it. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/aspect-ratio-2.tsx"
 // import from your project: import Demo from '@/components/aspect-ratio-2'
 import { AspectRatio } from '@gentleduck/registry-ui/aspect-ratio'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import Image from 'next/image'
 
 export default function Demo() {
   return (
-    <div dir="rtl">
-      <AspectRatio className="rounded-lg bg-muted" ratio={'16/9'}>
-        <Image
-          alt="صورة بواسطة Drew Beamer"
-          className="rounded-lg object-cover dark:grayscale"
-          height={450}
-          src="https://plus.unsplash.com/premium_photo-1672116453000-c31b150f48ef?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          width={800}
-        />
-      </AspectRatio>
-    </div>
+    <DirectionProvider dir="rtl">
+      <figure className="flex w-full flex-col gap-2">
+        <AspectRatio className="rounded-lg bg-muted" ratio={'16/9'}>
+          <Image
+            alt="صورة بعدسة Drew Beamer"
+            className="rounded-lg object-cover dark:grayscale"
+            height={450}
+            src="https://plus.unsplash.com/premium_photo-1672116453000-c31b150f48ef?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            width={800}
+          />
+        </AspectRatio>
+        <figcaption className="text-muted-foreground text-sm">تصوير Drew Beamer على Unsplash</figcaption>
+      </figure>
+    </DirectionProvider>
   )
 }
 ```
@@ -123,7 +127,7 @@ export default function Demo() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `ratio` | `number` | (required) | Aspect ratio of the container, e.g. `16/9`, `4/3` |
 | `className` | `string` | `--` | Additional class names to apply to the container |
 | `style` | `React.CSSProperties` | `--` | Inline styles applied to the container (aspect-ratio is merged automatically) |

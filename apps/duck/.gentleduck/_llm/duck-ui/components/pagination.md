@@ -135,10 +135,11 @@ const PaginationLink = ({...props }: ) => (
 
 ## RTL Support
 
-Use the `text` prop on `PaginationPrevious`, `PaginationNext`, and `PaginationEllipsis` to provide translated labels. Set `dir="rtl"` on `Pagination` for a local override, or set `DirectionProvider` once at app/root level for global direction. Keep markup in logical order (`Previous`, pages, `Next`): visual mirroring is handled automatically.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the pagination mirrors itself: keep markup in logical order (`Previous`, pages, `Next`) and the chevrons flip automatically. Use the `text` and `aria-label` props on `PaginationPrevious`, `PaginationNext`, and `PaginationEllipsis` to translate the labels.
 
 ```tsx title="components/pagination-2.tsx"
 // import from your project: import Demo from '@/components/pagination-2'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import {
   Pagination,
   PaginationContent,
@@ -151,35 +152,37 @@ import {
 
 export default function Demo() {
   return (
-    <Pagination dir="rtl">
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious href="#" text="السابق" />
-        </PaginationItem>
+    <DirectionProvider dir="rtl">
+      <Pagination aria-label="التنقل بين الصفحات">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious aria-label="الانتقال إلى الصفحة السابقة" href="#" text="السابق" />
+          </PaginationItem>
 
-        <PaginationItem>
-          <PaginationLink href="#">١</PaginationLink>
-        </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#">١</PaginationLink>
+          </PaginationItem>
 
-        <PaginationItem>
-          <PaginationLink href="#" isActive>
-            ٢
-          </PaginationLink>
-        </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#" isActive>
+              ٢
+            </PaginationLink>
+          </PaginationItem>
 
-        <PaginationItem>
-          <PaginationLink href="#">٣</PaginationLink>
-        </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#">٣</PaginationLink>
+          </PaginationItem>
 
-        <PaginationItem>
-          <PaginationEllipsis text="صفحات أخرى" />
-        </PaginationItem>
+          <PaginationItem>
+            <PaginationEllipsis text="صفحات أخرى" />
+          </PaginationItem>
 
-        <PaginationItem>
-          <PaginationNext href="#" text="التالي" />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
+          <PaginationItem>
+            <PaginationNext aria-label="الانتقال إلى الصفحة التالية" href="#" text="التالي" />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </DirectionProvider>
   )
 }
 ```
@@ -248,7 +251,7 @@ export default function Demo() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | `--` | Additional CSS classes for the `nav` element |
 | `...props` | `React.ComponentPropsWithoutRef<'nav'>` | - | Additional props to spread to the nav element |
 
@@ -314,7 +317,7 @@ Extends `PaginationLink` with `aria-label="Go to next page"`, text "Next", and r
 | `left` | `React.ComponentPropsWithoutRef<typeof Button>` | - | Props for the "Previous" button |
 | `maxLeft` | `React.ComponentPropsWithoutRef<typeof Button>` | - | Props for the "First" button |
 
-You can pass `dir: 'rtl'` through `wrapper` to make wrapper controls direction-aware:
+The wrapper follows `DirectionProvider` (or `<html dir>`) like the other parts. Pass `dir` through `wrapper` only to override it locally:
 
 ```tsx
 <PaginationWrapper wrapper={{ dir: 'rtl' }} />

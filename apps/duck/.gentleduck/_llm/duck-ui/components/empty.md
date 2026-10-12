@@ -308,11 +308,12 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the empty state follows it. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/empty-7.tsx"
 // import from your project: import Demo from '@/components/empty-7'
 import { Button } from '@gentleduck/registry-ui/button'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import {
   Empty,
   EmptyContent,
@@ -322,35 +323,33 @@ import {
   EmptyTitle,
 } from '@gentleduck/registry-ui/empty'
 import { IconInbox } from '@tabler/icons-react'
-import { ArrowUpRightIcon } from 'lucide-react'
+import { ArrowUpLeftIcon } from 'lucide-react'
 
 export default function Demo() {
   return (
-    <div dir="rtl">
+    <DirectionProvider dir="rtl">
       <Empty>
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <IconInbox />
           </EmptyMedia>
           <EmptyTitle>صندوق الوارد فارغ</EmptyTitle>
-          <EmptyDescription>
-            لا توجد رسائل في انتظارك. ستظهر المحادثات الجديدة هنا عندما يتواصل معك شخص ما.
-          </EmptyDescription>
+          <EmptyDescription>لا توجد رسائل جديدة. ستظهر هنا المحادثات الجديدة فور تواصل أحد معك.</EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
           <div className="flex gap-2">
-            <Button>كتابة رسالة</Button>
-            <Button variant="outline">عرض المؤرشف</Button>
+            <Button>رسالة جديدة</Button>
+            <Button variant="outline">عرض الأرشيف</Button>
           </div>
         </EmptyContent>
         <Button asChild className="text-muted-foreground" size="sm" variant="link">
           {/* biome-ignore lint/a11y/useValidAnchor: placeholder href in demo component */}
           <a href="#">
-            ادارة التفضيلات <ArrowUpRightIcon />
+            إدارة الإعدادات <ArrowUpLeftIcon />
           </a>
         </Button>
       </Empty>
-    </div>
+    </DirectionProvider>
   )
 }
 ```
@@ -411,7 +410,7 @@ The main component of the empty state. Wraps the `EmptyHeader` and `EmptyContent
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | `--` | Additional CSS classes |
 | `children` | `React.ReactNode` | `--` | Empty state content |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |

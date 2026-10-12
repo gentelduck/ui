@@ -66,23 +66,7 @@ Command palettes are the power user's best friend  -  they surface every action 
 
 This component is built on top of the [@gentleduck/primitives](https://github.com/gentleeduck/gentleduck/tree/master/packages/duck-primitives) command primitive, following the same Radix-style context/collection pattern used by Select and other primitives. The registry-layer components are thin styling wrappers around the primitives.
 
-Direction (`dir`) is resolved once at the root `Command` primitive via `useDirection` and stored in context. Every child primitive  -  `CommandInput`, `CommandList`, `CommandItem`, `CommandGroup`, `CommandEmpty`, and `CommandSeparator`  -  reads `dir` from context and applies it to its DOM element automatically. Use local `dir` on `Command` when needed, or set `DirectionProvider` at app/root level for global direction.
-
-**Features:**
-
-* **Searchable Command Dialog:** Command palette with search and real-time filtering.
-* **Groupable Command List:** Organize commands into logical groups with optional headings.
-* **Selectable Items:** Items support click actions, focus-based highlighting, and selection via Enter/Space.
-* **Keyboard Navigation:** Full keyboard support with arrow keys, Enter, Space, and vim-style bindings (gg/G).
-* **Typeahead Search:** Type printable characters to jump to matching items in the list.
-* **Custom Shortcuts:** Optional shortcut labels shown beside each command item.
-* **Empty State Handling:** Automatically displays a fallback when no items match the query.
-* **RTL Support:** Full right-to-left layout via local `dir` override or global `DirectionProvider`.
-* **Accessible & Composable:** ARIA roles (`listbox`, `option`, `combobox`, `status`) and headless architecture for complete flexibility.
-* **Responsive Design:** Adapts gracefully to different screen sizes and containers.
-* **Dialog or Inline Support:** Can be used as a floating dialog or embedded inline.
-
-## How It's Built
+Direction (`dir`) is resolved once at the root `Command` primitive via `useDirection` and stored in context. Every child primitive  -  `CommandInput`, `CommandList`, `CommandItem`, `CommandGroup`, `CommandEmpty`, and `CommandSeparator`  -  reads `dir` from context and applies it to its DOM element automatically. Set the direction once with `DirectionProvider` (or `
 
 ## Installation
 
@@ -330,17 +314,19 @@ Per-item context. Available via `useCommandItemContext()`.
 
 ## RTL Support
 
-RTL is handled at the primitive layer. Set `dir="rtl"` on the root `Command` for a local override, or set `DirectionProvider` once at app/root level for global direction. Child primitives inherit direction automatically.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the command follows. Child primitives, including the ones inside `CommandDialog`, get the resolved `dir` automatically.
 
 ```tsx
-<Command dir="rtl">
-  <CommandInput placeholder="..." />
-  <CommandList>
-    <CommandGroup heading="...">
-      <CommandItem>...</CommandItem>
-    </CommandGroup>
-  </CommandList>
-</Command>
+<DirectionProvider dir="rtl">
+  <Command>
+    <CommandInput placeholder="..." />
+    <CommandList>
+      <CommandGroup heading="...">
+        <CommandItem>...</CommandItem>
+      </CommandGroup>
+    </CommandList>
+  </Command>
+</DirectionProvider>
 ```
 
 ```tsx title="components/command-3.tsx"
@@ -357,48 +343,51 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from '@gentleduck/registry-ui/command'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Calculator, Calendar, CreditCard, Settings, Smile, User } from 'lucide-react'
 
 export default function Demo() {
   return (
-    <Command className="h-fit w-80 border pt-0" dir="rtl">
-      <CommandInput placeholder="...اكتب امرا او ابحث" />
-      <CommandList>
-        <CommandEmpty>لا توجد نتائج.</CommandEmpty>
-        <CommandGroup heading="اقتراحات">
-          <CommandItem>
-            <Calendar />
-            <span>التقويم</span>
-          </CommandItem>
-          <CommandItem>
-            <Smile />
-            <span>بحث عن رموز تعبيرية</span>
-          </CommandItem>
-          <CommandItem disabled>
-            <Calculator />
-            <span>الالة الحاسبة</span>
-          </CommandItem>
-        </CommandGroup>
-        <CommandSeparator />
-        <CommandGroup heading="الاعدادات">
-          <CommandItem>
-            <User />
-            <span>الملف الشخصي</span>
-            <CommandShortcut>⌘P</CommandShortcut>
-          </CommandItem>
-          <CommandItem>
-            <CreditCard />
-            <span>الفواتير</span>
-            <CommandShortcut>⌘B</CommandShortcut>
-          </CommandItem>
-          <CommandItem>
-            <Settings />
-            <span>الاعدادات</span>
-            <CommandShortcut>⌘S</CommandShortcut>
-          </CommandItem>
-        </CommandGroup>
-      </CommandList>
-    </Command>
+    <DirectionProvider dir="rtl">
+      <Command className="h-fit w-80 border pt-0">
+        <CommandInput placeholder="اكتب أمرًا أو ابحث..." />
+        <CommandList>
+          <CommandEmpty>لا توجد نتائج.</CommandEmpty>
+          <CommandGroup heading="اقتراحات">
+            <CommandItem>
+              <Calendar />
+              <span>التقويم</span>
+            </CommandItem>
+            <CommandItem>
+              <Smile />
+              <span>البحث عن رموز تعبيرية</span>
+            </CommandItem>
+            <CommandItem disabled>
+              <Calculator />
+              <span>الآلة الحاسبة</span>
+            </CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="الإعدادات">
+            <CommandItem>
+              <User />
+              <span>الملف الشخصي</span>
+              <CommandShortcut>⌘P</CommandShortcut>
+            </CommandItem>
+            <CommandItem>
+              <CreditCard />
+              <span>الفوترة</span>
+              <CommandShortcut>⌘B</CommandShortcut>
+            </CommandItem>
+            <CommandItem>
+              <Settings />
+              <span>الإعدادات</span>
+              <CommandShortcut>⌘S</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </Command>
+    </DirectionProvider>
   )
 }
 ```
@@ -479,7 +468,7 @@ export default function Demo() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`) and inherited by children. |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`) and inherited by children. |
 | `className` | `string` | - | Additional CSS classes applied to the command container |
 | `children` | `React.ReactNode` | - | Command content (`CommandInput`, `CommandList`, etc.) |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the root div |

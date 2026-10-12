@@ -1197,6 +1197,7 @@ export default function Demo() {
 
 import { PersianAdapter } from '@gentleduck/calendar'
 import { Calendar } from '@gentleduck/registry-ui/calendar'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import * as React from 'react'
 
 const adapter = new PersianAdapter()
@@ -1205,17 +1206,18 @@ export default function Demo() {
   const [date, setDate] = React.useState<Date | null>(new Date())
 
   return (
-    <Calendar
-      adapter={adapter}
-      className="rounded-md border shadow-sm"
-      dir="rtl"
-      locale="fa-IR"
-      mode="single"
-      onSelect={setDate}
-      selected={date}
-      showDropdowns
-      yearRange={{ from: 1380, to: 1430 }}
-    />
+    <DirectionProvider dir="rtl">
+      <Calendar
+        adapter={adapter}
+        className="rounded-md border shadow-sm"
+        locale="fa-IR"
+        mode="single"
+        onSelect={setDate}
+        selected={date}
+        showDropdowns
+        yearRange={{ from: 1380, to: 1430 }}
+      />
+    </DirectionProvider>
   )
 }
 ```
@@ -1228,6 +1230,7 @@ export default function Demo() {
 
 import { IslamicAdapter } from '@gentleduck/calendar'
 import { Calendar } from '@gentleduck/registry-ui/calendar'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import * as React from 'react'
 
 const adapter = new IslamicAdapter()
@@ -1236,17 +1239,18 @@ export default function Demo() {
   const [date, setDate] = React.useState<Date | null>(new Date())
 
   return (
-    <Calendar
-      adapter={adapter}
-      className="rounded-md border shadow-sm"
-      dir="rtl"
-      locale="ar-SA"
-      mode="single"
-      onSelect={setDate}
-      selected={date}
-      showDropdowns
-      yearRange={{ from: 1400, to: 1500 }}
-    />
+    <DirectionProvider dir="rtl">
+      <Calendar
+        adapter={adapter}
+        className="rounded-md border shadow-sm"
+        locale="ar-SA"
+        mode="single"
+        onSelect={setDate}
+        selected={date}
+        showDropdowns
+        yearRange={{ from: 1400, to: 1500 }}
+      />
+    </DirectionProvider>
   )
 }
 ```
@@ -1259,6 +1263,7 @@ export default function Demo() {
 
 import { HebrewAdapter } from '@gentleduck/calendar'
 import { Calendar } from '@gentleduck/registry-ui/calendar'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import * as React from 'react'
 
 const adapter = new HebrewAdapter()
@@ -1267,17 +1272,18 @@ export default function Demo() {
   const [date, setDate] = React.useState<Date | null>(new Date())
 
   return (
-    <Calendar
-      adapter={adapter}
-      className="rounded-md border shadow-sm"
-      dir="rtl"
-      locale="he-IL"
-      mode="single"
-      onSelect={setDate}
-      selected={date}
-      showDropdowns
-      yearRange={{ from: 5750, to: 5810 }}
-    />
+    <DirectionProvider dir="rtl">
+      <Calendar
+        adapter={adapter}
+        className="rounded-md border shadow-sm"
+        locale="he-IL"
+        mode="single"
+        onSelect={setDate}
+        selected={date}
+        showDropdowns
+        yearRange={{ from: 5750, to: 5810 }}
+      />
+    </DirectionProvider>
   )
 }
 ```
@@ -1391,27 +1397,29 @@ You can use the `<Calendar>` component to build a date picker. See the [Date Pic
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the calendar follows: the grid runs right-to-left, the month chevrons swap, and ArrowLeft/ArrowRight move in the direction you see. Pass `locale` for localized month names and numerals.
 
 ```tsx title="components/calendar-9.tsx"
 // import from your project: import Demo from '@/components/calendar-9'
 'use client'
 
 import { Calendar } from '@gentleduck/registry-ui/calendar'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import * as React from 'react'
 
 export default function Demo() {
   const [date, setDate] = React.useState<Date | null>(new Date())
 
   return (
-    <Calendar
-      className="rounded-md border shadow-sm"
-      dir="rtl"
-      locale="ar-SA"
-      mode="single"
-      onSelect={setDate}
-      selected={date}
-    />
+    <DirectionProvider dir="rtl">
+      <Calendar
+        className="rounded-md border shadow-sm"
+        locale="ar-SA"
+        mode="single"
+        onSelect={setDate}
+        selected={date}
+      />
+    </DirectionProvider>
   )
 }
 ```
@@ -1460,7 +1468,7 @@ export default function Demo() {
 | `showDropdowns` | `boolean` | `true` | Show month/year dropdown selectors |
 | `yearRange` | `{ from: number; to: number }` | `{ from: now-100, to: now+10 }` | Range of years in the year dropdown |
 | `locale` | `string` | - | BCP 47 locale tag (e.g. `'ar-SA'`, `'ja-JP'`) |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override |
+| `dir` | `'ltr' \| 'rtl'` | - | Direction override. Defaults to the nearest `DirectionProvider`, then `<html dir>`. |
 | `fromDate` | `Date` | - | Earliest selectable date |
 | `toDate` | `Date` | - | Latest selectable date |
 | `buttonVariant` | `string` | `'ghost'` | Variant style for navigation buttons |

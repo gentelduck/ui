@@ -1,7 +1,7 @@
 {
   "files": [
     {
-      "content": "import { Toggle } from '@gentleduck/registry-ui/toggle'\nimport { Bold } from 'lucide-react'\n\nexport default function Demo() {\n  return (\n    <Toggle aria-label=\"تبديل الخط العريض\" dir=\"rtl\">\n      <Bold className=\"h-4 w-4\" />\n    </Toggle>\n  )\n}\n",
+      "content": "import { DirectionProvider } from '@gentleduck/registry-ui/direction'\nimport { Toggle } from '@gentleduck/registry-ui/toggle'\nimport { Bookmark } from 'lucide-react'\n\nexport default function Demo() {\n  return (\n    <DirectionProvider dir=\"rtl\">\n      <Toggle variant=\"outline\">\n        <Bookmark />\n        إشارة مرجعية\n      </Toggle>\n    </DirectionProvider>\n  )\n}\n",
       "path": "toggle/toggle-8.tsx",
       "target": "components/toggle-8.tsx",
       "type": "registry:example"

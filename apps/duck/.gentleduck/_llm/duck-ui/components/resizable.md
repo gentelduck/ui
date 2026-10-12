@@ -175,37 +175,40 @@ export default function Example() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the panel group follows it: panels mirror, and dragging and arrow keys follow the visual layout. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/resizable-4.tsx"
 // import from your project: import Demo from '@/components/resizable-4'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@gentleduck/registry-ui/resizable'
 
 export default function Demo() {
   return (
-    <ResizablePanelGroup className="max-w-md rounded-lg border md:min-w-[450px]" orientation="horizontal" dir="rtl">
-      <ResizablePanel defaultSize={50}>
-        <div className="flex h-[200px] items-center justify-center p-6">
-          <span className="font-semibold">واحد</span>
-        </div>
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={50}>
-        <ResizablePanelGroup orientation="vertical">
-          <ResizablePanel defaultSize={25}>
-            <div className="flex h-full items-center justify-center p-6">
-              <span className="font-semibold">اثنان</span>
-            </div>
-          </ResizablePanel>
-          <ResizableHandle />
-          <ResizablePanel defaultSize={75}>
-            <div className="flex h-full items-center justify-center p-6">
-              <span className="font-semibold">ثلاثة</span>
-            </div>
-          </ResizablePanel>
-        </ResizablePanelGroup>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+    <DirectionProvider dir="rtl">
+      <ResizablePanelGroup className="max-w-md rounded-lg border md:min-w-[450px]" orientation="horizontal">
+        <ResizablePanel defaultSize={50}>
+          <div className="flex h-[200px] items-center justify-center p-6">
+            <span className="font-semibold">القائمة</span>
+          </div>
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel defaultSize={50}>
+          <ResizablePanelGroup orientation="vertical">
+            <ResizablePanel defaultSize={25}>
+              <div className="flex h-full items-center justify-center p-6">
+                <span className="font-semibold">العنوان</span>
+              </div>
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel defaultSize={75}>
+              <div className="flex h-full items-center justify-center p-6">
+                <span className="font-semibold">المحتوى</span>
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </DirectionProvider>
   )
 }
 ```

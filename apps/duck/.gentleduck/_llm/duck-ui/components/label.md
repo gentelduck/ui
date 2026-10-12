@@ -50,21 +50,22 @@ import { Label } from "@/components/ui/label"
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `Label` follows it. No `dir` prop needed.
 
 ```tsx title="components/label-3.tsx"
 // import from your project: import Demo from '@/components/label-3'
 import { Checkbox } from '@gentleduck/registry-ui/checkbox'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Label } from '@gentleduck/registry-ui/label'
 
 export default function Demo() {
   return (
-    <div dir="rtl">
+    <DirectionProvider dir="rtl">
       <div className="flex items-center gap-2">
-        <Checkbox id="tterms" />
-        <Label htmlFor="tterms">قبول الشروط والاحكام</Label>
+        <Checkbox id="label-terms-rtl" />
+        <Label htmlFor="label-terms-rtl">أوافق على الشروط والأحكام</Label>
       </div>
-    </div>
+    </DirectionProvider>
   )
 }
 ```
@@ -114,7 +115,7 @@ Renders an accessible label element associated with form controls.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional class names for the label element |
 | `htmlFor` | `string` | - | The `id` of the form element this label is associated with |
 | `children` | `React.ReactNode` | - | Label text or elements |

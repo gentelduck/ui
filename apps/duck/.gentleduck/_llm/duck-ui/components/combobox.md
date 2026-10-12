@@ -686,7 +686,7 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the combobox follows. The popover content and the command list inside it get the resolved `dir` without any extra props.
 
 ```tsx title="components/combobox-7.tsx"
 // import from your project: import Demo from '@/components/combobox-7'
@@ -702,6 +702,7 @@ import {
   CommandItem,
   CommandList,
 } from '@gentleduck/registry-ui/command'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Popover, PopoverContent, PopoverTrigger } from '@gentleduck/registry-ui/popover'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import * as React from 'react'
@@ -719,45 +720,41 @@ export default function Demo() {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState('')
 
-  const selectedLabel = value ? options.find((x) => x.value === value)?.label : undefined
+  const selectedLabel = value ? options.find((option) => option.value === value)?.label : undefined
 
   return (
-    <Popover dir="rtl" onOpenChange={setOpen} open={open}>
-      <PopoverTrigger asChild>
-        <Button aria-expanded={open} className="w-57.5 justify-between text-start" role="combobox" variant="outline">
-          {selectedLabel ?? 'اختر نوع المشروع...'}
-          <ChevronsUpDown className="opacity-50" />
-        </Button>
-      </PopoverTrigger>
-
-      <PopoverContent dir="rtl" className="w-57.5 min-w-auto p-0">
-        <Command dir="rtl">
-          <CommandInput className="h-9 text-start" placeholder="ابحث عن نوع المشروع..." />
-
-          <CommandList>
-            <CommandEmpty>لم يتم العثور على نتائج.</CommandEmpty>
-
-            <CommandGroup>
-              {options.map((item) => (
-                <CommandItem
-                  key={item.value}
-                  value={item.value}
-                  className="text-start"
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? '' : currentValue)
-                    setOpen(false)
-                  }}>
-                  {item.label}
-
-                  {/* logical margin so it works for RTL/LTR */}
-                  <Check className={cn('ms-auto', value === item.value ? 'opacity-100' : 'opacity-0')} />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <DirectionProvider dir="rtl">
+      <Popover onOpenChange={setOpen} open={open}>
+        <PopoverTrigger asChild>
+          <Button aria-expanded={open} className="w-57.5 justify-between" role="combobox" variant="outline">
+            {selectedLabel ?? 'اختر نوع المشروع...'}
+            <ChevronsUpDown className="opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-57.5 min-w-auto p-0">
+          <Command>
+            <CommandInput className="h-9" placeholder="ابحث عن نوع المشروع..." />
+            <CommandList>
+              <CommandEmpty>لم يتم العثور على نتائج.</CommandEmpty>
+              <CommandGroup>
+                {options.map((option) => (
+                  <CommandItem
+                    key={option.value}
+                    onSelect={(currentValue) => {
+                      setValue(currentValue === value ? '' : currentValue)
+                      setOpen(false)
+                    }}
+                    value={option.value}>
+                    {option.label}
+                    <Check className={cn('ms-auto', value === option.value ? 'opacity-100' : 'opacity-0')} />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    </DirectionProvider>
   )
 }
 ```

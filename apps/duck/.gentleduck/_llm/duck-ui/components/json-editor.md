@@ -330,13 +330,14 @@ export default function Demo() {
 
 ## RTL Support
 
-Set `dir="rtl"` on `JsonEditor` for a local override, or set `DirectionProvider` once at app/root level for global direction. Pass `lang` for locale-aware line numbers, and use `text` to translate labels/messages.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the editor follows: labels, buttons, and the expand sheet, popover, and dialog mirror, while the JSON code and its line-number gutter stay LTR. Pass `lang` for locale-aware line numbers and `text` to translate labels and messages.
 
 ```tsx title="components/json-editor-4.tsx"
 // import from your project: import Demo from '@/components/json-editor-4'
 'use client'
 
 import { Button } from '@gentleduck/registry-ui/button'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import type { JsonEditorText } from '@gentleduck/registry-ui/json-editor'
 import { JsonTextareaField } from '@gentleduck/registry-ui/json-editor'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -385,7 +386,7 @@ export default function Demo() {
   function onSubmit(values: JsonEditorValues) {
     toast('تم حفظ الإعدادات', {
       description: (
-        <pre dir="ltr" className="max-w-[560px] overflow-x-auto rounded-md border bg-muted p-3 text-left text-xs">
+        <pre className="max-w-[560px] overflow-x-auto rounded-md border bg-muted p-3 text-xs" dir="ltr">
           {JSON.stringify(values.settings, null, 2)}
         </pre>
       ),
@@ -393,33 +394,34 @@ export default function Demo() {
   }
 
   return (
-    <FormProvider {...form}>
-      <form className="w-full max-w-2xl space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-        <JsonTextareaField
-          control={form.control}
-          description={'قم بتعديل إعدادات التطبيق بصيغة JSON صالحة.'}
-          dir="rtl"
-          label={'الإعدادات'}
-          lang="ar"
-          name="settings"
-          rows={14}
-          sheetTitle={'تعديل إعدادات JSON'}
-          text={AR_TEXT}
-        />
+    <DirectionProvider dir="rtl">
+      <FormProvider {...form}>
+        <form className="w-full max-w-2xl space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <JsonTextareaField
+            control={form.control}
+            description={'قم بتعديل إعدادات التطبيق بصيغة JSON صالحة.'}
+            label={'الإعدادات'}
+            lang="ar"
+            name="settings"
+            rows={14}
+            sheetTitle={'تعديل إعدادات JSON'}
+            text={AR_TEXT}
+          />
 
-        <div className="flex items-center justify-end gap-2" dir="rtl">
-          <Button type="submit">{'حفظ الإعدادات'}</Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              form.reset({ settings: DEFAULT_SETTINGS })
-            }}>
-            {'إعادة تعيين'}
-          </Button>
-        </div>
-      </form>
-    </FormProvider>
+          <div className="flex items-center justify-end gap-2">
+            <Button type="submit">{'حفظ الإعدادات'}</Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                form.reset({ settings: DEFAULT_SETTINGS })
+              }}>
+              {'إعادة تعيين'}
+            </Button>
+          </div>
+        </form>
+      </FormProvider>
+    </DirectionProvider>
   )
 }
 ```
@@ -524,10 +526,10 @@ export default function Demo() {
 | `placeholder` | `string` | `'{\n  "theme": "dark"\n}'` | Placeholder content shown when empty |
 | `lineNumbers` | `boolean` | `true` | Shows or hides the line-number gutter |
 | `lineHeightPx` | `number` | `20` | Line-height used by textarea and line-number gutter |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). Controls editor chrome (gutter/buttons); JSON content stays LTR. |
+| `dir` | `'ltr' \| 'rtl'` | - | Direction override. Defaults to the nearest `DirectionProvider`, then `<html dir>`. Mirrors the editor chrome; the JSON code and gutter stay LTR. |
 | `lang` | `string` | - | BCP 47 locale tag (e.g. `'ar'`, `'fa'`). Controls the numeral system used for line numbers. |
 | `expandMode` | `'none' \| 'callback' \| 'sheet'` | `'sheet'` | Full-editor behavior for the `Full` action |
-| `sheetSide` | `'left' \| 'right'` | `'right'` | Side used when `expandMode="sheet"` |
+| `sheetSide` | `'left' \| 'right'` | `'right'` | Side used when `expandMode="sheet"`. Mirrors in RTL. |
 | `sheetTitle` | `string` | `'Edit JSON'` | Title displayed in the sheet header |
 | `text` | `JsonEditorText` | See below | Object of translatable UI strings for i18n support |
 | `onExpandEditor` | `(payload: JsonEditorExpandPayload<TFieldValues>) => void` | `-` | Callback invoked when `expandMode="callback"` and `Full` is pressed |

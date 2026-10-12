@@ -631,7 +631,7 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `ButtonGroup` follows it, including the joined corners and borders. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/button-group-12.tsx"
 // import from your project: import Demo from '@/components/button-group-12'
@@ -639,7 +639,7 @@ Direction is resolved through the shared primitives direction module. Use a loca
 
 import { Button } from '@gentleduck/registry-ui/button'
 import { ButtonGroup } from '@gentleduck/registry-ui/button-group'
-import { DirectionContext } from '@gentleduck/registry-ui/direction'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -655,7 +655,7 @@ import {
 } from '@gentleduck/registry-ui/dropdown-menu'
 import {
   ArchiveIcon,
-  ArrowLeftIcon,
+  ArrowRightIcon,
   CalendarPlusIcon,
   ClockIcon,
   ListFilterPlusIcon,
@@ -670,11 +670,11 @@ export default function Demo() {
   const [label, setLabel] = React.useState('personal')
 
   return (
-    <DirectionContext.Provider value="rtl">
-      <ButtonGroup dir="rtl">
+    <DirectionProvider dir="rtl">
+      <ButtonGroup>
         <ButtonGroup className="hidden sm:flex">
           <Button aria-label="رجوع" size="icon" variant="outline">
-            <ArrowLeftIcon className="rtl:rotate-180" />
+            <ArrowRightIcon />
           </Button>
         </ButtonGroup>
         <ButtonGroup>
@@ -683,7 +683,7 @@ export default function Demo() {
         </ButtonGroup>
         <ButtonGroup>
           <Button variant="outline">تأجيل</Button>
-          <DropdownMenu dir="rtl">
+          <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button aria-label="خيارات إضافية" size="icon" variant="outline">
                 <MoreHorizontalIcon />
@@ -717,7 +717,7 @@ export default function Demo() {
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger>
                     <TagIcon />
-                    تصنيف كـ...
+                    تصنيف
                   </DropdownMenuSubTrigger>
                   <DropdownMenuSubContent>
                     <DropdownMenuRadioGroup onValueChange={setLabel} value={label}>
@@ -739,7 +739,7 @@ export default function Demo() {
           </DropdownMenu>
         </ButtonGroup>
       </ButtonGroup>
-    </DirectionContext.Provider>
+    </DirectionProvider>
   )
 }
 ```
@@ -829,7 +829,7 @@ export default function Demo() {
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout direction of the button group |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | `--` | Additional class names to apply |
 | `children` | `React.ReactNode` | `--` | Grouped content (buttons, separators, text, or nested groups) |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |

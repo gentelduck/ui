@@ -326,10 +326,11 @@ export default function Demo() {
 
 ## RTL Support
 
-Every `Typography*` component inherits the RTL styles it needs from Tailwind's `rtl:` variant. Wrap the composition in an element with `dir="rtl"` (or set `DirectionProvider` at app/root level for global RTL/LTR) and the blockquote border, list indent, and table alignment automatically flip.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the typography follows it: the blockquote border, list indent, and table alignment flip automatically. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/typography-15.tsx"
 // import from your project: import Demo from '@/components/typography-15'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import {
   TypographyBlockquote,
   TypographyH1,
@@ -345,82 +346,84 @@ import {
 
 export default function Demo() {
   return (
-    <div dir="rtl">
-      <TypographyH1>{'سجلات ضريبة النكتة'}</TypographyH1>
-      <TypographyP>
-        {
-          'في قديم الزمان، في أرض بعيدة، كان هناك ملك كسول جداً يقضي كل يومه مستلقياً على عرشه. في يوم من الأيام، جاء إليه مستشاروه بمشكلة: المملكة تنفد منها الأموال.'
-        }
-      </TypographyP>
-      <TypographyH2 className="mt-10">{'خطة الملك'}</TypographyH2>
-      <TypographyP>
-        {'فكر الملك ملياً وطويلاً، وأخيراً توصل إلى '}
-        <a className="font-medium text-primary underline underline-offset-4" href="placeholder">
-          {'خطة عبقرية'}
-        </a>
-        {': سيفرض ضريبة على النكت في المملكة.'}
-      </TypographyP>
-      <TypographyBlockquote>
-        {'قال: "في النهاية، الجميع يستمتع بنكتة جيدة، لذا من العدل أن يدفعوا مقابل هذا الامتياز."'}
-      </TypographyBlockquote>
-      <TypographyH3 className="mt-8">{'ضريبة النكتة'}</TypographyH3>
-      <TypographyP>{'لم يكن رعايا الملك سعداء. تذمروا واشتكوا، لكن الملك كان حازماً:'}</TypographyP>
-      <TypographyList>
-        <li>{'المستوى الأول من التورية: 5 قطع ذهبية'}</li>
-        <li>{'المستوى الثاني من النكت: 10 قطع ذهبية'}</li>
-        <li>{'المستوى الثالث من الطرائف: 20 قطعة ذهبية'}</li>
-      </TypographyList>
-      <TypographyP>
-        {
-          'نتيجة لذلك، توقف الناس عن رواية النكت، وسقطت المملكة في كآبة. لكن كان هناك شخص واحد رفض الاستسلام لحماقة الملك: مهرج البلاط الملكي اسمه نكتجي.'
-        }
-      </TypographyP>
-      <TypographyH3 className="mt-8">{'ثورة نكتجي'}</TypographyH3>
-      <TypographyP>
-        {
-          'بدأ نكتجي يتسلل إلى القلعة في منتصف الليل ويترك النكت في كل مكان: تحت وسادة الملك، في حسائه، وحتى في المرحاض الملكي. كان الملك غاضباً، لكنه لم يستطع إيقاف نكتجي.'
-        }
-      </TypographyP>
-      <TypographyP>
-        {
-          'وفي يوم من الأيام، اكتشف الناس أن النكت التي تركها نكتجي كانت مضحكة لدرجة أنهم لم يستطيعوا إلا الضحك. وبمجرد أن بدأوا بالضحك، لم يتمكنوا من التوقف.'
-        }
-      </TypographyP>
-      <TypographyH3 className="mt-8">{'ثورة الشعب'}</TypographyH3>
-      <TypographyP>
-        {
-          'شعب المملكة، الذي شعر بالبهجة من الضحك، بدأ يروي النكت والطرائف مرة أخرى، وسرعان ما انضمت المملكة بأكملها إلى النكتة.'
-        }
-      </TypographyP>
-      <TypographyTable>
-        <thead>
-          <TypographyTr>
-            <TypographyTh>{'خزينة الملك'}</TypographyTh>
-            <TypographyTh>{'سعادة الشعب'}</TypographyTh>
-          </TypographyTr>
-        </thead>
-        <tbody>
-          <TypographyTr>
-            <TypographyTd>{'فارغة'}</TypographyTd>
-            <TypographyTd>{'فائضة'}</TypographyTd>
-          </TypographyTr>
-          <TypographyTr>
-            <TypographyTd>{'متواضعة'}</TypographyTd>
-            <TypographyTd>{'راضية'}</TypographyTd>
-          </TypographyTr>
-          <TypographyTr>
-            <TypographyTd>{'ممتلئة'}</TypographyTd>
-            <TypographyTd>{'في قمة السعادة'}</TypographyTd>
-          </TypographyTr>
-        </tbody>
-      </TypographyTable>
-      <TypographyP>
-        {
-          'الملك، عندما رأى مدى سعادة رعاياه، أدرك خطأه وألغى ضريبة النكتة. أُعلن نكتجي بطلاً، وعاشت المملكة في سعادة إلى الأبد.'
-        }
-      </TypographyP>
-      <TypographyP>{'العبرة من القصة: لا تستهن أبداً بقوة الضحكة الجيدة، واحذر دائماً من الأفكار السيئة.'}</TypographyP>
-    </div>
+    <DirectionProvider dir="rtl">
+      <div>
+        <TypographyH1>{'سجلات ضريبة النكتة'}</TypographyH1>
+        <TypographyP>
+          {
+            'في قديم الزمان، في أرض بعيدة، كان هناك ملك كسول جداً يقضي كل يومه مستلقياً على عرشه. في يوم من الأيام، جاء إليه مستشاروه بمشكلة: المملكة تنفد منها الأموال.'
+          }
+        </TypographyP>
+        <TypographyH2 className="mt-10">{'خطة الملك'}</TypographyH2>
+        <TypographyP>
+          {'فكر الملك ملياً وطويلاً، وأخيراً توصل إلى '}
+          <a className="font-medium text-primary underline underline-offset-4" href="placeholder">
+            {'خطة عبقرية'}
+          </a>
+          {': سيفرض ضريبة على النكت في المملكة.'}
+        </TypographyP>
+        <TypographyBlockquote>
+          {'قال: «في النهاية، الجميع يستمتع بنكتة جيدة، لذا من العدل أن يدفعوا مقابل هذا الامتياز».'}
+        </TypographyBlockquote>
+        <TypographyH3 className="mt-8">{'ضريبة النكتة'}</TypographyH3>
+        <TypographyP>{'لم يكن رعايا الملك سعداء. تذمروا واشتكوا، لكن الملك كان حازماً:'}</TypographyP>
+        <TypographyList>
+          <li>{'المستوى الأول من التورية: 5 قطع ذهبية'}</li>
+          <li>{'المستوى الثاني من النكت: 10 قطع ذهبية'}</li>
+          <li>{'المستوى الثالث من الطرائف: 20 قطعة ذهبية'}</li>
+        </TypographyList>
+        <TypographyP>
+          {
+            'نتيجة لذلك، توقف الناس عن رواية النكت، وسقطت المملكة في كآبة. لكن كان هناك شخص واحد رفض الاستسلام لحماقة الملك: مهرج البلاط الملكي اسمه نكتجي.'
+          }
+        </TypographyP>
+        <TypographyH3 className="mt-8">{'ثورة نكتجي'}</TypographyH3>
+        <TypographyP>
+          {
+            'بدأ نكتجي يتسلل إلى القلعة في منتصف الليل ويترك النكت في كل مكان: تحت وسادة الملك، في حسائه، وحتى في المرحاض الملكي. كان الملك غاضباً، لكنه لم يستطع إيقاف نكتجي.'
+          }
+        </TypographyP>
+        <TypographyP>
+          {
+            'وفي يوم من الأيام، اكتشف الناس أن النكت التي تركها نكتجي كانت مضحكة لدرجة أنهم لم يستطيعوا إلا الضحك. وبمجرد أن بدأوا بالضحك، لم يتمكنوا من التوقف.'
+          }
+        </TypographyP>
+        <TypographyH3 className="mt-8">{'ثورة الشعب'}</TypographyH3>
+        <TypographyP>
+          {
+            'شعب المملكة، الذي شعر بالبهجة من الضحك، بدأ يروي النكت والطرائف مرة أخرى، وسرعان ما انضمت المملكة بأكملها إلى النكتة.'
+          }
+        </TypographyP>
+        <TypographyTable>
+          <thead>
+            <TypographyTr>
+              <TypographyTh>{'خزينة الملك'}</TypographyTh>
+              <TypographyTh>{'سعادة الشعب'}</TypographyTh>
+            </TypographyTr>
+          </thead>
+          <tbody>
+            <TypographyTr>
+              <TypographyTd>{'فارغة'}</TypographyTd>
+              <TypographyTd>{'فائضة'}</TypographyTd>
+            </TypographyTr>
+            <TypographyTr>
+              <TypographyTd>{'متواضعة'}</TypographyTd>
+              <TypographyTd>{'راضية'}</TypographyTd>
+            </TypographyTr>
+            <TypographyTr>
+              <TypographyTd>{'ممتلئة'}</TypographyTd>
+              <TypographyTd>{'في قمة السعادة'}</TypographyTd>
+            </TypographyTr>
+          </tbody>
+        </TypographyTable>
+        <TypographyP>
+          {
+            'الملك، عندما رأى مدى سعادة رعاياه، أدرك خطأه وألغى ضريبة النكتة. أُعلن نكتجي بطلاً، وعاشت المملكة في سعادة إلى الأبد.'
+          }
+        </TypographyP>
+        <TypographyP>{'العبرة من القصة: لا تستهن أبداً بقوة الضحكة الجيدة، واحذر دائماً من الأفكار السيئة.'}</TypographyP>
+      </div>
+    </DirectionProvider>
   )
 }
 ```
@@ -490,8 +493,8 @@ Every base `Typography*` component is a thin `forwardRef` wrapper around the mat
 | `TypographyH3` | `h3` | `scroll-m-20 font-semibold text-2xl tracking-tight` |
 | `TypographyH4` | `h4` | `scroll-m-20 font-semibold text-xl tracking-tight` |
 | `TypographyP` | `p` | `leading-7 [&:not(:first-child)]:mt-6` |
-| `TypographyBlockquote` | `blockquote` | `mt-6 border-l-2 pl-6 italic` (flips in RTL) |
-| `TypographyList` | `ul` | `my-6 ml-6 list-disc [&>li]:mt-2` (flips in RTL) |
+| `TypographyBlockquote` | `blockquote` | `mt-6 border-s-2 ps-6 italic rtl:not-italic` |
+| `TypographyList` | `ul` | `my-6 ms-6 list-disc [&>li]:mt-2` |
 | `TypographyInlineCode` | `code` | `relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono font-semibold text-sm` |
 | `TypographyLead` | `p` | `text-muted-foreground text-xl` |
 | `TypographyLarge` | `div` | `font-semibold text-lg` |
@@ -499,8 +502,8 @@ Every base `Typography*` component is a thin `forwardRef` wrapper around the mat
 | `TypographyMuted` | `p` | `text-muted-foreground text-sm` |
 | `TypographyTable` | `div > table` | wrapper + `w-full` (accepts `wrapperClassName` for the outer div) |
 | `TypographyTr` | `tr` | `m-0 border-t p-0 even:bg-muted` |
-| `TypographyTh` | `th` | `border px-4 py-2 text-left font-bold rtl:text-right` |
-| `TypographyTd` | `td` | `border px-4 py-2 text-left rtl:text-right` |
+| `TypographyTh` | `th` | `border px-4 py-2 text-start font-bold` |
+| `TypographyTd` | `td` | `border px-4 py-2 text-start` |
 
 ### Motion variants
 

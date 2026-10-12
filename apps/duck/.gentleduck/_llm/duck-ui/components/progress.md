@@ -52,12 +52,13 @@ import { Progress } from "@/components/ui/progress"
 
 ## RTL Support
 
-Set `dir="rtl"` on `Progress` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `Progress` fills from the right. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/progress-2.tsx"
 // import from your project: import Demo from '@/components/progress-2'
 'use client'
 
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Progress } from '@gentleduck/registry-ui/progress'
 import * as React from 'react'
 
@@ -69,7 +70,11 @@ export default function Demo() {
     return () => clearTimeout(timer)
   }, [])
 
-  return <Progress className="w-[60%] rtl:rotate-180" value={progress} dir="rtl" />
+  return (
+    <DirectionProvider dir="rtl">
+      <Progress className="w-[60%]" value={progress} />
+    </DirectionProvider>
+  )
 }
 ```
 
@@ -109,7 +114,7 @@ export default function Demo() {
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `value` | `number` | (required) | Progress value from `0` to `100` representing the completion percentage |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | `--` | Additional CSS classes for the progress bar container |
 | `...props` | `Omit<React.HTMLProps<HTMLDivElement>, 'value'>` | - | Additional props to spread to the content div |
 
@@ -118,6 +123,6 @@ export default function Demo() {
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `value` | `number` | (required) | Progress value from `0` to `100`. Value changes animate the bar's scale and opacity over a 0.6s eased transition (not a spring). Includes a continuously looping shimmer overlay. |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS classes for the progress bar container |
 | `...props` | `Omit<React.HTMLProps<HTMLDivElement>, 'value'>` | - | Additional props to spread to the content div |

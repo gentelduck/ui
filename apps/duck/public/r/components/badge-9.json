@@ -1,7 +1,7 @@
 {
   "files": [
     {
-      "content": "import { Badge } from '@gentleduck/registry-ui/badge'\n\nexport default function Demo() {\n  return (\n    <div dir=\"rtl\">\n      <Badge aria-label=\"Badge\" size={'default'} variant={'default'}>\n        شارة\n      </Badge>\n    </div>\n  )\n}\n",
+      "content": "import { Badge } from '@gentleduck/registry-ui/badge'\nimport { DirectionProvider } from '@gentleduck/registry-ui/direction'\nimport { BadgeCheckIcon, ClockIcon } from 'lucide-react'\n\nexport default function Demo() {\n  return (\n    <DirectionProvider dir=\"rtl\">\n      <div className=\"flex flex-wrap items-center gap-2\">\n        <Badge>جديد</Badge>\n        <Badge variant=\"secondary\">\n          <BadgeCheckIcon aria-hidden=\"true\" className=\"size-3.5\" />\n          موثّق\n        </Badge>\n        <Badge variant=\"outline\">\n          <ClockIcon aria-hidden=\"true\" className=\"size-3.5\" />\n          قيد المراجعة\n        </Badge>\n        <Badge variant=\"destructive\">مرفوض</Badge>\n      </div>\n    </DirectionProvider>\n  )\n}\n",
       "path": "badge/badge-9.tsx",
       "target": "components/badge-9.tsx",
       "type": "registry:example"

@@ -308,13 +308,14 @@ export default function Demo() {
 
 ## RTL Support
 
-Set `dir="rtl"` on `DropdownMenu` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the dropdown menu follows. The portaled content gets the resolved `dir`, sub-menus open to the left, the sub-menu chevron flips, and the arrow keys that open and close sub-menus swap.
 
 ```tsx title="components/dropdown-menu-4.tsx"
 // import from your project: import Demo from '@/components/dropdown-menu-4'
 'use client'
 
 import { Button } from '@gentleduck/registry-ui/button'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -331,58 +332,60 @@ import {
 
 export default function Demo() {
   return (
-    <DropdownMenu dir="rtl">
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">فتح</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>حسابي</DropdownMenuLabel>
-        <DropdownMenuGroup>
+    <DirectionProvider dir="rtl">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline">فتح</Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56">
+          <DropdownMenuLabel>حسابي</DropdownMenuLabel>
+          <DropdownMenuGroup>
+            <DropdownMenuItem>
+              الملف الشخصي
+              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              الفوترة
+              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              الإعدادات
+              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              اختصارات لوحة المفاتيح
+              <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem>الفريق</DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>دعوة مستخدمين</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem>البريد الإلكتروني</DropdownMenuItem>
+                <DropdownMenuItem>رسالة</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>المزيد...</DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuItem>
+              فريق جديد
+              <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>GitHub</DropdownMenuItem>
+          <DropdownMenuItem>الدعم</DropdownMenuItem>
+          <DropdownMenuItem disabled>API</DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem>
-            الملف الشخصي
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            تسجيل الخروج
+            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            الفواتير
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            الاعدادات
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            اختصارات لوحة المفاتيح
-            <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>الفريق</DropdownMenuItem>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>دعوة مستخدمين</DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
-              <DropdownMenuItem>البريد الالكتروني</DropdownMenuItem>
-              <DropdownMenuItem>رسالة</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>المزيد...</DropdownMenuItem>
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
-          <DropdownMenuItem>
-            فريق جديد
-            <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>GitHub</DropdownMenuItem>
-        <DropdownMenuItem>الدعم</DropdownMenuItem>
-        <DropdownMenuItem disabled>API</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          تسجيل الخروج
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </DirectionProvider>
   )
 }
 ```
@@ -485,7 +488,7 @@ The root component that manages open/closed state and provides context to all ch
 | `open` | `boolean` | - | Controlled open state |
 | `defaultOpen` | `boolean` | `false` | Initial open state (uncontrolled) |
 | `onOpenChange` | `(open: boolean) => void` | - | Callback when open state changes |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `modal` | `boolean` | `true` | When true, interaction with outside elements is disabled and only menu content is visible to screen readers |
 
 ### DropdownMenuTrigger

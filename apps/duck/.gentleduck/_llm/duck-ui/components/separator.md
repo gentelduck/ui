@@ -57,22 +57,23 @@ import { Separator } from "@/components/ui/separator"
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the separator follows it. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/separator-2.tsx"
 // import from your project: import Demo from '@/components/separator-2'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Separator } from '@gentleduck/registry-ui/separator'
 
 export default function Demo() {
   return (
-    <div dir="rtl">
+    <DirectionProvider dir="rtl">
       <div>
         <div className="space-y-1">
-          <h4 className="font-medium text-sm leading-none">مكونات Radix الاساسية</h4>
-          <p className="text-muted-foreground text-sm">مكتبة مكونات واجهة مستخدم مفتوحة المصدر.</p>
+          <h4 className="font-medium text-sm leading-none">مكونات Duck UI</h4>
+          <p className="text-muted-foreground text-sm">مكتبة مكونات واجهات مفتوحة المصدر.</p>
         </div>
         <Separator className="my-4" />
-        <div className="flex h-5 items-center space-x-4 text-sm">
+        <div className="flex h-5 items-center gap-4 text-sm">
           <div>المدونة</div>
           <Separator orientation="vertical" />
           <div>التوثيق</div>
@@ -80,7 +81,7 @@ export default function Demo() {
           <div>المصدر</div>
         </div>
       </div>
-    </div>
+    </DirectionProvider>
   )
 }
 ```
@@ -126,7 +127,7 @@ export default function Demo() {
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Controls the orientation of the separator line |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS class names |
 | `...props` | `React.HTMLProps<HTMLHRElement>` | - | Additional props to spread to the hr element |
 

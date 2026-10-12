@@ -1,7 +1,7 @@
 {
   "files": [
     {
-      "content": "'use client'\n\nimport { Switch } from '@gentleduck/registry-ui/switch'\n\nexport default function Demo() {\n  return <Switch dir=\"rtl\" />\n}\n",
+      "content": "'use client'\n\nimport { DirectionProvider } from '@gentleduck/registry-ui/direction'\nimport { Label } from '@gentleduck/registry-ui/label'\nimport { Switch } from '@gentleduck/registry-ui/switch'\n\nexport default function Demo() {\n  return (\n    <DirectionProvider dir=\"rtl\">\n      <div className=\"flex items-center gap-2\">\n        <Switch id=\"airplane-mode-rtl\" />\n        <Label htmlFor=\"airplane-mode-rtl\">وضع الطيران</Label>\n      </div>\n    </DirectionProvider>\n  )\n}\n",
       "path": "switch/switch-3.tsx",
       "target": "components/switch-3.tsx",
       "type": "registry:example"

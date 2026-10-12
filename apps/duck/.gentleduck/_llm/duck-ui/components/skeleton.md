@@ -73,23 +73,24 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the skeleton follows it. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/skeleton-3.tsx"
 // import from your project: import Demo from '@/components/skeleton-3'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Skeleton } from '@gentleduck/registry-ui/skeleton'
 
 export default function Demo() {
   return (
-    <div dir="rtl">
+    <DirectionProvider dir="rtl">
       <div className="flex items-center gap-4">
-        <Skeleton className="h-12 w-12 rounded-full" />
+        <Skeleton className="size-12 rounded-full" />
         <div className="space-y-2">
           <Skeleton className="h-4 w-[250px]" />
           <Skeleton className="h-4 w-[200px]" />
         </div>
       </div>
-    </div>
+    </DirectionProvider>
   )
 }
 ```
@@ -127,7 +128,7 @@ export default function Demo() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS class names to control shape and size |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
 

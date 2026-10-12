@@ -170,7 +170,7 @@ export default function Demo({ className, ...props }: CardProps) {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the card follows it. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/card-3.tsx"
 // import from your project: import Demo from '@/components/card-3'
@@ -184,7 +184,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export default function Demo() {
   return (
     <DirectionProvider dir="rtl">
-      <Card className="w-[350px]" dir="rtl">
+      <Card className="w-[350px]">
         <CardHeader>
           <CardTitle>إنشاء مشروع</CardTitle>
           <CardDescription>انشر مشروعك الجديد بنقرة واحدة.</CardDescription>
@@ -193,16 +193,16 @@ export default function Demo() {
         <CardContent>
           <form>
             <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="name">الاسم</Label>
-                <Input id="name" placeholder="اسم مشروعك" />
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="card-rtl-name">الاسم</Label>
+                <Input id="card-rtl-name" placeholder="اسم مشروعك" />
               </div>
 
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="framework">نوع المشروع</Label>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="card-rtl-type">نوع المشروع</Label>
 
-                <Select dir="rtl">
-                  <SelectTrigger id="framework" className="w-full">
+                <Select>
+                  <SelectTrigger id="card-rtl-type" className="w-full">
                     <SelectValue placeholder="اختر نوع المشروع" />
                   </SelectTrigger>
 
@@ -212,7 +212,7 @@ export default function Demo() {
                     <SelectItem value="ecommerce">متجر إلكتروني</SelectItem>
                     <SelectItem value="portfolio">معرض أعمال</SelectItem>
                     <SelectItem value="blog">مدونة</SelectItem>
-                    <SelectItem value="mobile-app">تطبيق موبايل</SelectItem>
+                    <SelectItem value="mobile-app">تطبيق جوال</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -220,7 +220,7 @@ export default function Demo() {
           </form>
         </CardContent>
 
-        <CardFooter className="flex">
+        <CardFooter>
           <Button variant="outline">إلغاء</Button>
           <Button>نشر</Button>
         </CardFooter>
@@ -313,7 +313,7 @@ export default function Demo() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS classes applied to the card container |
 | `children` | `React.ReactNode` | - | Card content |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |

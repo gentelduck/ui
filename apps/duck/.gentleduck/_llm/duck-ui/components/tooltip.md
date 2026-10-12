@@ -213,15 +213,17 @@ export default function Demo() {
 
 ## RTL Support
 
-Set `dir="rtl"` on `Tooltip` for a local override, or set `DirectionProvider` once at app/root level for global direction. This mirrors tooltip positioning in right-to-left layouts.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the tooltip follows. The portaled content gets the resolved `dir`, and `side="left"`/`side="right"` and `align="start"`/`align="end"` mirror with it.
 
 ```tsx
-<TooltipProvider>
-  <Tooltip dir="rtl">
-    <TooltipTrigger>مرر الماوس</TooltipTrigger>
-    <TooltipContent>نص التلميح</TooltipContent>
-  </Tooltip>
-</TooltipProvider>
+<DirectionProvider dir="rtl">
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger>مرّر المؤشر</TooltipTrigger>
+      <TooltipContent>نص التلميح</TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+</DirectionProvider>
 ```
 
 ```tsx title="components/tooltip-3.tsx"
@@ -236,11 +238,11 @@ export default function Demo() {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="outline">{'تمرير'}</Button>
+            <Button variant="outline">مرّر المؤشر</Button>
           </TooltipTrigger>
 
           <TooltipContent>
-            <p>{'أضف إلى المكتبة'}</p>
+            <p>أضف إلى المكتبة</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -304,7 +306,7 @@ export default function Demo() {
 | `onOpenChange` | `(open: boolean) => void` | - | Callback when open state changes |
 | `delayDuration` | `number` | `700` | Per-tooltip delay override |
 | `disableHoverableContent` | `boolean` | `false` | Per-tooltip hover-content behavior override |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `...props` | `React.ComponentPropsWithRef<typeof TooltipPrimitive.Root>` | - | Additional root props |
 
 ### TooltipTrigger

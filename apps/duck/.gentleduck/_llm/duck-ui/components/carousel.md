@@ -508,13 +508,13 @@ See the [Embla Carousel docs](https://www.embla-carousel.com/api/plugins/) for m
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the carousel follows: Embla scrolls right-to-left, the previous/next buttons and arrows swap sides, and the arrow keys match what you see. No `opts.direction` needed.
 
 ```tsx title="components/carousel-7.tsx"
 // import from your project: import Demo from '@/components/carousel-7'
 'use client'
-import { Card, CardContent } from '@gentleduck/registry-ui/card'
 
+import { Card, CardContent } from '@gentleduck/registry-ui/card'
 import {
   Carousel,
   CarouselContent,
@@ -522,32 +522,38 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@gentleduck/registry-ui/carousel'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
+
+const slides = [
+  { number: '١', title: 'الشريحة الأولى' },
+  { number: '٢', title: 'الشريحة الثانية' },
+  { number: '٣', title: 'الشريحة الثالثة' },
+  { number: '٤', title: 'الشريحة الرابعة' },
+  { number: '٥', title: 'الشريحة الخامسة' },
+]
 
 export default function Demo() {
   return (
-    <Carousel
-      className="w-full max-w-xs"
-      dir="rtl"
-      opts={{
-        direction: 'rtl',
-      }}>
-      <CarouselContent>
-        {Array.from({ length: 5 }).map((_, index) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: static list generated from Array.from
-          <CarouselItem key={`item-${index + 1}`}>
-            <div className="p-1">
-              <Card>
-                <CardContent className="flex aspect-square items-center justify-center p-6">
-                  <span className="font-semibold text-4xl">{index + 1}</span>
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </Carousel>
+    <DirectionProvider dir="rtl">
+      <Carousel className="w-full max-w-xs">
+        <CarouselContent>
+          {slides.map((slide) => (
+            <CarouselItem key={slide.number}>
+              <div className="p-1">
+                <Card>
+                  <CardContent className="flex aspect-square flex-col items-center justify-center gap-2 p-6">
+                    <span className="font-semibold text-4xl">{slide.number}</span>
+                    <span className="text-muted-foreground text-sm">{slide.title}</span>
+                  </CardContent>
+                </Card>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious text="الشريحة السابقة" />
+        <CarouselNext text="الشريحة التالية" />
+      </Carousel>
+    </DirectionProvider>
   )
 }
 ```
@@ -561,7 +567,7 @@ export default function Demo() {
 | `opts` | `CarouselOptions` | - | Configuration options passed to `embla-carousel` |
 | `plugins` | `CarouselPlugin` | - | Array of Embla plugins |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Carousel axis direction |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `setApi` | `(api: CarouselApi) => void` | - | Callback to expose the Embla API |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
 

@@ -181,24 +181,24 @@ export default function Demo() {
 
 ## RTL Support
 
-Set `dir="rtl"` on `RadioGroup` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `RadioGroup` follows it, including flipped Left/Right arrow keys. No `dir` prop needed.
 
 ```tsx title="components/radio-group-3.tsx"
 // import from your project: import Demo from '@/components/radio-group-3'
 'use client'
 
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { RadioGroup, RadioGroupItem } from '@gentleduck/registry-ui/radio-group'
 
 export default function Demo() {
   return (
-    <RadioGroup
-      dir="rtl"
-      className="[&>div]:felx flex flex-col space-y-1 [&>div]:items-center [&>div]:space-x-3 [&>div]:space-y-0"
-      defaultValue="comfortable">
-      <RadioGroupItem value="default">افتراضي</RadioGroupItem>
-      <RadioGroupItem value="comfortable">مريح</RadioGroupItem>
-      <RadioGroupItem value="compact">مضغوط</RadioGroupItem>
-    </RadioGroup>
+    <DirectionProvider dir="rtl">
+      <RadioGroup defaultValue="comfortable">
+        <RadioGroupItem value="default">افتراضي</RadioGroupItem>
+        <RadioGroupItem value="comfortable">مريح</RadioGroupItem>
+        <RadioGroupItem value="compact">مضغوط</RadioGroupItem>
+      </RadioGroup>
+    </DirectionProvider>
   )
 }
 ```
@@ -244,7 +244,7 @@ export default function Demo() {
 | `disabled` | `boolean` | `false` | Whether the entire group is disabled |
 | `required` | `boolean` | `false` | Whether the group is required in a form |
 | `name` | `string` | - | The name used when submitting an HTML form |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `orientation` | `'horizontal' \| 'vertical'` | - | The orientation of the group for arrow key navigation |
 | `loop` | `boolean` | `true` | Whether keyboard navigation should loop |
 | `className` | `string` | - | Additional CSS classes |

@@ -154,16 +154,25 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `Switch` follows it: the thumb starts on the right and slides left when checked. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/switch-3.tsx"
 // import from your project: import Demo from '@/components/switch-3'
 'use client'
 
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
+import { Label } from '@gentleduck/registry-ui/label'
 import { Switch } from '@gentleduck/registry-ui/switch'
 
 export default function Demo() {
-  return <Switch dir="rtl" />
+  return (
+    <DirectionProvider dir="rtl">
+      <div className="flex items-center gap-2">
+        <Switch id="airplane-mode-rtl" />
+        <Label htmlFor="airplane-mode-rtl">وضع الطيران</Label>
+      </div>
+    </DirectionProvider>
+  )
 }
 ```
 
@@ -194,7 +203,7 @@ export default function Demo() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional class names for the checkbox input |
 | `indicator` | `React.ReactElement` | - | Custom element for the unchecked state indicator |
 | `checkedIndicator` | `React.ReactElement` | - | Custom element for the checked state indicator |

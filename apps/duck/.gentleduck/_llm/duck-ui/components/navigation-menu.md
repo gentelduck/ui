@@ -160,13 +160,14 @@ export function NavigationMenuDemo() {
 
 ## RTL Support
 
-Set `dir="rtl"` on `NavigationMenu` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the navigation menu follows. Content aligns to the right, slides in from the side of the trigger you moved to, and arrow keys move through the list in visual order.
 
 ```tsx title="components/navigation-menu-2.tsx"
 // import from your project: import Demo from '@/components/navigation-menu-2'
 'use client'
 
 import { cn } from '@gentleduck/libs/cn'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -182,95 +183,97 @@ import * as React from 'react'
 
 const components: { title: string; href: string; description: string }[] = [
   {
-    description: 'نافذة حوار تقاطع المستخدم بمحتوى مهم وتتطلب استجابة.',
+    description: 'نافذة حوار تقاطع المستخدم بمحتوى مهم وتنتظر منه استجابة.',
     href: '/docs/components/alert-dialog',
-    title: 'نافذة التنبيه',
+    title: 'مربع حوار التنبيه',
   },
   {
-    description: 'لمعاينة المحتوى المتاح خلف رابط للمستخدمين المبصرين.',
+    description: 'تتيح للمستخدمين المبصرين معاينة المحتوى الموجود خلف الرابط.',
     href: '/docs/components/hover-card',
     title: 'بطاقة التمرير',
   },
   {
-    description: 'يعرض مؤشرا يوضح تقدم اكتمال مهمة، وعادة ما يظهر كشريط تقدم.',
+    description: 'يعرض مؤشرًا يوضّح مدى اكتمال مهمة، ويظهر عادةً كشريط تقدّم.',
     href: '/docs/components/progress',
-    title: 'شريط التقدم',
+    title: 'شريط التقدّم',
   },
   {
-    description: 'يفصل المحتوى بصريا او دلاليا.',
+    description: 'يضيف تمريرًا مخصّصًا للمحتوى بمظهر موحّد في جميع المتصفحات.',
     href: '/docs/components/scroll-area',
     title: 'منطقة التمرير',
   },
   {
-    description: 'مجموعة من اقسام المحتوى المتراكبة -- المعروفة بلوحات التبويب -- تعرض واحدة في كل مرة.',
+    description: 'مجموعة من أقسام المحتوى المتراكبة، تُعرف بلوحات التبويب، تُعرض واحدة تلو الأخرى.',
     href: '/docs/components/tabs',
     title: 'التبويبات',
   },
   {
-    description: 'نافذة منبثقة تعرض معلومات متعلقة بعنصر عند تركيز لوحة المفاتيح عليه او تمرير الفأرة فوقه.',
+    description: 'نافذة منبثقة تعرض معلومات عن عنصر عندما يتلقى تركيز لوحة المفاتيح أو يمر مؤشر الفأرة فوقه.',
     href: '/docs/components/tooltip',
-    title: 'تلميح الادوات',
+    title: 'تلميح الأدوات',
   },
 ]
 
 export default function Demo() {
   return (
-    <NavigationMenu dir="rtl">
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>البدء</NavigationMenuTrigger>
-          <NavigationMenuContent className="md:right-auto md:left-0">
-            <ul className="flex gap-3 p-6">
-              <NavigationMenuLink asChild className="w-[350px] rounded-md bg-muted">
-                <a
-                  className="flex h-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                  href="/">
-                  <Image
-                    alt="Logo"
-                    className="object-contain"
-                    height={100}
-                    src="https://zpgqhogoevbgpxustvmo.supabase.co/storage/v1/object/public/produc_imgs/duckui%20(1).png"
-                    width={100}
-                  />
-                  <div className="mt-4 mb-2 font-medium text-lg">duck/ui</div>
-                  <p className="text-muted-foreground text-sm leading-tight">
-                    مكونات مصممة بعناية يمكنك نسخها ولصقها في تطبيقاتك. سهلة الوصول. قابلة للتخصيص. مفتوحة المصدر.
-                  </p>
-                </a>
-              </NavigationMenuLink>
-              <div className="flex flex-col gap-2">
-                <ListItem href="/docs" title="مقدمة">
-                  مكونات قابلة لاعادة الاستخدام مبنية باستخدام Radix UI و Tailwind CSS.
-                </ListItem>
-                <ListItem href="/docs/installation" title="التثبيت">
-                  كيفية تثبيت التبعيات وهيكلة تطبيقك.
-                </ListItem>
-                <ListItem href="/docs/components/typography" title="الخطوط">
-                  انماط العناوين والفقرات والقوائم...الخ
-                </ListItem>
-              </div>
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>المكونات</NavigationMenuTrigger>
-          <NavigationMenuContent className="md:right-auto md:left-0">
-            <ul className="grid w-[500px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[500px]">
-              {components.map((component) => (
-                <ListItem href={component.href} key={component.title} title={component.title}>
-                  {component.description}
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>التوثيق</NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+    <DirectionProvider dir="rtl">
+      <NavigationMenu>
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>البدء</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="flex gap-3 p-6">
+                <NavigationMenuLink asChild className="w-[350px] rounded-md bg-muted">
+                  <a
+                    className="flex h-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                    href="/">
+                    <Image
+                      alt="Logo"
+                      className="object-contain"
+                      height={100}
+                      src="https://zpgqhogoevbgpxustvmo.supabase.co/storage/v1/object/public/produc_imgs/duckui%20(1).png"
+                      width={100}
+                    />
+                    <div className="mt-4 mb-2 font-medium text-lg">duck/ui</div>
+                    <p className="text-muted-foreground text-sm leading-tight">
+                      مكونات مصممة بإتقان يمكنك نسخها ولصقها في تطبيقاتك. سهلة الوصول. قابلة للتخصيص. مفتوحة المصدر.
+                    </p>
+                  </a>
+                </NavigationMenuLink>
+                <div className="flex flex-col gap-2">
+                  <ListItem href="/docs" title="مقدمة">
+                    مكونات قابلة لإعادة الاستخدام مبنية باستخدام Radix UI و Tailwind CSS.
+                  </ListItem>
+                  <ListItem href="/docs/installation" title="التثبيت">
+                    كيفية تثبيت الاعتماديات وتنظيم بنية تطبيقك.
+                  </ListItem>
+                  <ListItem href="/docs/components/typography" title="الطباعة">
+                    أنماط العناوين والفقرات والقوائم وغيرها.
+                  </ListItem>
+                </div>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>المكونات</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[500px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[500px]">
+                {components.map((component) => (
+                  <ListItem href={component.href} key={component.title} title={component.title}>
+                    {component.description}
+                  </ListItem>
+                ))}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Link href="/docs" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>التوثيق</NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+    </DirectionProvider>
   )
 }
 
@@ -457,7 +460,7 @@ Root container that wraps the navigation menu and optionally renders the viewpor
 | `defaultValue` | `string` | - | Default active value for uncontrolled usage |
 | `onValueChange` | `(value: string) => void` | - | Callback when the active value changes |
 | `viewport` | `boolean` | `true` | Whether to render the `NavigationMenuViewport` automatically |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`) and inherited by descendants. |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`) and inherited by descendants. |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | The orientation of the menu |
 | `delayDuration` | `number` | `200` | Duration in ms from when the pointer enters a trigger until the content opens |
 | `skipDelayDuration` | `number` | `300` | Duration in ms a user has to enter another trigger without incurring a delay again |

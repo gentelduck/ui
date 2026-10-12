@@ -120,13 +120,14 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the collapsible follows it. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/collapsible-2.tsx"
 // import from your project: import Demo from '@/components/collapsible-2'
 'use client'
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@gentleduck/registry-ui/collapsible'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { ChevronsUpDown } from 'lucide-react'
 import * as React from 'react'
 
@@ -134,20 +135,22 @@ export default function Demo() {
   const [isOpen, setIsOpen] = React.useState(false)
 
   return (
-    <Collapsible className="flex w-[350px] flex-col gap-2" onOpenChange={setIsOpen} open={isOpen} dir="rtl">
-      <div className="flex items-center justify-between gap-4 px-4">
-        <h4 className="font-semibold text-sm">@peduarte قام بتمييز 3 مستودعات</h4>
-        <CollapsibleTrigger size={'icon'}>
-          <ChevronsUpDown aria-hidden="true" />
-          <span className="sr-only">تبديل</span>
-        </CollapsibleTrigger>
-      </div>
-      <div className="rounded-md border px-4 py-2 font-mono text-sm">@gentleduck/primitives</div>
-      <CollapsibleContent className="flex flex-col gap-2">
-        <div className="rounded-md border px-4 py-2 font-mono text-sm">@gentleduck/variants</div>
-        <div className="rounded-md border px-4 py-2 font-mono text-sm">@stitches/react</div>
-      </CollapsibleContent>
-    </Collapsible>
+    <DirectionProvider dir="rtl">
+      <Collapsible className="flex w-[350px] flex-col gap-2" onOpenChange={setIsOpen} open={isOpen}>
+        <div className="flex items-center justify-between gap-4 px-4">
+          <h4 className="font-semibold text-sm">أضاف أحمد نجمة إلى 3 مستودعات</h4>
+          <CollapsibleTrigger size={'icon'}>
+            <ChevronsUpDown aria-hidden="true" />
+            <span className="sr-only">إظهار المستودعات أو إخفاؤها</span>
+          </CollapsibleTrigger>
+        </div>
+        <div className="rounded-md border px-4 py-2 font-mono text-sm">gentleeduck/duck-ui</div>
+        <CollapsibleContent className="flex flex-col gap-2">
+          <div className="rounded-md border px-4 py-2 font-mono text-sm">gentleeduck/duck-vim</div>
+          <div className="rounded-md border px-4 py-2 font-mono text-sm">gentleeduck/duck-mc</div>
+        </CollapsibleContent>
+      </Collapsible>
+    </DirectionProvider>
   )
 }
 ```
@@ -201,7 +204,7 @@ export default function Demo() {
 | `open` | `boolean` | - | Controlled open state |
 | `onOpenChange` | `(open: boolean) => void` | - | Callback fired when open state changes |
 | `defaultOpen` | `boolean` | `false` | Initial open state when uncontrolled |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
 
 ### CollapsibleTrigger

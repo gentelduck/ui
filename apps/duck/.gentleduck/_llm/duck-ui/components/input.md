@@ -178,14 +178,19 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `Input` follows it. No `dir` prop needed.
 
 ```tsx title="components/input-8.tsx"
 // import from your project: import Demo from '@/components/input-8'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Input } from '@gentleduck/registry-ui/input'
 
 export default function Demo() {
-  return <Input placeholder="البريد الالكتروني" type="email" dir="rtl" className="max-w-xs" />
+  return (
+    <DirectionProvider dir="rtl">
+      <Input className="max-w-xs" placeholder="البريد الإلكتروني" type="email" />
+    </DirectionProvider>
+  )
 }
 ```
 
@@ -223,7 +228,7 @@ A styled `<input>` element that accepts all standard HTML input attributes.
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `type` | `React.HTMLInputTypeAttribute` | `--` | The HTML input type (e.g., `'text'`, `'password'`, `'email'`, `'file'`). Browsers default to `'text'`. |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | `--` | Additional CSS classes to apply |
 | `ref` | `React.Ref<HTMLInputElement>` | `--` | Ref forwarded to the underlying `<input>` element |
 | `...props` | `React.HTMLProps<HTMLInputElement>` | - | Additional props to spread to the input element |

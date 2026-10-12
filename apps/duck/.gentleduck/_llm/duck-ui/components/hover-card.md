@@ -155,44 +155,47 @@ export default function Demo() {
 
 ## RTL Support
 
-Set `dir="rtl"` on `HoverCard` for a local override, or set `DirectionProvider` once at app/root level for global direction. This mirrors hover-card positioning for right-to-left layouts.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the hover card follows. The portaled content gets the resolved `dir`, and `side="left"`/`side="right"` and `align="start"`/`align="end"` mirror with it.
 
 ```tsx
-<HoverCard dir="rtl">
-  <HoverCardTrigger>مرر الماوس</HoverCardTrigger>
-  <HoverCardContent>
-    محتوى البطاقة هنا.
-  </HoverCardContent>
-</HoverCard>
+<DirectionProvider dir="rtl">
+  <HoverCard>
+    <HoverCardTrigger>مرّر المؤشر</HoverCardTrigger>
+    <HoverCardContent>محتوى البطاقة هنا.</HoverCardContent>
+  </HoverCard>
+</DirectionProvider>
 ```
 
 ```tsx title="components/hover-card-2.tsx"
 // import from your project: import Demo from '@/components/hover-card-2'
 import { Avatar, AvatarFallback, AvatarImage } from '@gentleduck/registry-ui/avatar'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@gentleduck/registry-ui/hover-card'
 import { CalendarIcon } from 'lucide-react'
 
 export default function Demo() {
   return (
-    <HoverCard dir="rtl">
-      <HoverCardTrigger variant={'link'}>@nextjs</HoverCardTrigger>
-      <HoverCardContent className="w-80">
-        <div className="flex justify-between gap-4 space-x-reverse">
-          <Avatar dir="rtl">
-            <AvatarImage alt="VC" src="https://github.com/gentleeduck.png" />
-            <AvatarFallback>VC</AvatarFallback>
-          </Avatar>
-          <div className="space-y-1">
-            <h4 className="font-semibold text-sm">@nextjs</h4>
-            <p className="text-sm">اطار React -- تم انشاؤه وصيانته بواسطة @vercel.</p>
-            <div className="flex items-center pt-2">
-              <CalendarIcon className="ml-2 h-4 w-4 opacity-70" />{' '}
-              <span className="text-muted-foreground text-xs">انضم في ديسمبر 2021</span>
+    <DirectionProvider dir="rtl">
+      <HoverCard>
+        <HoverCardTrigger variant={'link'}>Next.js</HoverCardTrigger>
+        <HoverCardContent className="w-80">
+          <div className="flex justify-between gap-4">
+            <Avatar>
+              <AvatarImage alt="Next.js" src="https://github.com/gentleeduck.png" />
+              <AvatarFallback>NJ</AvatarFallback>
+            </Avatar>
+            <div className="space-y-1">
+              <h4 className="font-semibold text-sm">Next.js</h4>
+              <p className="text-sm">إطار عمل React من تطوير Vercel وصيانتها.</p>
+              <div className="flex items-center gap-2 pt-2">
+                <CalendarIcon aria-hidden="true" className="size-4 opacity-70" />
+                <span className="text-muted-foreground text-xs">انضمّ في ديسمبر 2021</span>
+              </div>
             </div>
           </div>
-        </div>
-      </HoverCardContent>
-    </HoverCard>
+        </HoverCardContent>
+      </HoverCard>
+    </DirectionProvider>
   )
 }
 ```
@@ -256,7 +259,7 @@ Root wrapper that provides hover-card state and context. Wraps `HoverCardPrimiti
 | `delayDuration` | `number` | - | Alias for `openDelay`. If both are provided, `openDelay` takes precedence |
 | `skipDelayDuration` | `number` | - | Reserved for future use (currently ignored) |
 | `placement` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'top'` | Accepted but has no effect on the base `HoverCard`/`HoverCardContent` pairing; only takes effect with `MotionHoverCard`/`MotionHoverCardContent`, which read it via context to pick the entrance direction |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `children` | `React.ReactNode` | `--` | HoverCard sub-components |
 | `...props` | `React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Root>` | - | Additional props inherited from `HoverCard.Root`. |
 

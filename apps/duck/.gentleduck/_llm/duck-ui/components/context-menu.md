@@ -127,7 +127,7 @@ import {
 
 ## RTL Support
 
-Set `dir="rtl"` on `ContextMenu` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the context menu follows. It opens to the left of the pointer, sub-menus open to the left, and the arrow keys that open and close sub-menus swap.
 
 ```tsx title="components/context-menu-2.tsx"
 // import from your project: import Demo from '@/components/context-menu-2'
@@ -148,54 +148,57 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from '@gentleduck/registry-ui/context-menu'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 
 export default function Demo() {
   return (
-    <ContextMenu dir="rtl">
-      <ContextMenuTrigger className="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm">
-        انقر بالزر الايمن هنا
-      </ContextMenuTrigger>
-      <ContextMenuContent className="w-64">
-        <ContextMenuItem inset>
-          رجوع
-          <ContextMenuShortcut>⌘[</ContextMenuShortcut>
-        </ContextMenuItem>
-        <ContextMenuItem disabled inset>
-          تقدم
-          <ContextMenuShortcut>⌘]</ContextMenuShortcut>
-        </ContextMenuItem>
-        <ContextMenuItem inset>
-          اعادة تحميل
-          <ContextMenuShortcut>⌘R</ContextMenuShortcut>
-        </ContextMenuItem>
-        <ContextMenuSub>
-          <ContextMenuSubTrigger inset>ادوات اضافية</ContextMenuSubTrigger>
-          <ContextMenuSubContent className="w-48">
-            <ContextMenuItem>
-              حفظ الصفحة باسم...
-              <ContextMenuShortcut>⇧⌘S</ContextMenuShortcut>
-            </ContextMenuItem>
-            <ContextMenuItem>انشاء اختصار...</ContextMenuItem>
-            <ContextMenuItem>تسمية النافذة...</ContextMenuItem>
-            <ContextMenuSeparator />
-            <ContextMenuItem>ادوات المطور</ContextMenuItem>
-          </ContextMenuSubContent>
-        </ContextMenuSub>
-        <ContextMenuSeparator />
-        <ContextMenuCheckboxItem checked>
-          اظهار شريط المفضلة
-          <ContextMenuShortcut>⌘⇧B</ContextMenuShortcut>
-        </ContextMenuCheckboxItem>
-        <ContextMenuCheckboxItem>اظهار الروابط الكاملة</ContextMenuCheckboxItem>
-        <ContextMenuSeparator />
-        <ContextMenuRadioGroup value="ahmad">
-          <ContextMenuLabel inset>الاشخاص</ContextMenuLabel>
+    <DirectionProvider dir="rtl">
+      <ContextMenu>
+        <ContextMenuTrigger className="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm">
+          انقر بزر الفأرة الأيمن هنا
+        </ContextMenuTrigger>
+        <ContextMenuContent className="w-64">
+          <ContextMenuItem inset>
+            رجوع
+            <ContextMenuShortcut>⌘[</ContextMenuShortcut>
+          </ContextMenuItem>
+          <ContextMenuItem disabled inset>
+            تقدّم
+            <ContextMenuShortcut>⌘]</ContextMenuShortcut>
+          </ContextMenuItem>
+          <ContextMenuItem inset>
+            إعادة التحميل
+            <ContextMenuShortcut>⌘R</ContextMenuShortcut>
+          </ContextMenuItem>
+          <ContextMenuSub>
+            <ContextMenuSubTrigger inset>مزيد من الأدوات</ContextMenuSubTrigger>
+            <ContextMenuSubContent className="w-48">
+              <ContextMenuItem>
+                حفظ الصفحة باسم...
+                <ContextMenuShortcut>⇧⌘S</ContextMenuShortcut>
+              </ContextMenuItem>
+              <ContextMenuItem>إنشاء اختصار...</ContextMenuItem>
+              <ContextMenuItem>تسمية النافذة...</ContextMenuItem>
+              <ContextMenuSeparator />
+              <ContextMenuItem>أدوات المطوّرين</ContextMenuItem>
+            </ContextMenuSubContent>
+          </ContextMenuSub>
           <ContextMenuSeparator />
-          <ContextMenuRadioItem value="ahmad">احمد خالد</ContextMenuRadioItem>
-          <ContextMenuRadioItem value="sara">سارة محمد</ContextMenuRadioItem>
-        </ContextMenuRadioGroup>
-      </ContextMenuContent>
-    </ContextMenu>
+          <ContextMenuCheckboxItem checked>
+            إظهار شريط الإشارات
+            <ContextMenuShortcut>⌘⇧B</ContextMenuShortcut>
+          </ContextMenuCheckboxItem>
+          <ContextMenuCheckboxItem>إظهار الروابط كاملة</ContextMenuCheckboxItem>
+          <ContextMenuSeparator />
+          <ContextMenuRadioGroup value="ahmad">
+            <ContextMenuLabel inset>الأشخاص</ContextMenuLabel>
+            <ContextMenuSeparator />
+            <ContextMenuRadioItem value="ahmad">أحمد خالد</ContextMenuRadioItem>
+            <ContextMenuRadioItem value="sara">سارة محمد</ContextMenuRadioItem>
+          </ContextMenuRadioGroup>
+        </ContextMenuContent>
+      </ContextMenu>
+    </DirectionProvider>
   )
 }
 ```
@@ -205,7 +208,7 @@ export default function Demo() {
 } title="Alpha: Motion Compositions" tone="warning">
   Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
 
-Use `MotionContextMenu` and `MotionContextMenuContent` for smooth enter/exit animations powered by [motion](https://motion.dev). The transform origin is fixed to top-left since the menu appears at the cursor position. For animated sub-menus, use `MotionContextMenuSub` and `MotionContextMenuSubContent`.
+Use `MotionContextMenu` and `MotionContextMenuContent` for smooth enter/exit animations powered by [motion](https://motion.dev). The transform origin is fixed to the top corner at the cursor (top-left, or top-right in RTL). For animated sub-menus, use `MotionContextMenuSub` and `MotionContextMenuSubContent`.
 
 ```tsx title="components/context-menu-3.tsx"
 // import from your project: import Demo from '@/components/context-menu-3'
@@ -291,7 +294,7 @@ Components in this file wrap `@gentleduck/primitives/context-menu`.
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | - | Context menu content (trigger + menu content) |
 | `modal` | `boolean` | `true` | Whether interaction outside the menu is blocked while open |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `onOpenChange` | `(open: boolean) => void` | - | Callback fired when open state changes |
 | `...props` | `React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Root>` | - | Additional props inherited from `ContextMenuPrimitive.Root` |
 

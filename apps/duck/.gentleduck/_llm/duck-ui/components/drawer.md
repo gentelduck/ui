@@ -873,7 +873,7 @@ export default function Demo() {
 
 ## RTL Support
 
-Set `dir="rtl"` on `Drawer` for a local override, or set `DirectionProvider` once at app/root level for global direction. Horizontal drawers (`left`/`right`) are resolved automatically for RTL/LTR.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the drawer follows. The portaled content gets the resolved `dir`, and horizontal drawers (`left`/`right`) are mirrored in RTL.
 
 ```tsx title="components/drawer-7.tsx"
 // import from your project: import Demo from '@/components/drawer-7'
@@ -921,18 +921,18 @@ export default function Demo() {
         <DrawerContent>
           <div className="mx-auto w-full max-w-sm">
             <DrawerHeader>
-              <DrawerTitle>تحريك الهدف</DrawerTitle>
-              <DrawerDescription>حدد هدف نشاطك اليومي.</DrawerDescription>
+              <DrawerTitle>هدفك اليومي</DrawerTitle>
+              <DrawerDescription>حدّد هدف نشاطك اليومي.</DrawerDescription>
             </DrawerHeader>
             <div className="p-4 pb-0">
-              <div className="flex items-center justify-center space-x-2">
+              <div className="flex items-center justify-center gap-2">
                 <Button className="h-8 w-8" disabled={goal <= 200} onClick={() => onClick(-10)} variant="outline">
-                  <Minus aria-hidden="true" className="h-4 w-4" />
+                  <Minus aria-hidden="true" className="size-4" />
                   <span className="sr-only">تقليل</span>
                 </Button>
                 <div className="flex-1 text-center">
                   <div className="font-bold text-7xl tracking-tighter">{goal}</div>
-                  <div className="text-[0.70rem] text-muted-foreground uppercase">سعرة حرارية/يوم</div>
+                  <div className="text-[0.70rem] text-muted-foreground">سعرة حرارية في اليوم</div>
                 </div>
                 <Button className="h-8 w-8" disabled={goal >= 400} onClick={() => onClick(10)} variant="outline">
                   <Plus aria-hidden="true" />
@@ -954,9 +954,9 @@ export default function Demo() {
               </div>
             </div>
             <DrawerFooter>
-              <Button>ارسال</Button>
+              <Button>إرسال</Button>
               <DrawerClose asChild>
-                <Button variant="outline">الغاء</Button>
+                <Button variant="outline">إلغاء</Button>
               </DrawerClose>
             </DrawerFooter>
           </div>
@@ -974,7 +974,7 @@ export default function Demo() {
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `shouldScaleBackground` | `boolean` | `true` | Whether to scale the background when drawer is open |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction used to resolve horizontal drawer side in RTL/LTR. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override, used to mirror horizontal drawers in RTL. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `...props` | `React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Root>` | - | Additional props inherited from `Drawer.Root`. |
 
 ### DrawerTrigger
@@ -1018,7 +1018,7 @@ Wrapper around `DrawerPrimitive.Close`. Closes the drawer when clicked.
 | --- | --- | --- | --- |
 | `className` | `string` | - | Additional CSS classes applied to the content panel |
 | `children` | `React.ReactNode` | - | Drawer inner content |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `overlayProps` | `React.ComponentPropsWithoutRef<typeof DrawerOverlay>` | - | Props forwarded to the `DrawerOverlay` |
 | `...props` | `React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>` | - | Additional props inherited from `Drawer.Content`. |
 
@@ -1034,7 +1034,7 @@ Wrapper around `DrawerPrimitive.Close`. Closes the drawer when clicked.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS classes applied to the footer |
 | `children` | `React.ReactNode` | - | Footer content |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
@@ -1043,7 +1043,7 @@ Wrapper around `DrawerPrimitive.Close`. Closes the drawer when clicked.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS classes applied to the title |
 | `children` | `React.ReactNode` | - | Title text |
 | `...props` | `React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>` | - | Additional props inherited from `Drawer.Title`. |
@@ -1052,7 +1052,7 @@ Wrapper around `DrawerPrimitive.Close`. Closes the drawer when clicked.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS classes applied to the description |
 | `children` | `React.ReactNode` | - | Description text |
 | `...props` | `React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Description>` | - | Additional props inherited from `Drawer.Description`. |

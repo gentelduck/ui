@@ -194,34 +194,31 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the surrounding layout follows it. `Kbd` and `KbdGroup` take their direction from their own label, so shortcuts such as `Ctrl + S` or `⌘K` keep their order inside right-to-left text.
 
 ```tsx title="components/kbd-6.tsx"
 // import from your project: import Demo from '@/components/kbd-6'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Kbd, KbdGroup } from '@gentleduck/registry-ui/kbd'
 
 export default function Demo() {
   return (
-    <div dir="rtl">
-      <div className="flex flex-col items-center gap-4">
-        <div dir="ltr">
-          <KbdGroup>
-            <Kbd>Ctrl</Kbd>
-            <Kbd>Shift</Kbd>
-            <Kbd>Alt</Kbd>
-            <Kbd>Fn</Kbd>
-          </KbdGroup>
-        </div>
-
-        <div dir="ltr">
+    <DirectionProvider dir="rtl">
+      <div className="flex flex-col items-center gap-4 text-muted-foreground text-sm">
+        <p>
+          اضغط{' '}
           <KbdGroup>
             <Kbd>Ctrl</Kbd>
             <span>+</span>
             <Kbd>S</Kbd>
-          </KbdGroup>
-        </div>
+          </KbdGroup>{' '}
+          لحفظ التغييرات.
+        </p>
+        <p>
+          استخدم <Kbd>⌘K</Kbd> لفتح لوحة الأوامر، و<Kbd>Esc</Kbd> لإغلاقها.
+        </p>
       </div>
-    </div>
+    </DirectionProvider>
   )
 }
 ```
@@ -267,7 +264,7 @@ Displays an individual keyboard key with consistent styling.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl' \| 'auto'` | `'auto'` | Text direction. Defaults to `auto`, so it follows the key label rather than the page. |
 | `className` | `string` | - | Additional class names for the kbd element |
 | `keys` | `string` | - | Raw key combo string formatted for display via `@gentleduck/vim`'s `formatForDisplay`. Used as a fallback when `children` is not provided. |
 | `children` | `React.ReactNode` | - | Key label text or icon. Takes precedence over `keys` when both are provided. |

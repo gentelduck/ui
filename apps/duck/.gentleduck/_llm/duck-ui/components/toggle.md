@@ -150,18 +150,22 @@ export default function Demo() {
 
 ## RTL Support
 
-Set `dir="rtl"` on `Toggle` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `Toggle` follows it. No `dir` prop needed.
 
 ```tsx title="components/toggle-8.tsx"
 // import from your project: import Demo from '@/components/toggle-8'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Toggle } from '@gentleduck/registry-ui/toggle'
-import { Bold } from 'lucide-react'
+import { Bookmark } from 'lucide-react'
 
 export default function Demo() {
   return (
-    <Toggle aria-label="تبديل الخط العريض" dir="rtl">
-      <Bold className="h-4 w-4" />
-    </Toggle>
+    <DirectionProvider dir="rtl">
+      <Toggle variant="outline">
+        <Bookmark />
+        إشارة مرجعية
+      </Toggle>
+    </DirectionProvider>
   )
 }
 ```
@@ -222,7 +226,7 @@ export default function Demo() {
 | `variant` | `'default' \| 'outline'` | `'default'` | Visual style variant of the toggle |
 | `size` | `'default' \| 'sm' \| 'lg'` | `'default'` | Size variant of the toggle |
 | `disabled` | `boolean` | `false` | Disables the toggle if set to `true` |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `children` | `React.ReactNode` | - | Content rendered inside the toggle button |
 | `ref` | `React.Ref<HTMLButtonElement>` | - | Ref forwarded to the underlying button element |
 

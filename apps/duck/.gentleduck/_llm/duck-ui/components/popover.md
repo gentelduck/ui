@@ -366,13 +366,15 @@ Customize the border color via `--popover-border-color` on `PopoverContent`:
 
 ## RTL Support
 
-Set `dir="rtl"` on `Popover` for a local override, or set `DirectionProvider` once at app/root level for global direction. In RTL mode, `side="left"` and `side="right"` are logically swapped.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the popover follows. The portaled content gets the resolved `dir`, and `side="left"`/`side="right"` and `align="start"`/`align="end"` mirror with it.
 
 ```tsx
-<Popover dir="rtl">
-  <PopoverTrigger>افتح</PopoverTrigger>
-  <PopoverContent>محتوى النافذة المنبثقة هنا.</PopoverContent>
-</Popover>
+<DirectionProvider dir="rtl">
+  <Popover>
+    <PopoverTrigger>فتح</PopoverTrigger>
+    <PopoverContent>محتوى النافذة المنبثقة هنا.</PopoverContent>
+  </Popover>
+</DirectionProvider>
 ```
 
 ```tsx title="components/popover-4.tsx"
@@ -388,15 +390,15 @@ import { Popover, PopoverContent, PopoverTrigger } from '@gentleduck/registry-ui
 export default function Demo() {
   return (
     <DirectionProvider dir="rtl">
-      <Popover dir="rtl">
+      <Popover>
         <PopoverTrigger asChild>
-          <Button variant="outline">افتح النافذة المنبثقة</Button>
+          <Button variant="outline">فتح النافذة المنبثقة</Button>
         </PopoverTrigger>
         <PopoverContent className="w-80">
           <div className="grid gap-4">
             <div className="space-y-2">
-              <h4 className="font-medium leading-none">الابعاد</h4>
-              <p className="text-muted-foreground text-sm">قم بتعيين ابعاد الطبقة.</p>
+              <h4 className="font-medium leading-none">الأبعاد</h4>
+              <p className="text-muted-foreground text-sm">اضبط أبعاد الطبقة.</p>
             </div>
             <div className="grid gap-2">
               <div className="grid grid-cols-3 items-center gap-4">
@@ -404,7 +406,7 @@ export default function Demo() {
                 <Input className="col-span-2 h-8" defaultValue="100%" id="width" />
               </div>
               <div className="grid grid-cols-3 items-center gap-4">
-                <Label htmlFor="maxWidth">اقصى عرض</Label>
+                <Label htmlFor="maxWidth">أقصى عرض</Label>
                 <Input className="col-span-2 h-8" defaultValue="300px" id="maxWidth" />
               </div>
               <div className="grid grid-cols-3 items-center gap-4">
@@ -412,7 +414,7 @@ export default function Demo() {
                 <Input className="col-span-2 h-8" defaultValue="25px" id="height" />
               </div>
               <div className="grid grid-cols-3 items-center gap-4">
-                <Label htmlFor="maxHeight">اقصى ارتفاع</Label>
+                <Label htmlFor="maxHeight">أقصى ارتفاع</Label>
                 <Input className="col-span-2 h-8" defaultValue="none" id="maxHeight" />
               </div>
             </div>
@@ -491,7 +493,7 @@ export default function Demo() {
 | `open` | `boolean` | `-` | Controlled open state |
 | `onOpenChange` | `(open: boolean) => void` | `-` | Callback when open state changes |
 | `modal` | `boolean` | `false` | Enables modal focus/interaction behavior |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `...props` | `React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Root>` | - | Additional props inherited from `Popover.Root`. |
 
 ### PopoverTrigger

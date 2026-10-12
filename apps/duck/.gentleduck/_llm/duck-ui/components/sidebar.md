@@ -1049,10 +1049,10 @@ The main `Sidebar` component used to render a collapsible sidebar.
 
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |
-| `side` | `'left' \| 'right'` | `'left'` | The side of the sidebar. |
+| `side` | `'left' \| 'right'` | `'left'` | The side of the sidebar. Flow-relative: `left` is the inline-start edge, so it sits on the right in RTL. |
 | `variant` | `'sidebar' \| 'floating' \| 'inset'` | `'sidebar'` | The variant of the sidebar. |
 | `collapsible` | `'offcanvas' \| 'icon' \| 'none'` | `'offcanvas'` | Collapsible state of the sidebar. |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection`. |
+| `dir` | `'ltr' \| 'rtl'` | - | Direction override. Defaults to the nearest `DirectionProvider`, then `<html dir>`. |
 | `mobileTitle` | `string` | `'Sidebar'` | Title for the mobile sheet dialog. |
 | `mobileDescription` | `string` | `'Displays the mobile sidebar.'` | Description for the mobile sheet dialog. |
 
@@ -1469,7 +1469,7 @@ Show an action when the menu button is active:
 
 ## RTL Support
 
-Set `dir="rtl"` on `Sidebar` for a local override, or set `DirectionProvider` once at app/root level for global direction. Trigger icon and rail positioning adjust automatically.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the sidebar follows. `side` is flow-relative: the default `left` is the inline-start edge, so in RTL the sidebar moves to the right together with its border, rail, collapse animation, mobile sheet, and trigger icon. `side="right"` puts it on the inline-end edge.
 
 ```tsx title="components/sidebar-6.tsx"
 // import from your project: import Demo from '@/components/sidebar-6'
@@ -1477,7 +1477,7 @@ Set `dir="rtl"` on `Sidebar` for a local override, or set `DirectionProvider` on
 
 import { Avatar, AvatarFallback, AvatarImage } from '@gentleduck/registry-ui/avatar'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@gentleduck/registry-ui/collapsible'
-import { DirectionContext } from '@gentleduck/registry-ui/direction'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -1514,7 +1514,7 @@ import {
   Bell,
   BookOpen,
   Bot,
-  ChevronRight,
+  ChevronDown,
   ChevronsUpDown,
   Command,
   CreditCard,
@@ -1536,7 +1536,7 @@ import * as React from 'react'
 
 const data = {
   user: {
-    name: 'احمد محمد',
+    name: 'أحمد محمد',
     email: 'ahmad@gentleduck.org',
     avatar: '/avatars/01.png',
   },
@@ -1544,17 +1544,17 @@ const data = {
     {
       name: 'مختبرات داك',
       logo: GalleryVerticalEnd,
-      plan: 'مؤسسات',
+      plan: 'باقة المؤسسات',
     },
     {
       name: 'استوديو البركة',
       logo: AudioWaveform,
-      plan: 'ناشئة',
+      plan: 'باقة الشركات الناشئة',
     },
     {
-      name: 'اعمال الريش',
+      name: 'أعمال الريشة',
       logo: Command,
-      plan: 'مجاني',
+      plan: 'الباقة المجانية',
     },
   ],
   navMain: [
@@ -1574,9 +1574,9 @@ const data = {
       url: '#',
       icon: Bot,
       items: [
-        { title: 'الاساسيات', url: '#' },
+        { title: 'الأساسيات', url: '#' },
         { title: 'التركيبات', url: '#' },
-        { title: 'الانماط', url: '#' },
+        { title: 'الأنماط', url: '#' },
       ],
     },
     {
@@ -1585,13 +1585,13 @@ const data = {
       icon: BookOpen,
       items: [
         { title: 'البدء', url: '#' },
-        { title: 'الادلة', url: '#' },
-        { title: 'الامثلة', url: '#' },
-        { title: 'الاصدارات', url: '#' },
+        { title: 'الأدلة', url: '#' },
+        { title: 'الأمثلة', url: '#' },
+        { title: 'الإصدارات', url: '#' },
       ],
     },
     {
-      title: 'الاعدادات',
+      title: 'الإعدادات',
       url: '#',
       icon: Settings2,
       items: [
@@ -1636,7 +1636,7 @@ function TeamSwitcher({
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <activeTeam.logo aria-hidden="true" className="size-4" />
               </div>
-              <div className="grid flex-1 text-right text-sm leading-tight">
+              <div className="grid flex-1 text-start text-sm leading-tight">
                 <span className="truncate font-medium">{activeTeam.name}</span>
                 <span className="truncate text-xs">{activeTeam.plan}</span>
               </div>
@@ -1646,7 +1646,7 @@ function TeamSwitcher({
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             align="start"
-            side={isMobile ? 'bottom' : 'left'}
+            side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}>
             <DropdownMenuGroup>
               <DropdownMenuLabel className="text-muted-foreground text-xs">الفرق</DropdownMenuLabel>
@@ -1666,7 +1666,7 @@ function TeamSwitcher({
                 <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                   <Plus aria-hidden="true" className="size-4" />
                 </div>
-                <div className="font-medium text-muted-foreground">اضافة فريق</div>
+                <div className="font-medium text-muted-foreground">إضافة فريق</div>
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
@@ -1705,9 +1705,9 @@ function NavMain({
                   {open && (
                     <>
                       <span>{item.title}</span>
-                      <ChevronRight
+                      <ChevronDown
                         aria-hidden="true"
-                        className="ms-auto transition-transform duration-200 group-data-[open=true]/collapsible:rotate-90 rtl:rotate-180"
+                        className="ms-auto transition-transform duration-200 group-data-[open=true]/collapsible:rotate-180"
                       />
                     </>
                   )}
@@ -1766,7 +1766,7 @@ function NavProjects({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="w-48 rounded-lg"
-                side={isMobile ? 'bottom' : 'left'}
+                side={isMobile ? 'bottom' : 'right'}
                 align={isMobile ? 'end' : 'start'}>
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
@@ -1821,9 +1821,9 @@ function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">ام</AvatarFallback>
+                <AvatarFallback className="rounded-lg">أم</AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-right text-sm leading-tight">
+              <div className="grid flex-1 text-start text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
@@ -1832,17 +1832,17 @@ function NavUser({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? 'bottom' : 'left'}
+            side={isMobile ? 'bottom' : 'right'}
             align="end"
             sideOffset={4}>
             <DropdownMenuGroup>
               <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-right text-sm">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                   <Avatar className="h-8 w-8 rounded-lg">
                     <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className="rounded-lg">ام</AvatarFallback>
+                    <AvatarFallback className="rounded-lg">أم</AvatarFallback>
                   </Avatar>
-                  <div className="grid flex-1 text-right text-sm leading-tight">
+                  <div className="grid flex-1 text-start text-sm leading-tight">
                     <span className="truncate font-medium">{user.name}</span>
                     <span className="truncate text-xs">{user.email}</span>
                   </div>
@@ -1853,7 +1853,7 @@ function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Sparkles aria-hidden="true" />
-                الترقية الى برو
+                الترقية إلى Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
@@ -1868,7 +1868,7 @@ function NavUser({
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell aria-hidden="true" />
-                الاشعارات
+                الإشعارات
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
@@ -1887,10 +1887,10 @@ function NavUser({
 
 export default function Demo() {
   return (
-    <DirectionContext.Provider value="rtl">
-      <div className="transform-[translateZ(0)] relative flex h-full w-full overflow-hidden" dir="rtl">
-        <SidebarProvider dir="rtl">
-          <Sidebar collapsible="icon" side="right">
+    <DirectionProvider dir="rtl">
+      <div className="transform-[translateZ(0)] relative flex h-full w-full overflow-hidden">
+        <SidebarProvider>
+          <Sidebar collapsible="icon">
             <SidebarHeader>
               <TeamSwitcher teams={data.teams} />
             </SidebarHeader>
@@ -1901,12 +1901,13 @@ export default function Demo() {
             <SidebarFooter>
               <NavUser user={data.user} />
             </SidebarFooter>
-            <SidebarRail />
+            <SidebarRail text="إظهار الشريط الجانبي أو إخفاؤه" />
           </Sidebar>
           <SidebarInset>
             <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
               <div className="flex items-center gap-2 px-4">
-                <SidebarTrigger className="-ms-1" />
+                <SidebarTrigger className="-ms-1" text="إظهار الشريط الجانبي أو إخفاؤه" />
+                <span className="font-medium text-sm">نظرة عامة</span>
               </div>
             </header>
             <div className="flex flex-1 flex-col gap-4 p-4">
@@ -1920,15 +1921,17 @@ export default function Demo() {
           </SidebarInset>
         </SidebarProvider>
       </div>
-    </DirectionContext.Provider>
+    </DirectionProvider>
   )
 }
 ```
 
 ```tsx
-<Sidebar dir="rtl" side="right">
-  {/* ... */}
-</Sidebar>
+<DirectionProvider dir="rtl">
+  <SidebarProvider>
+    <Sidebar>{/* ... */}</Sidebar>
+  </SidebarProvider>
+</DirectionProvider>
 ```
 
 ## Motion

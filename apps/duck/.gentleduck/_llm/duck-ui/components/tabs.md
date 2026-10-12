@@ -113,74 +113,87 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 ## Component Composition
 
+## Keyboard Navigation
+
+| Key | Description |
+| --- | --- |
+| `ArrowRight` | Move focus to the next tab and select it (previous tab in RTL) |
+| `ArrowLeft` | Move focus to the previous tab and select it (next tab in RTL) |
+| `Home` | Move focus to the first tab and select it |
+| `End` | Move focus to the last tab and select it |
+| `Tab` | Move focus onto the active tab, then out of the tab list |
+
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the tabs follow it: the list mirrors, arrow keys move in the visual direction, and motion content slides from the matching side. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/tabs-2.tsx"
 // import from your project: import Demo from '@/components/tabs-2'
 import { Button } from '@gentleduck/registry-ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@gentleduck/registry-ui/card'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Input } from '@gentleduck/registry-ui/input'
 import { Label } from '@gentleduck/registry-ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@gentleduck/registry-ui/tabs'
 
 export default function Demo() {
   return (
-    <div className="flex w-full max-w-sm flex-col gap-6">
-      <Tabs className="w-full" defaultValue="account" dir="rtl">
-        <TabsList>
-          <TabsTrigger className="w-full" value="account">
-            {'الحساب'}
-          </TabsTrigger>
-          <TabsTrigger className="w-full" value="password">
-            {'كلمة المرور'}
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="account">
-          <Card>
-            <CardHeader>
-              <CardTitle>{'الحساب'}</CardTitle>
-              <CardDescription>{'قم بإجراء تغييرات على حسابك هنا. انقر حفظ عند الانتهاء.'}</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-name">{'الاسم'}</Label>
-                <Input defaultValue="أحمد محمد" id="tabs-demo-name" />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-username">{'اسم المستخدم'}</Label>
-                <Input defaultValue="@ahmad" id="tabs-demo-username" />
-              </div>
-            </CardContent>
-            <CardFooter className="justify-start">
-              <Button>{'حفظ التغييرات'}</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-        <TabsContent value="password">
-          <Card>
-            <CardHeader>
-              <CardTitle>{'كلمة المرور'}</CardTitle>
-              <CardDescription>{'غيّر كلمة مرورك هنا. بعد الحفظ، سيتم تسجيل خروجك.'}</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-current">{'كلمة المرور الحالية'}</Label>
-                <Input id="tabs-demo-current" type="password" />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-new">{'كلمة المرور الجديدة'}</Label>
-                <Input id="tabs-demo-new" type="password" />
-              </div>
-            </CardContent>
-            <CardFooter className="justify-start">
-              <Button>{'حفظ كلمة المرور'}</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+    <DirectionProvider dir="rtl">
+      <div className="flex w-full max-w-sm flex-col gap-6">
+        <Tabs className="w-full" defaultValue="account">
+          <TabsList>
+            <TabsTrigger className="w-full" value="account">
+              {'الحساب'}
+            </TabsTrigger>
+            <TabsTrigger className="w-full" value="password">
+              {'كلمة المرور'}
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="account">
+            <Card>
+              <CardHeader>
+                <CardTitle>{'الحساب'}</CardTitle>
+                <CardDescription>{'عدّل بيانات حسابك هنا، ثم اضغط «حفظ التغييرات» عند الانتهاء.'}</CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-6">
+                <div className="grid gap-3">
+                  <Label htmlFor="tabs-rtl-name">{'الاسم'}</Label>
+                  <Input defaultValue="أحمد علي" id="tabs-rtl-name" />
+                </div>
+                <div className="grid gap-3">
+                  <Label htmlFor="tabs-rtl-username">{'اسم المستخدم'}</Label>
+                  <Input defaultValue="ahmad.ali" id="tabs-rtl-username" />
+                </div>
+              </CardContent>
+              <CardFooter className="justify-end">
+                <Button>{'حفظ التغييرات'}</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          <TabsContent value="password">
+            <Card>
+              <CardHeader>
+                <CardTitle>{'كلمة المرور'}</CardTitle>
+                <CardDescription>{'غيّر كلمة المرور من هنا. سيتم تسجيل خروجك بعد الحفظ.'}</CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-6">
+                <div className="grid gap-3">
+                  <Label htmlFor="tabs-rtl-current">{'كلمة المرور الحالية'}</Label>
+                  <Input id="tabs-rtl-current" type="password" />
+                </div>
+                <div className="grid gap-3">
+                  <Label htmlFor="tabs-rtl-new">{'كلمة المرور الجديدة'}</Label>
+                  <Input id="tabs-rtl-new" type="password" />
+                </div>
+              </CardContent>
+              <CardFooter className="justify-end">
+                <Button>{'حفظ كلمة المرور'}</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </DirectionProvider>
   )
 }
 ```
@@ -403,7 +416,7 @@ export default function Demo() {
 | `value` | `string` | - | Controlled active tab value. Must be used alongside `onValueChange` |
 | `defaultValue` | `string` | - | Uncontrolled initial tab value |
 | `onValueChange` | `(value: string) => void` | - | Callback fired when the active tab changes |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `...props` | `Omit<React.HTMLProps<HTMLDivElement>, 'defaultValue'>` | - | Additional props to spread to the content div |
 
 ### TabsList

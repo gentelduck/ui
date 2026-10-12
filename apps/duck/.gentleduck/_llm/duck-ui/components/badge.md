@@ -195,19 +195,30 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the badge follows it. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/badge-9.tsx"
 // import from your project: import Demo from '@/components/badge-9'
 import { Badge } from '@gentleduck/registry-ui/badge'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
+import { BadgeCheckIcon, ClockIcon } from 'lucide-react'
 
 export default function Demo() {
   return (
-    <div dir="rtl">
-      <Badge aria-label="Badge" size={'default'} variant={'default'}>
-        شارة
-      </Badge>
-    </div>
+    <DirectionProvider dir="rtl">
+      <div className="flex flex-wrap items-center gap-2">
+        <Badge>جديد</Badge>
+        <Badge variant="secondary">
+          <BadgeCheckIcon aria-hidden="true" className="size-3.5" />
+          موثّق
+        </Badge>
+        <Badge variant="outline">
+          <ClockIcon aria-hidden="true" className="size-3.5" />
+          قيد المراجعة
+        </Badge>
+        <Badge variant="destructive">مرفوض</Badge>
+      </div>
+    </DirectionProvider>
   )
 }
 ```

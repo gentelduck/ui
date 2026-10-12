@@ -251,18 +251,20 @@ To use the `Dialog` component from within a `Context Menu` or `Dropdown Menu`, y
 
 ## RTL Support
 
-Set `dir="rtl"` on `Dialog` for a local override, or set `DirectionProvider` once at app/root level for global direction. Dialog content parts inherit direction automatically.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the dialog follows. The portaled overlay and content get the resolved `dir`, so text, the close button and the footer order mirror without any extra props.
 
 ```tsx
-<Dialog dir="rtl">
-  <DialogTrigger>Open</DialogTrigger>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>عنوان الحوار</DialogTitle>
-      <DialogDescription>وصف الحوار هنا.</DialogDescription>
-    </DialogHeader>
-  </DialogContent>
-</Dialog>
+<DirectionProvider dir="rtl">
+  <Dialog>
+    <DialogTrigger>فتح</DialogTrigger>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>عنوان النافذة</DialogTitle>
+        <DialogDescription>وصف النافذة هنا.</DialogDescription>
+      </DialogHeader>
+    </DialogContent>
+  </Dialog>
+</DirectionProvider>
 ```
 
 ```tsx title="components/dialog-3.tsx"
@@ -290,25 +292,25 @@ export default function Demo() {
           <DialogTrigger asChild>
             <Button variant={'outline'}>فتح النافذة</Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[425px]" closeText="إغلاق">
             <DialogHeader>
               <DialogTitle>تعديل الملف الشخصي</DialogTitle>
-              <DialogDescription>قم باجراء التعديلات على ملفك الشخصي هنا. انقر على حفظ عند الانتهاء.</DialogDescription>
+              <DialogDescription>عدّل بيانات ملفك الشخصي هنا، ثم اضغط على حفظ عند الانتهاء.</DialogDescription>
             </DialogHeader>
 
             <div className="grid gap-4">
               <div className="grid gap-3">
                 <Label htmlFor="name-1">الاسم</Label>
-                <Input defaultValue="احمد خالد" id="name-1" name="name" />
+                <Input defaultValue="أحمد خالد" id="name-1" name="name" />
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="username-1">اسم المستخدم</Label>
-                <Input defaultValue="@ahmad" id="username-1" name="username" />
+                <Input defaultValue="ahmad_khaled" id="username-1" name="username" />
               </div>
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant={'outline'}>الغاء</Button>
+                <Button variant={'outline'}>إلغاء</Button>
               </DialogClose>
               <Button type="submit">حفظ التغييرات</Button>
             </DialogFooter>
@@ -394,7 +396,7 @@ export default function Demo() {
 | `open` | `boolean` | - | Controlled open state |
 | `onOpenChange` | `(open: boolean) => void` | - | Callback when open state changes |
 | `modal` | `boolean` | `true` | Enables modal focus/interaction behavior (focus trapping, scroll blocking) |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `children` | `React.ReactNode` | - | Dialog sub-components (`DialogTrigger`, `DialogContent`, etc.) |
 | `...props` | `React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root>` | - | Additional props inherited from `DialogPrimitive.Root` |
 
@@ -431,7 +433,7 @@ export default function Demo() {
 | `children` | `React.ReactNode` | - | Dialog inner content |
 | `...props` | `React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>` | - | Additional props inherited from `DialogPrimitive.Content` |
 
-`DialogContent` renders a built-in close button in the top-right corner. Set `hideClose` to remove it when you handle closing via other UI (e.g. a custom header with its own close button).
+`DialogContent` renders a built-in close button in the top-end corner (top-right in LTR, top-left in RTL). Set `hideClose` to remove it when you handle closing via other UI (e.g. a custom header with its own close button).
 
 ### DialogHeader
 

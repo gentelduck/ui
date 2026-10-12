@@ -38,6 +38,8 @@ Add the following to your styles/globals.css file. You can learn more about usin
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant rtl (&:where([dir="rtl"], [dir="rtl"] *):not(:where([dir="ltr"], [dir="rtl"] [dir="ltr"] *)));
+@custom-variant ltr (&:not(:where([dir="rtl"], [dir="rtl"] *):not(:where([dir="ltr"], [dir="rtl"] [dir="ltr"] *))));
 
 :root {
   --background: oklch(1 0 0);

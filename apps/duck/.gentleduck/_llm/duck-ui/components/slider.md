@@ -91,14 +91,19 @@ export default function Demo() {
 
 ## RTL Support
 
-Set `dir="rtl"` on `Slider` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `Slider` follows it: the range fills from the right, and `ArrowRight` decreases the value while `ArrowLeft` increases it. No `dir` prop needed.
 
 ```tsx title="components/slider-5.tsx"
 // import from your project: import Demo from '@/components/slider-5'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Slider } from '@gentleduck/registry-ui/slider'
 
 export default function Demo() {
-  return <Slider defaultValue={[75]} max={100} step={1} className="mx-auto w-full max-w-xs" dir="rtl" />
+  return (
+    <DirectionProvider dir="rtl">
+      <Slider className="mx-auto w-full max-w-xs" defaultValue={[75]} max={100} step={1} />
+    </DirectionProvider>
+  )
 }
 ```
 
@@ -133,7 +138,7 @@ A unified slider component that supports both single-thumb and multi-thumb (rang
 | `defaultValue` | `number[]` | - | Uncontrolled initial values. When omitted (and `value` is also omitted), two thumbs are rendered at `[min, max]`. |
 | `value` | `number[]` | - | Controlled values array |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Slider orientation |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`) and inherited by slider parts. |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`) and inherited by slider parts. |
 | `min` | `number` | `0` | Minimum allowed value |
 | `max` | `number` | `100` | Maximum allowed value |
 | `...props` | `React.ComponentProps<typeof SliderPrimitive.Root>` | - | All other props from `SliderPrimitive.Root` |

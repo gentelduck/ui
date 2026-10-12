@@ -155,24 +155,24 @@ export default function Demo() {
 
 ## RTL Support
 
-Set `dir="rtl"` on `AlertDialog` for a local override, or set `DirectionProvider` once at app/root level for global direction. `AlertDialog` extends `Dialog`, so direction is inherited by all child parts.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the alert dialog follows. It extends `Dialog`, so the portaled content gets the resolved `dir` and the footer actions mirror without any extra props.
 
 ```tsx
-<AlertDialog dir="rtl">
-  <AlertDialogTrigger>Open</AlertDialogTrigger>
-  <AlertDialogContent>
-    <AlertDialogHeader>
-      <AlertDialogTitle>هل انت متاكد؟</AlertDialogTitle>
-      <AlertDialogDescription>
-        هذا الاجراء لا يمكن التراجع عنه.
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter>
-      <AlertDialogCancel>الغاء</AlertDialogCancel>
-      <AlertDialogAction>متابعة</AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
+<DirectionProvider dir="rtl">
+  <AlertDialog>
+    <AlertDialogTrigger>حذف الحساب</AlertDialogTrigger>
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>هل أنت متأكد؟</AlertDialogTitle>
+        <AlertDialogDescription>لا يمكن التراجع عن هذا الإجراء.</AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>إلغاء</AlertDialogCancel>
+        <AlertDialogAction>متابعة</AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+</DirectionProvider>
 ```
 
 ```tsx title="components/alert-dialog-2.tsx"
@@ -189,30 +189,33 @@ import {
   AlertDialogTrigger,
 } from '@gentleduck/registry-ui/alert-dialog'
 import { Button } from '@gentleduck/registry-ui/button'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 
 export default function Demo() {
   return (
-    <AlertDialog dir="rtl">
-      <AlertDialogTrigger asChild>
-        <Button variant="outline">فتح</Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>هل أنت متأكد تماما؟</AlertDialogTitle>
-          <AlertDialogDescription>
-            لا يمكن التراجع عن هذا الإجراء. سيؤدي هذا إلى حذف حسابك نهائيا وإزالة بياناتك من خوادمنا
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel asChild>
-            <Button variant="outline">إلغاء</Button>
-          </AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <Button>متابعة</Button>
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <DirectionProvider dir="rtl">
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline">حذف الحساب</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
+            <AlertDialogDescription>
+              لا يمكن التراجع عن هذا الإجراء. سيؤدي ذلك إلى حذف حسابك نهائيًا وإزالة بياناتك من خوادمنا.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel asChild>
+              <Button variant="outline">إلغاء</Button>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button>متابعة</Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </DirectionProvider>
   )
 }
 ```
@@ -280,7 +283,7 @@ export default function Demo() {
 | `defaultOpen` | `boolean` | `-` | Determines if the dialog should be open by default |
 | `open` | `boolean` | `-` | Controls the visibility of the dialog |
 | `onOpenChange` | `(open: boolean) => void` | `-` | Callback fired when the dialog opens or closes |
-| `dir` | `'ltr' \| 'rtl'` | `-` | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). Inherited from the Dialog primitive. |
+| `dir` | `'ltr' \| 'rtl'` | `-` | Optional override. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). Inherited from the Dialog primitive. |
 | `children` | `React.ReactNode` | (required) | Child elements (typically Trigger and Content) |
 | `...props` | `React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Root>` | - | Additional props inherited from `AlertDialogPrimitive.Root` |
 

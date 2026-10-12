@@ -263,11 +263,12 @@ export default function Demo() {
 
 ## RTL Support
 
-Set `dir="rtl"` on `Select` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the select follows. The portaled listbox gets the resolved `dir`, so text, the check indicator, and alignment mirror without any extra props.
 
 ```tsx title="components/select-4.tsx"
 // import from your project: import Demo from '@/components/select-4'
 'use client'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import {
   Select,
   SelectContent,
@@ -280,21 +281,23 @@ import {
 
 export default function Demo() {
   return (
-    <Select dir="rtl">
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="اختر فاكهة" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>الفواكه</SelectLabel>
-          <SelectItem value="apple">تفاح</SelectItem>
-          <SelectItem value="banana">موز</SelectItem>
-          <SelectItem value="blueberry">توت ازرق</SelectItem>
-          <SelectItem value="grapes">عنب</SelectItem>
-          <SelectItem value="pineapple">اناناس</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    <DirectionProvider dir="rtl">
+      <Select>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="اختر فاكهة" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>الفواكه</SelectLabel>
+            <SelectItem value="apple">تفاح</SelectItem>
+            <SelectItem value="banana">موز</SelectItem>
+            <SelectItem value="blueberry">توت أزرق</SelectItem>
+            <SelectItem value="grapes">عنب</SelectItem>
+            <SelectItem value="pineapple">أناناس</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </DirectionProvider>
   )
 }
 ```
@@ -357,7 +360,7 @@ The root component that manages open/closed state, value state, and provides con
 | `open` | `boolean` | - | Controlled open state |
 | `defaultOpen` | `boolean` | `false` | Initial open state (uncontrolled) |
 | `onOpenChange` | `(open: boolean) => void` | - | Callback fired when dropdown open state changes |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `name` | `string` | - | Name attribute for native form submission |
 | `disabled` | `boolean` | - | Disables the entire select |
 | `required` | `boolean` | - | Marks the select as required for form validation |

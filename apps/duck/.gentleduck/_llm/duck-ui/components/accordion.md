@@ -238,7 +238,7 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the accordion follows it. No `dir` prop or `rtl:` classes needed.
 
 ```tsx title="components/accordion-5.tsx"
 // import from your project: import Demo from '@/components/accordion-5'
@@ -250,16 +250,16 @@ export default function Demo() {
     <DirectionProvider dir="rtl">
       <Accordion className="w-87.5" collapsible type="single">
         <AccordionItem value="item-1">
-          <AccordionTrigger>هل هو قابل للوصول؟</AccordionTrigger>
-          <AccordionContent>نعم. يلتزم بنمط تصميم WAI-ARIA.</AccordionContent>
+          <AccordionTrigger>هل يدعم إمكانية الوصول؟</AccordionTrigger>
+          <AccordionContent>نعم، فهو يتبع نمط التصميم المعتمد في WAI-ARIA.</AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2">
-          <AccordionTrigger>هل هو منسق؟</AccordionTrigger>
-          <AccordionContent>نعم. يأتي بأنماط افتراضية تتوافق مع المظهر الجمالي للمكونات الأخرى.</AccordionContent>
+          <AccordionTrigger>هل يأتي بتنسيق جاهز؟</AccordionTrigger>
+          <AccordionContent>نعم، يأتي بأنماط افتراضية متناسقة مع بقية المكونات.</AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-3">
-          <AccordionTrigger>هل هو متحرك؟</AccordionTrigger>
-          <AccordionContent>نعم. هو متحرك افتراضيا، لكن يمكنك تعطيله إذا أردت.</AccordionContent>
+          <AccordionTrigger>هل يدعم الحركة؟</AccordionTrigger>
+          <AccordionContent>نعم، الحركة مفعّلة افتراضيًا ويمكنك تعطيلها متى شئت.</AccordionContent>
         </AccordionItem>
       </Accordion>
     </DirectionProvider>
@@ -324,7 +324,7 @@ export default function Demo() {
 | `onValueChange` | `(value: string \| string[]) => void` | - | Callback fired when open state changes |
 | `collapsible` | `boolean` | `true` | Allows collapsing the currently open item by clicking again (single type only) |
 | `renderOnce` | `boolean` | `false` | Mounts content only on first expand and preserves it afterward |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS classes applied to the root div |
 | `children` | `React.ReactNode` | - | AccordionItem elements to render inside the accordion |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |

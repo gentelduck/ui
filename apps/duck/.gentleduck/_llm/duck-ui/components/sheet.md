@@ -111,7 +111,7 @@ import {
 
 ### Side
 
-Use the `side` property to `` to indicate the edge of the screen where the component will appear. The values can be `top`, `right`, `bottom` or `left`.
+Use the `side` property to `` to indicate the edge of the screen where the component will appear. The values can be `top`, `right`, `bottom` or `left`. The default is `right`; `left` and `right` mirror in RTL.
 
 ```tsx title="components/sheet-2.tsx"
 // import from your project: import Demo from '@/components/sheet-2'
@@ -234,11 +234,14 @@ export default function Demo() {
 
 ## RTL Support
 
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the sheet follows. In RTL, `left` and `right` mirror, so the default `side="right"` slides in from the left.
+
 ```tsx title="components/sheet-3.tsx"
 // import from your project: import Demo from '@/components/sheet-3'
 'use client'
 
 import { Button } from '@gentleduck/registry-ui/button'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Input } from '@gentleduck/registry-ui/input'
 import { Label } from '@gentleduck/registry-ui/label'
 import {
@@ -252,40 +255,36 @@ import {
   SheetTrigger,
 } from '@gentleduck/registry-ui/sheet'
 
-const SHEET_SIDES = ['right'] as const
-
 export default function Demo() {
   return (
-    <div className="grid grid-cols-1 gap-2">
-      {SHEET_SIDES.map((side) => (
-        <Sheet key={side} dir="rtl">
-          <SheetTrigger asChild>
-            <Button variant={'outline'}>{side}</Button>
-          </SheetTrigger>
-          <SheetContent className="flex flex-col" side={side}>
-            <SheetHeader>
-              <SheetTitle>تعديل الملف الشخصي</SheetTitle>
-              <SheetDescription>قم باجراء تغييرات على ملفك الشخصي هنا. انقر على حفظ عند الانتهاء.</SheetDescription>
-            </SheetHeader>
-            <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name">الاسم</Label>
-                <Input className="col-span-3" id="name" value="احمد محمد" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username">اسم المستخدم</Label>
-                <Input className="col-span-3" id="username" value="@ahmad" />
-              </div>
+    <DirectionProvider dir="rtl">
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant={'outline'}>فتح اللوحة</Button>
+        </SheetTrigger>
+        <SheetContent className="flex flex-col" closeText="إغلاق">
+          <SheetHeader>
+            <SheetTitle>تعديل الملف الشخصي</SheetTitle>
+            <SheetDescription>عدّل بيانات ملفك الشخصي هنا، ثم اضغط على حفظ عند الانتهاء.</SheetDescription>
+          </SheetHeader>
+          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name">الاسم</Label>
+              <Input className="col-span-3" defaultValue="أحمد محمد" id="name" />
             </div>
-            <SheetFooter className="mt-2">
-              <SheetClose>
-                <Button variant={'outline'}>حفظ التغييرات</Button>
-              </SheetClose>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
-      ))}
-    </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="username">اسم المستخدم</Label>
+              <Input className="col-span-3" defaultValue="ahmad_mohamed" id="username" />
+            </div>
+          </div>
+          <SheetFooter className="mt-2">
+            <SheetClose asChild>
+              <Button>حفظ التغييرات</Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+    </DirectionProvider>
   )
 }
 ```
@@ -396,13 +395,13 @@ export default function Demo() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `side` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'right'` | The side from which the sheet slides in |
+| `side` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'right'` | The side from which the sheet slides in. `left` and `right` mirror in RTL |
 | `closeText` | `string` | `'Close'` | Screen-reader label for the built-in close button |
 | `className` | `string` | - | Additional CSS class names |
 | `children` | `React.ReactNode` | - | Sheet content |
 | `...props` | `React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content> & VariantProps<typeof sheetVariants>` | - | Additional props inherited from `SheetPrimitive.Content` and the local `sheetVariants` |
 
-`SheetContent` renders a built-in close button in the top-right corner.
+`SheetContent` renders a built-in close button in the top-end corner (top-right in LTR, top-left in RTL).
 
 ### SheetHeader
 

@@ -222,26 +222,29 @@ export default function Demo() {
 
 ## RTL Support
 
-Set `dir="rtl"` on `ToggleGroup` for a local override, or set `DirectionProvider` once at app/root level for global direction.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `ToggleGroup` follows it, including the joined corners and flipped Left/Right arrow keys. No `dir` prop needed.
 
 ```tsx title="components/toggle-group-8.tsx"
 // import from your project: import Demo from '@/components/toggle-group-8'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { ToggleGroup, ToggleGroupItem } from '@gentleduck/registry-ui/toggle-group'
 import { Bold, Italic, Underline } from 'lucide-react'
 
 export default function Demo() {
   return (
-    <ToggleGroup type="single" dir="rtl">
-      <ToggleGroupItem aria-label="تبديل الخط العريض" value="bold">
-        <Bold className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem aria-label="تبديل الخط المائل" value="italic">
-        <Italic className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem aria-label="تبديل التسطير" value="underline">
-        <Underline className="h-4 w-4" />
-      </ToggleGroupItem>
-    </ToggleGroup>
+    <DirectionProvider dir="rtl">
+      <ToggleGroup type="multiple" variant="outline">
+        <ToggleGroupItem aria-label="غامق" value="bold">
+          <Bold />
+        </ToggleGroupItem>
+        <ToggleGroupItem aria-label="مائل" value="italic">
+          <Italic />
+        </ToggleGroupItem>
+        <ToggleGroupItem aria-label="تسطير" value="underline">
+          <Underline />
+        </ToggleGroupItem>
+      </ToggleGroup>
+    </DirectionProvider>
   )
 }
 ```
@@ -296,7 +299,7 @@ export default function Demo() {
 | `rovingFocus` | `boolean` | `true` | Whether to use roving focus for keyboard navigation |
 | `loop` | `boolean` | `true` | Whether keyboard navigation should loop at boundaries |
 | `orientation` | `'horizontal' \| 'vertical'` | - | The orientation of the group for arrow key navigation |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction. Resolved by primitives `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS class names to apply |
 | `children` | `React.ReactNode` | - | ToggleGroupItem elements to render inside the group |
 | `ref` | `React.Ref<HTMLDivElement>` | - | Ref forwarded to the underlying div element |

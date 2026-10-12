@@ -321,18 +321,25 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `<html dir="rtl">` (or a `DirectionProvider` around the `Toaster`) and toasts follow: text, icons and the action button mirror, and left/right positions mirror, so the default `bottom-right` becomes `bottom-left`.
 
 ```tsx title="components/sonner-6.tsx"
 // import from your project: import Demo from '@/components/sonner-6'
 'use client'
 
 import { Button } from '@gentleduck/registry-ui/button'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
+import { Toaster } from '@gentleduck/registry-ui/sonner'
 import { toast } from 'sonner'
+
+const TOASTER_ID = 'sonner-rtl'
 
 export default function Demo() {
   return (
-    <div dir="rtl">
+    <DirectionProvider dir="rtl">
+      {/* This docs page is LTR, so the demo mounts its own Toaster inside the provider.
+          In an app with <html dir="rtl">, the root Toaster is already RTL. */}
+      <Toaster id={TOASTER_ID} />
       <Button
         onClick={() =>
           toast('تم إنشاء الحدث', {
@@ -340,17 +347,14 @@ export default function Demo() {
               label: 'تراجع',
               onClick: () => console.log('Undo'),
             },
-            description: 'الأحد، 3 ديسمبر 2023 الساعة 9:00 صباحاً',
-            style: {
-              direction: 'rtl',
-              textAlign: 'right',
-            },
+            description: 'الأحد، 3 ديسمبر 2023 الساعة 9:00 صباحًا',
+            toasterId: TOASTER_ID,
           })
         }
         variant="outline">
-        {'عرض الإشعار'}
+        عرض الإشعار
       </Button>
-    </div>
+    </DirectionProvider>
   )
 }
 ```
@@ -363,7 +367,8 @@ The `Toaster` component wraps the `Sonner` `Toaster` from the `sonner` library, 
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Optional override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
+| `position` | `ToasterProps['position']` | `'bottom-right'` | Corner the toasts stack in. Left and right mirror in RTL |
 | `theme` | `'light' \| 'dark' \| 'system'` | `'system'` | Toast theme. Auto-detected from `next-themes` `useTheme()` |
 | `...props` | `ToasterProps` | - | Additional props inherited from the `sonner` toaster. |
 

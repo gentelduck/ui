@@ -190,21 +190,22 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `Textarea` follows it. No `dir` prop needed.
 
 ```tsx title="components/textarea-8.tsx"
 // import from your project: import Demo from '@/components/textarea-8'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { Label } from '@gentleduck/registry-ui/label'
 import { Textarea } from '@gentleduck/registry-ui/textarea'
 
 export default function Demo() {
   return (
-    <div className="grid w-full gap-1.5">
-      <Label htmlFor="message" dir="rtl">
-        {'رسالتك'}
-      </Label>
-      <Textarea id="message" placeholder="اكتب رسالتك هنا." dir="rtl" />
-    </div>
+    <DirectionProvider dir="rtl">
+      <div className="grid w-full gap-1.5">
+        <Label htmlFor="message-rtl">رسالتك</Label>
+        <Textarea id="message-rtl" placeholder="اكتب رسالتك هنا." />
+      </div>
+    </DirectionProvider>
   )
 }
 ```
@@ -234,7 +235,7 @@ export default function Demo() {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
 | `className` | `string` | - | Additional CSS class names |
 | `...props` | `React.HTMLProps<HTMLTextAreaElement>` | - | Additional props to spread to the textarea element |
 

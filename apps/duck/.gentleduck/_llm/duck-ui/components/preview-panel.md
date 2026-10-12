@@ -160,21 +160,29 @@ export default function Demo() {
 
 ## RTL Support
 
-Direction is resolved through the shared primitives direction module. Use a local `dir="rtl"` override when the component exposes it, or set `DirectionProvider` at app/root level for global RTL/LTR behavior.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the panel follows: the zoom controls move to the top-left corner and lay out RTL. Use `zoomInText`, `zoomOutText`, and `resetText` to translate the control labels.
 
 ```tsx title="components/preview-panel-5.tsx"
 // import from your project: import Demo from '@/components/preview-panel-5'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
 import { PreviewPanel } from '@gentleduck/registry-ui/preview-panel'
 
 export default function Demo() {
   return (
-    <PreviewPanel maxHeight="400px" className="rounded-lg border bg-card" dir="rtl">
-      <div className="flex flex-col items-center gap-4 p-8">
-        <div className="size-24 rounded-full bg-primary/20" />
-        <h3 className="font-semibold text-lg">تحريك وتكبير</h3>
-        <p className="text-muted-foreground text-sm">اسحب للتحريك، مرر للتكبير، او استخدم ادوات التحكم.</p>
-      </div>
-    </PreviewPanel>
+    <DirectionProvider dir="rtl">
+      <PreviewPanel
+        className="rounded-lg border bg-card"
+        maxHeight="400px"
+        resetText="إعادة الضبط"
+        zoomInText="تكبير"
+        zoomOutText="تصغير">
+        <div className="flex flex-col items-center gap-4 p-8">
+          <div className="size-24 rounded-full bg-primary/20" />
+          <h3 className="font-semibold text-lg">تحريك وتكبير</h3>
+          <p className="text-muted-foreground text-sm">اسحب للتحريك، ومرِّر للتكبير، أو استخدم أدوات التحكم.</p>
+        </div>
+      </PreviewPanel>
+    </DirectionProvider>
   )
 }
 ```
@@ -216,7 +224,7 @@ The core pan-zoom container.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
+| `dir` | `'ltr' \| 'rtl'` | - | Direction override. Defaults to the nearest `DirectionProvider`, then `<html dir>`. |
 | `maxHeight` | `string` | `--` | Maximum height of the panel container (e.g. `"400px"`) |
 | `minZoom` | `number` | `0.25` | Minimum zoom level |
 | `maxZoom` | `number` | `4` | Maximum zoom level |
@@ -228,6 +236,9 @@ The core pan-zoom container.
 | `style` | `React.CSSProperties` | `--` | Inline styles for the outer container |
 | `onStateChange` | `(state: PreviewPanelState) => void` | `--` | Called whenever zoom or position changes. Use to sync with another panel |
 | `syncState` | `PreviewPanelState` | `--` | External state to apply. The panel syncs to this state when set |
+| `zoomInText` | `string` | `'Zoom in'` | Label and tooltip for the zoom-in control |
+| `zoomOutText` | `string` | `'Zoom out'` | Label and tooltip for the zoom-out control |
+| `resetText` | `string` | `'Reset view'` | Label and tooltip for the reset control |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
 
 ### MotionPreviewPanel
@@ -240,11 +251,10 @@ The core pan-zoom container.
 
 ### PreviewPanelDialog
 
-Combines an inline `PreviewPanel` with a fullscreen `Dialog`. Includes an expand button in the bottom-right corner.
+Combines an inline `PreviewPanel` with a fullscreen `Dialog`. Includes an expand button in the bottom inline-end corner (bottom-left in RTL).
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `'ltr'`). |
 | `children` | `React.ReactNode` | - | Content rendered in both inline and dialog panels |
 | `unsafeHtml` | `string` | - | Raw HTML string rendered verbatim via `dangerouslySetInnerHTML`. Takes priority over `children`. Not sanitized: pass only HTML you fully trust |
 | `className` | `string` | - | Class name for the outer wrapper |
@@ -255,6 +265,10 @@ Combines an inline `PreviewPanel` with a fullscreen `Dialog`. Includes an expand
 | `initialZoom` | `number` | `1` | Starting zoom level |
 | `showControls` | `boolean` | `true` | Whether to show zoom controls |
 | `syncPanels` | `boolean` | `true` | Whether to sync zoom and position between inline and dialog panels |
+| `fullscreenText` | `string` | `'Open fullscreen'` | Label and tooltip for the expand button |
+| `zoomInText` | `string` | `'Zoom in'` | Label and tooltip for the zoom-in control |
+| `zoomOutText` | `string` | `'Zoom out'` | Label and tooltip for the zoom-out control |
+| `resetText` | `string` | `'Reset view'` | Label and tooltip for the reset control |
 
 ### PreviewPanelState
 
