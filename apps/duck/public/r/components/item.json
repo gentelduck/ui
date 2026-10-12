@@ -12,7 +12,7 @@
       "type": "registry:ui"
     },
     {
-      "content": "import { cva } from '@gentleduck/variants'\n\nexport const itemVariants = cva(\n  'group/item flex flex-wrap items-center rounded-md border border-transparent text-sm outline-none transition-colors duration-100 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors [a]:hover:bg-accent/50',\n  {\n    defaultVariants: {\n      size: 'default',\n      variant: 'default',\n    },\n    variants: {\n      size: {\n        default: 'gap-4 p-4',\n        sm: 'gap-2.5 px-4 py-3',\n      },\n      variant: {\n        default: 'bg-transparent',\n        muted: 'bg-muted/50',\n        outline: 'border-border',\n      },\n    },\n  },\n)\n",
+      "content": "import { cva } from '@gentleduck/variants'\n\nexport const itemVariants = cva(\n  'group/item flex flex-wrap items-center rounded-md border border-transparent text-sm outline-hidden transition-colors duration-100 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors [a]:hover:bg-accent/50',\n  {\n    defaultVariants: {\n      size: 'default',\n      variant: 'default',\n    },\n    variants: {\n      size: {\n        default: 'gap-4 p-4',\n        sm: 'gap-2.5 px-4 py-3',\n      },\n      variant: {\n        default: 'bg-transparent',\n        muted: 'bg-muted/50',\n        outline: 'border-border',\n      },\n    },\n  },\n)\n",
       "path": "item/item.constants.ts",
       "target": "components/ui/item.constants.ts",
       "type": "registry:ui"
