@@ -31456,6 +31456,221 @@
   {
     "files": [
       {
+        "path": "typeset/typeset-1.tsx",
+        "type": "registry:example"
+      }
+    ],
+    "name": "typeset-1",
+    "registryDependencies": [
+      "typeset",
+      "button"
+    ],
+    "root_folder": "typeset",
+    "type": "registry:example",
+    "source": "/registry-examples/src/typeset",
+    "tree": [
+      {
+        "name": "typeset-1.tsx",
+        "path": "typeset/typeset-1.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-2.tsx",
+        "path": "typeset/typeset-2.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-3.tsx",
+        "path": "typeset/typeset-3.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-4.tsx",
+        "path": "typeset/typeset-4.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-5.tsx",
+        "path": "typeset/typeset-5.tsx",
+        "type": "file"
+      }
+    ]
+  },
+  {
+    "files": [
+      {
+        "path": "typeset/typeset-2.tsx",
+        "type": "registry:example"
+      }
+    ],
+    "name": "typeset-2",
+    "registryDependencies": [
+      "typeset",
+      "button"
+    ],
+    "root_folder": "typeset",
+    "type": "registry:example",
+    "source": "/registry-examples/src/typeset",
+    "tree": [
+      {
+        "name": "typeset-1.tsx",
+        "path": "typeset/typeset-1.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-2.tsx",
+        "path": "typeset/typeset-2.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-3.tsx",
+        "path": "typeset/typeset-3.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-4.tsx",
+        "path": "typeset/typeset-4.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-5.tsx",
+        "path": "typeset/typeset-5.tsx",
+        "type": "file"
+      }
+    ]
+  },
+  {
+    "files": [
+      {
+        "path": "typeset/typeset-3.tsx",
+        "type": "registry:example"
+      }
+    ],
+    "name": "typeset-3",
+    "registryDependencies": [
+      "typeset",
+      "button"
+    ],
+    "root_folder": "typeset",
+    "type": "registry:example",
+    "source": "/registry-examples/src/typeset",
+    "tree": [
+      {
+        "name": "typeset-1.tsx",
+        "path": "typeset/typeset-1.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-2.tsx",
+        "path": "typeset/typeset-2.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-3.tsx",
+        "path": "typeset/typeset-3.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-4.tsx",
+        "path": "typeset/typeset-4.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-5.tsx",
+        "path": "typeset/typeset-5.tsx",
+        "type": "file"
+      }
+    ]
+  },
+  {
+    "files": [
+      {
+        "path": "typeset/typeset-4.tsx",
+        "type": "registry:example"
+      }
+    ],
+    "name": "typeset-4",
+    "registryDependencies": [
+      "typeset",
+      "button"
+    ],
+    "root_folder": "typeset",
+    "type": "registry:example",
+    "source": "/registry-examples/src/typeset",
+    "tree": [
+      {
+        "name": "typeset-1.tsx",
+        "path": "typeset/typeset-1.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-2.tsx",
+        "path": "typeset/typeset-2.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-3.tsx",
+        "path": "typeset/typeset-3.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-4.tsx",
+        "path": "typeset/typeset-4.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-5.tsx",
+        "path": "typeset/typeset-5.tsx",
+        "type": "file"
+      }
+    ]
+  },
+  {
+    "files": [
+      {
+        "path": "typeset/typeset-5.tsx",
+        "type": "registry:example"
+      }
+    ],
+    "name": "typeset-5",
+    "registryDependencies": [
+      "typeset",
+      "button"
+    ],
+    "root_folder": "typeset",
+    "type": "registry:example",
+    "source": "/registry-examples/src/typeset",
+    "tree": [
+      {
+        "name": "typeset-1.tsx",
+        "path": "typeset/typeset-1.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-2.tsx",
+        "path": "typeset/typeset-2.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-3.tsx",
+        "path": "typeset/typeset-3.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-4.tsx",
+        "path": "typeset/typeset-4.tsx",
+        "type": "file"
+      },
+      {
+        "name": "typeset-5.tsx",
+        "path": "typeset/typeset-5.tsx",
+        "type": "file"
+      }
+    ]
+  },
+  {
+    "files": [
+      {
         "path": "sidebar/sidebar-1.tsx",
         "type": "registry:example"
       }
@@ -37553,6 +37768,58 @@
       {
         "name": "preview-panel.types.ts",
         "path": "preview-panel/preview-panel.types.ts",
+        "type": "file"
+      }
+    ]
+  },
+  {
+    "dependencies": [
+      "@gentleduck/libs",
+      "@gentleduck/primitives",
+      "@gentleduck/variants"
+    ],
+    "files": [
+      {
+        "path": "typeset/index.ts",
+        "type": "registry:ui"
+      },
+      {
+        "path": "typeset/typeset.constants.ts",
+        "type": "registry:ui"
+      },
+      {
+        "path": "typeset/typeset.css",
+        "type": "registry:ui"
+      },
+      {
+        "path": "typeset/typeset.tsx",
+        "type": "registry:ui"
+      }
+    ],
+    "name": "typeset",
+    "registryDependencies": [],
+    "root_folder": "typeset",
+    "type": "registry:ui",
+    "source": "/registry-ui/src/typeset",
+    "tree": [
+      {
+        "name": "index.ts",
+        "path": "typeset/index.ts",
+        "type": "file"
+      },
+      {
+        "name": "typeset.constants.ts",
+        "path": "typeset/typeset.constants.ts",
+        "type": "file"
+      },
+      {
+        "name": "typeset.css",
+        "path": "typeset/typeset.css",
+        "type": "file"
+      },
+      {
+        "name": "typeset.tsx",
+        "path": "typeset/typeset.tsx",
         "type": "file"
       }
     ]

@@ -778,6 +778,11 @@ const _PreviewPanel5 = dynamic(() => import('@gentleduck/registry-examples/previ
 const _PreviewPanel6 = dynamic(() => import('@gentleduck/registry-examples/preview-panel/preview-panel-6'), {
   ssr: false,
 })
+const _Typeset1 = dynamic(() => import('@gentleduck/registry-examples/typeset/typeset-1'), { ssr: false })
+const _Typeset2 = dynamic(() => import('@gentleduck/registry-examples/typeset/typeset-2'), { ssr: false })
+const _Typeset3 = dynamic(() => import('@gentleduck/registry-examples/typeset/typeset-3'), { ssr: false })
+const _Typeset4 = dynamic(() => import('@gentleduck/registry-examples/typeset/typeset-4'), { ssr: false })
+const _Typeset5 = dynamic(() => import('@gentleduck/registry-examples/typeset/typeset-5'), { ssr: false })
 const _Sidebar1 = dynamic(() => import('@gentleduck/registry-examples/sidebar/sidebar-1'), { ssr: false })
 const _Sidebar2 = dynamic(() => import('@gentleduck/registry-examples/sidebar/sidebar-2'), { ssr: false })
 const _Sidebar3 = dynamic(() => import('@gentleduck/registry-examples/sidebar/sidebar-3'), { ssr: false })
@@ -9262,6 +9267,86 @@ export const Index: Record<string, any> = {
     source: '/registry-examples/src/preview-panel',
     categories: [],
     root_folder: 'preview-panel',
+  },
+  'typeset-1': {
+    name: 'typeset-1',
+    description: '',
+    type: 'registry:example',
+    registryDependencies: ['typeset', 'button'],
+    files: [
+      {
+        path: 'typeset/typeset-1.tsx',
+        type: 'registry:example',
+      },
+    ],
+    component: _Typeset1,
+    source: '/registry-examples/src/typeset',
+    categories: [],
+    root_folder: 'typeset',
+  },
+  'typeset-2': {
+    name: 'typeset-2',
+    description: '',
+    type: 'registry:example',
+    registryDependencies: ['typeset', 'button'],
+    files: [
+      {
+        path: 'typeset/typeset-2.tsx',
+        type: 'registry:example',
+      },
+    ],
+    component: _Typeset2,
+    source: '/registry-examples/src/typeset',
+    categories: [],
+    root_folder: 'typeset',
+  },
+  'typeset-3': {
+    name: 'typeset-3',
+    description: '',
+    type: 'registry:example',
+    registryDependencies: ['typeset', 'button'],
+    files: [
+      {
+        path: 'typeset/typeset-3.tsx',
+        type: 'registry:example',
+      },
+    ],
+    component: _Typeset3,
+    source: '/registry-examples/src/typeset',
+    categories: [],
+    root_folder: 'typeset',
+  },
+  'typeset-4': {
+    name: 'typeset-4',
+    description: '',
+    type: 'registry:example',
+    registryDependencies: ['typeset', 'button'],
+    files: [
+      {
+        path: 'typeset/typeset-4.tsx',
+        type: 'registry:example',
+      },
+    ],
+    component: _Typeset4,
+    source: '/registry-examples/src/typeset',
+    categories: [],
+    root_folder: 'typeset',
+  },
+  'typeset-5': {
+    name: 'typeset-5',
+    description: '',
+    type: 'registry:example',
+    registryDependencies: ['typeset', 'button'],
+    files: [
+      {
+        path: 'typeset/typeset-5.tsx',
+        type: 'registry:example',
+      },
+    ],
+    component: _Typeset5,
+    source: '/registry-examples/src/typeset',
+    categories: [],
+    root_folder: 'typeset',
   },
   'sidebar-1': {
     name: 'sidebar-1',

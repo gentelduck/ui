@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "content": "import { Typeset } from '@gentleduck/registry-ui/typeset'\n\nexport default function Demo() {\n  return (\n    <Typeset className=\"w-full max-w-xl\">\n      <h2>Ship the source, not a black box</h2>\n      <p>\n        Every component lands in your repo as plain files. Read them, change them, and commit them like the rest of your\n        code. Run <code>duck add button</code> to try it.\n      </p>\n      <h3>What you get</h3>\n      <ul>\n        <li>Accessible primitives with keyboard support built in</li>\n        <li>\n          Variants written with <code>cva()</code>\n        </li>\n        <li>Theme tokens in CSS variables, with dark mode included</li>\n      </ul>\n      <blockquote>Own the code, and upgrades become a diff you can read.</blockquote>\n      <pre>\n        <code>{`import { Button } from '@/components/ui/button'\n\nexport function Save() {\n  return <Button>Save</Button>\n}`}</code>\n      </pre>\n      <table>\n        <thead>\n          <tr>\n            <th>Package</th>\n            <th>Role</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr>\n            <td>\n              <code>@gentleduck/primitives</code>\n            </td>\n            <td>Headless behavior</td>\n          </tr>\n          <tr>\n            <td>\n              <code>@gentleduck/registry-ui</code>\n            </td>\n            <td>Styled components</td>\n          </tr>\n        </tbody>\n      </table>\n      <p>\n        Read the <a href=\"#installation\">installation guide</a> to set up your project.\n      </p>\n    </Typeset>\n  )\n}\n",
+      "path": "typeset/typeset-1.tsx",
+      "target": "components/typeset-1.tsx",
+      "type": "registry:example"
+    }
+  ],
+  "name": "typeset-1",
+  "registryDependencies": [
+    "typeset",
+    "button"
+  ],
+  "root_folder": "typeset",
+  "source": "/registry-examples/src/typeset",
+  "type": "registry:example"
+}

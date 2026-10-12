@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "content": "import { Typeset } from '@gentleduck/registry-ui/typeset'\n\nconst SIZES = ['sm', 'default', 'lg'] as const\n\nexport default function Demo() {\n  return (\n    <div className=\"grid w-full max-w-xl gap-8\">\n      {SIZES.map((size) => (\n        <section className=\"grid gap-2\" key={size}>\n          <span className=\"font-mono text-muted-foreground text-xs\">size=\"{size}\"</span>\n          <Typeset size={size}>\n            <h3>Release notes</h3>\n            <p>\n              The calendar now supports range selection. Pass <code>mode=\"range\"</code> to turn it on.\n            </p>\n          </Typeset>\n        </section>\n      ))}\n    </div>\n  )\n}\n",
+      "path": "typeset/typeset-2.tsx",
+      "target": "components/typeset-2.tsx",
+      "type": "registry:example"
+    }
+  ],
+  "name": "typeset-2",
+  "registryDependencies": [
+    "typeset",
+    "button"
+  ],
+  "root_folder": "typeset",
+  "source": "/registry-examples/src/typeset",
+  "type": "registry:example"
+}

@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "content": "import { Typeset } from '@gentleduck/registry-ui/typeset'\n\nexport default function Demo() {\n  return (\n    <Typeset className=\"w-full max-w-xl [--typeset-flow:1.75em] [--typeset-font-heading:ui-serif,Georgia,serif] [--typeset-leading:1.9]\">\n      <h2>A slower read</h2>\n      <p>\n        Set the typeset variables on the container to change the rhythm. Here the blocks have more room and the headings\n        use a serif.\n      </p>\n      <p>Everything else, from heading sizes to list indents, follows from those values.</p>\n    </Typeset>\n  )\n}\n",
+      "path": "typeset/typeset-5.tsx",
+      "target": "components/typeset-5.tsx",
+      "type": "registry:example"
+    }
+  ],
+  "name": "typeset-5",
+  "registryDependencies": [
+    "typeset",
+    "button"
+  ],
+  "root_folder": "typeset",
+  "source": "/registry-examples/src/typeset",
+  "type": "registry:example"
+}

@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "content": "import { Typeset } from '@gentleduck/registry-ui/typeset'\n\nconst TAGS = ['react', 'tailwind', 'a11y']\n\nexport default function Demo() {\n  return (\n    <Typeset className=\"w-full max-w-xl\">\n      <p>This list is part of the prose, so it gets bullets and indents:</p>\n      <ul>\n        {TAGS.map((tag) => (\n          <li key={tag}>{tag}</li>\n        ))}\n      </ul>\n      <p>\n        This one is a component. <code>data-not-typeset</code> keeps prose styles off it and its children:\n      </p>\n      <ul className=\"flex gap-2\" data-not-typeset=\"\">\n        {TAGS.map((tag) => (\n          <li className=\"rounded-full border px-2.5 py-0.5 text-xs\" key={tag}>\n            {tag}\n          </li>\n        ))}\n      </ul>\n    </Typeset>\n  )\n}\n",
+      "path": "typeset/typeset-4.tsx",
+      "target": "components/typeset-4.tsx",
+      "type": "registry:example"
+    }
+  ],
+  "name": "typeset-4",
+  "registryDependencies": [
+    "typeset",
+    "button"
+  ],
+  "root_folder": "typeset",
+  "source": "/registry-examples/src/typeset",
+  "type": "registry:example"
+}
