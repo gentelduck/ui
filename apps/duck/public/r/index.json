@@ -36635,6 +36635,9 @@
       }
     ],
     "name": "sheet",
+    "registryDependencies": [
+      "direction"
+    ],
     "root_folder": "sheet",
     "type": "registry:ui",
     "source": "/registry-ui/src/sheet",

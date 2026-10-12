@@ -34,6 +34,9 @@
     }
   ],
   "name": "sheet",
+  "registryDependencies": [
+    "direction"
+  ],
   "root_folder": "sheet",
   "source": "/registry-ui/src/sheet",
   "type": "registry:ui"

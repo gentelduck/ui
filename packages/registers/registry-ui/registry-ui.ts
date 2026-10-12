@@ -334,6 +334,7 @@ export const registryUi: RegistryEntry[] = [
     ],
     files: [],
     name: 'sheet',
+    registryDependencies: ['direction'],
     root_folder: 'sheet',
     type: 'registry:ui',
   },
