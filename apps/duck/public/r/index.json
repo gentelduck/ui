@@ -15824,6 +15824,11 @@
         "name": "tabs-4.tsx",
         "path": "tabs/tabs-4.tsx",
         "type": "file"
+      },
+      {
+        "name": "tabs-5.tsx",
+        "path": "tabs/tabs-5.tsx",
+        "type": "file"
       }
     ]
   },
@@ -15860,6 +15865,11 @@
       {
         "name": "tabs-4.tsx",
         "path": "tabs/tabs-4.tsx",
+        "type": "file"
+      },
+      {
+        "name": "tabs-5.tsx",
+        "path": "tabs/tabs-5.tsx",
         "type": "file"
       }
     ]
@@ -15898,6 +15908,11 @@
         "name": "tabs-4.tsx",
         "path": "tabs/tabs-4.tsx",
         "type": "file"
+      },
+      {
+        "name": "tabs-5.tsx",
+        "path": "tabs/tabs-5.tsx",
+        "type": "file"
       }
     ]
   },
@@ -15934,6 +15949,53 @@
       {
         "name": "tabs-4.tsx",
         "path": "tabs/tabs-4.tsx",
+        "type": "file"
+      },
+      {
+        "name": "tabs-5.tsx",
+        "path": "tabs/tabs-5.tsx",
+        "type": "file"
+      }
+    ]
+  },
+  {
+    "files": [
+      {
+        "path": "tabs/tabs-5.tsx",
+        "type": "registry:example"
+      }
+    ],
+    "name": "tabs-5",
+    "registryDependencies": [
+      "tabs"
+    ],
+    "root_folder": "tabs",
+    "type": "registry:example",
+    "source": "/registry-examples/src/tabs",
+    "tree": [
+      {
+        "name": "tabs-1.tsx",
+        "path": "tabs/tabs-1.tsx",
+        "type": "file"
+      },
+      {
+        "name": "tabs-2.tsx",
+        "path": "tabs/tabs-2.tsx",
+        "type": "file"
+      },
+      {
+        "name": "tabs-3.tsx",
+        "path": "tabs/tabs-3.tsx",
+        "type": "file"
+      },
+      {
+        "name": "tabs-4.tsx",
+        "path": "tabs/tabs-4.tsx",
+        "type": "file"
+      },
+      {
+        "name": "tabs-5.tsx",
+        "path": "tabs/tabs-5.tsx",
         "type": "file"
       }
     ]

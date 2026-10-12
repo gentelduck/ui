@@ -1,0 +1,17 @@
+{
+  "files": [
+    {
+      "content": "'use client'\n\nimport { Label } from '@gentleduck/registry-ui/label'\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@gentleduck/registry-ui/tabs'\nimport { Textarea } from '@gentleduck/registry-ui/textarea'\nimport * as React from 'react'\n\nfunction MountedAt() {\n  const [time] = React.useState(() => new Date().toLocaleTimeString())\n  return <span className=\"font-mono text-foreground\">{time}</span>\n}\n\nexport default function Demo() {\n  return (\n    <Tabs className=\"w-full max-w-sm\" defaultValue=\"draft\">\n      <TabsList className=\"grid w-full grid-cols-2\">\n        <TabsTrigger value=\"draft\">Draft</TabsTrigger>\n        <TabsTrigger value=\"activity\">Activity</TabsTrigger>\n      </TabsList>\n      <TabsContent className=\"space-y-3 rounded-lg border p-4\" renderOnce value=\"draft\">\n        <div className=\"grid gap-2\">\n          <Label htmlFor=\"tabs-render-once-draft\">Release notes</Label>\n          <Textarea id=\"tabs-render-once-draft\" placeholder=\"Type something, switch tabs, then come back.\" rows={4} />\n        </div>\n        <p className=\"text-muted-foreground text-xs\">\n          <code>renderOnce</code>: mounted at <MountedAt />, and kept mounted when you switch away.\n        </p>\n      </TabsContent>\n      <TabsContent className=\"space-y-3 rounded-lg border p-4\" value=\"activity\">\n        <ul className=\"space-y-2 text-sm\">\n          <li>Deployed v2.4.1</li>\n          <li>Merged PR #847</li>\n          <li>Upgraded to Team</li>\n        </ul>\n        <p className=\"text-muted-foreground text-xs\">\n          Default: mounted at <MountedAt />, and unmounted when you switch away.\n        </p>\n      </TabsContent>\n    </Tabs>\n  )\n}\n",
+      "path": "tabs/tabs-5.tsx",
+      "target": "components/tabs-5.tsx",
+      "type": "registry:example"
+    }
+  ],
+  "name": "tabs-5",
+  "registryDependencies": [
+    "tabs"
+  ],
+  "root_folder": "tabs",
+  "source": "/registry-examples/src/tabs",
+  "type": "registry:example"
+}

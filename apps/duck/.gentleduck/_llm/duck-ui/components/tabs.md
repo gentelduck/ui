@@ -123,6 +123,74 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 | `End` | Move focus to the last tab and select it |
 | `Tab` | Move focus onto the active tab, then out of the tab list |
 
+## Keeping Panels Mounted
+
+By default, `TabsContent` renders its children only while its tab is active. Switching away unmounts them, so form input, scroll position, and fetched data reset. Two props change that:
+
+| Mode | Prop | When children mount | When they unmount | Use it for |
+| --- | --- | --- | --- | --- |
+| Default | - | When the tab opens | When the tab closes | Cheap panels where a fresh render is fine |
+| Lazy, then kept | `renderOnce` | The first time the tab opens | Never (hidden while inactive) | Forms, editors, and previews whose state should survive tab switches |
+| Eager | `forceMount` | On first render, before the tab is ever opened | Never (hidden while inactive) | Panels that must be in the DOM up front, such as content you want indexed or measured |
+
+Inactive panels that stay mounted get `display: none` and `aria-hidden`, so they stay out of the layout and the accessibility tree.
+
+Type in the Draft tab, switch to Activity, and come back: the draft keeps its text and its mount time, while Activity shows a new mount time on every visit.
+
+```tsx title="components/tabs-5.tsx"
+// import from your project: import Demo from '@/components/tabs-5'
+'use client'
+
+import { Label } from '@gentleduck/registry-ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@gentleduck/registry-ui/tabs'
+import { Textarea } from '@gentleduck/registry-ui/textarea'
+import * as React from 'react'
+
+function MountedAt() {
+  const [time] = React.useState(() => new Date().toLocaleTimeString())
+  return <span className="font-mono text-foreground">{time}</span>
+}
+
+export default function Demo() {
+  return (
+    <Tabs className="w-full max-w-sm" defaultValue="draft">
+      <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="draft">Draft</TabsTrigger>
+        <TabsTrigger value="activity">Activity</TabsTrigger>
+      </TabsList>
+      <TabsContent className="space-y-3 rounded-lg border p-4" renderOnce value="draft">
+        <div className="grid gap-2">
+          <Label htmlFor="tabs-render-once-draft">Release notes</Label>
+          <Textarea id="tabs-render-once-draft" placeholder="Type something, switch tabs, then come back." rows={4} />
+        </div>
+        <p className="text-muted-foreground text-xs">
+          <code>renderOnce</code>: mounted at <MountedAt />, and kept mounted when you switch away.
+        </p>
+      </TabsContent>
+      <TabsContent className="space-y-3 rounded-lg border p-4" value="activity">
+        <ul className="space-y-2 text-sm">
+          <li>Deployed v2.4.1</li>
+          <li>Merged PR #847</li>
+          <li>Upgraded to Team</li>
+        </ul>
+        <p className="text-muted-foreground text-xs">
+          Default: mounted at <MountedAt />, and unmounted when you switch away.
+        </p>
+      </TabsContent>
+    </Tabs>
+  )
+}
+```
+
+```tsx
+<TabsContent renderOnce value="draft">
+  <Textarea />
+</TabsContent>
+```
+
+}>
+  `renderOnce` costs nothing until the tab is opened, then keeps that panel's DOM and React state alive. With many heavy panels, prefer the default and lift the state you want to keep into the parent.
+
 ## RTL Support
 
 Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the tabs follow it: the list mirrors, arrow keys move in the visual direction, and motion content slides from the matching side. No `dir` prop or `rtl:` classes needed.
@@ -443,7 +511,8 @@ export default function Demo() {
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `value` | `string` | (required) | The associated value that matches a `TabsTrigger` |
-| `forceMount` | `boolean` | `false` | If true, the content stays mounted in the DOM even when hidden |
+| `renderOnce` | `boolean` | `false` | Mount the children the first time the tab opens, then keep them mounted (hidden) so their state survives tab switches |
+| `forceMount` | `boolean` | `false` | Mount the children on first render, even before the tab is opened, and keep them mounted (hidden) |
 | `className` | `string` | - | Additional CSS class names |
 | `children` | `React.ReactNode` | - | Tab panel content |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
