@@ -416,7 +416,7 @@ const FontSelector = React.memo(function FontSelector({ domain }: { domain: stri
         <Command>
           <CommandInput className="h-9" placeholder="Search fonts..." />
 
-          <CommandList className="max-h-60 overflow-y-auto">
+          <CommandList className="max-h-60">
             <CommandEmpty>{fonts ? 'No fonts found.' : 'Loading fonts...'}</CommandEmpty>
 
             <CommandGroup heading="Fonts">

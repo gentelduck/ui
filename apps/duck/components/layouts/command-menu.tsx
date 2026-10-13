@@ -550,7 +550,7 @@ function VirtualCommandList({
           )}
         </CommandEmpty>
       )}
-      <CommandList className="h-97.5 max-h-full w-full md:w-full" scrollRef={scrollRef}>
+      <CommandList className="h-97.5 max-h-full" scrollRef={scrollRef}>
         <div ref={listContainerRef} style={{ height: virtualizer.getTotalSize(), position: 'relative', width: '100%' }}>
           {virtualizer.getVirtualItems().map((virtualRow) => {
             const row = filteredRows[virtualRow.index]
