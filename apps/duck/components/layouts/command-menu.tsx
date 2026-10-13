@@ -249,7 +249,9 @@ export function CommandMenu() {
         }}
         open={open}
         shouldFilter={false}
-        contentClassName={aiMode ? 'lg:w-[800px] h-[550px]' : ''}>
+        contentClassName={aiMode ? 'lg:w-[800px] h-[550px]' : ''}
+        description={aiMode ? 'Ask a question about the docs.' : 'Find a page in the docs and go to it.'}
+        title={aiMode ? 'Ask AI' : 'Search docs'}>
         {aiMode ? (
           <React.Suspense
             fallback={
