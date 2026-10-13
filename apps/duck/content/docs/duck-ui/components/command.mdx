@@ -187,6 +187,16 @@ export function CommandMenu() {
 }
 ```
 
+A screen reader announces the dialog by its `title` and `description`, which are hidden on screen. The defaults describe a command palette, so a dialog that does something narrower names itself, in the user's language:
+
+```tsx
+<CommandDialog
+  title="Search events"
+  description="Find an event or jump to a date."
+  open={open}
+  onOpenChange={setOpen}>
+```
+
 ## Component Composition
 
 <MermaidDiagram chart={`graph TD
@@ -321,6 +331,8 @@ Requires the `motion` package. Use `MotionCommandItem` instead of `CommandItem`.
 
 Handles search filtering internally: items are hidden/shown based on the current search query. Groups and separators with no visible items are automatically hidden. The empty state element is toggled based on whether all items are filtered out.
 
+The list sits in a `ScrollArea` whose viewport is capped at `max-h-75` (300px) and does the scrolling. Wheel and touch scrolling stop at the list, so it still scrolls inside a modal `Dialog` or `Sheet`.
+
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `className` | `string` | - | Additional CSS classes applied to the scrolling viewport. Override the height here, e.g. `max-h-96` |
@@ -332,8 +344,6 @@ Handles search filtering internally: items are hidden/shown based on the current
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-The list sits in a `ScrollArea` whose viewport is capped at `max-h-75` (300px) and does the scrolling. Wheel and touch scrolling stop at the list, so it still scrolls inside a modal `Dialog` or `Sheet`.
-
 | `value` | `string` | `''` | The internal value for selection |
 | `disabled` | `boolean` | `false` | Whether the item is disabled |
 | `textValue` | `string` | - | Optional text used for filtering/typeahead. Defaults to the item's text content. |
@@ -382,6 +392,8 @@ Renders a `div` with `role="separator"` and `aria-hidden`. Visibility is automat
 | `children` | `React.ReactNode` | - | Command content rendered inside the dialog (typically `CommandInput`, `CommandList`, etc.) |
 | `shouldFilter` | `boolean` | - | Whether the command primitive should filter items internally |
 | `contentClassName` | `string` | - | Additional CSS classes applied to the inner `DialogContent`, useful for controlling dialog size |
+| `title` | `string` | `'Command palette'` | Dialog title, read by screen readers and hidden on screen |
+| `description` | `string` | `'Search for commands and navigation items'` | Dialog description, read by screen readers and hidden on screen |
 | `...props` | `React.ComponentPropsWithRef<typeof Dialog>` | - | Additional props inherited from `Dialog`. |
 
 ### MotionCommandItem

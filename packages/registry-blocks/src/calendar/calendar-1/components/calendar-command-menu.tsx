@@ -52,7 +52,12 @@ export function CalendarCommandMenu({
   }, [filtered])
 
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange} shouldFilter={false}>
+    <CommandDialog
+      description="Find an event or jump to a date."
+      onOpenChange={onOpenChange}
+      open={open}
+      shouldFilter={false}
+      title="Search events">
       <CommandInput
         placeholder="Search events..."
         value={query}

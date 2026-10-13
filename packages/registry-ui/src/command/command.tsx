@@ -171,13 +171,20 @@ function CommandDialog({
   children,
   shouldFilter,
   contentClassName,
+  title = 'Command palette',
+  description = 'Search for commands and navigation items',
   ...props
-}: React.ComponentPropsWithoutRef<typeof Dialog> & { shouldFilter?: boolean; contentClassName?: string }) {
+}: React.ComponentPropsWithoutRef<typeof Dialog> & {
+  shouldFilter?: boolean
+  contentClassName?: string
+  title?: string
+  description?: string
+}) {
   return (
     <Dialog {...props}>
       <DialogContent className={cn('h-125 max-w-full p-0 lg:w-175', contentClassName)} hideClose>
-        <DialogTitle className="sr-only">Command palette</DialogTitle>
-        <DialogDescription className="sr-only">Search for commands and navigation items</DialogDescription>
+        <DialogTitle className="sr-only">{title}</DialogTitle>
+        <DialogDescription className="sr-only">{description}</DialogDescription>
         <Command className="max-w-full" shouldFilter={shouldFilter}>
           {children}
         </Command>
