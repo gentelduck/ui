@@ -105,7 +105,66 @@ export async function generateIamPermissionMap<
 ): Promise<AccessControl.ModePermissionMap<TMode, TAction, TResource, TScope>>
 ```
 
-It infers `TMode` from the engine, so a development-mode engine returns a typed `IamClient.PermissionMap` and a production one returns `Record
+It infers `TMode` from the engine, so a development-mode engine returns a typed `IamClient.PermissionMap` and a production one returns `Record<string, boolean>` - whatever `engine.permissions` itself returns in that mode.
+
+```ts
+const permissions = await generateIamPermissionMap(engine, userId, [
+  { action: 'create', resource: 'post' },
+  { action: 'manage', resource: 'team', scope: 'org-1' },
+])
+
+return new Response(JSON.stringify({ permissions }), {
+  headers: { 'content-type': 'application/json' },
+})
+```
+
+The result is keyed `[@scope:]action:resource[:resourceId]`; the exact rules, including the leading `@` on the scope segment, the escaping, and the partial-map type, are on the [PermissionMap reference](/duck-iam/integrations/client/permission-map). Hydrate it with the [client libraries](/duck-iam/integrations/client). `engine.permissions()` throws when `subjectId` is empty or longer than 1024 characters or when the batch exceeds 1024 checks; that propagates through this helper.
+
+## Extract an environment
+
+`iamExtractEnvironment` builds an `IamRequest.IEnvironment` from any object that has `ip` and/or `headers`. `headers` may be a plain record (Node, Express, Nest) or a fetch-API `Headers` instance (Next.js, Hono via the wrapper).
+
+```ts
+export function iamExtractEnvironment(
+  req: {
+    ip?: string
+    headers?: Record<string, string | string[] | undefined> | Headers
+    method?: string
+    url?: string
+  },
+  opts?: { trustProxy?: boolean },
+): IamRequest.IEnvironment
+```
+
+It returns exactly three keys, and nothing else:
+
+| Field | Default | Notes |
+| --- | --- | --- |
+| `timestamp` | `Date.now()` | Always set. The engine injects `now` separately at evaluation time when it is absent. |
+| `userAgent` | the `user-agent` header | First element when the header is an array. Dropped when empty or longer than 2048 characters. |
+| `ip` | **`undefined`** | Populated only when `opts.trustProxy === true`. |
+
+`IEnvironment` has a string index signature, but nothing here writes a custom key. `environment.hour`, `environment.region`, a feature flag - each exists only if your own `getEnvironment` puts it there.
+
+The user-agent cap is not cosmetic. `userAgent` is attacker-controlled and flows into `matches` conditions, which throw above the regex input cap; dropping an oversized value keeps a caller from perturbing evaluation with one header, at the cost of a `matches` on `environment.userAgent` reading as a non-match for that request.
+
+There is no guess that is right on every deployment and the wrong one is exploitable: `X-Forwarded-For` and `X-Real-IP` are request headers like any other, so with nothing in front of the app a client sets them itself. Measured against real servers, Hono, Next and this helper each echoed a plain `X-Forwarded-For: 10.0.0.1` into `environment.ip` - and a header alone satisfied an IP-conditioned admin grant - while Express and Nest reported the socket peer for the same request. `req.ip` is ignored by default for the same reason: an integration may fill it from a platform header rather than a socket.
+
+A condition on a field the host never populated reads as a **non-match**, not an error. A deny rule keyed on `environment.ip` on a default wiring never fires, and the request is allowed, silently, forever.
+
+Opt in one of two ways:
+
+```ts
+// Behind exactly one trusted proxy that appends the peer address:
+getEnvironment: (req) => ({ ...iamExtractEnvironment(req), ip: trustedClientIp(req) })
+
+// Or, if the framework already knows about your proxies:
+getEnvironment: (req) => iamExtractEnvironment(req, { trustProxy: true })
+```
+
+### Forwarded-IP normalisation
+
+Under `trustProxy` the chain is `req.ip`, then the leftmost `x-forwarded-for` hop, then `x-real-ip`. Every one of the three - `req.ip` included - goes through the same normaliser, so a comma-joined `req.ip` yields its leftmost hop and a 100 KB one is dropped.
 
 The leftmost hop wins (`'1.2.3.4, 5.6.7.8, 10.0.0.1'` gives `'1.2.3.4'`); whitespace is trimmed; `[2001:db8::1]` and `2001:db8::1` both survive verbatim; a header longer than 4096 characters or a leftmost entry longer than 256 yields `undefined` (256 exactly is accepted); an empty or whitespace-only leftmost entry yields `undefined`; array-shaped Node headers use their first element.
 
@@ -319,7 +378,19 @@ export async function iamWithAdminAudit<T>(
 
 Runs `handler` in try/catch/finally. On failure it re-throws the original error and records `error` via `iamErrorToAuditString`. The audit event always fires from `finally`, so a failed save is still audited.
 
-Success is not simply "did not throw". `refusalStatus` duck-types a numeric `status >= 400` on the handler's **return value** and records `success: false` with `error: 'HTTP 
+Success is not simply "did not throw". `refusalStatus` duck-types a numeric `status >= 400` on the handler's **return value** and records `success: false` with `error: 'HTTP <n>'`. Hono's context, Next's `Response` and a test double are three classes across three realms, so `instanceof Response` would not do. Before that check existed, Hono's inline `c.json({error}, 400)` refusals were written into the trail as successful mutations - which is worse than omitting them, because it invents grants that were never made.
+
+### `iamFireAdminMutation`
+
+```ts
+export function iamFireAdminMutation(
+  hook: IamAdminAudit.Hook | undefined,
+  event: IamAdminAudit.IEvent,
+  opts?: Pick<IamAdminAudit.IOptions, 'redactPath' | 'onAuditHookError'>,
+): void
+```
+
+This flowchart shows how a hook failure is routed so it can never reach the request.
 
 The redactor runs before the hook (`redactPath rewrites event.path before the hook is called`). A throwing redactor is treated as a hook error and the hook is skipped. The hook's promise is never awaited by the request path.
 

@@ -8,7 +8,51 @@ transformer, full tooling, and an active community.
 * **[typia](https://typia.io/)**: runtime validators, serializers, JSON
   schema generation from TypeScript types via a TS transformer plugin
 
-Migration: replace `@Body(typiaBody
+Migration: replace `@Body(typiaBody<X>())` with `@TypedBody()`, `@Get()` with
+`@TypedRoute.Get()`. See the [nestia migration guide](https://nestia.io/docs/sdk/).
+
+## What is Duck Gen?
+
+Duck Gen is a **compiler extension** that reads your server source code and generates TypeScript
+definition files (`.d.ts`) for every API route and message key it finds. It removes the step of
+writing route types by hand to match the server.
+
+Duck Gen ships with a **NestJS** adapter. The architecture supports multiple frameworks;
+NestJS is the first one.
+
+### The problem it solves
+
+Without Duck Gen, keeping client types aligned with server routes looks like this:
+
+```ts
+// Server: you add a new route
+@Post('signup')
+signup(@Body() body: SignupDto): Promise<AuthSession> { ... }
+
+// Client: you manually write the matching types... or forget to
+type SignupReq = { email: string; password: string } // hope this matches SignupDto
+type SignupRes = { token: string } // hope this matches AuthSession
+```
+
+Every time a DTO changes or a new route is added, someone has to update the client types.
+Duck Gen removes that step.
+
+} title="The core promise">
+  Change the server, re-run `duck-gen`, and the client types update. If the new types
+  break client code, TypeScript surfaces the error at build time instead of at runtime.
+
+### What it generates
+
+Duck Gen produces two categories of types:
+
+| Category | What you get |
+| --- | --- |
+| **API route types** | A route map with typed request shapes (body, query, params, headers) and response types for every controller method. |
+| **Message registry types** | Strongly-typed i18n dictionaries derived from `@duckgen` message tags in your code. |
+
+Both outputs are `.d.ts` files you import directly. No runtime cost.
+
+## How it works
 
 Here is the step-by-step flow:
 

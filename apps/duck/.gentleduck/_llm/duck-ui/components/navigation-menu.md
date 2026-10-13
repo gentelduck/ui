@@ -138,7 +138,56 @@ ListItem.displayName = 'ListItem'
 
 ## Philosophy
 
-Navigation menus serve a different purpose than dropdown menus  -  they're for wayfinding, not actions. The distinction matters for accessibility: navigation menus use `
+Navigation menus serve a different purpose than dropdown menus  -  they're for wayfinding, not actions. The distinction matters for accessibility: navigation menus use `<nav>` and link semantics, while dropdown menus use `role="menu"` and button semantics. We expose viewport and indicator sub-components for advanced hover/focus animations.
+
+## Installation
+
+CLI
+Manual
+
+```bash
+npx @gentleduck/cli add navigation-menu
+```
+
+Install the following dependencies:
+
+```bash
+npm install @gentleduck/primitives @gentleduck/libs @gentleduck/variants lucide-react
+```
+
+Copy and paste the following code into your project.
+
+Update the import paths to match your project setup.
+
+## Usage
+
+```tsx showLineNumbers
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+} from "@/components/ui/navigation-menu"
+```
+
+```tsx showLineNumbers
+<NavigationMenu>
+  <NavigationMenuList>
+    <NavigationMenuItem>
+      <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <NavigationMenuLink>Link</NavigationMenuLink>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  </NavigationMenuList>
+</NavigationMenu>
+```
+
+## Component Composition
 
 ## Link
 

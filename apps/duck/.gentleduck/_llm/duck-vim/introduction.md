@@ -1,5 +1,47 @@
 }>
-  **duck-vim** is a keyboard shortcut engine for the browser. Registry-based commands, multi-key sequences, cross-platform 
+  **duck-vim** is a keyboard shortcut engine for the browser. Registry-based commands, multi-key sequences, cross-platform <Kbd>Mod</Kbd> key, key recording, and display formatting. Under 5 KB gzipped.
+
+## What is duck-vim?
+
+duck-vim is a keyboard shortcut engine for the browser. Shortcuts are declared in a registry rather than hardcoded in event handlers. That makes them discoverable through command palettes, customizable per user, and composable into multi-key sequences like <Kbd>g</Kbd> then <Kbd>d</Kbd>.
+
+The core is plain DOM with zero dependencies. React bindings sit on top as an optional layer.
+
+***
+
+## Why duck-vim?
+
+Most keyboard shortcut libraries cover <Kbd>Ctrl+K</Kbd> to a function and stop. duck-vim also handles:
+
+* **Multi-key sequences** like Vim's <Kbd>g</Kbd>+<Kbd>d</Kbd> (press <Kbd>g</Kbd>, then <Kbd>d</Kbd> within a timeout).
+* **Prefix awareness** so the UI can show a "waiting for next key..." state.
+* **Cross-platform Mod key** that resolves to <Kbd>Cmd</Kbd> on Mac and <Kbd>Ctrl</Kbd> elsewhere.
+* **Scoped bindings** attached to specific DOM elements, not just `document`.
+* **A key recorder** for settings UIs where users define their own shortcuts.
+* **Display formatting** that renders `Mod+Shift+S` as <Kbd>Cmd+Shift+S</Kbd> on Mac and <Kbd>Ctrl+Shift+S</Kbd> on Windows.
+
+}>
+  All of the above fit under 5 KB gzipped.
+
+***
+
+## Architecture
+
+duck-vim is organized into independent modules:
+
+| Module | Purpose | Framework dependency |
+| --- | --- | --- |
+| `platform` | OS detection, Mod key resolution | None |
+| `parser` | Parse and validate key binding strings | None |
+| `matcher` | Match keyboard events against parsed bindings | None |
+| `command` | Registry + KeyHandler for managing shortcuts | None |
+| `sequence` | Multi-step sequence manager | None |
+| `recorder` | Record key combinations for settings UIs | None |
+| `format` | Format bindings for display (<Kbd>Cmd+S</Kbd>, <Kbd>Ctrl+S</Kbd>) | None |
+| `react` | Provider, hooks, and context for React apps | React |
+
+}>
+  Every module except `react` is pure DOM. You can use any subset.
 
 ***
 

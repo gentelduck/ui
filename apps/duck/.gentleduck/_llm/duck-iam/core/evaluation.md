@@ -6,7 +6,17 @@ Five methods start a check. All of them converge on `authorize()`.
 
 | Method | Input | Returns | Notes |
 | --- | --- | --- | --- |
-| `can(subjectId, action, resource, environment?, scope?)` | subject id | `Promise
+| `can(subjectId, action, resource, environment?, scope?)` | subject id | `Promise<boolean>` | Always a boolean, in both modes. Catches subject-resolution errors and fails closed. |
+| `check(subjectId, action, resource, environment?, scope?)` | subject id | `Promise<ModeResult<TMode>>` | `IDecision` in `development`, `boolean` in `production`. |
+| `authorize(request)` | a full `IamRequest.IAccessRequest` | `Promise<ModeResult<TMode>>` | The pipeline proper. Use when you already hold a resolved subject. |
+| `permissions(subjectId, checks, environment?)` | subject id + up to 1024 checks | `Promise<ModePermissionMap<TMode>>` | Loads adapter data once, then evaluates each check through the same path. |
+| `explain(subjectId, action, resource, environment?, scope?)` | subject id | `Promise<Explain.IResult>` | `development` only; throws in `production`. Read-only. |
+
+`can` and `check` reject a `subjectId` that is not a non-empty string of at most 1024 characters - `can` returns `false`, `check` returns a synthesised deny, and `explain` throws. `permissions` throws on an invalid subject id or on more than 1024 checks, because an oversized batch is a caller bug rather than a request to deny.
+
+## The pipeline
+
+One `engine.can()` call, from the caller to the decision.
 
 Every adapter arrow above is cache-fronted and single-flighted: a cold start under load issues one adapter call per resource, not one per request. The steps below unpack each stage.
 

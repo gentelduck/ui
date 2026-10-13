@@ -4,15 +4,6 @@ Stop wasting bandwidth on files that shouldn't upload, and extend the engine wit
 You'll configure **per-purpose validation rules**, add a custom **`validateFile`**, and write
 **plugins** and **hooks**.
 
-(size, type, ext, maxFiles)"]
-  BATCH -->|fail| REJ["file.rejected(never enters state)"]
-  BATCH -->|pass| STATE["enters state: validating"]
-  STATE --> CHK["checksum + dedupe"]
-  CHK --> CUSTOM["validateFile() + strict MIME"]
-  CUSTOM -->|reason| ERR["phase: errorvalidation_failed"]
-  CUSTOM -->|null| OK["phase: creating_intent"]`}
-/>
-
 Two validation layers exist, and the distinction matters:
 
 * **Built-in rules** (size, type, extension, `maxFiles`) run synchronously in `addFiles`.

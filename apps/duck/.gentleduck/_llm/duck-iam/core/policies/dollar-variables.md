@@ -31,7 +31,7 @@ w.isOwner('resource.attributes.createdBy')
 Three things follow from the ordering in the diagram:
 
 * **`$subject.roles` is the effective role set**, not the raw assignment: inheritance is already closed over and matching scoped roles are already merged in. See [role inheritance](/duck-iam/core/roles/inheritance) and [scoped roles](/duck-iam/core/roles/scoped).
-* **`beforeEvaluate` can change what a `environment.tenantId` resolvable for every policy in that request.
+* **`beforeEvaluate` can change what a `$` path sees.** A hook that injects `environment.tenantId` makes `$environment.tenantId` resolvable for every policy in that request.
 * **`$environment.now` always resolves.** The engine sets `environment.now` to `Date.now()` in epoch milliseconds when the caller did not supply one, and never overwrites a supplied value - so a test or a replay hook can pin the clock. This is what pairs with the `before` and `after` operators.
 
 Nothing is resolved at build time. `definePolicy(...).build()` stores the literal string `'$subject.id'`; the same policy JSON works for every request.
@@ -46,9 +46,18 @@ The `$` side accepts the same roots as the `field` side.
 | `$scope` | `request.scope`, or `null` when the request has no scope | Whole-path shorthand |
 | `$subject.id` | The subject id | |
 | `$subject.roles` | The effective roles array | An array value - see "Arrays" below |
-| `$subject.attributes.subject.scopedRoles` is `null` - an array of objects is outside `AttributeValue` |
-| `resource.id` | Resource type and instance id | |
-| `$resource.attributes.resource` are `null`, not the object.
+| `$subject.attributes.<key>` | A subject attribute, at any depth | |
+| `$subject.scopedRoles.<i>.attributes.<key>` | A per-assignment attribute | The bare `$subject.scopedRoles` is `null` - an array of objects is outside `AttributeValue` |
+| `$resource.type` / `$resource.id` | Resource type and instance id | |
+| `$resource.attributes.<key>` | A resource attribute, at any depth | |
+| `$environment.<key>` | `ip`, `userAgent`, `timestamp`, `now`, or any custom key | |
+
+Resolution rules:
+
+* The only permitted roots are `subject`, `resource`, and `environment`, plus the two shorthands. `$nope.x` resolves to `null` - **not** to the literal string.
+* `__proto__`, `constructor`, and `prototype` are refused at any segment; the whole path resolves to `null`. `$__proto__.x` is `null`.
+* Traversal stops at the first non-object and `undefined` becomes `null`. `$resource.attributes.missing` is `null`.
+* The resolved value is narrowed, not asserted. It must be a scalar, an array of scalars, or a flat object of scalars; anything else - a `Date`, a nested object, an array of objects - becomes `null`. So `$subject` and `$resource` are `null`, not the object.
 * Path splitting is memoised in a FIFO cache of `PATH_CACHE_MAX` (`10_000`) entries, per engine instance when the engine supplies one.
 
 ```ts

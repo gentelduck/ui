@@ -156,7 +156,78 @@ registry.isPrefix(key: string): boolean
 
 ### `getAllCommands()`
 
-Returns a `Map
+Returns a `Map<string, Command>` of all registered commands.
+
+```ts
+registry.getAllCommands(): Map<string, Command>
+```
+
+} className="[&_div]:w-full">
+  Useful for building command palettes:
+
+  ```ts
+  const commands = registry.getAllCommands()
+  for (const [binding, cmd] of commands) {
+    console.log(`${cmd.name}: ${binding}`)
+  }
+  ```
+
+### `clear()`
+
+Removes all registered commands.
+
+```ts
+registry.clear(): void
+```
+
+***
+
+## `KeyHandler`
+
+Listens for keyboard events and dispatches commands from the registry.
+
+### `constructor(registry, timeoutMs?, defaultOptions?)`
+
+```ts
+new KeyHandler(registry: Registry, timeoutMs?: number, defaultOptions?: Partial<KeyBindOptions>)
+```
+
+* `timeoutMs` (default: 600) controls how long the handler waits between keys in a sequence.
+* `defaultOptions` are merged with each binding's options (binding options take precedence).
+
+### `attach(target?)`
+
+Starts listening for `keydown` events on the target.
+
+```ts
+handler.attach(target?: HTMLElement | Document) // defaults to document
+```
+
+### `detach(target?)`
+
+Stops listening.
+
+```ts
+handler.detach(target?: HTMLElement | Document) // defaults to document
+```
+
+***
+
+## Matching flow
+
+When a key is pressed, the KeyHandler follows this process:
+
+Builds a key descriptor from the event.
+
+Appends it to the internal sequence buffer.
+
+Checks for a full match in the registry. If found, executes the command and resets.
+
+Checks for a prefix match. If found, starts the timeout timer.
+
+If no match and no prefix, resets the buffer and retries with just the current key.
+
+If still no match, resets completely.
 
 ***
 

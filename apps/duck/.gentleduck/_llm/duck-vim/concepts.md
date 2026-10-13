@@ -15,7 +15,104 @@ Modifiers appear in alphabetical order: `alt`, `ctrl`, `meta`, `shift`. The key 
 
 | Input | Canonical form |
 | --- | --- |
-| 
+| <Kbd>Ctrl+K</Kbd> | `ctrl+k` |
+| <Kbd>Shift+Alt+P</Kbd> | `alt+shift+p` |
+| <Kbd>Mod+S</Kbd> (on Mac) | `meta+s` |
+| <Kbd>Mod+S</Kbd> (on Windows) | `ctrl+s` |
+| <Kbd>Space</Kbd> | `space` |
+| <Kbd>Escape</Kbd> | `esc` |
+
+}>
+  duck-vim normalizes all bindings to canonical form internally.
+
+***
+
+## Key aliases
+
+Some keys have multiple names. duck-vim normalizes them:
+
+| Alias | Canonical name |
+| --- | --- |
+| ` ` (space character) | `space` |
+| `escape` | `esc` |
+| `control` | `ctrl` |
+| `cmd`, `command` | `meta` |
+| `opt`, `option` | `alt` |
+
+You can use any alias when registering bindings. They all resolve to the same thing.
+
+***
+
+## The Mod key
+
+}>
+  `Mod` is a virtual modifier that resolves based on the current platform. Write `Mod+S` once and it works correctly everywhere.
+
+| Platform | Mod resolves to |
+| --- | --- |
+| macOS | `meta` (<Kbd>Cmd</Kbd>) |
+| Windows | `ctrl` (<Kbd>Ctrl</Kbd>) |
+| Linux | `ctrl` (<Kbd>Ctrl</Kbd>) |
+
+Platform detection happens automatically via `navigator.userAgent`, with a `linux` fallback for SSR environments.
+
+```ts
+import { parseKeyBind } from '@gentleduck/vim/parser'
+
+// On Mac:
+parseKeyBind('Mod+S') // { key: 's', meta: true, ctrl: false, ... }
+
+// On Windows:
+parseKeyBind('Mod+S') // { key: 's', meta: false, ctrl: true, ... }
+```
+
+You can override the platform explicitly:
+
+```ts
+parseKeyBind('Mod+S', 'mac')   // Always resolves to meta+s
+parseKeyBind('Mod+S', 'linux') // Always resolves to ctrl+s
+```
+
+***
+
+## Sequences
+
+A **sequence** is two or more key presses in order, like Vim's <Kbd>g</Kbd> then <Kbd>d</Kbd>. duck-vim supports sequences in two ways:
+
+Registry-based
+SequenceManager
+
+When you register `g+d` in the Registry, the KeyHandler treats `g` and `d` as two separate key presses that must happen within the timeout window.
+
+```ts
+registry.register('g+d', { name: 'Go Dashboard', execute: () => {} })
+```
+
+Internally, `g` is recognized as a **prefix**. When you press <Kbd>g</Kbd>, the handler waits for the next key. If <Kbd>d</Kbd> arrives before the timeout, the command fires. If the timeout expires, the sequence resets.
+
+For more control, use `SequenceManager` directly. Each step can be a full key descriptor:
+
+```ts
+import { SequenceManager } from '@gentleduck/vim/sequence'
+
+const manager = new SequenceManager()
+
+manager.register({
+  steps: [{ binding: 'mod+k' }, { binding: 'mod+d' }],
+  handler: () => console.log('Mod+K then Mod+D'),
+  options: { timeout: 800 },
+})
+
+document.addEventListener('keydown', (e) => manager.handleKeyEvent(e))
+```
+
+This supports modifier+key combinations at each step, not just single characters.
+
+***
+
+## Prefixes
+
+When you register `g+d`, the registry automatically marks `g` as a prefix. The KeyHandler uses this to decide whether to wait for more keys or discard the input.
 
 }>
   The prefix check is instant (a `Set` lookup), so it doesn't add latency to normal typing.

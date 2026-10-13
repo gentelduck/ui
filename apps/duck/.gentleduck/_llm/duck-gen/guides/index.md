@@ -185,7 +185,192 @@ Output:
 
 Duck Gen now generates types that know about:
 
-* `GET /api/users`: returns `ApiResponse
+* `GET /api/users`: returns `ApiResponse<UserDto[], UserMessage>`, accepts `PaginationDto` query.
+* `GET /api/users/:id`: returns `ApiResponse<UserDto, UserMessage>`, accepts `id` param.
+* `POST /api/users`: returns `ApiResponse<UserDto, UserMessage>`, accepts `CreateUserDto` body.
+* `PUT /api/users/:id`: returns `ApiResponse<UserDto, UserMessage>`, accepts `UpdateUserDto` body + `id` param.
+* `DELETE /api/users/:id`: returns `ApiResponse<null, UserMessage>`, accepts `id` param.
+* Message group `users` with keys: `USER_CREATED`, `USER_UPDATED`, etc.
+
+## Step 4: Create the Duck Query client
+
+```ts title="client/api.ts"
+import { createDuckQueryClient } from '@gentleduck/query'
+import type { ApiRoutes } from '@gentleduck/gen/nestjs'
+
+export const api = createDuckQueryClient<ApiRoutes>({
+  baseURL: 'http://localhost:3000',
+  withCredentials: true,
+})
+
+// Add auth token interceptor
+api.axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+```
+
+## Step 5: Make type-safe API calls
+
+```ts title="client/users.ts"
+import { api } from './api'
+
+// List users with pagination
+export async function getUsers(page = 1, limit = 20) {
+  const { data } = await api.get('/api/users', {
+    query: { page, limit, sort: 'name' },
+  })
+  // data: ApiResponse<UserDto[], UserMessage>
+
+  if (data.state === 'success') {
+    return data.data // UserDto[]
+  }
+  throw new Error(data.message)
+}
+
+// Get single user
+export async function getUser(id: string) {
+  const { data } = await api.get('/api/users/:id', {
+    params: { id },
+  })
+  // data: ApiResponse<UserDto, UserMessage>
+
+  if (data.state === 'success') {
+    return data.data // UserDto
+  }
+  return null
+}
+
+// Create user
+export async function createUser(name: string, email: string) {
+  const { data } = await api.post('/api/users', {
+    body: { name, email, role: 'user' },
+    //       ^^^^  ^^^^^  ^^^^
+    //       TypeScript checks these match CreateUserDto
+  })
+  return data
+}
+
+// Update user
+export async function updateUser(id: string, updates: { name?: string; email?: string }) {
+  const { data } = await api.put('/api/users/:id', {
+    params: { id },
+    body: updates,
+  })
+  return data
+}
+
+// Delete user
+export async function deleteUser(id: string) {
+  const { data } = await api.del('/api/users/:id', {
+    params: { id },
+  })
+  return data
+}
+```
+
+Every call above is fully type-checked:
+
+* Paths are validated against generated routes.
+* Body types match your DTOs.
+* Response types match your controller return types.
+* If you misspell a path or pass the wrong body shape, TypeScript catches it immediately.
+
+## Step 6: Add type-safe i18n
+
+Use the generated message types to build translations:
+
+```ts title="client/i18n.ts"
+import type { DuckgenScopedI18nByGroup, DuckGenI18nMessages } from '@gentleduck/gen/nestjs'
+
+type Lang = 'en' | 'ar'
+type I18n = DuckgenScopedI18nByGroup<Lang, DuckGenI18nMessages>
+
+export const i18n: I18n = {
+  en: {
+    server: {
+      UserMessages: {
+        USER_CREATED: 'User created successfully',
+        USER_UPDATED: 'User updated successfully',
+        USER_DELETED: 'User deleted successfully',
+        USER_NOT_FOUND: 'User not found',
+        USER_EMAIL_TAKEN: 'Email is already in use',
+        USER_LIST_SUCCESS: 'Users loaded',
+      },
+    },
+  },
+  ar: {
+    server: {
+      UserMessages: {
+        USER_CREATED: 'تم إنشاء المستخدم بنجاح',
+        USER_UPDATED: 'تم تحديث المستخدم بنجاح',
+        USER_DELETED: 'تم حذف المستخدم بنجاح',
+        USER_NOT_FOUND: 'المستخدم غير موجود',
+        USER_EMAIL_TAKEN: 'البريد الإلكتروني مستخدم بالفعل',
+        USER_LIST_SUCCESS: 'تم تحميل المستخدمين',
+      },
+    },
+  },
+}
+```
+
+If you add a new message key on the server and regenerate, TypeScript will **immediately
+flag** every i18n file that is missing the new key.
+
+## Step 7: Use i18n in your UI
+
+```ts title="client/toast.ts"
+import { toast } from 'sonner'
+import { i18n } from './i18n'
+import type { DuckgenMessageKey } from '@gentleduck/gen/nestjs'
+
+type Lang = 'en' | 'ar'
+
+export function showMessage(lang: Lang, key: DuckgenMessageKey<'users'>) {
+  const text = i18n[lang].server.UserMessages[key]
+  toast.info(text)
+}
+
+export function showError(lang: Lang, key: DuckgenMessageKey<'users'>) {
+  const text = i18n[lang].server.UserMessages[key]
+  toast.error(text)
+}
+```
+
+```ts title="client/users.ts (with i18n)"
+import { api } from './api'
+import { showMessage, showError } from './toast'
+
+export async function createUserWithFeedback(
+  lang: 'en' | 'ar',
+  name: string,
+  email: string,
+) {
+  try {
+    const { data } = await api.post('/api/users', {
+      body: { name, email, role: 'user' },
+    })
+
+    if (data.state === 'success') {
+      showMessage(lang, data.message) // 'USER_CREATED', type-safe
+      return data.data
+    } else {
+      showError(lang, data.message) // 'USER_EMAIL_TAKEN', type-safe
+      return null
+    }
+  } catch {
+    showError(lang, 'USER_NOT_FOUND')
+    return null
+  }
+}
+```
+
+## Summary
+
+Here is the complete flow:
 
 No manual type writing. No drift between server and client. Full type safety from
 database to UI.

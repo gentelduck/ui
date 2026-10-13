@@ -349,7 +349,7 @@ export default function Demo() {
   return (
     <ButtonGroup>
       <Input placeholder="Search..." />
-      <Button aria-label="Search" variant="outline" size="sm">
+      <Button aria-label="Search" variant="outline" size="icon">
         <SearchIcon />
       </Button>
     </ButtonGroup>

@@ -61,7 +61,47 @@ const adapter = new IamDrizzleAdapter({
 const engine = new IamEngine({ adapter })
 ```
 
-`createIamDrizzleAdapter
+`createIamDrizzleAdapter<TConfig>(config)` is the typed factory: it infers `TAction`, `TResource`, `TRole`, and `TScope` from your `IamConfig.IAccessConfig` instead of making you restate them. `iamDrizzleAdapter(config)` is a plain factory around `new` with no inference.
+
+## Options
+
+`IamDrizzle.IConfig<TDb, TType>` is the single constructor argument.
+
+| Option | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `db` | `TDb extends IamDrizzle.AnyDrizzleDb` | required | Your Drizzle instance. Only `select`, `insert`, `update`, `delete` are used: the structural `AnyDrizzleDb` interface, not a union of driver types, so any driver satisfies it. |
+| `tables.policies` | Drizzle table | required | Policy table. Must expose an `id` column. |
+| `tables.roles` | Drizzle table | required | Role table. Must expose an `id` column. |
+| `tables.assignments` | Drizzle table | required | Assignment table. Must expose `subjectId`, `roleId`, `scope`. |
+| `tables.attrs` | Drizzle table | required | Subject-attribute table. Must expose `subjectId` and `data`. |
+| `ops.eq` | `BinaryOperator` | required | Drizzle's `eq`, passed straight through. |
+| `ops.and` | `(...conds) => SQL \| undefined` | required | Drizzle's `and`. |
+| `ops.isNull` | `(col: SQLWrapper) => SQL` | `undefined` | Drizzle's `isNull`. Required only by `updateAssignmentScope` to match a global (unscoped) row: `eq(col, null)` is not `IS NULL` in SQL. Without it the method returns `false` on its first line and the engine falls back to revoke + assign. |
+| `ops.or` | `(...conds) => SQL \| undefined` | `undefined` | Drizzle's `or`. Collapses `revokeRoleMany` into one `DELETE`; without it, one `DELETE` per row. There is no way to synthesise an `OR` builder from `eq` and `and`. |
+| `dialect` | `'pg' \| 'mysql' \| 'sqlite'` | `'pg'` | Which conflict API to use on writes. `'pg'` and `'sqlite'` share one; `'mysql'` takes a different path (see [Upserts](#upserts-and-the-mysql-branch)). |
+| `json` | `'native' \| 'string'` | `'native'` | How payload columns are encoded on write. `'native'` hands plain objects to `jsonb`/`json`; `'string'` runs `JSON.stringify` first, required for SQLite's TEXT columns. The read path accepts both, so switching is migration-safe. |
+| `onPolicyError` | `(err, ctx: { adapter: 'drizzle'; rowId: string }) => void` | `console.warn` | Called for every row dropped on a parse or shape failure, and for a corrupt attribute blob. Without it the adapter logs `[@gentleduck/iam:drizzle] dropped malformed row "<id>": <reason>`. |
+
+Row-shape types are exported too: `IamDrizzle.PolicyRow`, `RoleRow`, `AssignmentRow`, `AttrRow` are the cross-dialect unions, and `Pg`, `Mysql`, `Sqlite` (from the dialect subpaths) are the concrete `$inferSelect` shapes if you are pinned to one database.
+
+### The two optional operators are gates, not decorations
+
+Both omissions are correct but degraded, and silently so, which is why the adapter warns once per process at construction:
+
+```
+[@gentleduck/iam:drizzle] running on a degraded path; ops is missing
+`isNull` - updateAssignmentScope() cannot match an unscoped (NULL) assignment in place and falls back to revoke + assign;
+`or` - revokeRoleMany() issues one DELETE per row instead of one statement.
+Pass them through from drizzle-orm: `ops: { eq, and, isNull, or }`.
+```
+
+The warning set is module-level rather than per-instance, because `withClient` re-runs the constructor for every transaction and a per-instance flag would turn one misconfiguration into one warning per transaction, which is how a startup diagnostic becomes log noise operators filter out.
+
+`ops` takes drizzle's own operator types. That has been true only since `ops.eq` stopped being declared `(col: unknown, val: unknown) => unknown`: under `strictFunctionTypes` an `unknown` *parameter* is the narrowest thing a caller can satisfy, not the widest, so drizzle's real `eq` was not assignable to it and every caller wrote a re-widening wrapper with two casts in it. A `tsc`-checked type test pins the signatures now.
+
+## Storage layout
+
+Four tables. `iam_assignments.role_id` is the only foreign key, and it cascades. Nothing else references anything.
 
 Column types in the diagram are the Postgres ones; the [dialect differences](#the-three-dialects) table lists what MySQL and SQLite use instead. Every delete against these tables is a hard delete: `deletePolicy` and `deleteRole` so a name can be reused, `revokeRole` because a revoked grant has no reason to be retained. There is no `deleted_at` column on any table; one was added in 5.5.0 and removed again in 5.5.1 as unreachable.
 
@@ -108,7 +148,65 @@ All three define the same four tables with the same names and the same column na
 | CHECK constraints | enforced | enforced on MySQL 8.0.16+, parsed and ignored below | enforced |
 | Extra export | `combineAlgorithm` | none | `IAM_COMBINE_ALGORITHMS` |
 
-Every payload column in the SQLite schema is TEXT and typed `$type
+Every payload column in the SQLite schema is TEXT and typed `$type<string>()`. In the default `'native'` mode the adapter hands the driver a live object. The constructor reads `config.json ?? 'native'` without looking at `dialect` or at the tables, `IConfig`'s `json` field is independent of its type parameter, and no test pins the combination, so whatever your SQLite driver does with a non-scalar bind parameter is the whole of the diagnosis you get. Pass `json: 'string'`.
+
+```ts
+const adapter = new IamDrizzleAdapter({
+  dialect: 'sqlite',
+  db,
+  tables: { policies: iamPolicies, roles: iamRoles, assignments: iamAssignments, attrs: iamSubjectAttrs },
+  ops: { eq, and, isNull, or },
+  json: 'string',
+})
+```
+
+`dialect: 'sqlite'` and `dialect: 'pg'` take identical code paths today: every runtime branch in the adapter is a `=== 'mysql'` test. Pass `'sqlite'` anyway; it is what makes the config type match the tables, and it is the field a future divergence would branch on.
+
+### `infinity` is the divergence that matters
+
+Postgres spells "never expires" as `expires_at = 'infinity'`, and node-postgres parses that to a JS number rather than a `Date`. Drizzle's own `timestamp()` maps every driver value through `new Date(...)`, and `new Date('infinity')` is an Invalid Date: indistinguishable from a genuinely corrupt column, which the adapter reads as "bound unreadable, row inactive". A grant written to mean *always* would read back as *expired*: a wrong DENY on the exact value an operator writes to prevent one.
+
+So the pg schema declares a custom column type that keeps `±Infinity` as numbers. The SQL type is unchanged, so this is not a migration, and the comparisons then give all four spellings the right answer with no special case: `now < -Infinity` is false, so a `-infinity` start has always begun; `now >= Infinity` is false, so an `infinity` expiry never lapses. MySQL and SQLite have no infinity value: there, "never expires" is `NULL`, which the same code already handles.
+
+`dialect` and `json` are independent knobs. `dialect` picks the write API (conflict handling); `json` picks the encoding. MySQL uses `dialect: 'mysql'` with `json: 'native'`; SQLite uses `dialect: 'sqlite'` with `json: 'string'`.
+
+## Transactions and consistency
+
+The adapter opens **no transactions of its own**. Every method is one or two statements on the `db` handle you passed. To join a transaction you own, use `withClient` through the engine:
+
+```ts
+let pending
+await db.transaction(async (tx) => {
+  const perms = engine.withTransaction(tx)
+  await perms.admin.assignRole(userId, 'admin', orgId)
+  await tx.insert(members).values({ userId, orgId })
+  pending = perms.pending
+})
+await pending.flush()   // invalidate and broadcast only after the commit
+```
+
+`withClient` re-makes the adapter against the opaque handle, keeping every other config field: `json: 'string'` in particular, or a rebound adapter would write a different encoding into the same columns mid-transaction. It returns a **new** adapter; the original keeps writing to its own client. Reads on the bound view go to the rebound client too, and cache invalidations buffer in `pending` rather than firing inside the transaction, so a rolled-back grant never evicts another node's cache for a write that did not happen.
+
+Within a single statement, what is and is not atomic:
+
+| Operation | Statements | Atomic? |
+| --- | --- | --- |
+| `savePolicy` / `saveRole` / `setSubjectAttributes` on pg/sqlite | one `INSERT … ON CONFLICT DO UPDATE` | yes |
+| the same three on MySQL | `SELECT` then `UPDATE` or `INSERT` | **no**: two round trips |
+| `assignRole` | one insert-or-skip | yes |
+| `revokeRole` | one `DELETE` | yes |
+| `deletePolicy` / `deleteRole` | one `DELETE` (role deletes cascade to assignments) | yes, within the database's FK handling |
+| `getSubjectAttributes` | one `SELECT … LIMIT 1` | n/a |
+| `setSubjectAttributes` | read, merge in JavaScript, upsert | **no**: read-modify-write |
+| `updateAssignmentScope` | `SELECT` source, `SELECT` target, then `DELETE` or `UPDATE` | **no**: up to three statements |
+
+The merge happens in the adapter, not the database: the current bag is read, spread with the patch, and written back whole. Two concurrent merges to the same subject can leave only one of them. Wrap the call in `db.transaction` with row-level locking, or write the patch yourself with `jsonb ||` (Postgres) / `JSON_MERGE_PATCH` (MySQL), if that matters for your workload.
+
+### Upserts and the MySQL branch
+
+MySQL has no `ON CONFLICT` clause. Its `onDuplicateKeyUpdate()` fires on *any* unique-index violation, not just the one you named, so a blanket `onDuplicateKeyUpdate` would let a row with a fresh `id` that collides on some *other* unique index silently overwrite that unrelated row, id included. Postgres and SQLite reject that, because their `onConflictDoUpdate` is scoped to the target column and throws when the conflict is elsewhere.
+
+On the shipped schemas that collision cannot arise: `iam_policies` and `iam_roles` carry a primary key and no other unique index. What the branch protects today is a consumer table that declares a secondary unique index of its own, which `config.tables` allows.
 
 So on MySQL the adapter checks for the row by `id` first and issues a plain `UPDATE` or `INSERT`. A genuine secondary-unique collision then surfaces as a thrown duplicate-entry error from the `INSERT`, matching the fail-closed behaviour of the other two dialects instead of corrupting a neighbouring row. The cost is the extra `SELECT` and the loss of atomicity noted in the table above: two concurrent `saveRole` calls for the same new id can both see nothing and both insert. The primary key rejects the loser, loudly, which is the right failure, but it is a failure a pg or sqlite deployment does not see.
 

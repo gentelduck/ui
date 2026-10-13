@@ -178,7 +178,11 @@ The result is keyed exactly by the batch, one key per entry, in the format each 
 
 Duplicate entries collapse onto the same key, so a batch of ten checks may produce fewer than ten keys.
 
-The static return type depends on engine mode: `production` yields `Record
+The static return type depends on engine mode: `production` yields `Record<string, boolean>`, `development` yields the typed `IamClient.PermissionMap`. That is `AccessControl.ModePermissionMap` at work - see [engine modes](/duck-iam/advanced/engine/modes). The runtime object is identical in both modes.
+
+## Reading a map
+
+Reading goes through `iamPermissionGranted`, which requires the map's own `key` to hold the literal boolean `true`. Nothing validates the map - it is `JSON.parse` output whose type is erased at runtime - so a truthiness test would read `{"read:post": "false"}` as a grant. A check that does not match a key, or matches a key holding anything other than `true`, denies.
 
 Nodes D and G are indistinguishable to the caller. `cannot()` cannot tell "denied by policy" from "never asked", and neither can the map - if you need that distinction, keep the batch list alongside the map, or use [explain traces](/duck-iam/advanced/explain) on the server.
 

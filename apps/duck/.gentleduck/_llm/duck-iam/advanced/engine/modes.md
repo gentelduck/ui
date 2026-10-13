@@ -17,7 +17,60 @@ Production does not run the interpreter and therefore cannot detect a disagreeme
 | `authorize()` returns | `AccessControl.IDecision` | `boolean` |
 | `check()` returns | `AccessControl.IDecision` | `boolean` |
 | `can()` returns | `boolean` | `boolean` |
-| `permissions()` returns | typed `IamClient.PermissionMap` | `Record
+| `permissions()` returns | typed `IamClient.PermissionMap` | `Record<string, boolean>` |
+| `decision.reason` | the interpreter's real reason | `'Allowed/Denied (production mode; compiled table does not retain policy identity)'` |
+| `decision.policy` / `decision.rule` | present | `undefined` |
+| `decision.failure` | `'input'` / `'resolution'` / `'evaluation'` | no object to carry it: use `onError` |
+| `explain()` | works | throws the coded `IAM_ENGINE_EXPLAIN_UNAVAILABLE` |
+| `beforeEvaluate` | fires | fires |
+| `afterEvaluate` / `onDeny` | fire, with the full decision | fire, with a synthesised verdict-only decision |
+| `onError` / `onPolicyError` / `onMetrics` / `onMutation` | fire | fire |
+| `policyCombine: 'first-applicable'` | allowed, but costs the table | refused at construction |
+| Table/interpreter cross-check | on | off |
+| `explain` chunk in the bundle | loaded on first call | never loaded |
+
+`can()` is the constant in both columns: it unwraps whatever the mode produced and always answers `boolean`, which makes it the right choice in shared code that must compile against either mode.
+
+The verdict-only decision is built by the engine **only when `afterEvaluate` or `onDeny` is wired**, so a production install that leaves them unset pays no allocation. Those two used to be development-only, which put a denial log (a production concern if there is one) out of reach exactly where operators need it.
+
+`defaultEffect: 'allow'` throws at construction unless `allowFailOpen: true` is
+also set - in development mode too. The constructor applies the guard
+unconditionally, and even with the opt-in it logs a `console.warn` naming the
+engine as fail-open, so an operator grepping startup logs always finds it.
+
+### Options production refuses
+
+`policyCombine: 'first-applicable'` throws at construction when combined with `mode: 'production'`: the coded `IamError` `IAM_ENGINE_POLICY_COMBINE_INCOMPATIBLE` (`meta: { mode, policyCombine }`) - the production fast path cannot represent it correctly.
+
+`lookup()` folds its votes with `some` for `'allow-overrides'` and `every` for everything else, so first-applicable would arrive there as plain `'and'`. It never learns which policy voted first, or whether a vote was a real decision rather than a default.
+
+The constructor refuses the combination outright in production. In **development** it is legal, and the engine handles it by giving up the compiled table entirely: `_getCompiledTable()` returns `null` for `policyCombine: 'first-applicable'` and the whole combine is handed to the interpreter, which implements real XACML first-applicable. Without that, the one mode where the config is legal would be the one where its semantics is not implemented, and every request the two paths disagreed on would come back `'Evaluation error'`.
+
+### The 32-role cap
+
+The table's RBAC grant mask is a `Uint32Array`, one bit per role. Past 32 roles the bit index would wrap - `1 << 32` is `1 << 0` in JavaScript - and role 33 would silently inherit role 0's grants. `compileTable` throws the coded `IamError` `IAM_ROLE_LIMIT_EXCEEDED` (`meta: { roleCount, limit }`) instead.
+
+Because both modes evaluate through the table, the cap applies to both. It is **not** an error and not a deny: the engine catches that error specifically, warns once, and drops to the interpreter, which answers every question correctly and more slowly. `healthCheck()` then reports it on `compiledTable` with `ok` still `true`, since what was lost is throughput. Full rationale on [the compiled table page](/duck-iam/advanced/engine/compiled).
+
+## Types follow the mode
+
+`mode` is also the fifth type parameter of `IamEngine`, so the return shapes are statically correct when you declare it:
+
+```ts
+const prod = new IamEngine<Action, Resource, Role, Scope, 'production'>({
+  adapter,
+  mode: 'production',
+})
+
+const allowed = await prod.authorize(request) // boolean
+await prod.explain('user-1', 'read', post)    // compile error
+```
+
+The conditional types are `AccessControl.ModeResult<M>` (`boolean` for `'production'`, `AccessControl.IDecision` otherwise) and `AccessControl.ModePermissionMap<M, ...>` (`Record<string, boolean>` versus the typed `IamClient.PermissionMap`). `explain()` declares a `this` parameter pinned to a development-mode engine, which is how calling it on a production engine fails to compile. It also throws at runtime, so a value typed loosely as `IamEngine` still fails safely.
+
+The mismatch runs the other way too, and it is the dangerous direction: `TMode` defaults to `'production'`, and `IConfig.mode` is optional, so naming `'development'` in the type arguments does **not** set it. `new IamEngine<A, R, Ro, S, 'development'>({ adapter })` runs in production, returns a boolean, and types it as `IDecision`: reading `.allowed` off the boolean yields `undefined`, which is falsy, so the mismatch shows up as assertions that quietly pass rather than as a crash. Four E2E suites in this repo were written that way. Always pass `mode` explicitly, and declare the type parameter to match.
+
+## Choosing a mode
 
 The role catalog is not on this tree. Over 32 roles drops both modes to the interpreter, so it changes throughput, not the mode you should pick.
 

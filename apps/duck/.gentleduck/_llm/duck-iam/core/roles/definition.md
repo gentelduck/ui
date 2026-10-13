@@ -78,7 +78,109 @@ Semantics, cycles, and the depth cap are on [role inheritance](/duck-iam/core/ro
 scope(s: TScope): this
 ```
 
-Sets a default scope for **every** permission in the role. At conversion time each generated rule gains a `scope eq "
+Sets a default scope for **every** permission in the role. At conversion time each generated rule gains a `scope eq "<s>"` condition. To scope individual permissions instead, use `grant()`'s third argument or `grantScoped()`. See [scoped roles](/duck-iam/core/roles/scoped).
+
+### grant()
+
+```ts
+grant(action: TAction | '*', resource: TResource | '*', scope?: TScope): this
+```
+
+The base grant. Pushes one `IPermission`. Passing `'*'` for either argument matches every action or every resource - the matcher is described in [rule matching](/duck-iam/core/rule-matching).
+
+```ts
+defineRole('viewer')
+  .grant('read', 'post')            // { action: 'read', resource: 'post' }
+  .grant('update', 'post', 'org-1') // { action: 'update', resource: 'post', scope: 'org-1' }
+```
+
+The `scope` key is omitted from the permission object entirely when no scope is passed - it is not set to `undefined`. Adapters that diff stored JSON see no key at all. `grant()` tests `scope !== undefined` rather than truthiness, so `grant('read', 'post', '')` reaches the validator and throws; it used to take the falsy branch and produce a *global* permission.
+
+### grantScoped()
+
+```ts
+grantScoped(scope: TScope, action: TAction | '*', resource: TResource | '*'): this
+```
+
+Identical to `grant(action, resource, scope)` with the arguments reordered so the scope reads first. Use whichever spelling makes a mixed-scope role easier to scan:
+
+```ts
+const hybrid = defineRole('hybrid')
+  .grant('read', 'post')                     // global
+  .grantScoped('org-1', 'update', 'post')    // org-1 only
+  .grantScoped('org-2', 'create', 'comment') // org-2 only
+  .build()
+```
+
+### grantWhen()
+
+```ts
+grantWhen<R extends TResource | '*'>(
+  action: TAction | '*',
+  resource: R,
+  fn: (w: When<TAction, TResource, TRole, TScope, TContext, R>)
+    => When<TAction, TResource, TRole, TScope, TContext, R>,
+): this
+```
+
+Pushes a permission carrying a condition group. The callback receives a fresh [`When`](/duck-iam/core/policies/conditions) builder and everything added to it is combined with AND (`buildAll()`). The resource literal `R` narrows `w.resourceAttr()` when a typed context declares `resourceAttributes`. Full treatment on [conditional permissions](/duck-iam/core/roles/conditional).
+
+```ts
+defineRole('author')
+  .grant('read', 'post')
+  .grantWhen('update', 'post', (w) => w.isOwner())
+  .build()
+// permissions[1].conditions ===
+//   { all: [{ field: 'resource.attributes.ownerId', operator: 'eq', value: '$subject.id' }] }
+```
+
+`grantWhen()` takes no scope argument. To scope a conditional permission, put the scope on the role with `.scope()`.
+
+### Shorthand grants
+
+| Method | Signature | Expands to |
+| --- | --- | --- |
+| `grantAll` | `grantAll(resource: TResource \| '*'): this` | `grant('*', resource)` - every action on that resource. `grantAll('*')` is unrestricted access. |
+| `grantRead` | `grantRead(...resources: ('read' extends TAction ? TResource \| '*' : never)[]): this` | One `grant('read', r)` per argument. |
+| `grantCRUD` | `grantCRUD(resource: IamCrudAction extends TAction ? TResource \| '*' : never): this` | Four grants in this order: `create`, `read`, `update`, `delete`. |
+
+```ts
+defineRole('super-admin').grantAll('*').build()
+// permissions === [{ action: '*', resource: '*' }]
+
+defineRole('auditor').grantRead('post', 'comment', 'user', 'audit-log').build()
+// four permissions, all action 'read'
+
+defineRole('content-manager').grantCRUD('post').build()
+// permissions.map(p => p.action) === ['create', 'read', 'update', 'delete']
+```
+
+`grantCRUD()` is deliberately narrower than `grantAll()`: it does not cover custom actions such as `publish` or `archive`.
+
+Both emit the literal strings `'read'`, `'create'`, `'update'`, `'delete'`, so their parameter types collapse to `never` when those strings are not in your declared `actions`. Under `actions: ['view'] as const`, `grantCRUD('post')` is a compile error at the call site rather than four stored permissions naming actions no request can carry. Export `IAM_CRUD_ACTIONS` and spell your action list as `[...IAM_CRUD_ACTIONS, 'publish']` to keep `grantCRUD` callable.
+
+### build()
+
+```ts
+build(): AccessControl.IRole<TAction, TResource, TRole, TScope>
+```
+
+Assembles the role and runs `validateRole()` on it before returning (since 2.2.0), so a structurally broken role fails where it was written rather than inside an adapter write. On failure it throws the coded `IamError` `IAM_VALIDATION_FAILED` (`meta: { kind: 'role', issues: string[] }`), the same throw path every builder's `.build()` shares (`throwIamValidationFailed`). Each entry of `meta.issues` is one failing issue formatted as `` `${code} at "${path}": ${message}` ``:
+
+```txt
+MISSING_FIELD at "id": Role must have a non-empty string "id"
+```
+
+`meta.issues` does not carry the role's own `id`, so read it off the object you passed. `validateRole()` reads `id`, `scope`, `permissions` and `inherits`:
+
+| Code | Raised when |
+| --- | --- |
+| `MISSING_FIELD` | `id` is not a non-empty string, `permissions` is not an array, or a permission is missing `action` or `resource`. |
+| `INVALID_TYPE` | The role is not a plain object, `inherits` is present but not an array of strings, or a `scope` is `''` at either the role or the permission level. Control characters in an `id`, `action` or `resource` are rejected here too - NUL is the redis assignment member separator, so a role carrying one stored fine and then threw on `assignRole`. |
+
+It never reads `name`, and it accepts unknown keys on a role or a permission, so a misspelled `scope` or `conditions` on a permission validates clean and the grant is not the one you wrote.
+
+Cross-role problems - duplicate IDs, dangling `inherits`, cycles, chains deeper than 32 - are **not** checked here. Run `validateRoles(roles)` over the whole set before deploying; see [type-safe roles](/duck-iam/core/roles/type-safe#validating-a-role-set) and [validation](/duck-iam/advanced/validation).
 
 `V` is automatic; `VR` is not. `engine.admin.saveRole()` re-runs `validateRole()` on the write path, so a role assembled by hand rather than by the builder is still checked before it reaches storage.
 

@@ -104,7 +104,40 @@ export namespace IamAdapter {
 
 ### Policy store
 
-`savePolicy` and `saveRole` are upserts and the engine relies on that: `admin.import({ mode: 'merge' })` is a loop of saves. Do not enforce uniqueness on `name`, the engine keys everything on `id`. Reads receive `IReadOptions`; the engine wraps each read in `adapterTimeoutMs` (default 5000, `0` disables) and rejects with `[@gentleduck/iam:engine] 
+`savePolicy` and `saveRole` are upserts and the engine relies on that: `admin.import({ mode: 'merge' })` is a loop of saves. Do not enforce uniqueness on `name`, the engine keys everything on `id`. Reads receive `IReadOptions`; the engine wraps each read in `adapterTimeoutMs` (default 5000, `0` disables) and rejects with `[@gentleduck/iam:engine] <label> timed out after Nms` if the promise is still pending. Forward `opts.signal` to your driver when it accepts one so the underlying request is actually cancelled instead of leaking.
+
+The engine also refuses result sets over `maxPolicies` / `maxRoles` (both default `10_000`) so a runaway table cannot exhaust memory; if you expect more than that, raise the caps in the engine config rather than paginating inside the adapter.
+
+### Role store
+
+Identical semantics to the policy store, with one addition: `deleteRole` must take the grants with it. Keeping the orphan is not the harmless option - it still reads as a grant, and a role later recreated under the reused id hands it back to everyone who once held it, with nobody granting anything.
+
+### Subject store
+
+The scoped/unscoped split is the contract most custom adapters get wrong. The engine calls `getSubjectRoles` for global roles and `getSubjectScopedRoles` for scoped ones, and merges them itself; if `getSubjectRoles` also returns the scoped roles, a role granted only for `org-1` leaks into every scope.
+
+```ts
+// Correct
+await adapter.assignRole('alice', 'admin', 'org-1')
+await adapter.assignRole('alice', 'viewer')
+await adapter.getSubjectRoles('alice')        // ['viewer']
+await adapter.getSubjectScopedRoles('alice')  // [{ role: 'admin', scope: 'org-1' }]
+```
+
+`setSubjectAttributes` merges. The built-ins implement it as a read-then-spread and do not wrap that in a transaction, so two concurrent merges to the same subject can lose one of them; use an atomic update in your backend if that matters to you (a MongoDB `$set`, a DynamoDB `UpdateExpression`, a SQL `jsonb ||`).
+
+### Guards the sketches below elide
+
+Four refusals are contract, and the compliance suite asserts the exact `IamError` code of several of them (`.rejects.toThrow('CODE')` - `.message` on an `IamError` is always the bare code). The built-ins get them from shared helpers in `src/shared/`; those are not on the exports map, so an out-of-tree adapter reimplements them and has to throw the same codes.
+
+* **An unstored role.** `assignRole` refuses a `roleId` the store does not hold: `IAM_ROLE_NOT_FOUND` (`meta: { adapter }`). `meta` deliberately does not carry the role id, because it reaches operator logs.
+* **`scope: ''`.** Refused on assign *and* on revoke: `IAM_SCOPE_INVALID` (`meta: { adapter, reason: 'empty' }`). Every encoding spells "no scope" as an empty tail, so an empty scope decodes as a global grant - strictly more power than was granted.
+* **`scope: '*'`.** Refused on a grant, accepted on a lookup: `IAM_SCOPE_INVALID` (`meta: { adapter, reason: 'wildcard-on-grant' }`) for the grant case. A scoped assignment matches literally, so a grant stored at `'*'` answers only a request whose own scope is the two-character string `"*"` - while reporting success. Lookups stay open so an operator can delete rows written before the guard existed.
+* **An option you cannot store.** `assignRole(..., { expiresAt })` on a store with no expiry column throws `IAM_ASSIGN_OPTIONS_UNSUPPORTED` (`meta: { adapter, fields: string[] }`), naming every unsupported field passed. `actor` is the one exception: dropping it changes no future decision, because the engine emits it on the mutation event either way.
+
+## What the engine calls, and when
+
+The engine never touches your adapter directly from `can()` unless the subject or policy set is not cached; a cold evaluation looks like this.
 
 Concurrent cold calls for the same subject (or for the policy set) are collapsed into one adapter call: the engine keeps an in-flight map, so a burst of 500 requests for a fresh subject produces one `getSubjectRoles`, not 500. `maxConcurrentSubjectLoads` (default `512`; `0` restores unbounded) caps how many distinct subjects may be loading at once; past the cap a new load is rejected with an error containing `subject load shed`, which surfaces through the fail-closed `onError` path.
 
@@ -307,7 +340,7 @@ export class MongoAdapter implements IamAdapter.IAdapter {
   }
   async setSubjectAttributes(subjectId: string, attrs: IamPrimitives.Attributes): Promise<void> {
     const $set: Record<string, unknown> = {}
-    for (const [k, v] of Object.entries(attrs)) <MathMl mathml="<span class=&quot;katex&quot;><span class=&quot;katex-mathml&quot;><math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;><semantics><mrow><mi>s</mi><mi>e</mi><mi>t</mi><mo stretchy=&quot;false&quot;>[</mo><mi mathvariant=&quot;normal&quot;>‘</mi><mi>d</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi mathvariant=&quot;normal&quot;>.</mi></mrow><annotation encoding=&quot;application/x-tex&quot;>set[`data.</annotation></semantics></math></span><span class=&quot;katex-html&quot; aria-hidden=&quot;true&quot;><span class=&quot;base&quot;><span class=&quot;strut&quot; style=&quot;height:1em;vertical-align:-0.25em;&quot;></span><span class=&quot;mord mathnormal&quot;>se</span><span class=&quot;mord mathnormal&quot;>t</span><span class=&quot;mopen&quot;>[</span><span class=&quot;mord&quot;>‘</span><span class=&quot;mord mathnormal&quot;>d</span><span class=&quot;mord mathnormal&quot;>a</span><span class=&quot;mord mathnormal&quot;>t</span><span class=&quot;mord mathnormal&quot;>a</span><span class=&quot;mord&quot;>.</span></span></span></span>"/>{k}`] = v
+    for (const [k, v] of Object.entries(attrs)) $set[`data.${k}`] = v
     await this.db.collection('iam_subject_attrs').updateOne({ subjectId }, { $set }, { upsert: true })
   }
 }

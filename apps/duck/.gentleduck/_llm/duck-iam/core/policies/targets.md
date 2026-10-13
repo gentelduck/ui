@@ -4,7 +4,57 @@ Targets scope a whole policy to specific actions, resources, or roles. A request
 
 A policy whose targets do not match the request is **NotApplicable**: the engine skips it in the cross-policy combine instead of counting it as a `defaultEffect` vote (since 2.0.0). Three worked cases:
 
-`SKIP1` and `SKIP2` are skipped by every `policyCombine` mode; only `EVAL` runs the combining algorithm. The `IDecision` for a skipped policy carries `applicable: false` and the reason `Policy "
+`SKIP1` and `SKIP2` are skipped by every `policyCombine` mode; only `EVAL` runs the combining algorithm. The `IDecision` for a skipped policy carries `applicable: false` and the reason `Policy "<id>" targets do not match. Not applicable.`
+
+## Setting targets
+
+```ts
+import { definePolicy } from '@gentleduck/iam'
+
+const adminPolicy = definePolicy('admin-only')
+  .name('Admin-Only Policy')
+  .target({ roles: ['admin', 'super-admin'] })
+  .algorithm('deny-overrides')
+  .rule('allow-admin-all', (r) => r.allow().on('*').of('*'))
+  .build()
+// Evaluated only for subjects whose effective roles include admin or super-admin.
+```
+
+```ts
+const writePolicy = definePolicy('write-restrictions')
+  .name('Write Restrictions')
+  .target({
+    actions: ['create', 'update', 'delete'],
+    resources: ['post', 'comment'],
+  })
+  .algorithm('deny-overrides')
+  .rule('business-hours', (r) =>
+    r
+      .deny()
+      .on('*')
+      .of('*')
+      .when((w) => w.or((o) => o.env('hour', 'lt', 9).env('hour', 'gte', 17))),
+  )
+  .rule('allow-otherwise', (r) => r.allow().on('*').of('*'))
+  .build()
+// Applies only to writes on posts and comments; reads and other resources are untouched.
+```
+
+The `allow-otherwise` rule matters: without it, a write inside business hours would match the targets, match no rule, and fold `defaultEffect` (`deny`) into the decision. See "Target matched, no rule matched" below.
+
+## Target fields
+
+| Field | Type | Match rule |
+| --- | --- | --- |
+| `actions` | `readonly (TAction \| '*')[]` | At least one entry matches `request.action` via the action matcher (`'*'`, exact, or `prefix:*`) |
+| `resources` | `readonly (TResource \| '*')[]` | At least one entry matches `request.resource.type` via `matchesResource` (`'*'`, exact, `prefix:*`, `prefix.*`) |
+| `roles` | `readonly TRole[]` | At least one entry is present in `subject.roles` (exact string membership, no wildcard) |
+
+Every field is optional; an omitted or empty field constrains nothing. Set fields combine with AND. `target()` replaces the whole object on each call.
+
+## How the applicability decision is made
+
+The engine runs two checks before any rule condition is evaluated. Both can make the policy NotApplicable.
 
 * `ACT`, `RES`, `ROLE` are the target dimensions (`policyApplies` in `src/core/evaluate/evaluate.libs.ts`).
 * `SHAPE` is the rule-shape check: a policy about `update` has nothing to say about `read` even when its targets are silent, so it abstains instead of voting `defaultEffect` (`evaluatePolicy` in `src/core/evaluate/evaluate.ts`). The reason string is `Policy "<id>" has no rule for this action/resource. Not applicable.`

@@ -50,7 +50,7 @@ Date picking is a composition problem, not a component problem. A date picker is
 
 ## Installation
 
-The Date Picker is built using a composition of the `` and the `` components.
+The Date Picker is built using a composition of the `<Popover />` and the `<Calendar />` components.
 
 See installation instructions for the [Popover](/duck-ui/components/popover#installation) and the [Calendar](/duck-ui/components/calendar#installation) components.
 

@@ -91,7 +91,9 @@ export default function Demo() {
 
 ## Philosophy
 
-HTML tables are semantically powerful but visually bland. Our Table components add consistent styling while preserving the native table structure  -  `
+HTML tables are semantically powerful but visually bland. Our Table components add consistent styling while preserving the native table structure  -  `<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, `<td>`  -  because screen readers depend on these elements for data navigation. For interactive features like sorting and filtering, see Data Table.
+
+## How It's Built
 
 ## Installation
 
@@ -152,7 +154,7 @@ import {
 
 ### Data Table
 
-You can use the `` component to build more complex data tables. Combine it with
+You can use the `<Table />` component to build more complex data tables. Combine it with
 [TanStack Table](https://tanstack.com/table) to add sorting, filtering, and pagination.
 
 See the [Data Table](/duck-ui/components/data-table) documentation for a full guide.

@@ -29,7 +29,169 @@ Step by step, from `src/core/rbac/rbac.ts`:
 
 1. **Index.** Every role goes into a `Map` keyed by `id`, so `inherits` lookups are constant time.
 2. **Flatten** (`FLAT`, `ORDER`). `collectPermissions(roleId)` walks the `inherits` graph and returns `[...inherited, ...own]` as `{ owner, perm }` pairs - the role that declared each permission travels with it, which is what makes a declared scope belong to the declarer. The memo records the shallowest depth each role was reached at, so cycles terminate and a diamond contributes once. Past depth 32 the walk returns an empty list. See [role inheritance](/duck-iam/core/roles/inheritance).
-3. **Build the base conditions** (`COND`). Always `subject.roles contains "
+3. **Build the base conditions** (`COND`). Always `subject.roles contains "<roleId>"`. Then `scope eq "<effectiveScope>"` where `effectiveScope` is `perm.scope ?? owner.scope`, unless it is `undefined` or `'*'`. Under `scopeMode: 'hierarchical'` that one condition becomes `{ any: [scope eq S, scope starts_with "S."] }` so a declared scope covers its descendants - without that arm, an *assignment* at `org-1` reached `org-1.team-a` while an identical role-declared `scope: 'org-1'` did not, and one engine flag meant two different things.
+4. **Nest the permission's own conditions** (`NEST`). A permission with no `conditions` gets `{ all: [...base] }`. One that has them gets `{ all: [{ all: [...base] }, perm.conditions] }` - the author's group is passed through **whole**, never enumerated, and the base conditions get their own `all` wrapper so the author's group always sits one level down whatever its key is. Both details fixed silent bugs; see below.
+5. **Emit the rule** (`RULE`). `effect: 'allow'`, `priority: 10`, `actions: [perm.action]`, `resources: [perm.resource]`, and an `id` from a monotonic counter. The description is `"<role.name>: <action> on <resource>"`, with `" (via <owner.name>)"` appended when the permission was inherited. The `"<role.name>: "` prefix identifies the holder and is filtered on, so the inherited-from note goes after it.
+6. **Wrap** (`WRAP`). One policy, `algorithm: 'allow-overrides'`, no `targets`, no `version`.
+
+Two things about step 4 that each closed a silent bug. Enumerating `any`/`none` by hand and falling through to `[]` for anything else dropped an unrecognised group - a typo'd key, a hand-edited row - and a conditional grant silently became unconditional; passing the group through whole lets the shared `evalConditionGroup` read an unknown group as `false`, so it fails closed instead. And splicing an `all` body in-line was depth-neutral while `any`/`none` had to be nested, so the identical condition tree crossed `MAX_CONDITION_DEPTH` in one shape and not the other - and the deeper shape then failed closed with no validation error, which for allow-only role permissions is a silent denial. The constant `IAM_RBAC_CONDITION_DEPTH = 1` is the depth at which a permission's own group starts because of that wrapper; anything evaluating a permission's conditions outside the generated policy must start there, not at `0`.
+
+The counter is per call and resets on each invocation, so the same input always produces the same id sequence - pinned by the test "produces identical id sequence for identical input on repeated calls".
+
+## A real dump
+
+Three roles, one plain, one inheriting with a conditional grant, one scoped:
+
+```ts
+import { defineRole, rolesToPolicy } from '@gentleduck/iam'
+
+const viewer = defineRole('viewer')
+  .name('Viewer')
+  .desc('Read-only access to published content')
+  .grant('read', 'post')
+  .grant('read', 'comment')
+  .build()
+
+const author = defineRole('author')
+  .name('Author')
+  .inherits('viewer')
+  .grant('create', 'post')
+  .grantWhen('update', 'post', (w) => w.isOwner())
+  .build()
+
+const orgEditor = defineRole('org-editor').name('Org Editor').scope('org-1').grant('publish', 'post').build()
+
+console.log(JSON.stringify(rolesToPolicy([viewer, author, orgEditor]), null, 2))
+```
+
+Actual output:
+
+```json
+{
+  "id": "__rbac__",
+  "name": "RBAC Policies",
+  "description": "Auto-generated from role definitions",
+  "algorithm": "allow-overrides",
+  "rules": [
+    {
+      "id": "__rbac__#0",
+      "effect": "allow",
+      "description": "Viewer: read on post",
+      "priority": 10,
+      "actions": ["read"],
+      "resources": ["post"],
+      "conditions": {
+        "all": [{ "field": "subject.roles", "operator": "contains", "value": "viewer" }]
+      }
+    },
+    {
+      "id": "__rbac__#1",
+      "effect": "allow",
+      "description": "Viewer: read on comment",
+      "priority": 10,
+      "actions": ["read"],
+      "resources": ["comment"],
+      "conditions": {
+        "all": [{ "field": "subject.roles", "operator": "contains", "value": "viewer" }]
+      }
+    },
+    {
+      "id": "__rbac__#2",
+      "effect": "allow",
+      "description": "Author: read on post (via Viewer)",
+      "priority": 10,
+      "actions": ["read"],
+      "resources": ["post"],
+      "conditions": {
+        "all": [{ "field": "subject.roles", "operator": "contains", "value": "author" }]
+      }
+    },
+    {
+      "id": "__rbac__#3",
+      "effect": "allow",
+      "description": "Author: read on comment (via Viewer)",
+      "priority": 10,
+      "actions": ["read"],
+      "resources": ["comment"],
+      "conditions": {
+        "all": [{ "field": "subject.roles", "operator": "contains", "value": "author" }]
+      }
+    },
+    {
+      "id": "__rbac__#4",
+      "effect": "allow",
+      "description": "Author: create on post",
+      "priority": 10,
+      "actions": ["create"],
+      "resources": ["post"],
+      "conditions": {
+        "all": [{ "field": "subject.roles", "operator": "contains", "value": "author" }]
+      }
+    },
+    {
+      "id": "__rbac__#5",
+      "effect": "allow",
+      "description": "Author: update on post",
+      "priority": 10,
+      "actions": ["update"],
+      "resources": ["post"],
+      "conditions": {
+        "all": [
+          { "all": [{ "field": "subject.roles", "operator": "contains", "value": "author" }] },
+          { "all": [{ "field": "resource.attributes.ownerId", "operator": "eq", "value": "$subject.id" }] }
+        ]
+      }
+    },
+    {
+      "id": "__rbac__#6",
+      "effect": "allow",
+      "description": "Org Editor: publish on post",
+      "priority": 10,
+      "actions": ["publish"],
+      "resources": ["post"],
+      "conditions": {
+        "all": [
+          { "field": "subject.roles", "operator": "contains", "value": "org-editor" },
+          { "field": "scope", "operator": "eq", "value": "org-1" }
+        ]
+      }
+    }
+  ]
+}
+```
+
+Four things to read out of it:
+
+* **`#2` and `#3` are `viewer`'s permissions re-emitted under `author`.** Flattening copies, it does not chain: each role's effective permission set is independently checkable in one pass, with no inheritance walk at evaluation time. `(via Viewer)` names the declaring role.
+* **`#5` nests the `grantWhen()` group beside the base group** rather than splicing it flat, so the author's group sits at a fixed depth whatever its key is.
+* **`#6` carries the role's scope** as `scope eq "org-1"`. Nothing distinguishes a role-level from a permission-level scope in the output; `perm.scope ?? owner.scope` collapses both. Because `owner` is the *declaring* role, `#2` and `#3` would stay unscoped even if `author` declared a scope.
+* **Keys that are `undefined` on the source role are absent from the JSON.** `metadata` never reaches the policy at all - it is not copied onto rules.
+
+## Rule ids are opaque
+
+Since 2.0.0 the rule id is `__rbac__#<N>` where `N` is a monotonic counter over the whole conversion. The previous format interpolated role, action, and resource names, which produced ambiguous ids whenever any segment contained a `.`.
+
+Adapter ETags and external caches key on `rule.id`, so the shape is locked by a test, but the number carries no meaning: it is not stable across a change to the role set, and nothing about the role, action, or resource can be recovered from it. Use `rule.description` (`"<role name>: <action> on <resource>"`) when you need to attribute a rule to a role in tooling or an audit log. A role with a dotted id such as `org.admin` still gets unique rule ids - pinned by the test "emits unique ids even when role / action / resource names contain dots".
+
+## Why allow-overrides
+
+`allow-overrides` means any matching allow rule decides the policy. That is the RBAC contract: holding more roles can only widen access, never narrow it, and a subject with two roles gets the union of their permissions rather than the intersection.
+
+```ts
+await engine.admin.assignRole('u-1', 'viewer')
+await engine.admin.assignRole('u-1', 'commenter')
+// either role granting the action is enough
+```
+
+Restriction lives outside `__rbac__`. Under the default `policyCombine: 'and'`, a deny from any applicable policy is final, so a deny rule in one of your own policies overrides every allow the RBAC policy produced. See [combining algorithms](/duck-iam/core/policies/combining-algorithms) and [cross-policy combining](/duck-iam/core/cross-policy).
+
+## Where the engine calls it
+
+The converted policy is cached, deep-frozen, and merged with your own policies:
+
+* `loadRbacPolicy()` builds it once per cache generation, single-flighted so a cold start under concurrency runs one conversion rather than N.
+* `loadAllPolicies()` returns `[rbacPolicy, ...yourPolicies]` - the RBAC policy first. When it has **no rules** it is omitted entirely, so an installation with no roles pays nothing for it.
+* The compiled lookup table is built from the roles directly rather than from a pre-merged `__rbac__` policy, and it produces the verdict in **both** modes. Development additionally runs the interpreter over the merged policy set, because the table cannot explain itself. See [engine modes](/duck-iam/advanced/engine/modes).
 
 `Q` is the empty-role-set shortcut, `FIRST` is why `__rbac__` appears at the head of an [explain trace](/duck-iam/advanced/explain), and `INV` is the only path that rebuilds the conversion.
 

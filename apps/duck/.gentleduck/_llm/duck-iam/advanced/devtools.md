@@ -11,7 +11,32 @@ engine. Conflating them produces a panel of unstyled boxes, or a package that wi
 | | `@gentleduck/iam/dt` (v1) | `@gentleduck/iam/dt/v2` |
 |---|---|---|
 | Runtime deps | React only | React, `@gentleduck/registry-ui`, `@gentleduck/libs`, `lucide-react`: all optional peers |
-| Styling | one `
+| Styling | one `<style>` tag it injects itself | Tailwind v4 utilities on the host's theme |
+| Class names | `iam-dt-*`, owned by `lib/styles.ts` | duck-ui components plus Tailwind utilities |
+| Colour source | `--iam-dt-*` tokens it declares itself | host tokens (`--card`, `--border`, `--primary`, …) |
+| Host build requirements | none | Tailwind v4 configured to scan the shipped build |
+| Theme | own palette, `theme="auto" \| "dark" \| "light"` | inherits the host's; no `theme` prop |
+| Looks like | itself, in every app | the app it is docked into |
+| Root marker | `.iam-dt` class | `data-iam-dt-v2` attribute |
+
+Pick **v1** when the host is not already a duck-ui app: it renders identically with nothing
+installed and nothing configured, and a consumer with neither peer still gets a working
+panel. Pick **v2** when the host *is* a duck-ui (or any shadcn-token) app on Tailwind v4 and
+you want the devtool to inherit its theme, radius, font and dark mode rather than sitting in
+the page as a foreign window. v2 needs one line in the host stylesheet, relative to that
+stylesheet's location:
+
+```css
+@source "../node_modules/@gentleduck/iam/dist/dt/v2";
+```
+
+Without it every utility class in v2 names a rule nobody generated. The exports mirror v1's
+with a `V2` suffix (`IamDevtoolsV2`, and so on) and `IIamDevtoolsV2Props` is v1's props
+minus `theme` and `inset`.
+
+**The rest of this page documents v1.**
+
+## Install and mount
 
 v1 needs `react` and nothing else. It does not import `@gentleduck/registry-ui`,
 `@gentleduck/libs` or `lucide-react`, and a lint sweep over `src/dt` fails the build if a
@@ -137,7 +162,59 @@ signal:
 | `metrics` | `IamIDevtoolsMetrics` | — | Aggregator with `snapshot()` and `reset()`. Without it, the Metrics panel shows cache stats only. |
 | `flow` | `IamIFlowRecorder` | — | Recorder backing the Flow panel. Without it, the Flow tab shows a wiring hint. |
 | `initialPanel` | `IamPanelKey` | `'flow'` | Which tab opens first: `flow`, `decision`, `policies`, `roles`, `subjects`, `metrics`. |
-| `defaultRequest` | `Partial
+| `defaultRequest` | `Partial<IamIDecisionInput>` | — | Pre-fills the Decision panel's form. |
+| `pollMs` | `number` | `1000` | Metrics polling interval, in milliseconds. |
+| `embedded` | `boolean` | `false` | Drop the rounded border and background so the panel fills its own container. |
+| `theme` | `IamDevtoolsTheme` | `'auto'` | Pins v1's own palette: `'auto'`, `'dark'` or `'light'`. `'auto'` follows the viewer's `prefers-color-scheme`; the other two stamp `data-iam-dt-theme` on the root. Not a host-theme hook: v1 has its own palette. v2 has no such prop. |
+
+### `IIamDevtoolsProps` (chrome, `IamDevtools` only)
+
+| Prop | Type | Default | Meaning |
+|---|---|---|---|
+| `initialIsOpen` | `boolean` | `false` | Open state on first mount, before any persisted value. |
+| `buttonPosition` | `ButtonPosition` | `'bottom-right'` | `bottom-right`, `bottom-left`, `top-right`, `top-left`, or `relative`. `relative` suppresses the floating launcher. |
+| `position` | `PanelPosition` | `'bottom'` | Dock edge: `top`, `bottom`, `left`, `right`. Passing it also pins the value, overriding whatever the user last chose. |
+| `hideButton` | `boolean` | `false` | Hide the launcher and drive `open` from your own UI. |
+| `storagePrefix` | `string` | `'__GENTLEDUCK_IAM_DEVTOOLS_V1'` | `localStorage` namespace for the persisted state. Set it when two panels share a page, or they fight over the same keys. v2 defaults to `'__GENTLEDUCK_IAM_DEVTOOLS_V2'`. |
+| `inset` | `number` | `0` | Floating gutter in px. `0` sits flush against the edge and drops the outer border on that side; any positive value rounds the corners. |
+
+```tsx
+<IamDevtools
+  engine={engine}
+  metrics={metrics}
+  flow={flow}
+  buttonPosition="top-right"
+  position="right"
+  inset={12}
+  initialPanel="decision"
+  defaultRequest={{ subjectId: 'u-1', action: 'read', resourceType: 'post' }}
+  pollMs={500}
+  storagePrefix="myapp-iam-dt"
+/>
+```
+
+Three keys are persisted to `localStorage` under the prefix (`_OPEN`, `_SIZE`, and
+`_POSITION`) and every read and write is wrapped in a `try` so a blocked or full storage
+degrades to the defaults rather than throwing.
+
+The panel is resizable by dragging its inner edge: minimum 220 px, maximum 90% of the
+viewport along the drag axis, default 500. The header's dock button cycles
+`bottom -> right -> top -> left`.
+
+### Styling is self-contained
+
+Styles are injected once, on mount, into a `__iam_dt_styles__` `<style>` element. That
+sheet is the whole visual layer: every class the components emit is an `iam-dt-*` class
+declared in it, and every colour is a `--iam-dt-*` custom property the sheet declares
+itself.
+
+v1 reads **no** host CSS variable and emits **no** Tailwind utility, deliberately; it has
+to render identically in an app that has neither. A lint sweep over `src/dt` (skipping
+`v2/`) fails on a `var(--…)` that is not `--iam-dt-*`, and on an `iam-dt-*` class a
+component emits that has no rule in the shipped sheet. So the panel does not follow your
+theme; it brings its own, and the `theme` prop is how you steer it.
+
+## Panels and the data each reads
 
 Two panels write. Subjects mutates the store through `engine.admin`, and Metrics' reset
 button clears the running engine's real counters through `engine.stats.reset()`, which is

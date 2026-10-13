@@ -46,7 +46,52 @@ const adapter = new IamRedisAdapter({ client: Redis.fromEnv(), keyPrefix: 'iam:'
 
 ## Options
 
-`IamRedis.IConfig
+`IamRedis.IConfig<TClient>` is the single constructor argument.
+
+| Option | Type | Default | Meaning |
+| --- | --- | --- | --- |
+| `client` | `TClient extends IamRedis.ILike` | required | Any client exposing the twelve commands below. Not typed against ioredis or node-redis specifically, so a shim or a test double works. |
+| `keyPrefix` | `string` | `''` | Prepended verbatim to every key. Include your own separator: `'iam:'` gives `iam:policies`, `'iam'` gives `iampolicies`. Glob metacharacters are escaped where the prefix meets a pattern; see [`deleteRole` and the sweep](#deleterole-and-the-sweep). |
+| `onPolicyError` | `(err, ctx: { adapter: 'redis'; rowId: string }) => void` | `console.warn` | Called for every row dropped on a parse or shape failure, for a corrupt attribute blob, for a `deleteRole` that could not sweep, and for a failed legacy migration. |
+| `migrateLegacyAssignments` | `boolean` | `false` | Rewrite space-separated assignment members into the NUL encoding on read. Off by default and should usually stay off - see [Legacy assignment encoding](#legacy-assignment-encoding). |
+
+### The client interface
+
+```ts
+export namespace IamRedis {
+  export interface ILike {
+    get(key: string): Promise<string | null>
+    set(key: string, value: string): Promise<unknown>
+    del(...keys: string[]): Promise<number>
+    hset(key: string, field: string, value: string): Promise<number>
+    hget(key: string, field: string): Promise<string | null>
+    hdel(key: string, ...fields: string[]): Promise<number>
+    hkeys(key: string): Promise<string[]>
+    hvals(key: string): Promise<string[]>
+    hgetall(key: string): Promise<Record<string, string>>
+    sadd(key: string, ...members: string[]): Promise<number>
+    srem(key: string, ...members: string[]): Promise<number>
+    smembers(key: string): Promise<string[]>
+    /** Optional Lua EVAL for a cross-process atomic legacy migration; ioredis positional shape. */
+    eval?(script: string, numkeys: number, ...keysAndArgs: string[]): Promise<unknown>
+    /** Optional. Without it `deleteRole` cannot enumerate the assignment sets and does not cascade. */
+    keys?(pattern: string): Promise<string[]>
+  }
+}
+```
+
+Twelve required methods and two optional. `eval` buys cross-process atomicity for the [legacy migration](#legacy-assignment-encoding); `keys` is what makes `deleteRole` cascade. Both ioredis and node-redis v4+ expose both. `SCAN` is not used in place of `keys` because its cursor and options differ between the two clients, while `keys(pattern)` is spelled identically on both.
+
+## Key layout
+
+Four key shapes. `${p}` is `keyPrefix`.
+
+| Key | Type | Field / member | Value |
+| --- | --- | --- | --- |
+| `${p}policies` | Hash | policy `id` | `JSON.stringify(policy)`: the whole `AccessControl.IPolicy` |
+| `${p}roles` | Hash | role `id` | `JSON.stringify(role)`: the whole `AccessControl.IRole` |
+| `${p}assignments:${subjectId}` | Set | `roleId` + `0x00` + `scope` (scope is the empty string when unscoped) | n/a, the member *is* the data |
+| `${p}attrs:${subjectId}` | String | n/a | `JSON.stringify(attributes)` |
 
 The two global keys grow with the size of your policy and role set; the per-subject keys grow with your user count, two keys each. Nothing is ever expired by the adapter (no `EXPIRE` is issued on any key), so persistence is entirely your Redis configuration's problem. Turn on AOF or RDB snapshots if you do not want the store to vanish on restart.
 
@@ -76,7 +121,15 @@ The prefix is escaped before it reaches that pattern: `globLiteral` backslash-es
 
 Escaping cannot help with a literal overlap, though. With `keyPrefix: 'iam:'` the sweep pattern is `iam:assignments:*`, whose trailing `*` matches any suffix, so a second adapter configured with `keyPrefix: 'iam:assignments:'` has every one of its keys inside the first adapter's sweep. Do not nest one prefix inside another.
 
-`keys` is optional on `ILike`. When the client does not expose it the role is deleted and its grants are not, and the adapter says so through `onPolicyError` with `rowId: "roles:
+`keys` is optional on `ILike`. When the client does not expose it the role is deleted and its grants are not, and the adapter says so through `onPolicyError` with `rowId: "roles:<id>"` rather than leaving orphans unmentioned. The message says the role was deleted but its grants were not, that this client exposes no `keys` so the assignment sets cannot be enumerated, and that you should revoke them explicitly or pass a client (ioredis, node-redis v4+) that implements it.
+
+### Legacy assignment encoding
+
+Earlier versions used a literal space as the separator, which silently broke any role or scope containing a space: `'admin user'` round-tripped as `('admin', 'user ')`. Members are now NUL-separated. Both reads decode a legacy member correctly whatever you configure; rewriting it is opt-in through `migrateLegacyAssignments`, which defaults to **off**.
+
+The legacy shape (exactly one space, no NUL) is a heuristic, not a format. A global grant of a role whose id contains a space is indistinguishable from a scoped grant of the prefix before that space. With migration on, `admin org1` is rewritten to `admin\0org1`: the original destroyed, a role the subject never held now granted in a scope that never existed. Turn it on only when every member of every assignments set was written by an older version of this adapter.
+
+With it on, the migration touches only members that look legacy, re-checks under the lock so a concurrent writer that already migrated the set means no write at all, and never issues a zero-member `SADD` / `SREM`, which real Redis answers with an error rather than a no-op.
 
 Both `getSubjectRoles` and `getSubjectScopedRoles` decode legacy members before returning, then kick off the migration if it is enabled, so a read never blocks on it and never returns stale data. When the client exposes `eval`, the migration is one Lua script that `SADD`s the new form and `SREM`s the old one per member, atomic and safe across processes. Without `eval`, the adapter falls back to an in-process promise chain keyed on the assignments key, which serialises the migration against `assignRole` and `revokeRole` in *this* process only.
 

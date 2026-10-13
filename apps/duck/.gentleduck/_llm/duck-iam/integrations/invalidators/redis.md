@@ -237,7 +237,88 @@ What this means operationally:
 consults the invalidator, so a replica whose subscribe failed - or whose
 connection was killed and never restored - reports `ok: true` while serving
 pre-revocation decisions for up to one `cacheTTL`. The health endpoint is not
-invalidation liveness. Monitor `PUBSUB NUMSUB 
+invalidation liveness. Monitor `PUBSUB NUMSUB <channel>` and alert when it
+sits below the replica count for longer than one `cacheTTL`; that is the only
+external signal of a node gone deaf. Page on `onSubscribeError` as well - a
+failed publish drops one event, a failed subscribe drops every future one.
+
+If a minute of staleness after a Redis blip is too much for your risk profile, close the gap explicitly by clearing the local caches when the client reports it is back:
+
+```ts
+sub.on('ready', () => {
+  // We may have missed broadcasts while disconnected. Drop everything
+  // locally; `broadcast: false` keeps this node from re-publishing an
+  // `all` event that would make every other node do the same.
+  engine.cache.invalidate({ broadcast: false })
+})
+```
+
+`broadcast: false` matters here. A bare `engine.cache.invalidate()` would publish `{ kind: 'all' }`, so a fleet-wide reconnect after a Redis restart would have every node telling every other node to drop its caches - a thundering herd against the adapter at the worst possible moment.
+
+## Failure modes
+
+Every rejection path drops the message and reports it through `onMessageDropped`, or through a rate-limited `console.warn` when no hook is wired. Nothing throws into the subscriber.
+
+| Failure | Behaviour | Drop reason string |
+| --- | --- | --- |
+| `client.publish` throws **or rejects** | Local invalidation already applied; `onPublishError(err, channel)` is called; nothing is thrown to the caller | `publish failed (<message>)` (reaches `onMessageDropped` when only that hook is wired) |
+| `onPublishError` itself throws | Swallowed - the fail-soft contract wins | none |
+| `client.subscribe` throws or rejects | Node receives nothing until a later `subscribe()` succeeds; `onSubscribeError(err, channel)` is called | none |
+| Redis unreachable for the subscriber | Messages lost; caches stale until `cacheTTL` | none - the client owns connection errors |
+| Peer signs, receiver has no `secret` | Envelope dropped, never unwrapped | `v:1 envelope received without secret configured` / `v:2 envelope received without secret configured` |
+| Peer does not sign, receiver has `secret` | Legacy envelope dropped | `unsigned message with secret configured` |
+| Peer sends v:1 and this node did not opt in | Dropped: the signature does not cover the channel | `v:1 envelope is not channel-bound` |
+| Envelope signed for a different channel | Dropped: cross-tenant relay refused | `envelope was signed for a different channel` |
+| Secrets differ between peers | Dropped on both sides; invalidation is silently dead | `signature mismatch` |
+| Payload tampered in flight | Dropped | `signature mismatch` |
+| Clock skew above 30 s in either direction | Every message dropped | `replay window exceeded` |
+| Wire message above 16 KB of UTF-8 | Dropped before `JSON.parse` | `oversize wire message` |
+| Unparseable JSON | Dropped | `invalid JSON` (reported only when `secret` is set) |
+| Payload nesting above depth 8, or above 64 total keys | Dropped before canonicalisation | `payload exceeds depth/key limits` |
+| Malformed envelope (`sig` not a string, `payload` not an object) | Dropped | `malformed envelope` |
+| v:2 envelope with no string `channel` | Dropped | `malformed inner payload (channel)` |
+| `ts` missing, non-numeric, or non-finite | Dropped | `missing or invalid ts` |
+| `instanceId` not a string | Dropped | `malformed inner payload (instanceId)` / `malformed legacy payload (instanceId)` |
+| Event shape invalid for its `kind` | Dropped | `malformed inner payload (event)` / `malformed legacy payload (event)` |
+| Message published by this same instance | Ignored after verification | none - this is the normal self-echo path |
+| A handler throws while applying | Logged as `invalidation handler threw - continuing`; the remaining handlers still run | none |
+| `tenantId` fails the slug pattern | **Throws** at construction | n/a |
+
+If you roll `IAM_INVALIDATE_SECRET` to half the fleet, both halves keep running
+and both keep publishing, and every cross-half envelope is refused - the
+signing nodes report `unsigned message with secret configured`, the others
+report `v:2 envelope received without secret configured`. Caches never converge
+for the length of the rollout, and the consequence is a revoked role that keeps
+working on every node until its own TTL retires it. Nothing throws and no
+request errors. Finish the rollout rather than pausing it, and wire
+`onMessageDropped` so the window is visible while it is open.
+
+### `onMessageDropped`
+
+```ts
+onMessageDropped?: (reason: string, channel: string, suppressed: number) => void
+```
+
+Three properties of the hook are deliberate:
+
+* **`reason` is one of the module's own fixed strings, never anything from the message.** A drop reason reaches a log or an alert and must not be attacker-composed. The one exception is `publish failed (<message>)`, which interpolates the client's own error text - so if you label a counter with `reason`, normalise that row to a constant first or the label is unbounded.
+* **It fires on the same coalescing schedule as the warning it replaces** - at most once per 60 s per channel per kind. Inbound traffic is attacker-driven, and a hook invoked per message would be an amplifier pointed at your own alerting. `suppressed` carries the count coalesced since the last report, so wire it as `counter.inc(1 + suppressed)` to see the true rate.
+* **A throwing hook is swallowed.** A pub/sub callback that throws takes the client's listener down with it.
+
+The hook replaces the console warning rather than doubling it. Read the reason, not the count:
+
+| Reason class | Action |
+| --- | --- |
+| Either `without secret configured`, or `unsigned message with secret configured` | The fleet is split mid-rollout. Finish it now - every node is serving up to one `cacheTTL` of stale allow. |
+| `v:1 envelope is not channel-bound` | Old nodes remain. Finish the upgrade, or set `acceptLegacyUnboundEnvelopes: true` on the new nodes for the duration and remove it after. |
+| `replay window exceeded` | Check clock skew across replicas before suspecting the network. |
+| `signature mismatch` in volume | A half-applied secret rotation, or somebody is publishing to your channel. |
+| `oversize` / `depth/key` / `malformed` / `invalid JSON` | Someone else has PUBLISH rights on the channel. Tighten the Redis ACL. |
+| `envelope was signed for a different channel` | A relay between tenants. Investigate who can PUBLISH across them. |
+
+### The receive path
+
+Every incoming message runs the same gauntlet, in this order. The size, depth, and key-count checks are deliberately **before** the HMAC verify: they are pre-auth, so they must be cheap and must not be a DoS lever themselves.
 
 The guards in the diagram carry specific reasoning:
 

@@ -114,7 +114,7 @@ export default function Demo() {
 
 ### Separator
 
-You can use the `` component to add a separator between the input groups.
+You can use the `<InputOTPSeparator />` component to add a separator between the input groups.
 
 ```tsx title="components/input-otp-3.tsx"
 // import from your project: import Demo from '@/components/input-otp-3'
@@ -308,7 +308,118 @@ export default function Demo() {
 
 ## RTL Support
 
-Set the direction once with `DirectionProvider` (or `` | Custom element to render instead of the default dot icon |
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `InputOTP` follows it: the first slot is on the right and the Left/Right arrow keys flip. No `dir` prop needed.
+
+```tsx title="components/input-otp-7.tsx"
+// import from your project: import Demo from '@/components/input-otp-7'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@gentleduck/registry-ui/input-otp'
+
+export default function Demo() {
+  return (
+    <DirectionProvider dir="rtl">
+      <InputOTP aria-label="رمز التحقق" maxLength={6}>
+        <InputOTPGroup>
+          <InputOTPSlot />
+          <InputOTPSlot />
+          <InputOTPSlot />
+        </InputOTPGroup>
+        <InputOTPSeparator />
+        <InputOTPGroup>
+          <InputOTPSlot />
+          <InputOTPSlot />
+          <InputOTPSlot />
+        </InputOTPGroup>
+      </InputOTP>
+    </DirectionProvider>
+  )
+}
+```
+
+## Motion
+
+} title="Alpha: Motion Compositions" tone="warning">
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+
+Use `MotionInputOTP` for a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition on the entire OTP input, powered by [motion](https://motion.dev).
+
+```tsx title="components/input-otp-8.tsx"
+// import from your project: import Demo from '@/components/input-otp-8'
+'use client'
+
+import { InputOTPGroup, InputOTPSeparator, InputOTPSlot, MotionInputOTP } from '@gentleduck/registry-ui/input-otp'
+
+export default function Demo() {
+  return (
+    <MotionInputOTP maxLength={6}>
+      <InputOTPGroup>
+        <InputOTPSlot />
+        <InputOTPSlot />
+        <InputOTPSlot />
+      </InputOTPGroup>
+      <InputOTPSeparator />
+      <InputOTPGroup>
+        <InputOTPSlot />
+        <InputOTPSlot />
+        <InputOTPSlot />
+      </InputOTPGroup>
+    </MotionInputOTP>
+  )
+}
+```
+
+}>
+  Requires the `motion` package. Use `MotionInputOTP` instead of `InputOTP`. All other sub-components stay the same.
+
+## API Reference
+
+### InputOTP
+
+The root component that provides OTP context and manages slot focus, paste, and value state.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional class names for the wrapper div |
+| `children` | `React.ReactNode` | - | OTP groups, slots, and separators |
+| `value` | `string` | - | Controlled value of the OTP input |
+| `onValueChange` | `(value: string) => void` | - | Callback fired when the combined slot value changes |
+| `pattern` | `RegExp` | `/^.$/` | Regex used to validate each entered character |
+| `maxLength` | `number` | - | Optional cap for active slots used by keyboard and paste behavior |
+| `name` | `string` | - | Optional field name (useful with form libraries) |
+| `dir` | `'ltr' \| 'rtl'` | inherited | Local direction override |
+| `ref` | `React.Ref<HTMLDivElement>` | - | Ref forwarded to the wrapper div |
+| `aria-label` | `string` | `"otp-one-time-password"` | Accessible label for the OTP region |
+| `...props` | `Omit<React.HTMLProps<HTMLDivElement>, 'pattern'>` | - | Additional props to spread to the content div |
+
+### InputOTPGroup
+
+Groups related OTP slots together with flex layout.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional class names for the group div |
+| `children` | `React.ReactNode` | - | OTP slots to group together |
+| `ref` | `React.Ref<HTMLDivElement>` | - | Ref forwarded to the group div |
+| `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
+
+### InputOTPSlot
+
+An individual input element representing a single OTP digit.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional class names for the input element |
+| `ref` | `React.Ref<HTMLInputElement>` | - | Ref forwarded to the input element |
+| `...props` | `React.HTMLProps<HTMLInputElement>` | - | Additional props to spread to the input element |
+
+### InputOTPSeparator
+
+A visual separator rendered between OTP groups.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional class names for the separator div |
+| `customIndicator` | `React.ReactNode` | `<Dot />` | Custom element to render instead of the default dot icon |
 | `ref` | `React.Ref<HTMLDivElement>` | - | Ref forwarded to the separator div |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
 

@@ -88,7 +88,9 @@ export default function Demo() {
 
 ## Philosophy
 
-Complex input patterns  -  search bars, URL fields, currency inputs  -  need structure beyond a bare `
+Complex input patterns  -  search bars, URL fields, currency inputs  -  need structure beyond a bare `<input>`. InputGroup composes Input with addons, icons, and buttons in a unified container. Rather than building a mega-input with dozens of props, we give you building blocks that snap together. Composition over configuration.
+
+## How It's Built
 
 ## Installation
 
@@ -423,7 +425,7 @@ export default function Demo() {
 
 Show loading indicators while processing input.
 
-Use `Button loading` inside `InputGroupButton` for the built-in animated `` spinner behavior.
+Use `Button loading` inside `InputGroupButton` for the built-in animated `<Loader />` spinner behavior.
 
 ```tsx title="components/input-group-7.tsx"
 // import from your project: import Demo from '@/components/input-group-7'
@@ -655,11 +657,222 @@ export function InputGroupCustom() {
 
 ## RTL Support
 
-Set the direction once with `DirectionProvider` (or `` when building input groups. Has input group styles pre-applied and uses the unified `data-slot="input-group-control"` for focus state handling.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and `InputGroup` follows it: `inline-start` addons sit on the right and `inline-end` addons on the left. No `dir` prop or `rtl:` classes needed.
+
+```tsx title="components/input-group-12.tsx"
+// import from your project: import Demo from '@/components/input-group-12'
+'use client'
+
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@gentleduck/registry-ui/dropdown-menu'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+  InputGroupText,
+  InputGroupTextarea,
+} from '@gentleduck/registry-ui/input-group'
+import { Separator } from '@gentleduck/registry-ui/separator'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gentleduck/registry-ui/tooltip'
+import { IconCheck, IconInfoCircle, IconPaperclip } from '@tabler/icons-react'
+import { ArrowUpIcon, FilterIcon } from 'lucide-react'
+
+export default function Demo() {
+  return (
+    <DirectionProvider dir="rtl">
+      <TooltipProvider>
+        <div className="grid w-full max-w-sm gap-6">
+          <InputGroup>
+            <InputGroupInput placeholder="تصفية السجلات..." />
+            <InputGroupAddon>
+              <FilterIcon aria-hidden="true" />
+            </InputGroupAddon>
+            <InputGroupAddon align="inline-end">24 سجلًا</InputGroupAddon>
+          </InputGroup>
+          <InputGroup>
+            <InputGroupInput inputMode="decimal" placeholder="0.00" />
+            <InputGroupAddon>
+              <InputGroupText>المبلغ</InputGroupText>
+            </InputGroupAddon>
+            <InputGroupAddon align="inline-end">
+              <InputGroupText>ر.س</InputGroupText>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <InputGroupButton aria-label="معلومات" className="rounded-full" size="icon-xs">
+                    <IconInfoCircle aria-hidden="true" />
+                  </InputGroupButton>
+                </TooltipTrigger>
+                <TooltipContent>المبلغ شامل ضريبة القيمة المضافة.</TooltipContent>
+              </Tooltip>
+            </InputGroupAddon>
+          </InputGroup>
+          <InputGroup>
+            <InputGroupTextarea placeholder="اشرح مشكلتك..." />
+            <InputGroupAddon align="block-end">
+              <InputGroupButton aria-label="إرفاق ملف" className="rounded-full" size="icon-xs" variant="outline">
+                <IconPaperclip aria-hidden="true" />
+              </InputGroupButton>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <InputGroupButton variant="ghost">منخفضة</InputGroupButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="[--radius:0.95rem]" side="top">
+                  <DropdownMenuItem>منخفضة</DropdownMenuItem>
+                  <DropdownMenuItem>متوسطة</DropdownMenuItem>
+                  <DropdownMenuItem>عالية</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <InputGroupText className="ms-auto">3 مرفقات</InputGroupText>
+              <Separator className="!h-4" orientation="vertical" />
+              <InputGroupButton className="rounded-full" disabled size="icon-xs" variant="default">
+                <ArrowUpIcon aria-hidden="true" />
+                <span className="sr-only">إرسال</span>
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+          <InputGroup>
+            <InputGroupInput placeholder="فريق ألفا" />
+            <InputGroupAddon align="inline-end">
+              <div className="flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                <IconCheck className="size-3" />
+              </div>
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+      </TooltipProvider>
+    </DirectionProvider>
+  )
+}
+```
+
+## Motion
+
+} title="Alpha: Motion Compositions" tone="warning">
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+
+Use `MotionInputGroup` for a `scaleIn` entrance animation (fade, scale, and blur) with a bouncy spring transition, powered by [motion](https://motion.dev). Pass `index` for stagger delay when using multiple groups.
+
+```tsx title="components/input-group-13.tsx"
+// import from your project: import Demo from '@/components/input-group-13'
+'use client'
+
+import { InputGroupAddon, InputGroupInput, InputGroupText, MotionInputGroup } from '@gentleduck/registry-ui/input-group'
+import { MotionLabel } from '@gentleduck/registry-ui/label'
+import { AtSignIcon, GlobeIcon, LockIcon } from 'lucide-react'
+
+export default function Demo() {
+  return (
+    <div className="flex w-full max-w-sm flex-col gap-4 p-4">
+      <div className="flex flex-col gap-1.5">
+        <MotionLabel htmlFor="motion-ig-email">Email</MotionLabel>
+        <MotionInputGroup index={0}>
+          <InputGroupAddon>
+            <InputGroupText>
+              <AtSignIcon />
+            </InputGroupText>
+          </InputGroupAddon>
+          <InputGroupInput id="motion-ig-email" placeholder="you@example.com" />
+        </MotionInputGroup>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <MotionLabel htmlFor="motion-ig-website">Website</MotionLabel>
+        <MotionInputGroup index={1}>
+          <InputGroupAddon>
+            <InputGroupText>
+              <GlobeIcon />
+            </InputGroupText>
+          </InputGroupAddon>
+          <InputGroupInput id="motion-ig-website" placeholder="https://example.com" />
+        </MotionInputGroup>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <MotionLabel htmlFor="motion-ig-password">Password</MotionLabel>
+        <MotionInputGroup index={2}>
+          <InputGroupAddon>
+            <InputGroupText>
+              <LockIcon />
+            </InputGroupText>
+          </InputGroupAddon>
+          <InputGroupInput id="motion-ig-password" type="password" placeholder="Enter password" />
+        </MotionInputGroup>
+      </div>
+    </div>
+  )
+}
+```
+
+}>
+  Requires the `motion` package. Use `MotionInputGroup` instead of `InputGroup`. All other sub-components stay the same.
+
+## API Reference
+
+### InputGroup
+
+The root container that wraps inputs and addons into a unified group with shared border and focus states.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `` when building input groups. Has textarea group styles pre-applied and uses the unified `data-slot="input-group-control"` for focus state handling.
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
+| `className` | `string` | `--` | Additional CSS classes to apply |
+| `children` | `React.ReactNode` | `--` | InputGroup sub-components to render inside the group |
+| `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
+
+### InputGroupAddon
+
+Displays icons, text, buttons, or other content alongside inputs.
+
+} title="Focus Navigation">
+  For proper focus navigation, the `InputGroupAddon` component should be placed
+  after the input. Set the `align` prop to position the addon.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `align` | `'inline-start' \| 'inline-end' \| 'block-start' \| 'block-end'` | `'inline-start'` | Position of the addon relative to the input. Use `inline-start`/`inline-end` with `InputGroupInput` and `block-start`/`block-end` with `InputGroupTextarea`. |
+| `className` | `string` | `--` | Additional CSS classes to apply |
+| `children` | `React.ReactNode` | `--` | Icons, text, buttons, or other content |
+| `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
+
+### InputGroupButton
+
+A button styled for use within input groups. Renders a `Button` with compact sizing defaults.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `size` | `'xs' \| 'icon-xs' \| 'sm' \| 'icon-sm'` | `'xs'` | Size of the button |
+| `variant` | `'default' \| 'destructive' \| 'outline' \| 'secondary' \| 'ghost' \| 'link' \| 'dashed' \| 'warning' \| 'nothing' \| 'expandIcon'` | `'ghost'` | Visual variant of the button |
+| `type` | `string` | `'button'` | The HTML button type attribute |
+| `className` | `string` | `--` | Additional CSS classes to apply |
+| `...props` | `Omit<React.ComponentPropsWithoutRef<typeof Button>, 'size'>` | - | Additional props inherited from `Button` (excluding `size`). |
+
+### InputGroupText
+
+A styled span for displaying static text within input groups.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | `--` | Additional CSS classes to apply |
+| `children` | `React.ReactNode` | `--` | Text or icon content to display |
+| `...props` | `React.HTMLProps<HTMLSpanElement>` | - | Additional props to spread to the span element |
+
+### InputGroupInput
+
+Replacement for `<Input />` when building input groups. Has input group styles pre-applied and uses the unified `data-slot="input-group-control"` for focus state handling.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
+| `className` | `string` | `--` | Additional CSS classes to apply |
+| `...props` | `React.HTMLProps<HTMLInputElement>` | - | Additional props to spread to the input element |
+
+### InputGroupTextarea
+
+Replacement for `<Textarea />` when building input groups. Has textarea group styles pre-applied and uses the unified `data-slot="input-group-control"` for focus state handling.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

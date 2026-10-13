@@ -5,15 +5,6 @@ with a single file transfer and finish with a production setup: multipart upload
 persistence, validation, plugins, typed results, and deduplication, all on the real
 `@gentleduck/upload` API.
 
-First Upload"] --> CH2["Ch2Strategies"]
-  CH2 --> CH3["Ch3React"]
-  CH3 --> CH4["Ch4Multipart"]
-  CH4 --> CH5["Ch5Pause/Resume/Retry"]
-  CH5 --> CH6["Ch6Persistence"]
-  CH6 --> CH7["Ch7Validation/Plugins"]
-  CH7 --> CH8["Ch8Production"]`}
-/>
-
 ## Who it's for
 
 * Developers new to `@gentleduck/upload` who want a guided path.

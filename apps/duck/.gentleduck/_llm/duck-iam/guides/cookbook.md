@@ -409,14 +409,14 @@ Both engines must run the same `policyCombine` and `defaultEffect` or the compar
 const roleResult = access.validateRoles(allRoles)
 if (!roleResult.valid) {
   for (const issue of roleResult.issues) {
-    console.error(`[iam] ${issue.type} ${issue.code}${issue.roleId ? ` role=<MathMl mathml="<span class=&quot;math-error&quot;>${issue.roleId}` : ''}: $</span>"/>{issue.message}`)
+    console.error(`[iam] ${issue.type} ${issue.code}${issue.roleId ? ` role=${issue.roleId}` : ''}: ${issue.message}`)
   }
   throw new Error('iam role catalog is invalid')
 }
 
 for (const policy of currentPolicies) {
   const result = access.validatePolicy(policy)
-  if (!result.valid) throw new Error(`policy <MathMl mathml="<span class=&quot;katex&quot;><span class=&quot;katex-mathml&quot;><math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;><semantics><mrow><mrow><mi>p</mi><mi>o</mi><mi>l</mi><mi>i</mi><mi>c</mi><mi>y</mi><mi mathvariant=&quot;normal&quot;>.</mi><mi>i</mi><mi>d</mi></mrow><mo>:</mo></mrow><annotation encoding=&quot;application/x-tex&quot;>{policy.id}: </annotation></semantics></math></span><span class=&quot;katex-html&quot; aria-hidden=&quot;true&quot;><span class=&quot;base&quot;><span class=&quot;strut&quot; style=&quot;height:0.8889em;vertical-align:-0.1944em;&quot;></span><span class=&quot;mord&quot;><span class=&quot;mord mathnormal&quot;>p</span><span class=&quot;mord mathnormal&quot;>o</span><span class=&quot;mord mathnormal&quot; style=&quot;margin-right:0.01968em;&quot;>l</span><span class=&quot;mord mathnormal&quot;>i</span><span class=&quot;mord mathnormal&quot; style=&quot;margin-right:0.03588em;&quot;>cy</span><span class=&quot;mord&quot;>.</span><span class=&quot;mord mathnormal&quot;>i</span><span class=&quot;mord mathnormal&quot;>d</span></span><span class=&quot;mspace&quot; style=&quot;margin-right:0.2778em;&quot;></span><span class=&quot;mrel&quot;>:</span></span></span></span>"/>{result.issues.map((i) => i.code).join(', ')}`)
+  if (!result.valid) throw new Error(`policy ${policy.id}: ${result.issues.map((i) => i.code).join(', ')}`)
 }
 ```
 

@@ -110,11 +110,17 @@ import {
 </Breadcrumb>
 ```
 
+A screen reader announces the navigation as "breadcrumb". Pass `aria-label` to name it in the user's language:
+
+```tsx
+<Breadcrumb aria-label="Fil d'Ariane">
+```
+
 ## Examples
 
 ### Custom separator
 
-Use a custom component as `children` for `` to create a custom separator.
+Use a custom component as `children` for `<BreadcrumbSeparator />` to create a custom separator.
 
 ```tsx title="components/breadcrumb-2.tsx"
 // import from your project: import Demo from '@/components/breadcrumb-2'
@@ -182,7 +188,7 @@ import { SlashIcon } from "lucide-react"
 
 ### Dropdown
 
-You can compose `` with a `` to create a dropdown in the breadcrumb.
+You can compose `<BreadcrumbItem />` with a `<DropdownMenu />` to create a dropdown in the breadcrumb.
 
 ```tsx title="components/breadcrumb-3.tsx"
 // import from your project: import Demo from '@/components/breadcrumb-3'
@@ -268,7 +274,7 @@ import {
 
 ### Collapsed
 
-We provide a `` component to show a collapsed state when the breadcrumb is too long.
+We provide a `<BreadcrumbEllipsis />` component to show a collapsed state when the breadcrumb is too long.
 
 ```tsx title="components/breadcrumb-4.tsx"
 // import from your project: import Demo from '@/components/breadcrumb-4'
@@ -332,7 +338,7 @@ import { BreadcrumbEllipsis } from "@/components/ui/breadcrumb"
 
 ### Link component
 
-To use a custom link component from your routing library, you can use the `asChild` prop on ``.
+To use a custom link component from your routing library, you can use the `asChild` prop on `<BreadcrumbLink />`.
 
 ```tsx title="components/breadcrumb-5.tsx"
 // import from your project: import Demo from '@/components/breadcrumb-5'
@@ -392,7 +398,7 @@ import Link from "next/link"
 
 ### Responsive
 
-Here's an example of a responsive breadcrumb that composes `` with ``, ``, and ``.
+Here's an example of a responsive breadcrumb that composes `<BreadcrumbItem />` with `<BreadcrumbEllipsis />`, `<DropdownMenu />`, and `<Drawer />`.
 
 It displays a dropdown on desktop and a drawer on mobile.
 
@@ -642,7 +648,175 @@ export default function Demo() {
 
 ## RTL Support
 
-Set the direction once with `DirectionProvider` (or `` | Custom separator icon; defaults to a `ChevronRight` icon |
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the breadcrumb follows it: items run right to left and separator icons flip. No `dir` prop or `rtl:` classes needed.
+
+```tsx title="components/breadcrumb-9.tsx"
+// import from your project: import Demo from '@/components/breadcrumb-9'
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@gentleduck/registry-ui/breadcrumb'
+import { DirectionProvider } from '@gentleduck/registry-ui/direction'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@gentleduck/registry-ui/dropdown-menu'
+import Link from 'next/link'
+
+export default function Demo() {
+  return (
+    <DirectionProvider dir="rtl">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">الرئيسية</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <DropdownMenu onOpenChange={() => {}}>
+              <DropdownMenuTrigger className="flex items-center gap-1">
+                <BreadcrumbEllipsis className="size-4" />
+                <span className="sr-only">عرض المزيد من الصفحات</span>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" side="top">
+                <DropdownMenuItem>التوثيق</DropdownMenuItem>
+                <DropdownMenuItem>السمات</DropdownMenuItem>
+                <DropdownMenuItem>GitHub</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/docs/components">المكونات</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>مسار التنقل</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+    </DirectionProvider>
+  )
+}
+```
+
+## Motion
+
+} title="Alpha: Motion Compositions" tone="warning">
+  Motion components work standalone, but some compositions may behave unexpectedly: this is still under active development. If you find a broken composition, please [file an issue](https://github.com/gentleeduck/gentleduck/issues).
+
+Use `MotionBreadcrumbItem` for a staggered `scaleIn` entrance (fade, scale, and blur) powered by [motion](https://motion.dev). Each breadcrumb item cascades in from left to right.
+
+```tsx title="components/breadcrumb-10.tsx"
+// import from your project: import Demo from '@/components/breadcrumb-10'
+'use client'
+
+import {
+  Breadcrumb,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  MotionBreadcrumbItem,
+  MotionBreadcrumbList,
+  MotionBreadcrumbSeparator,
+} from '@gentleduck/registry-ui/breadcrumb'
+import Link from 'next/link'
+
+export default function Demo() {
+  return (
+    <Breadcrumb>
+      <MotionBreadcrumbList>
+        <MotionBreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link href="/">Home</Link>
+          </BreadcrumbLink>
+        </MotionBreadcrumbItem>
+        <MotionBreadcrumbSeparator />
+        <MotionBreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link href="/docs">Docs</Link>
+          </BreadcrumbLink>
+        </MotionBreadcrumbItem>
+        <MotionBreadcrumbSeparator />
+        <MotionBreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link href="/docs/components">Components</Link>
+          </BreadcrumbLink>
+        </MotionBreadcrumbItem>
+        <MotionBreadcrumbSeparator />
+        <MotionBreadcrumbItem>
+          <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+        </MotionBreadcrumbItem>
+      </MotionBreadcrumbList>
+    </Breadcrumb>
+  )
+}
+```
+
+}>
+  Requires the `motion` package. Use `MotionBreadcrumbItem` instead of `BreadcrumbItem` and pass the `index` prop for stagger delay. All other sub-components stay the same.
+
+## API Reference
+
+### Breadcrumb
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `dir` | `'ltr' \| 'rtl'` | - | Text direction override. Resolved via `useDirection` (`dir` prop -> `DirectionProvider` -> `<html dir>`). |
+| `aria-label` | `string` | `'breadcrumb'` | Name a screen reader announces for the navigation. Pass it in the user's language |
+| `className` | `string` | - | Additional class names to apply |
+| `children` | `React.ReactNode` | - | Breadcrumb content (typically a `BreadcrumbList`) |
+| `...props` | `React.HTMLProps<HTMLElement>` | - | Additional props to spread to the nav element |
+
+### BreadcrumbList
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional class names to apply |
+| `children` | `React.ReactNode` | - | List of `BreadcrumbItem` elements |
+| `...props` | `React.HTMLProps<HTMLOListElement>` | - | Additional props to spread to the ol element |
+
+### BreadcrumbItem
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional class names to apply |
+| `children` | `React.ReactNode` | - | Item content (typically a `BreadcrumbLink` or `BreadcrumbPage`) |
+| `...props` | `React.HTMLProps<HTMLLIElement>` | - | Additional props to spread to the li element |
+
+### BreadcrumbLink
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `asChild` | `boolean` | - | If `true`, uses the `Slot` component instead of rendering an `<a>` directly |
+| `className` | `string` | - | Additional class names to apply |
+| `children` | `React.ReactNode` | - | Link content |
+| `...props` | `React.HTMLProps<HTMLAnchorElement>` | - | Additional props to spread to the a element |
+
+### BreadcrumbPage
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional class names to apply |
+| `children` | `React.ReactNode` | - | Page content (rendered with `aria-current="page"`) |
+| `...props` | `React.ComponentPropsWithoutRef<'span'>` | - | Additional props to spread to the span element |
+
+### BreadcrumbSeparator
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | - | Additional class names to apply |
+| `children` | `React.ReactNode` | `<ChevronRight />` | Custom separator icon; defaults to a `ChevronRight` icon |
 | `...props` | `React.ComponentPropsWithoutRef<'li'>` | - | Additional props to spread to the li element |
 
 ### BreadcrumbEllipsis
@@ -650,7 +824,7 @@ Set the direction once with `DirectionProvider` (or `` | Custom separator icon; 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `text` | `string` | `'More'` | Accessible label used for `aria-label` on the ellipsis element |
-| `className` | `string` | `--` | Additional class names to apply |
+| `className` | `string` | - | Additional class names to apply |
 | `...props` | `React.ComponentPropsWithoutRef<'span'>` | - | Additional props to spread to the span element |
 
 ### MotionBreadcrumbList
@@ -677,5 +851,5 @@ Renders directly as `m.li` with a `slideFromLeft` entrance so the chevron slides
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `index` | `number` | `0` | Stagger delay index (35ms per index). Auto-injected when used inside `MotionBreadcrumbList`. |
-| `children` | `React.ReactNode` | `` | Custom separator content |
+| `children` | `React.ReactNode` | `<ChevronRight />` | Custom separator content |
 | `...props` | `React.ComponentPropsWithoutRef<'li'>` | - | All props from `BreadcrumbSeparator` are supported |

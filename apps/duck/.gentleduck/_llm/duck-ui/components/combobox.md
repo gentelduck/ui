@@ -80,11 +80,13 @@ export default function Demo() {
 
 ## Philosophy
 
-Comboboxes solve the "too many options" problem  -  they combine a text input with a filterable dropdown. We make the component fully generic (`Combobox
+Comboboxes solve the "too many options" problem  -  they combine a text input with a filterable dropdown. We make the component fully generic (`Combobox<TData, TType>`) because your data shape shouldn't be our concern. The composition with Popover and Command means you get search, keyboard navigation, and multi-select for free.
+
+## How It's Built
 
 ## Installation
 
-The Combobox is built using a composition of the `` and the `` components.
+The Combobox is built using a composition of the `<Popover />` and the `<Command />` components.
 
 See installation instructions for the [Popover](/duck-ui/components/popover#installation) and the [Command](/duck-ui/components/command#installation) components.
 
@@ -447,7 +449,7 @@ export default function Demo() {
 
 ### Responsive
 
-You can create a responsive combobox by using the `` on desktop and the `` components on mobile.
+You can create a responsive combobox by using the `<Popover />` on desktop and the `<Drawer />` components on mobile.
 
 ```tsx title="components/combobox-5.tsx"
 // import from your project: import Demo from '@/components/combobox-5'

@@ -74,7 +74,39 @@ The engine treats any rejection from an adapter as a hard failure and routes it 
 | `assignRole` names a role the store does not hold | the adapter, before writing | `IAM_ROLE_NOT_FOUND` (`meta: { adapter }` - deliberately no role id, it reaches operator logs) |
 | `assignRole` is given an option the adapter cannot store | the adapter, before writing | `IAM_ASSIGN_OPTIONS_UNSUPPORTED` (`meta: { adapter, fields: string[] }`) |
 | `engine.withTransaction(tx)` on an adapter with no `withClient` | the **engine** | `IAM_ENGINE_ADAPTER_NOT_TRANSACTIONAL` - refuses rather than silently writing outside your transaction |
-| The read exceeded `adapterTimeoutMs` | the **engine**, not the adapter | still a plain `Error`, not a coded `IamError`: `` `[@gentleduck/iam:engine] 
+| The read exceeded `adapterTimeoutMs` | the **engine**, not the adapter | still a plain `Error`, not a coded `IamError`: `` `[@gentleduck/iam:engine] <label> timed out after <N>ms` `` |
+| More than `maxPolicies` / `maxRoles` rows came back | the **engine**, when filling the cache | `IAM_ENGINE_ROW_CAP_EXCEEDED` (`meta: { noun, count, cap, capField }`); raise the cap rather than paginating inside the adapter |
+
+The shape guard on `setSubjectAttributes` is shared: every built-in adapter calls the same `iamAssertAttributesParam` helper, so a string like `'admin=true'` cannot spread into per-character attribute keys. A rejected call leaves existing attributes untouched.
+
+An adapter that returns `{}` for a corrupt attributes row silently strips ABAC from every decision about that subject, which usually widens access. Every built-in adapter throws instead. Do the same in a custom adapter.
+
+### Concurrency expectations
+
+The engine calls adapters concurrently and expects them to cope; it does **not** serialise writes for you.
+
+* **Reads are collapsed, not serialised.** The engine keeps an in-flight map, so 500 simultaneous cold requests for one subject produce one `getSubjectRoles`, not 500. `maxConcurrentSubjectLoads` (default `512`; `0` restores unbounded) caps how many *distinct* subjects may be loading at once; past the cap a new load rejects with a message containing `subject load shed`.
+* **Writes are not transactional across methods by default.** `engine.admin` calls one adapter method per operation. An adapter implementing `withClient` can join a caller's transaction through `engine.withTransaction(tx)`; drizzle and prisma do, and the other four throw there rather than writing outside it.
+* **`setSubjectAttributes` is a read-modify-write in every built-in adapter**, and it is not wrapped in a transaction. Two concurrent merges to the same subject can lose one of them. Use an atomic merge in your backend if that matters (`jsonb ||`, a Mongo `$set`, a DynamoDB `UpdateExpression`).
+* **Cancellation is best-effort.** Adapters that can honour `opts.signal` should; adapters that cannot (memory, file) may ignore it. The engine releases the request either way when `adapterTimeoutMs` (default `5000`, `0` disables) elapses - the orphaned work just runs to completion in the background.
+
+## Built-in adapters
+
+| Adapter | Subpath | Use case | Persistence | Peer dependency |
+|---|---|---|---|---|
+| [Memory](/duck-iam/integrations/adapters/memory) | `@gentleduck/iam/adapters/memory` | tests, prototypes | none, in-process | none |
+| [File](/duck-iam/integrations/adapters/file) | `@gentleduck/iam/adapters/file` | CLIs, dev fixtures, single-process apps | one JSON file | none, you pass the `fs` driver |
+| [Prisma](/duck-iam/integrations/adapters/prisma) | `@gentleduck/iam/adapters/prisma` | production on Prisma | any Prisma-supported database | `@prisma/client` |
+| [Drizzle](/duck-iam/integrations/adapters/drizzle) | `@gentleduck/iam/adapters/drizzle` | production on Drizzle | Postgres, MySQL, SQLite | `drizzle-orm` |
+| [Redis](/duck-iam/integrations/adapters/redis) | `@gentleduck/iam/adapters/redis` | distributed deployments | Redis hashes and sets | `ioredis` or `redis` |
+| [HTTP](/duck-iam/integrations/adapters/http) | `@gentleduck/iam/adapters/http` | a central authorization service | remote, whatever it fronts | none, uses `fetch` |
+| [Custom](/duck-iam/integrations/adapters/custom) | your package | anything else | your choice | your choice |
+
+Every one of them also exports a lowercase factory (`iamMemoryAdapter`, `iamFileAdapter`, `iamPrismaAdapter`, `iamDrizzleAdapter`, `iamRedisAdapter`, `iamHttpAdapter`) for callers who prefer functions to `new`. The factories take the same arguments as the constructors.
+
+## Where an adapter sits
+
+Adapters are behind two cache layers, which is why a warm process barely touches storage.
 
 Both the subject LRU (`maxCacheSize`, default `1000` entries) and the policy/role caches expire after `cacheTTL` seconds (default `60`; `0` disables caching entirely and makes every call hit the adapter). Writes through `engine.admin` invalidate the matching cache immediately, so an adapter never has to publish anything itself - unless you run more than one process, in which case wire the [Redis invalidator](/duck-iam/integrations/invalidators/redis).
 
