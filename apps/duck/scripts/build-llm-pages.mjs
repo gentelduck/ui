@@ -126,9 +126,12 @@ function extractAttr(attrs, name) {
 }
 
 async function inlineComponentSources(body, registry) {
+  // A preview inside a fence is an example of the tag, not one to render.
+  const fences = [...body.matchAll(/```[\s\S]*?```/g)].map((m) => [m.index, m.index + m[0].length])
+  const inFence = (offset) => fences.some(([start, end]) => offset >= start && offset < end)
   const matches = []
   body.replace(PREVIEW_TAG, (match, _self, selfAttrs, _pair, pairAttrs, _inner, offset) => {
-    matches.push({ match, attrs: selfAttrs ?? pairAttrs ?? '', offset })
+    if (!inFence(offset)) matches.push({ match, attrs: selfAttrs ?? pairAttrs ?? '', offset })
     return match
   })
   if (!matches.length) return body
@@ -161,14 +164,37 @@ const UNWRAP = [
   'AccordionContent',
 ]
 const REMOVE = ['MermaidDiagram', 'LinkedCard']
+// An attribute in braces may hold `>`, as a Mermaid chart's `-->` does; a bare `>` still ends the tag.
+const ATTRS = '(?:[^>{]|\\{`[\\s\\S]*?`\\}|\\{[^}]*\\})*'
+
+const ENTITIES = { amp: '&', apos: "'", gt: '>', lt: '<', quot: '"' }
+const decodeEntities = (text) =>
+  text.replace(/&(#x[0-9a-f]+|#\d+|\w+);/gi, (entity, name) => {
+    if (name[0] !== '#') return ENTITIES[name] ?? entity
+    return String.fromCodePoint(name[1] === 'x' ? Number.parseInt(name.slice(2), 16) : Number(name.slice(1)))
+  })
+
+// The math plugin reads a `$` in code as TeX and leaves a <MathMl> tag in `raw`; put back the text it replaced.
+function restoreMath(body) {
+  return body.replace(/<MathMl mathml="([^"]*)"\s*\/>/g, (tag, attr) => {
+    const markup = decodeEntities(attr)
+    const tex = markup.match(/<annotation encoding="application\/x-tex">([\s\S]*?)<\/annotation>/)
+    if (tex) {
+      const fence = markup.includes('katex-display') ? '$$' : '$'
+      return fence + decodeEntities(tex[1]) + fence
+    }
+    const error = markup.match(/<span class="math-error">([\s\S]*?)<\/span>/)
+    return error ? decodeEntities(error[1]) : tag
+  })
+}
 
 function stripRemainingJsx(body) {
-  // Stash fenced code so the JSX-stripping regexes can't reach inside them.
+  // Stash fenced and inline code so the JSX-stripping regexes can't reach inside it.
   const blocks = []
-  const stashed = body.replace(/```[\s\S]*?```/g, (m) => {
-    const id = blocks.push(m) - 1
-    return `__CODE_BLOCK_${id}__`
-  })
+  const stash = (m) => `__CODE_BLOCK_${blocks.push(m) - 1}__`
+  const stashed = restoreMath(body)
+    .replace(/```[\s\S]*?```/g, stash)
+    .replace(/`[^`\n]+`/g, stash)
 
   let out = stashed.replace(/^import\s+.*$/gm, '')
   for (const c of UNWRAP) {
@@ -176,10 +202,11 @@ function stripRemainingJsx(body) {
   }
   for (const c of REMOVE) {
     out = out.replace(new RegExp(`<${c}[^>]*>[\\s\\S]*?<\\/${c}>`, 'g'), '')
-    out = out.replace(new RegExp(`<${c}\\b[^>]*\\/>`, 'g'), '')
+    out = out.replace(new RegExp(`<${c}\\b${ATTRS}\\/>`, 'g'), '')
   }
   out = out
-    .replace(/<\w+[\s\S]*?\/>/g, '')
+    // Not `[\s\S]*?`: a `<x` with no `/>` of its own would run on to the next one and take the text between.
+    .replace(new RegExp(`<\\w+${ATTRS}\\/>`, 'g'), '')
     .replace(/^\s*<\/?\w+[^>]*>\s*$/gm, '')
     .replace(/\n{3,}/g, '\n\n')
     .trim()
