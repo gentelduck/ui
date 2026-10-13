@@ -104,7 +104,7 @@
     },
     "packages/deprecated/duck-extension": {
       "name": "@gentleduck/duck-extension",
-      "version": "1.0.12",
+      "version": "1.0.13",
       "dependencies": {
         "@gentleduck/motion": "workspace:*",
         "@tailwindcss/vite": "^4.1.17",
@@ -166,9 +166,30 @@
         "tsdown": "catalog:",
       },
     },
+    "packages/deprecated/duck-shortcut": {
+      "name": "@gentleduck/shortcut",
+      "version": "0.1.0",
+      "devDependencies": {
+        "@gentleduck/tsdown-config": "workspace:*",
+        "@gentleduck/typescript-config": "workspace:*",
+        "@types/mousetrap": "^1.6.15",
+        "@types/node": "catalog:",
+        "@types/react": "catalog:react19",
+        "@types/react-dom": "catalog:react19",
+        "esbuild": ">=0.28.1",
+        "tsdown": "catalog:",
+        "vite": "catalog:",
+        "vitest": "catalog:",
+      },
+      "peerDependencies": {
+        "mousetrap": "^1.6.5",
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4",
+      },
+    },
     "packages/duck-calendar": {
       "name": "@gentleduck/calendar",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "devDependencies": {
         "@gentleduck/tsdown-config": "workspace:*",
         "@gentleduck/typescript-config": "workspace:*",
@@ -203,7 +224,7 @@
     },
     "packages/duck-cli": {
       "name": "@gentleduck/cli",
-      "version": "1.5.1",
+      "version": "1.6.0",
       "bin": {
         "duck-cli": "dist/index.mjs",
       },
@@ -247,7 +268,7 @@
     },
     "packages/duck-docs": {
       "name": "@gentleduck/docs",
-      "version": "3.0.2",
+      "version": "3.0.4",
       "dependencies": {
         "@gentleduck/md": "^0.6.4",
         "@types/unist": "^3.0.3",
@@ -369,7 +390,7 @@
     },
     "packages/duck-motion": {
       "name": "@gentleduck/motion",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "devDependencies": {
         "@gentleduck/tsdown-config": "workspace:*",
         "@gentleduck/typescript-config": "workspace:*",
@@ -395,7 +416,7 @@
     },
     "packages/duck-primitives": {
       "name": "@gentleduck/primitives",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "dependencies": {
         "@floating-ui/react-dom": "^2.1.7",
         "@gentleduck/calendar": "^0.5.0",
@@ -465,7 +486,7 @@
     },
     "packages/duck-registry-build": {
       "name": "@gentleduck/registry-build",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "bin": {
         "registry-build": "dist/cli.mjs",
       },
@@ -533,7 +554,7 @@
     },
     "packages/registers": {
       "name": "@gentleduck/registers",
-      "version": "1.0.0",
+      "version": "1.0.2",
       "devDependencies": {
         "@gentleduck/typescript-config": "workspace:*",
         "@types/node": "^26.6.2",
@@ -568,7 +589,7 @@
     },
     "packages/registry-examples": {
       "name": "@gentleduck/registry-examples",
-      "version": "0.2.14",
+      "version": "0.2.15",
       "dependencies": {
         "@gentleduck/calendar": "workspace:*",
         "@gentleduck/primitives": "workspace:*",
@@ -606,7 +627,7 @@
     },
     "packages/registry-internals": {
       "name": "@gentleduck/registry-internals",
-      "version": "0.2.17",
+      "version": "0.2.18",
       "dependencies": {
         "@gentleduck/primitives": "workspace:*",
         "@hookform/resolvers": "^5.2.2",
@@ -643,13 +664,13 @@
     },
     "packages/registry-ui": {
       "name": "@gentleduck/registry-ui",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "dependencies": {
         "@gentleduck/calendar": "^0.5.0",
         "@gentleduck/hooks": "^1.0.0",
         "@gentleduck/libs": "^1.0.0",
         "@gentleduck/motion": "^1.0.0",
-        "@gentleduck/primitives": "^0.4.0",
+        "@gentleduck/primitives": "^0.5.0",
         "@gentleduck/variants": "^1.0.0",
         "@gentleduck/vim": "^0.3.0",
         "embla-carousel-react": "8.6.0",
@@ -678,6 +699,10 @@
       "optionalPeers": [
         "motion",
       ],
+    },
+    "packages/wip": {
+      "name": "wip-packages",
+      "version": "0.0.0",
     },
     "tooling/bash": {
       "name": "bash",
@@ -1072,6 +1097,8 @@
     "@gentleduck/registry-internals": ["@gentleduck/registry-internals@workspace:packages/registry-internals"],
 
     "@gentleduck/registry-ui": ["@gentleduck/registry-ui@workspace:packages/registry-ui"],
+
+    "@gentleduck/shortcut": ["@gentleduck/shortcut@workspace:packages/deprecated/duck-shortcut"],
 
     "@gentleduck/tsdown-config": ["@gentleduck/tsdown-config@workspace:tooling/tsdown"],
 
@@ -1650,6 +1677,8 @@
     "@types/mdast": ["@types/mdast@4.0.4", "", { "dependencies": { "@types/unist": "*" } }, "sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA=="],
 
     "@types/minimatch": ["@types/minimatch@3.0.5", "", {}, "sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ=="],
+
+    "@types/mousetrap": ["@types/mousetrap@1.6.15", "", {}, "sha512-qL0hyIMNPow317QWW/63RvL1x5MVMV+Ru3NaY9f/CuEpCqrmb7WeuK2071ZY5hczOnm38qExWM2i2WtkXLSqFw=="],
 
     "@types/ms": ["@types/ms@2.1.0", "", {}, "sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA=="],
 
@@ -2833,6 +2862,8 @@
 
     "motion-utils": ["motion-utils@13.3.0", "", {}, "sha512-sgSschQp7EseHInIlR7hBbMuvet3RA0bs28KPZAXJcGKGdxHGvh1ogpYDilY3bOMtl73EqPNmp75sAKHYPU5sg=="],
 
+    "mousetrap": ["mousetrap@1.6.5", "", {}, "sha512-QNo4kEepaIBwiT8CDhP98umTetp+JNfQYBWvC1pc6/OAibuXtRcxZ58Qz8skvEHYvURne/7R8T5VoOI7rDsEUA=="],
+
     "mri": ["mri@1.2.0", "", {}, "sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA=="],
 
     "mrmime": ["mrmime@2.0.1", "", {}, "sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ=="],
@@ -3470,6 +3501,8 @@
     "widest-line": ["widest-line@6.0.0", "", { "dependencies": { "string-width": "^8.1.0" } }, "sha512-U89AsyEeAsyoF0zVJBkG9zBgekjgjK7yk9sje3F4IQpXBJ10TF6ByLlIfjMhcmHMJgHZI4KHt4rdNfktzxIAMA=="],
 
     "winreg": ["winreg@0.0.12", "", {}, "sha512-typ/+JRmi7RqP1NanzFULK36vczznSNN8kWVA9vIqXyv8GhghUlwhGp1Xj3Nms1FsPcNnsQrJOR10N58/nQ9hQ=="],
+
+    "wip-packages": ["wip-packages@workspace:packages/wip"],
 
     "word-wrap": ["word-wrap@1.2.5", "", {}, "sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA=="],
 
