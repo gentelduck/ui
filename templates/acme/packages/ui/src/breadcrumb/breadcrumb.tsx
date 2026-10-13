@@ -9,12 +9,10 @@ import * as React from 'react'
 
 const Breadcrumb = React.forwardRef<
   HTMLElement,
-  React.ComponentPropsWithoutRef<'nav'> & {
-    separator?: React.ReactNode
-  }
+  React.ComponentPropsWithoutRef<'nav'>
 >(({ dir, ...props }, ref) => {
   const direction = useDirection(dir as IDirection.Kind)
-  return <nav ref={ref} {...props} aria-label="breadcrumb" data-slot="breadcrumb" dir={direction} />
+  return <nav ref={ref} aria-label="breadcrumb" {...props} data-slot="breadcrumb" dir={direction} />
 })
 Breadcrumb.displayName = 'Breadcrumb'
 

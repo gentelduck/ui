@@ -7,14 +7,9 @@ import { ChevronRight, MoreHorizontal } from 'lucide-react'
 import * as React from 'react'
 import { toDirection } from '../direction/direction.libs'
 
-const Breadcrumb = React.forwardRef<
-  HTMLElement,
-  React.ComponentPropsWithoutRef<'nav'> & {
-    separator?: React.ReactNode
-  }
->(({ dir, ...props }, ref) => {
+const Breadcrumb = React.forwardRef<HTMLElement, React.ComponentPropsWithoutRef<'nav'>>(({ dir, ...props }, ref) => {
   const direction = useDirection(toDirection(dir))
-  return <nav ref={ref} {...props} aria-label="breadcrumb" data-slot="breadcrumb" dir={direction} />
+  return <nav ref={ref} aria-label="breadcrumb" {...props} data-slot="breadcrumb" dir={direction} />
 })
 Breadcrumb.displayName = 'Breadcrumb'
 
