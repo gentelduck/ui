@@ -49,18 +49,26 @@ const CommandInput = React.forwardRef<
 ))
 CommandInput.displayName = CommandPrimitive.Input.displayName
 
+// A modal's scroll lock cancels wheel and touchmove on document, and a popover's list is portalled outside it.
+const stopScrollPropagation = (event: React.SyntheticEvent) => {
+  event.stopPropagation()
+}
+
 const CommandList = React.forwardRef<
   React.ComponentRef<typeof CommandPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.List> & {
     scrollRef?: React.Ref<HTMLDivElement>
   }
 >(({ className, scrollRef, ...props }, ref) => (
+  // The cap is on the viewport, the box that scrolls; on the list its items spill past it.
   <ScrollArea
-    className="overflow-y-auto overflow-x-hidden"
+    className="overflow-x-hidden"
     data-slot="command-list"
-    viewportClassName="overflow-x-hidden"
+    onTouchMove={stopScrollPropagation}
+    onWheel={stopScrollPropagation}
+    viewportClassName={cn('max-h-75 overflow-x-hidden', className)}
     viewportRef={scrollRef}>
-    <CommandPrimitive.List ref={ref} className={cn('max-h-75 focus:outline-hidden', className)} {...props} />
+    <CommandPrimitive.List ref={ref} className="focus:outline-hidden" {...props} />
   </ScrollArea>
 ))
 CommandList.displayName = CommandPrimitive.List.displayName
