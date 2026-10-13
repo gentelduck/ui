@@ -106,9 +106,9 @@ import {
 
 ### Next.js
 
-By default the `` component will render an `` tag.
+By default the `<PaginationLink />` component will render an `<a />` tag.
 
-To use the Next.js `` component, make the following updates to `pagination.tsx`.
+To use the Next.js `<Link />` component, make the following updates to `pagination.tsx`.
 
 ```diff showLineNumbers /typeof Link/ {1}
 + import Link from "next/link"

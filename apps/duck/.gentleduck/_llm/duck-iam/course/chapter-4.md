@@ -20,19 +20,157 @@ DocDuck now has roles and policies. This chapter is about the thing that runs th
 | `can` | `(subjectId, action, resource, environment?, scope?)` | `boolean` | `boolean` |
 | `check` | same as `can` | `IDecision` | `boolean` |
 | `authorize` | `(request: IamRequest.IAccessRequest)` | `IDecision` | `boolean` |
-| `permissions` | `(subjectId, checks, environment?, opts?)` | `IamClient.PermissionMap` | `RecordLRU, maxCacheSize entries"]
-  SC --> |"miss"| AD["adapter"]
-  REQ --> MP["mergedPolicies1 entry"]
-  MP --> PC["policies1 entry"]
-  MP --> RB["rbacPolicy1 entry"]
-  RB --> RC["roles1 entry"]
-  PC --> AD
-  RC --> AD
-  INV["cache.invalidateRoles(id)"] --> RC
-  INV --> RB
-  INV --> MP
-  INV --> |"only subjects holding that role"| SC`}
-/>
+| `permissions` | `(subjectId, checks, environment?, opts?)` | `IamClient.PermissionMap` | `Record<string, boolean>` |
+| `explain` | same as `can` | `Explain.IResult` | throws |
+| `getEffectiveRoles` | `(subjectId, scope?)` | `readonly TRole[]` | same |
+| `preload` | `(opts?: { validator?: boolean })` | `void` | same |
+| `healthCheck` | `()` | `IamEngineTypes.IHealth` | same |
+| `dispose` | `()` | `void` | same |
+| `admin` | getter | `IamEngineTypes.IAdmin` | same |
+| `cache` | facet | `invalidate`, `invalidateSubject`, `invalidatePolicies`, `invalidateRoles` | same |
+| `stats` | facet | `get`, `reset` | same |
+
+Everything except `dispose`, `cache`, and `stats` is asynchronous.
+
+### Failure behaviour is not uniform
+
+| Method | Invalid `subjectId` | Adapter throws |
+| --- | --- | --- |
+| `can` | returns `false` | returns `false`, fires `onError` |
+| `check` | deny decision, reason `invalid subjectId` | deny decision, reason `Subject resolution error`, fires `onError` |
+| `permissions` | **throws** | all-`false` map, fires `onError` |
+| `explain` | **throws** | rejects |
+
+`can` and `check` are request-path methods and fail closed. `permissions` treats a bad subject ID or a batch over 1024 checks as a caller bug and throws, because a UI that silently receives an all-deny map is harder to debug than a stack trace. A valid `subjectId` is a non-empty string of at most 1024 characters.
+
+### `authorize` when you already have the subject
+
+```ts
+import type { IamRequest } from '@gentleduck/iam'
+
+const request: IamRequest.IAccessRequest = {
+  subject: { id: 'bob', roles: ['editor', 'viewer'], attributes: { department: 'engineering' } },
+  action: 'update',
+  resource: { type: 'document', id: 'doc-2', attributes: { ownerId: 'alice', status: 'published' } },
+  environment: { ip: '203.0.113.7' },
+}
+
+const decision = await engine.authorize(request)
+```
+
+`authorize` skips subject resolution entirely - no adapter call, no subject cache. It still normalises a non-array `subject.roles` to `[]` (a bare string would substring-match a `contains` check), enriches scoped roles when `scope` is set, and defaults `environment.now`.
+
+## Development and production mode
+
+```ts
+const dev = new IamEngine({ adapter, mode: 'development' })
+const prod = new IamEngine({ adapter })                       // mode defaults to 'production'
+```
+
+The default is `'production'`, so rich `IDecision` objects are opt-in. An engine that never sets `mode` allocates nothing per call and runs only the compiled table.
+
+| Aspect | `development` | `production` |
+| --- | --- | --- |
+| `check` / `authorize` return | full `IDecision` | `boolean` |
+| `explain` | available | throws |
+| Hooks | all seven fire | all seven fire |
+| Evaluation path | policy-by-policy walk | compiled lookup table with role bitmasks |
+| Reason strings, timestamps, decision allocation | produced | skipped |
+
+`mode: 'production'` with `policyCombine: 'first-applicable'` throws - the compiled fast path cannot represent first-applicable semantics. And `defaultEffect: 'allow'` throws unless you also pass `allowFailOpen: true`. Both fail at construction, not at the first request.
+
+Running both engines side by side against the same adapter is a normal pattern: production on the request path, development behind an authenticated debug route so `explain` stays available.
+
+## Hooks
+
+```ts
+interface IHooks {
+  beforeEvaluate?(request): IAccessRequest | Promise<IAccessRequest>
+  afterEvaluate?(request, decision): void | Promise<void>
+  onDeny?(request, decision): void | Promise<void>
+  onError?(error: Error, request): void | Promise<void>
+  onPolicyError?(error: Error, policyId: string): void
+  onMetrics?(event: IamEngineTypes.IMetricsEvent): void
+  onMutation?(event: IamEngineTypes.IMutationEvent): void | Promise<void>
+}
+```
+
+Every hook fires in both modes. Only `beforeEvaluate` can change anything; the other six are observers, and the engine swallows whatever they throw.
+
+| Hook | When | Notes |
+| --- | --- | --- |
+| `beforeEvaluate` | before evaluation, and once per batch entry | Returns the request that gets evaluated. Throwing skips evaluation and yields a deny. |
+| `afterEvaluate` | after every decision | Throwing cannot change the verdict. |
+| `onDeny` | after `afterEvaluate`, on deny | Alerting and audit. |
+| `onError` | any throw on the evaluation path | The engine still returns a deny. |
+| `onPolicyError` | one policy threw, or failed to compile | That policy votes Indeterminate: a deny if it carries any deny rule, otherwise its `defaultEffect` vote. Synchronous, takes the policy ID, not the policy. |
+| `onMetrics` | once per evaluation | Primitives only, so production callers can have telemetry without allocating decisions. |
+| `onMutation` | after an `engine.admin` write lands and its caches are dropped | The only evidence a revocation happened. Leave it unset and the audit seam is not merely quiet, it is absent. |
+
+```ts
+interface IMetricsEvent {
+  readonly subjectId: string
+  readonly action: string
+  readonly resource: string
+  readonly allowed: boolean
+  readonly durationMs: number
+  readonly mode: 'development' | 'production'
+  readonly failOpen: boolean
+}
+```
+
+`failOpen` is `true` only when the verdict was allow *solely* because `defaultEffect: 'allow'` fired with no applicable policy. A rising `failOpen` rate is how you notice a broken adapter or a mass policy deletion that the allow/deny ratio alone would hide.
+
+### `beforeEvaluate` earns its keep
+
+DocDuck's callers currently have to pass `ownerId` and `status` on every check. Move that into the engine. Add `src/documents.ts`:
+
+```ts title="src/documents.ts"
+import type { IamPrimitives } from '@gentleduck/iam'
+
+export interface Document {
+  readonly id: string
+  readonly ownerId: string
+  readonly teamId: string
+  readonly status: 'draft' | 'published' | 'archived'
+}
+
+const store = new Map<string, Document>([
+  ['doc-1', { id: 'doc-1', ownerId: 'bob', teamId: 'team-acme', status: 'published' }],
+  ['doc-2', { id: 'doc-2', ownerId: 'alice', teamId: 'team-acme', status: 'published' }],
+  ['doc-3', { id: 'doc-3', ownerId: 'alice', teamId: 'team-acme', status: 'draft' }],
+  ['doc-4', { id: 'doc-4', ownerId: 'bob', teamId: 'team-globex', status: 'archived' }],
+])
+
+export async function findDocument(id: string): Promise<Document | undefined> {
+  return store.get(id)
+}
+
+export function documentAttributes(doc: Document): IamPrimitives.Attributes {
+  return { ownerId: doc.ownerId, teamId: doc.teamId, status: doc.status }
+}
+```
+
+Then the hook fills the attributes in, and callers pass only the ID:
+
+```ts
+async beforeEvaluate(request) {
+  if (request.resource.type !== 'document' || !request.resource.id) return request
+  const doc = await findDocument(request.resource.id)
+  if (!doc) return request
+  return {
+    ...request,
+    resource: {
+      ...request.resource,
+      attributes: { ...documentAttributes(doc), ...request.resource.attributes },
+    },
+  }
+}
+```
+
+The caller's own attributes spread last, so an explicit value still wins. Swap the `Map` for a database call in chapter 8 and nothing else changes - but memoise it when you do, because a batch of twelve UI checks runs this hook twelve times.
+
+## The five caches
 
 | Cache | Holds | Size |
 | --- | --- | --- |

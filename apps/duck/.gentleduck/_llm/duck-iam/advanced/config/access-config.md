@@ -73,7 +73,18 @@ export const access = createIam({ actions: ACTIONS, resources: RESOURCES })
 | `resources` | `readonly TResource[]` | The array you passed, by reference |
 | `scopes` | `readonly TScope[]` | `input.scopes ?? []` |
 | `roles` | `readonly TRole[]` | `input.roles ?? []` |
-| `defineRole(id)` | `RoleBuilder
+| `defineRole(id)` | `RoleBuilder<TAction, TResource, TRole, TScope, TContext>` | `id` constrained to `TRole` |
+| `definePolicy(id)` | `PolicyBuilder<TAction, TResource, TRole, TScope, TContext>` | `id` is a free `string` |
+| `defineRule(id)` | `RuleBuilder<TAction, TResource, TScope, TRole, TContext>` | `id` is a free `string`; note the swapped scope/role parameter order |
+| `when()` | `When<TAction, TResource, TRole, TScope, TContext>` | Fresh builder per call |
+| `createEngine(config)` | `IamEngine<TAction, TResource, TRole, TScope, TMode>` | `TMode` defaults to `'production'`, and is **not** inferred from `config.mode` |
+| `checks(arr)` | the same array, typed | Identity at runtime |
+| `validateRoles(roles)` | `IamValidate.IResult` | Takes the unconstrained `IRole[]`; forwards the declared vocabulary alongside it |
+| `validatePolicy(input)` | `IamValidate.IResult` | Takes `unknown`; forwards to the standalone `validatePolicy` |
+
+Full signatures and examples are on the [methods reference](/duck-iam/advanced/config/methods).
+
+## Optional-field behaviour
 
 The two branches per option are independent, which the `scopes/roles default to [] independently of one another` test pins directly. Concretely:
 

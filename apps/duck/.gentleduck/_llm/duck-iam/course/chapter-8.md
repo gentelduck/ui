@@ -90,7 +90,87 @@ export const engine = new IamEngine({ adapter, invalidator /* ...the rest */ })
 
 Without `secret`, envelopes are unsigned and **anyone with PUBLISH rights on the channel can wipe every instance's caches** - a cheap denial-of-service against your database. The invalidator warns once at construction when you omit it. With a secret, each envelope is signed `HMAC-SHA256(secret, canonicalJSON(payload))`, unverified envelopes are dropped, and a replay window bounds how long a captured envelope stays usable.
 
-`tenantId` is the multi-tenant shortcut: it appends `:tenant:
+`tenantId` is the multi-tenant shortcut: it appends `:tenant:<id>` to the channel so tenant A's revoke cannot wipe tenant B's caches. It is validated against `/^[A-Za-z0-9_-]{1,64}$/`, so an attacker-supplied tenant slug cannot inject a channel name.
+
+`onPublishError` matters more than it looks. A publish failure is non-fatal locally - the writing instance already dropped its own caches - but the broadcast is lost, so the other instances stay stale until TTL. A quiet Redis outage is a silent correctness drift; alert on it.
+
+The invalidation facets, local or broadcast:
+
+| Call | Drops |
+| --- | --- |
+| `engine.cache.invalidate()` | every cache and in-flight resolver |
+| `engine.cache.invalidateSubject(id)` | one subject's resolved roles and attributes |
+| `engine.cache.invalidatePolicies()` | cached policies, and the compiled table |
+| `engine.cache.invalidateRoles(roleId?)` | roles, the RBAC policy, affected subjects, and the compiled table |
+
+Each takes `{ broadcast?: boolean }`. Call `engine.dispose()` on shutdown to unsubscribe.
+
+## Step 4: metrics and health
+
+```ts title="src/access.ts"
+import { iamCreateMetricsAggregator } from '@gentleduck/iam/observability/metrics'
+
+export const metrics = iamCreateMetricsAggregator({ sampleSize: 2_000 })
+
+export const engine = new IamEngine({
+  adapter,
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  scopeMode: 'hierarchical',
+  // ...the rest of the step 2 config
+  hooks: {
+    ...hooks, // beforeEvaluate stays: drop it and every ownership rule reads an empty attribute bag
+    onMetrics: metrics.record,
+    onDeny: (request, decision) => auditLog.write({ subject: request.subject.id, reason: decision.reason }),
+    onError: (err, request) => logger.error({ err, subject: request.subject.id }, 'iam check failed'),
+    onMutation: (event) => auditLog.write(event),
+  },
+})
+```
+
+`metrics.record` closes over its own state and never reads `this`, so passing it unbound is safe. `onMutation` is the other half of the audit trail: `onDeny` records refused requests, `onMutation` records the writes that changed who could ask.
+
+```ts title="src/server.ts"
+import { engine, metrics } from './access'
+
+app.get('/metrics', (_req, res) => res.json({ ...metrics.snapshot(), caches: engine.stats.get() }))
+
+app.get('/healthz', async (_req, res) => {
+  const health = await engine.healthCheck()
+  res.status(health.ok ? 200 : 503).json(health)
+})
+
+await engine.preload({ validator: true })
+```
+
+`metrics.snapshot()` returns `total`, `allow`, `deny`, `failOpen`, `p50`, `p95`, `p99`, `max`, and `samples` over a rolling ring buffer (default 1000 samples, evicting oldest). `reset()` zeroes it.
+
+`failOpen` counts allow verdicts attributable **solely** to `defaultEffect: 'allow'` - no policy actually fired. On a correctly configured deny-by-default engine it is always zero, which makes it the cheapest possible alarm for a policy set that silently failed to load.
+
+`engine.stats.get()` returns `{ hits, misses, size }` for each of the five caches - `policies`, `roles`, `rbacPolicy`, `mergedPolicies`, `subjects`. Counters accumulate from construction; `engine.stats.reset()` zeroes them. A collapsing `subjects` hit rate usually means `maxCacheSize` is too small for your active user count.
+
+`engine.healthCheck()` does one timed adapter round-trip (`listPolicies`) and returns `{ ok, adapter: 'ok' | 'fail', cacheHitRate, adapterLatencyMs, lastError? }`. It is cheap enough for a readiness probe, and `ok: false` tells your orchestrator to pull the instance.
+
+`engine.preload()` warms the merged-policy cache and builds the compiled table concurrently, so the first request after boot does not pay the full load-and-index cost. `{ validator: true }` also loads the lazy 12 KB validator chunk up front - worth it on any instance that serves admin writes, skippable on read-only instances.
+
+## Step 5: validate before you ship
+
+The validator is a separate entry point on purpose, so apps that never write policies do not pay for it:
+
+```ts title="scripts/check-policies.ts"
+import { validatePolicy, validateRoles } from '@gentleduck/iam/core/validate'
+
+const result = validateRoles(roles)
+if (!result.valid) {
+  for (const issue of result.issues) console.error(`${issue.type} ${issue.code}: ${issue.message}`)
+  process.exit(1)
+}
+```
+
+`validateRoles` and `validatePolicy` come from `@gentleduck/iam/core/validate`, never from `@gentleduck/iam`. The root export deliberately omits them so the validator chunk stays out of your runtime bundle.
+
+`IamValidate.IResult` is `{ valid, issues }`, where each issue carries a `type` of `'error'` or `'warning'` plus a `code`. Warnings do not set `valid: false` - decide in your own script whether to fail on them. The admin router runs the same validator before every write and throws on an error-level issue, so a bad policy never reaches the database through that path.
+
+## What just happened
 
 None of your policies, roles, or checks changed in this chapter. Only what surrounds them did - where the data lives, how stale it can get, and how you find out when it breaks. That is the point of the adapter interface.
 

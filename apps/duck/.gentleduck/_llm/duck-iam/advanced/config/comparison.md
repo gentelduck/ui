@@ -41,7 +41,7 @@ The right-hand path is the reason the typed config exists. A misspelled action d
 ### Neither
 
 * Logic bugs. Nothing tells you a rule should have been `deny` rather than `allow`, or that a priority is inverted.
-* Cross-validation of a ``-path, so mismatched pairs compile.
+* Cross-validation of a `$`-reference against the field it is compared to. The value type is a union of the field's type and every `$`-path, so mismatched pairs compile.
 * Circular role inheritance as a *failure*. `validateRoles()` reports `CIRCULAR_INHERIT` as a warning and leaves `valid` at `true`.
 * Stale cached decisions, concurrent attribute writes, or permissions modelled at the wrong granularity.
 

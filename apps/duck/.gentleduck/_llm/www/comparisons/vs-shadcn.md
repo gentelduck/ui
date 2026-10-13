@@ -254,7 +254,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90',
+        default: 'bg-primary text-primary-foreground shadow-xs hover:bg-primary/90',
         outline: 'border border-input bg-background shadow-xs hover:bg-accent',
         destructive: 'bg-destructive/90 text-destructive-foreground shadow-xs hover:bg-destructive/70',
         ghost: 'text-accent-foreground hover:bg-accent',
@@ -287,7 +287,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={loading || props.disabled}
         ref={ref}
         {...props}>
-        {loading ? <Loader className="animate-spin" /> : icon}
+        {loading ? <Loader className="animate-spin motion-reduce:animate-none" /> : icon}
         <Slottable>{children}</Slottable>
       </Comp>
     )

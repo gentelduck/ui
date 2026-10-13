@@ -66,7 +66,120 @@ The constructor is synchronous and does no I/O, but it does validate `init.path`
 | `path` | `string` | required | **Absolute** path of the JSON store. Rejected if it is not absolute, or if any segment is `..`, or if `rootDir` is set and it escapes it. The file is created on first write. |
 | `rootDir` | `string` | `undefined` | Absolute containment root. When set, `path` must resolve inside it, re-checked through `realpath` on every read and write. When omitted the adapter accepts any absolute path and logs one `console.warn` per process. |
 | `fs` | `IamFile.IFS` | required | The filesystem driver. Pass `await import('node:fs/promises')` in Node or Bun, or any object with the same shape. |
-| `onPolicyError` | `(err: Error, ctx: { adapter: 'file'; rowId: string }) => void` | `undefined` | Called for every row dropped at load time. Without it the adapter falls back to `console.warn` with the message `[@gentleduck/iam:file] dropped malformed row "
+| `onPolicyError` | `(err: Error, ctx: { adapter: 'file'; rowId: string }) => void` | `undefined` | Called for every row dropped at load time. Without it the adapter falls back to `console.warn` with the message `[@gentleduck/iam:file] dropped malformed row "<id>": <reason>`. |
+
+`rootDir` is what stops a caller-supplied path component from steering the store somewhere else, and it is the only defence against a symlink swapped in after the first read. Since 2.1.0 the containment check runs on **every** read and write, not just the first.
+
+### `IamFile.IFS`
+
+The minimal `node:fs/promises` surface the adapter uses. `realpath` is optional; when it is absent - as in most test fakes - the symlink half of the containment check is skipped and only the constructor's textual check applies.
+
+```ts
+export interface IFS {
+  readFile(path: string, encoding: 'utf8'): Promise<string>
+  writeFile(path: string, data: string, encoding: 'utf8'): Promise<void>
+  /** Always called WITHOUT options - the immediate parent must already exist. */
+  mkdir(path: string, options?: { recursive?: boolean }): Promise<unknown>
+  /** Optional. Used for the rootDir symlink check when available. */
+  realpath?(path: string): Promise<string>
+  /** Optional. Its absence turns the tmp-file-plus-rename write into an in-place overwrite. */
+  rename?(from: string, to: string): Promise<void>
+}
+```
+
+Both optional members disable a protection when absent, which is the reason to pass the real `node:fs/promises` rather than a hand-rolled driver in production.
+
+An in-memory driver, the shape the package's own tests use:
+
+```ts
+import type { IamFile } from '@gentleduck/iam/adapters/file'
+
+function makeMemoryFS(initial?: string): IamFile.IFS {
+  const files = new Map<string, string>()
+  if (initial) files.set('/store.json', initial)
+  return {
+    async readFile(p) {
+      const v = files.get(p)
+      if (v == null) throw Object.assign(new Error('ENOENT'), { code: 'ENOENT' })
+      return v
+    },
+    async writeFile(p, data) {
+      files.set(p, data)
+    },
+    async mkdir() {},
+  }
+}
+
+const adapter = new IamFileAdapter({ path: '/store.json', fs: makeMemoryFS('{}'), rootDir: '/' })
+```
+
+The same seam takes an S3-backed or encrypted driver. Give it `rename` and the adapter does the atomic swap itself - see [Write durability](#write-durability).
+
+### `IamFile.IState`
+
+The on-disk shape, exported so you can type a migration script. It is not a wire API and the adapter does not version it.
+
+```ts
+export interface IState<TAction extends string, TResource extends string, TRole extends string, TScope extends string> {
+  policies: Record<string, AccessControl.IPolicy<TAction, TResource, TRole>>
+  roles: Record<string, AccessControl.IRole<TAction, TResource, TRole, TScope>>
+  assignments: Record<string, Array<{ role: TRole; scope?: TScope }>>
+  attributes: Record<string, IamPrimitives.Attributes>
+  /** Runtime only, never serialised: subject id to the raw corrupt value, written back verbatim on every flush. */
+  corruptAttributes?: Map<string, unknown>
+}
+```
+
+## On-disk format
+
+One JSON object with four maps, written with `JSON.stringify(state, null, 2)` so it stays diffable and hand-editable.
+
+```json
+{
+  "policies": {
+    "allow-read": {
+      "id": "allow-read",
+      "name": "Allow Read",
+      "algorithm": "deny-overrides",
+      "rules": [
+        {
+          "id": "r1",
+          "effect": "allow",
+          "priority": 10,
+          "actions": ["read"],
+          "resources": ["post"],
+          "conditions": { "all": [] }
+        }
+      ]
+    }
+  },
+  "roles": {
+    "viewer": {
+      "id": "viewer",
+      "name": "Viewer",
+      "permissions": [{ "action": "read", "resource": "post" }]
+    }
+  },
+  "assignments": {
+    "user-1": [{ "role": "viewer" }, { "role": "editor", "scope": "org-acme" }]
+  },
+  "attributes": {
+    "user-1": { "department": "engineering", "status": "active" }
+  }
+}
+```
+
+Points that matter when you edit it by hand:
+
+* **Both maps are keyed by id**, and the adapter reads rows back by their *map key*, not by the `id` field inside the row. Keep them the same.
+* **Assignments carry the scope inline.** An entry with no `scope` is a global grant and surfaces through `getSubjectRoles`; an entry with a `scope` surfaces only through `getSubjectScopedRoles`. A `scope` must be a non-empty string when present.
+* **Missing top-level keys are fine.** `{}` is a valid store; every absent map defaults to empty with no warning.
+* **A hand edit is picked up on the next load, not immediately.** Once the adapter has read the file it serves from its in-memory cache until the process restarts, and the next write overwrites your edit with the cached state. Edit while the process is stopped.
+* **A damaged attributes row is written back verbatim.** The `corruptAttributes` marker is runtime-only and never reaches the file; the raw value stays exactly as it was on every flush. Otherwise an unrelated write would quietly repair a store the adapter had refused to read.
+
+## Loading and validation
+
+Every read goes through `_loadState`, which is where the adapter decides what to trust. Not every problem is treated the same way: a missing file is normal, a damaged row is dropped, and a damaged *file* refuses to load.
 
 Reading the branches from the top: the containment check runs first, so a hostile symlink is rejected before any bytes are read. `ENOENT` is the only recoverable read error - a genuinely missing file becomes an empty store. Any other errno (`EACCES`, `EISDIR`, `EIO`) throws `IAM_FILE_READ_FAILED` (`meta: { code, detail }`) rather than presenting an empty store, because an empty store means "deny everything" under `defaultEffect: 'deny'` and "allow everything" under `'allow'`. A file that exists but is not parseable JSON, or whose root is not an object, throws `IAM_FILE_STORE_CORRUPT` (`meta: { path, reason: 'parse-failed' | 'not-object', got? }`) and - crucially - does **not** populate the cache, so a later `_flush` cannot overwrite a recoverable file. Only individual rows are dropped silently-but-reported.
 

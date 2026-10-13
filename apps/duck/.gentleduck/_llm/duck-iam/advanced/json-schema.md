@@ -186,8 +186,8 @@ export const appPolicySchema = {
       properties: {
         ...POLICY_JSON_SCHEMA.$defs.rule.properties,
         // Keep maxItems: replacing the property drops the cap the original carried.
-        actions: { type: 'array', minItems: 1, maxItems: 100, items: { <MathMl mathml="<span class=&quot;math-error&quot;>$ref: '#/$</span>"/>defs/action' } },
-        resources: { type: 'array', minItems: 1, maxItems: 100, items: { <MathMl mathml="<span class=&quot;math-error&quot;>$ref: '#/$</span>"/>defs/resource' } },
+        actions: { type: 'array', minItems: 1, maxItems: 100, items: { $ref: '#/$defs/action' } },
+        resources: { type: 'array', minItems: 1, maxItems: 100, items: { $ref: '#/$defs/resource' } },
       },
     },
   },
@@ -197,8 +197,8 @@ export const appPolicySchema = {
       type: 'object',
       additionalProperties: false,
       properties: {
-        actions: { type: 'array', items: { <MathMl mathml="<span class=&quot;math-error&quot;>$ref: '#/$</span>"/>defs/action' } },
-        resources: { type: 'array', items: { <MathMl mathml="<span class=&quot;math-error&quot;>$ref: '#/$</span>"/>defs/resource' } },
+        actions: { type: 'array', items: { $ref: '#/$defs/action' } },
+        resources: { type: 'array', items: { $ref: '#/$defs/resource' } },
         roles: { type: 'array', items: { type: 'string' } },
       },
     },

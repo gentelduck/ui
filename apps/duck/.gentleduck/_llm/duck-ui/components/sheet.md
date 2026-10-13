@@ -111,7 +111,7 @@ import {
 
 ### Side
 
-Use the `side` property to `` to indicate the edge of the screen where the component will appear. The values can be `top`, `right`, `bottom` or `left`. The default is `right`; `left` and `right` mirror in RTL.
+Use the `side` property to `<SheetContent />` to indicate the edge of the screen where the component will appear. The values can be `top`, `right`, `bottom` or `left`. The default is `right`; `left` and `right` mirror in RTL.
 
 ```tsx title="components/sheet-2.tsx"
 // import from your project: import Demo from '@/components/sheet-2'

@@ -10,16 +10,6 @@ DocDuck needs more than a viewer. An **editor** writes documents, an **admin** m
 
 ## The hierarchy
 
-delete document, archive document, manage team, manage user"]
-  E["editorcreate document, update document, share document"]
-  V["viewerread document, read team"]
-  A --> |"inherits"| E
-  E --> |"inherits"| V
-  CAROL["carol"] -.-> |"assigned"| A
-  BOB["bob"] -.-> |"assigned"| E
-  ALICE["alice"] -.-> |"assigned"| V`}
-/>
-
 `editor` inherits `viewer`, `admin` inherits `editor`. Carol holds only `admin`, but the engine resolves her effective roles to `admin`, `editor`, `viewer` and collects the permissions of all three. Inheritance points *down* the diagram, from `admin` to `editor` to `viewer`; permissions travel back *up* the same edges.
 
 ## Building it
@@ -123,11 +113,6 @@ to confirm an inheritance chain is wired the way you think it is.
 ## How inheritance resolves
 
 Two separate walks happen, and they answer different questions.
-
-gated on subject.roles contains admin"]
-  end
-  EFF --> PERM`}
-/>
 
 `resolveEffectiveRoles` fills `subject.roles`. `collectPermissions` runs inside `rolesToPolicy` and emits the rules. Both use a `visited` set, so a cycle - `a` inherits `b`, `b` inherits `a` - is skipped rather than recursed into.
 

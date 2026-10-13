@@ -65,10 +65,20 @@ There is no shorthand for `nin`, `not_contains`, `starts_with`, `ends_with`, `no
 | `scopes(...ids)` | `scope in [ids]` |
 | `isOwner(ownerField = 'resource.attributes.ownerId')` | `ownerField eq '$subject.id'` |
 | `resourceType(...types)` | `resource.type in [types]` |
-| `attr(key, op, value?)` | `subject.attributes.
+| `attr(key, op, value?)` | `subject.attributes.<key> op value` |
+| `resourceAttr(key, op, value?)` | `resource.attributes.<key> op value` |
+| `env(key, op, value?)` | `environment.<key> op value` |
+
+`attr`, `resourceAttr`, and `env` accept nested keys (`'profile.tier'`) against nested attribute bags (since 2.0.0). With a typed context they autocomplete and type-check the value; `resourceAttr` narrows to the resource selected by `of()`. See [type-safe roles](/duck-iam/core/roles/type-safe) and [typed context](/duck-iam/advanced/config/context).
+
+By default every path parameter accepts any string. Pass a `context` phantom field to `createIam()` to get autocompletion and type-checked values on `check()`, `attr()`, `resourceAttr()`, `env()`, and the shorthand methods. See [typed context](/duck-iam/advanced/config/context).
+
+## How one condition is evaluated
+
+Each leaf goes through the same steps. Knowing them explains every edge case below.
 
 * `RF`: an invalid or missing path resolves to `null` and never throws (see "Field resolution"). No guard runs on the field side; each operator's own `typeof` test decides.
-* `RV`: only a string value starting with ``-variable references](/duck-iam/core/policies/dollar-variables).
+* `RV`: only a string value starting with `$` is resolved; arrays are never resolved element-wise. See [`$`-variable references](/duck-iam/core/policies/dollar-variables).
 * `GD` is the operand-type guard. It runs at evaluation time and not only in the validator, because `validatePolicy` guards `savePolicy` and `import` while nothing guards a row that was seeded through an adapter constructor, migrated, or written by direct SQL. Both sides read the same `OPERAND_TYPES` table, so write-time and read-time cannot drift.
 * `exists` and `not_exists` are valueless and skip `GD` entirely: any `value` on them, including a `$`-reference that resolves to nothing, is ignored rather than refused.
 

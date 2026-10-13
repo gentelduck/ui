@@ -40,7 +40,55 @@ The returned `IamConfig.IAccessConfig` carries the declared arrays back (`access
 ## How the generics reach RoleBuilder
 
 * `IDX` is the whole trick: a tuple declared `as const` indexed by `number` becomes the union of its members.
-* `RB` is where the order changes. `createIam` builds `RoleBuilder
+* `RB` is where the order changes. `createIam` builds `RoleBuilder<TAction, TResource, TRole, TScope, TContext>`, but the standalone factory declares its own parameters as `defineRole<TRole, TAction, TResource, TScope, TContext>` so that `TRole` can be inferred from the argument. If you ever write the type arguments by hand, check which of the two you are calling.
+* `GW` threads the resource literal `R` into the `When` builder as `TActiveResource`, which is what powers per-resource attribute narrowing below.
+* `RL` is why `w.role('admin')` is checked: `When.role()` takes `TRole`, not `string`.
+
+## What is constrained
+
+```ts
+const viewer = access
+  .defineRole('viewer')      // ok: 'viewer' is in roles
+  .name('Viewer')
+  .grant('read', 'post')     // ok
+  .grant('read', 'comment')  // ok
+  .build()
+
+// access.defineRole('intern')            // error: not assignable to 'viewer' | 'editor' | 'admin'
+// access.defineRole('viewer').grant('fly', 'post')     // error: 'fly' is not an action
+// access.defineRole('viewer').grant('read', 'invoice') // error: 'invoice' is not a resource
+// access.defineRole('viewer').grant('read', 'post', 'org-9') // error: 'org-9' is not a scope
+```
+
+The same unions reach every other builder from the same `access` object, so a role ID used in a policy target or a condition is checked too:
+
+```ts
+const ownerPolicy = access
+  .definePolicy('owner-only')
+  .algorithm('deny-overrides')
+  .rule('admin-override', (r) =>
+    r
+      .allow()
+      .on('*')
+      .of('*')
+      .when((w) => w.role('admin')), // ok: 'admin' is in roles
+      // .when((w) => w.role('manager')) // error: not a declared role
+  )
+  .build()
+```
+
+## Where the guarantee stops
+
+1. **`inherits()` accepts any string.** Its parameter is `(TRole | (string & {}))[]`, deliberately, so a role can inherit an ID that only exists in the database. Typos in `inherits()` are found by `validateRoles()` as `DANGLING_INHERIT`, not by the compiler.
+2. **`IRole.scope` is typed `TScope` while `IPermission.scope` is `TScope | '*'`.** Both read `'*'` as global at runtime, so under a narrowed scope union `grant('read', 'post', '*')` type-checks and `.scope('*')` does not. Leave `.scope()` off for a global role; omitting it is the same thing at runtime.
+3. **Data loaded from an adapter is unchecked.** Types describe what you wrote, not what a database returned. Use `parseRoleRow()` from `@gentleduck/iam/core/validate` on untrusted rows.
+4. **An open attribute bag re-opens the path types.** With the default context, `check()`, `attr()`, `resourceAttr()`, and `env()` accept any string, because `DotPath.FlexibleDotPaths` falls back to `string` whenever the context contains an index signature.
+
+`grantRead()` and `grantCRUD()` used to be a fifth hole - they cast straight past `TAction`, so a config declaring `actions: ['view', 'edit']` still compiled a `read` grant that no request could match. Their parameter types are now conditional on the action union and collapse to `never`, so the mismatch is a compile error at the call site. Export `IAM_CRUD_ACTIONS` and spell the list as `[...IAM_CRUD_ACTIONS, 'publish']` to keep `grantCRUD` callable.
+
+## Typed dot-paths
+
+Path types come from `src/core/types/dot-path.ts`. `DotPath.DotPaths<T>` walks an object type and produces the union of every reachable path; `DotPath.FlexibleDotPaths<T>` is that union, widened with `string` when `T` contains an open index signature.
 
 `DotPath.IDefaultContext` declares `subject.attributes`, `resource.attributes`, and `environment` as `IAnyAttributes`, which is an index signature - so the default is the `OPEN` branch. Declaring those bags concretely moves you to `CLOSED`, where a mistyped path fails to compile and the operand value is checked against the type at that path. `$`-references are typed the same way through `DotPath.DollarPaths<TContext>`; see [`$`-variable references](/duck-iam/core/policies/dollar-variables) and [typed context](/duck-iam/advanced/config/context).
 

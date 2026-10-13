@@ -96,7 +96,7 @@ import {
 
 ### Sizes
 
-To set the size of the items, you can use the `basis` utility class on the ``.
+To set the size of the items, you can use the `basis` utility class on the `<CarouselItem />`.
 
 ```tsx title="components/carousel-2.tsx"
 // import from your project: import Demo from '@/components/carousel-2'
@@ -160,10 +160,10 @@ export default function Demo() {
 
 ### Spacing
 
-To set the spacing between the items, we use a `pl-[VALUE]` utility on the `` and a negative `-ml-[VALUE]` on the ``.
+To set the spacing between the items, we use a `pl-[VALUE]` utility on the `<CarouselItem />` and a negative `-ml-[VALUE]` on the `<CarouselContent />`.
 
 } className="mt-6">
-  **Why:** I have been using the `gap` property or a `grid` layout on the `   ` but it required a lot of math and mental effort to get the
+  **Why:** I have been using the `gap` property or a `grid` layout on the `   <CarouselContent />` but it required a lot of math and mental effort to get the
   spacing right. I found `pl-[VALUE]` and `-ml-[VALUE]` utilities much easier to
   use.
 

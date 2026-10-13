@@ -281,14 +281,14 @@ It doesn't make sense to combine all of these variations into a single component
 
 So instead of a data-table component, I thought it would be more helpful to provide a guide on how to build your own.
 
-We'll start with the basic `` component and build a complex data table from scratch.
+We'll start with the basic `<Table />` component and build a complex data table from scratch.
 
 } className="mt-4">
   **Tip:** If you find yourself using the same table in multiple places in your app, you can always extract it into a reusable component.
 
 ## Table of Contents
 
-This guide will show you how to use [TanStack Table](https://tanstack.com/table) and the `` component to build your own custom data table. We'll cover the following topics:
+This guide will show you how to use [TanStack Table](https://tanstack.com/table) and the `<Table />` component to build your own custom data table. We'll cover the following topics:
 
 * [Basic Table](#basic-table)
 * [Row Actions](#row-actions)
@@ -301,7 +301,7 @@ This guide will show you how to use [TanStack Table](https://tanstack.com/table)
 
 ## Installation
 
-1. Add the `` component to your project:
+1. Add the `<Table />` component to your project:
 
 ```bash
 npx @gentleduck/cli add table
@@ -357,7 +357,7 @@ app
 I'm using a Next.js example here but this works for any other React framework.
 
 * `columns.tsx` (client component) will contain our column definitions.
-* `data-table.tsx` (client component) will contain our `` component.
+* `data-table.tsx` (client component) will contain our `<DataTable />` component.
 * `page.tsx` (server component) is where we'll fetch data and render our table.
 
 ## Basic Table
@@ -404,9 +404,9 @@ export const columns: ColumnDef<Payment>[] = [
   formatted, sorted and filtered.
   
 
-  ### `` component
+  ### `<DataTable />` component
 
-  Next, we'll create a `` component to render our table.
+  Next, we'll create a `<DataTable />` component to render our table.
 
   ```tsx showLineNumbers title="app/payments/data-table.tsx"
   "use client"
@@ -492,9 +492,9 @@ export const columns: ColumnDef<Payment>[] = [
   ```
 
   }>
-    **Tip**: If you find yourself using `` in multiple places, this is the component you could make reusable by extracting it to `components/ui/data-table.tsx`.
+    **Tip**: If you find yourself using `<DataTable />` in multiple places, this is the component you could make reusable by extracting it to `components/ui/data-table.tsx`.
 
-    ``
+    `<DataTable columns={columns} data={data} />`
   
 
   ### Render the table
@@ -559,11 +559,11 @@ You can use the same approach to format other cells and headers.
 
 ## Row Actions
 
-Let's add row actions to our table. We'll use a `` component for this.
+Let's add row actions to our table. We'll use a `<Dropdown />` component for this.
 
 ### Update columns definition
 
-Update our columns definition to add a new `actions` column. The `actions` cell returns a `` component.
+Update our columns definition to add a new `actions` column. The `actions` cell returns a `<Dropdown />` component.
 
 ```tsx showLineNumbers title="app/payments/columns.tsx" {4,6-14,18-45}
 "use client"
@@ -621,7 +621,37 @@ You can access the row data using `row.original` in the `cell` function. Use thi
 
 Next, we'll add pagination to our table.
 
-### Update `` component and the `table.previousPage()`, `table.nextPage()` API methods.
+### Update `<DataTable>`
+
+```tsx showLineNumbers title="app/payments/data-table.tsx" {5,17}
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table"
+
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  })
+
+  // ...
+}
+```
+
+This will automatically paginate your rows into pages of 10. See the [pagination docs](https://tanstack.com/table/v8/docs/api/features/pagination) for more information on customizing page size and implementing manual pagination.
+
+### Add pagination controls
+
+We can add pagination controls to our table using the `<Button />` component and the `table.previousPage()`, `table.nextPage()` API methods.
 
 ```tsx showLineNumbers title="app/payments/data-table.tsx" {1,15,21-39}
 import { Button } from "@/components/ui/button"

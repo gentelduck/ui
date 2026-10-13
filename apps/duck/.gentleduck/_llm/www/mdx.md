@@ -74,25 +74,7 @@ pnpm add your-package
 Use this to render an interactive preview from the registry index.
 
 ```mdx
-```tsx title="components/button-1.tsx"
-// import from your project: import Demo from '@/components/button-1'
-'use client'
-
-export default function Demo() {
-  const [open, setOpen] = React.useState}
-            isCollapsed={open}
-            loading={false}
-            onClick={() => setOpen((prev) => !prev)}
-            size="default">
-            Button
-
-            +i
-
-          <p>Advanced button</p>
-
-  )
-}
-```
+<ComponentPreview name="button-1" description="Basic button example." />
 ```
 
 ### ComponentSource
@@ -100,7 +82,7 @@ export default function Demo() {
 Use this to render source from a file or folder.
 
 ```mdx
-
+<ComponentSource path="packages/registry-ui/src/button" />
 ```
 
 * Path is resolved from monorepo root in this docs app pipeline.

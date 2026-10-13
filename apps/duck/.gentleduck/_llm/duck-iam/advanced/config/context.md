@@ -81,7 +81,7 @@ access
 
 ## How dot-path.ts derives the paths
 
-`DotPath.DotPaths
+`DotPath.DotPaths<T>` walks `T` once and produces a string-literal union. Each property takes exactly one branch.
 
 The compile-time assertions in `src/core/types/__tests__/types.test.ts` pin every branch:
 
@@ -90,7 +90,93 @@ The compile-time assertions in `src/core/types/__tests__/types.test.ts` pin ever
 | `{ a: { b: string }; c: number }` | `'a' \| 'a.b' \| 'c'` | Objects emit themselves and recurse |
 | `{ roles: string[] }` | `'roles'` | Arrays are leaves, never indexed |
 | `{ fn: () => void; a: string }` | `'a'` | Functions are skipped entirely |
-| `Record
+| `Record<string, string>` | `never` | An index signature yields no literal paths |
+
+`DotPath.PathValue<T, P>` is the inverse: it splits `P` on the first dot and walks down, returning `never` when a segment is not a key of the current level. `PathValue<{ a: { b: string } }, 'a.nope'>` is `never`.
+
+### Closed contexts versus open bags
+
+`DotPath.FlexibleDotPaths<T>` is what the builders actually use for `check`, `eq`, `neq`, `in`, `contains`, `exists`, `gt`, `gte`, `lt`, `lte`, and `matches`. It checks `HasOpenIndex<T>`, which recurses through every branch of `T` looking for a string index signature:
+
+* **No open bag anywhere** - the type is `DotPaths<T>` alone. A path that is not in your context is a compile error.
+* **Any open bag** - the type is `DotPaths<T> | (string & {})`. Known paths still autocomplete, but arbitrary strings are accepted.
+
+`DotPath.IDefaultContext` uses `IAnyAttributes` for `subject.attributes`, `resource.attributes`, and `environment`, so it has open bags by construction. That is why the default, context-free config accepts any field path: not because checking is switched off, but because the default context is open.
+
+### Attribute-bag paths are derived differently
+
+`attr()`, `resourceAttr()`, and `env()` take a key *inside* a bag, not a full path, so they use the internal `AttrPaths` helper rather than `DotPaths`. Two differences matter:
+
+* `AttrPaths` widens to `string` for an open bag instead of collapsing to `never`. `DotPath.EnvAttrs<{ environment: DotPath.IAnyAttributes }>` is `string`.
+* `AttrPaths` recurses only into *plain* objects. Arrays, functions, `Date`, `Map`, and `Set` are leaves. `DotPath.SubjectAttrs<{ subject: { attributes: { profile: { tier: string } } } }>` is `'profile' | 'profile.tier'`.
+
+The value side uses `DotPath.AttrValue`, which strips `undefined` before resolving, so an optional `yearsExperience?: number` narrows to `number` rather than falling back to `AttributeValue`.
+
+### Depth limits
+
+There is **no numeric depth cap in `dot-path.ts`**. `DotPaths`, `PathValue`, `AttrPaths`, and `HasOpenIndex` are all unbounded recursive conditional types; the ceiling is TypeScript's own instantiation budget, and a context nested deeply enough surfaces as `Type instantiation is excessively deep and possibly infinite` rather than a duck-iam error. In practice contexts are three or four levels deep and never approach it.
+
+The depth limits that do exist are at runtime and belong to other parts of the engine:
+
+| Limit | Value | Where |
+|---|---|---|
+| `MAX_CONDITION_DEPTH` | `10` | Condition-group nesting; a deeper tree fails closed and evaluates to `false` |
+| `MAX_INHERITANCE_DEPTH` | `32` | Role `inherits` expansion |
+| `PATH_CACHE_MAX` | `10_000` | Entries in the resolved path-segment cache |
+
+## Per-resource attribute narrowing
+
+Add a `resourceAttributes` map to your context and `resourceAttr()` narrows its keys to whichever resource the enclosing rule selected with `.of()`.
+
+```ts
+interface AppContext extends DotPath.IDefaultContext {
+  resourceAttributes: {
+    post: { ownerId: string; status: 'draft' | 'published' | 'archived'; title: string }
+    comment: { ownerId: string; body: string }
+    user: { email: string; status: 'active' | 'banned' }
+    dashboard: { name: string }
+  }
+}
+```
+
+```ts
+// .of('post') - resourceAttr accepts 'ownerId' | 'status' | 'title'
+access
+  .definePolicy('post-title')
+  .rule('require-title', (r) =>
+    r.deny().on('create', 'update').of('post').when((w) => w.not((n) => n.resourceAttr('title', 'exists'))),
+  )
+  .build()
+
+// .of('comment') - resourceAttr accepts 'ownerId' | 'body'
+access
+  .definePolicy('comment-body')
+  .rule('require-body', (r) =>
+    r.deny().on('create').of('comment').when((w) => w.not((n) => n.resourceAttr('body', 'exists'))),
+  )
+  .build()
+
+// .of('*') - resourceAttr accepts the merged union of every resource's keys
+access
+  .definePolicy('global-owner')
+  .rule('deny-non-owner', (r) =>
+    r.deny().on('delete').of('*').when((w) => w.resourceAttr('ownerId', 'neq', '$subject.id')),
+  )
+  .build()
+```
+
+The same narrowing applies inside `grantWhen` on a role, which takes the resource as its second argument:
+
+```ts
+access
+  .defineRole('member')
+  .grantWhen('update', 'post', (w) => w.isOwner().resourceAttr('status', 'eq', 'draft'))
+  .build()
+```
+
+Without a `resourceAttributes` map, `resourceAttr()` falls back to `DotPath.ResourceAttrShape` - the plain `resource.attributes` type from your context - for every resource.
+
+## How TContext reaches the condition builder
 
 `.of()` is the pivot. Its signature is `of<R extends TResource | '*'>(...resources: R[]): RuleBuilder<TAction, TResource, TScope, TRole, TContext, R>` - it returns a *new* builder type whose sixth parameter is the resource you named, and the `when` callback hands you a `When` carrying that same parameter. `DotPath.ResolvedResourceAttrs` then picks the matching entry out of `resourceAttributes`; for `'*'` (and for any resource not in the map) it falls back to `MergedResourceAttrs`, which collects every key declared on any resource and unions each key's value types.
 

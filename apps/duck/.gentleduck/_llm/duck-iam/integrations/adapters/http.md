@@ -36,7 +36,47 @@ const engine = new IamEngine({ adapter })
 | `baseUrl` | `string` | required | Base URL of your IAM API. Validated at construction (see [Base URL validation](#base-url-validation)); a single trailing `/` is stripped. Every path below is appended to it verbatim. |
 | `allowedHosts` | `string[]` | `undefined` | Host allowlist for `baseUrl`. Omitted, any host is accepted and a one-time `console.warn` fires. |
 | `allowPrivateHosts` | `boolean` | `false` | Permits a `baseUrl` whose hostname is a private, loopback, or link-local IP literal. |
-| `headers` | `Record
+| `headers` | `Record<string, string>` or `() => Record<string, string> \| Promise<…>` | `{}` | Static headers, or a function awaited before every request. This is how the adapter authenticates. |
+| `fetch` | `typeof globalThis.fetch` | `globalThis.fetch` | Custom fetch: a polyfill, or middleware for logging, tracing, or mTLS. |
+| `timeoutMs` | `number >= 0` | `5_000` | Per-request abort. `0` disables it and leaves only the engine's `adapterTimeoutMs`. |
+| `retries` | integer `>= 0` | `2` | Retries on a transient failure, so 3 attempts total. |
+| `backoffMs` | `number >= 0` | `100` | Base for exponential backoff: attempt N waits `backoffMs * 2^(N-1)` plus jitter. |
+| `circuitBreakerThreshold` | integer `>= 1` | `5` | Consecutive failures before the circuit opens. It cannot be disabled through configuration; set a high threshold instead. |
+| `circuitBreakerCooldownMs` | `number >= 0` | `30_000` | How long the circuit stays open before allowing a half-open probe. |
+| `onPolicyError` | `(err, ctx: { adapter: 'http'; rowId: string }) => void` | `console.warn` | Called for every row the API returned that fails shape validation, and for a list endpoint that answers a non-array. |
+
+### The numeric options are validated at construction
+
+`undefined` takes the default; anything else must be a number the adapter can act on, and a value outside the bounds above throws `IAM_HTTP_OPTION_INVALID` immediately (`meta: { field: 'retries', got: 'null', constraint: 'finite integer >= 0' }`). The failures being guarded against were severe and silent. `retries: NaN` made the retry loop's condition false on the first evaluation, so the adapter issued **no request at all** and then threw the `lastError` it had never assigned. `timeoutMs: NaN` is the same shape one layer down: `setTimeout(fn, NaN)` fires on the next tick, so every request aborts before it can answer. `NaN` arrives the ordinary way, from `Number(process.env.IAM_HTTP_RETRIES)` on an unset variable.
+
+The `IamHttp.IConfig` docblock still says "Set to `0` to disable". The constructor is what runs, and it reads the field with `{ integer: true, min: 1 }`, so `0` throws `IAM_HTTP_OPTION_INVALID` (`meta: { field: 'circuitBreakerThreshold', got: '0', constraint: 'finite integer >= 1' }`). There is an internal disable path, but no accepted config value reaches it. To effectively turn the breaker off, set a threshold higher than any burst you expect.
+
+## Wire protocol
+
+Fourteen endpoints, all relative to `baseUrl`. Every path segment interpolated from an id is `encodeURIComponent`-escaped. Every request carries `Content-Type: application/json`.
+
+| Method | Path | Request body | Success response | Notes |
+| --- | --- | --- | --- | --- |
+| `GET` | `/policies` | — | JSON array of `AccessControl.IPolicy` | A non-array body is reported once and treated as `[]`. |
+| `GET` | `/policies/{id}` | — | one `IPolicy`, or `404` | `404` maps to `null`, the interface's "not found". |
+| `PUT` | `/policies` | the full `IPolicy` | any 2xx; body ignored | Upsert keyed on `policy.id`. The id is in the body, not the path. |
+| `DELETE` | `/policies/{id}` | — | any 2xx; body ignored | Must be idempotent: a `404` here **throws**, it is not treated as success. |
+| `GET` | `/roles` | — | JSON array of `AccessControl.IRole` | As `/policies`. |
+| `GET` | `/roles/{id}` | — | one `IRole`, or `404` | `404` maps to `null`. |
+| `PUT` | `/roles` | the full `IRole` | any 2xx | Upsert keyed on `role.id`. |
+| `DELETE` | `/roles/{id}` | — | any 2xx | Idempotent, **and your server must cascade**: strip the deleted role from every subject's assignments. |
+| `GET` | `/subjects/{id}/roles` | — | JSON array of role-id strings | **Unscoped roles only.** See the contract callout below. |
+| `GET` | `/subjects/{id}/scoped-roles` | — | JSON array of `{ role, scope }` | **Scoped roles only**, both fields non-empty strings. |
+| `POST` | `/subjects/{id}/roles` | `{ "roleId": "...", "scope": "..." }` | any 2xx | `scope` is omitted from the JSON when undefined. Must be idempotent, **and must answer 4xx when `roleId` names no stored role** - the reference server answers 422. |
+| `DELETE` | `/subjects/{id}/roles/{roleId}` | — | any 2xx | Optional `?scope=…`. **Without the query param, delete every assignment of that role, at every scope.** |
+| `GET` | `/subjects/{id}/attributes` | — | a JSON object | `{}` for an unknown subject. An array, `null`, or a scalar throws. |
+| `PATCH` | `/subjects/{id}/attributes` | the partial attribute object | any 2xx | **Merge, do not replace.** Keys absent from the body survive. |
+
+There is no endpoint for `updateAssignmentScope`; the adapter does not implement it, so `engine.admin.updateAssignmentScope` falls back to `DELETE` then `POST` on `/subjects/{id}/roles`. It has no `withClient` either, so `engine.withTransaction` throws the coded `IAM_ENGINE_ADAPTER_NOT_TRANSACTIONAL` against this adapter.
+
+Two of these obligations are the reason the compliance suite gives this adapter a flag of its own. The operator's server owns the role catalog, so the adapter cannot phrase the unstored-role refusal itself; `delegatesRoleExistence` waives the *wording* of that refusal and nothing else. The refusal itself is still asserted, and so is the `deleteRole` cascade.
+
+### A cold read over the wire
 
 ### The unscoped-roles contract
 

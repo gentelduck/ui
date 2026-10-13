@@ -6,7 +6,28 @@ A decision is produced in two stages. Inside a policy, the [combining algorithm]
 
 The distinction the diagram turns on is between a policy that has nothing to say and one that considered the request and answered. Three things make a policy NotApplicable:
 
-1. **Targets miss.** A declared `targets.actions`, `targets.resources`, or `targets.roles` dimension does not match. Reason: `Policy "
+1. **Targets miss.** A declared `targets.actions`, `targets.resources`, or `targets.roles` dimension does not match. Reason: `Policy "<id>" targets do not match. Not applicable.`
+2. **No rule is shaped for this request.** No rule's action and resource patterns cover the pair, regardless of conditions. Reason: `Policy "<id>" has no rule for this action/resource. Not applicable.`
+3. **The policy threw.** A malformed condition, an oversized regex input. The offender is reported through `onPolicyError` and synthesised as NotApplicable with reason `Policy evaluation error - skipped`.
+
+Crucially, a policy whose rules *do* cover the request but whose conditions all fail is **not** NotApplicable. It votes `defaultEffect`. That is the whole point of the second gate: a policy about `update` must not deny a `read`, but a policy about `read` whose ownership condition failed absolutely must.
+
+A NotApplicable decision still carries an `allowed` field, filled from `defaultEffect`, so the object stays a well-formed `IDecision`. Reading it as a verdict inverts the semantics. Check `applicable === false` first. This is why `evaluatePolicyFast()` returns `boolean | null` instead - `null` cannot be mistaken for a verdict. NotApplicable semantics landed in 2.0.0.
+
+The same rule applies to the auto-generated RBAC policy. It participates like any other, and when the role set produces no permissions at all the engine omits it from the merged array entirely, so it cannot short-circuit an AND chain with a default-effect vote.
+
+## The three combine modes
+
+`policyCombine` is set once per engine and applies to every check.
+
+```ts
+import { IamEngine } from '@gentleduck/iam'
+
+const engine = new IamEngine({
+  adapter,
+  policyCombine: 'and', // default
+})
+```
 
 | Mode | Rule | When to use |
 | --- | --- | --- |
@@ -20,7 +41,14 @@ Each mode has its own fall-through reason string when nothing applied, which is 
 
 | Mode | Fall-through reason |
 | --- | --- |
-| `'and'` | `No policy applicable. Defaulted to 
+| `'and'` | `No policy applicable. Defaulted to <effect>` |
+| `'allow-overrides'` | `No policy applicable. Defaulted to <effect>` |
+| `'first-applicable'` | `No policy was applicable. Defaulted to <effect>` |
+| no policies at all | `No policies configured` |
+
+## Strict AND in practice
+
+With the default, a request must satisfy every policy that has an opinion about it.
 
 The `admin-only` policy targets `actions: ['admin:*']`, so it never applies to this request and never votes. That is what makes layering safe: adding a policy scoped to a different concern cannot accidentally deny everything else.
 

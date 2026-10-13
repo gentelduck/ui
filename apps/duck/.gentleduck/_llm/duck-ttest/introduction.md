@@ -30,7 +30,39 @@ If you build schema generators, ORMs, validation libraries, or type-heavy SDKs, 
 | --- | --- |
 | **Compile-time only** | `package.json` ships `src/` only. Every export is a `type`: nothing reaches the JS output of consumers. |
 | **37 utility modules** | Sub-path imports such as `@gentleduck/ttest/object`, `@gentleduck/ttest/sql`, `@gentleduck/ttest/router`. Tree-shake by importing only what you need. |
-| **Assertions** | `AssertTrue
+| **Assertions** | `AssertTrue<T, Msg>` and `AssertFalse<T, Msg>` produce a typed error containing `Msg` when the assertion fails. |
+| **Strict equality** | `Equal<X, Y>` uses the conditional-distribution trick to distinguish `any` from `unknown` and preserve variance: narrower than `X extends Y && Y extends X`. |
+| **Branded types** | `Brand<T, 'UserId'>` and `Unbrand<T>` for nominal typing without runtime tagging. |
+| **SQL schema inference** | `InferSchema<'CREATE TABLE ...'>` parses DDL into a typed row shape. |
+| **Higher-kinded types** | `Fn` / `Apply` / `MapTuple` / `Reduce` / `ComposeFn`: first-class type-level functions. |
+| **Domain unions** | Curated ARIA roles, CSS keywords, HTTP statuses, ISO locales: tiny, accurate, with no `string` widening unless you ask for it. |
+| **Result / Option** | Rust-style `Result<T, E>` and `Option<T>` as type-level discriminated unions. |
+| **Router patterns** | `PathParams<'/users/:id'>` → `{ id: string }`. `BuildPath`, `MatchRoute`, `QueryParams`. |
+| **Glob matching** | `MatchesGlob<S, P>` with `*`, `?`, and `**` support. |
+
+***
+
+## A 30-second tour
+
+```ts
+import type { AssertTrue, Equal } from '@gentleduck/ttest/assert'
+import type { IsAny, IsNever } from '@gentleduck/ttest/any'
+import type { InferSchema } from '@gentleduck/ttest/sql'
+
+// 1. Test a type the same way you'd test a function.
+type t1 = AssertTrue<Equal<IsAny<unknown>, false>, 'unknown is not any'>
+type t2 = AssertTrue<Equal<IsNever<never>, true>, 'never should be detected'>
+
+// 2. Use the utilities directly in your own types.
+type User = InferSchema<'CREATE TABLE users (id INT PRIMARY KEY, email TEXT NOT NULL)'>
+//   ^? { id?: number; email: string }
+```
+
+If `Equal<IsAny<unknown>, false>` ever became `false`, the message `'unknown is not any'` would surface as a `Type 'string' is not assignable to type 'never'` error pointing at `t1`.
+
+***
+
+## Architecture
 
 There is no runtime layer in this diagram. The `tsc` step is the runner.
 

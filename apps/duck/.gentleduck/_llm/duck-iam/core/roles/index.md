@@ -61,9 +61,28 @@ interface AccessControl.IPermission<
 
 | Field | Type | Default | Meaning |
 | --- | --- | --- | --- |
-| `id` | `string` | none, required | Unique role ID. Referenced by `inherits`, by assignments, and by the `subject.roles contains "
+| `id` | `string` | none, required | Unique role ID. Referenced by `inherits`, by assignments, and by the `subject.roles contains "<id>"` condition on every generated rule. |
+| `name` | `string` | the `id` | Display name. Also the prefix of each generated rule's `description`. |
+| `description` | `string \| undefined` | `undefined` | Documentation only; never read during evaluation. |
+| `permissions` | `IPermission[]` | `[]` | The grants. An empty list is valid and grants nothing. |
+| `inherits` | `string[] \| undefined` | `undefined` | Parent role IDs. `undefined` rather than `[]` when no parents were declared. |
+| `scope` | `string \| undefined` | `undefined` | Default scope for every permission in the role. |
+| `metadata` | `Attributes \| undefined` | `undefined` | Arbitrary bookkeeping; never read during evaluation. |
 
-* `B` and `C` are the conversion documented on [the rolesToPolicy conversion](/duck-iam/core/roles/roles-to-policy). Every permission becomes one allow rule gated by `subject.roles contains "
+`IamPrimitives.Attributes` is `Record<string, AttributeValue>`, where `AttributeValue` is a scalar, an array of scalars, or a flat record of scalars. See [primitives](/duck-iam/core/primitives) and [types and namespaces](/duck-iam/types).
+
+## How a role reaches a decision
+
+Roles never bypass the policy engine. The diagram traces one `engine.can()` call from stored role rows to a decision.
+
+* `B` and `C` are the conversion documented on [the rolesToPolicy conversion](/duck-iam/core/roles/roles-to-policy). Every permission becomes one allow rule gated by `subject.roles contains "<roleId>"`.
+* `E` closes the assigned roles over `inherits`, which is what [inheritance](/duck-iam/core/roles/inheritance) covers.
+* `H` merges scoped assignments whose scope matches the request; see [scoped roles](/duck-iam/core/roles/scoped).
+* `I` and `J` are the shared pipeline described in [evaluation](/duck-iam/core/evaluation) and [cross-policy combining](/duck-iam/core/cross-policy). A deny from any applicable policy still wins over every allow `__rbac__` produced.
+
+Both the role list and the converted `__rbac__` policy are cached in the engine and rebuilt when a role changes. See [engine caching](/duck-iam/advanced/engine/caching).
+
+## Which page do I need
 
 | Page | Covers |
 | --- | --- |

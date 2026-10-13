@@ -263,7 +263,7 @@ export default function Demo() {
 
 ### Arrow
 
-Add a directional caret pointing at the trigger. Place `` anywhere inside `DropdownMenuContent`: it positions itself automatically.
+Add a directional caret pointing at the trigger. Place `<DropdownMenuArrow />` anywhere inside `DropdownMenuContent`: it positions itself automatically.
 
 ```tsx title="components/dropdown-menu-7.tsx"
 // import from your project: import Demo from '@/components/dropdown-menu-7'

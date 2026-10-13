@@ -12,9 +12,6 @@ DocDuck starts with one question: may Alice read a document? This chapter builds
 
 Everything in duck-iam sits between a **subject** (who is asking), a **request** (what they want), and an **adapter** (where the roles and policies live).
 
-allowed: false"]`}
-/>
-
 The engine owns no data. It asks the adapter for Alice's roles, turns those roles into policy, evaluates the request against that policy, and returns a decision. Swap `IamMemoryAdapter` for Prisma or Drizzle later and nothing else in this diagram changes.
 
 ## Step by step
@@ -132,14 +129,6 @@ console.log(decision.timestamp) // 1772668800000
 `can` returns `false` and `check` returns a synthesized deny when `subjectId` is not a non-empty string of at most 1024 characters, and again when the adapter throws while resolving the subject. The `onError` hook fires (chapter 4); the caller never sees a rejected promise or an accidental allow.
 
 ## What just happened
-
-closes over inherits"]
-  R4 --> P["rolesToPolicy()"]
-  P --> P2["synthetic policy __rbac__algorithm allow-overrides"]
-  P2 --> EV["evaluate(policies, request)"]
-  EV --> D1["read on documentfirst rbac rule matchesALLOW"]
-  EV --> D2["delete on documentno rule matchesdefaultEffect DENY"]`}
-/>
 
 1. **Resolve the subject.** The engine calls `adapter.getSubjectRoles`, `adapter.getSubjectAttributes`, and `adapter.listRoles` in parallel, then closes the assigned roles over their `inherits` chain (chapter 2). The result is an `IamRequest.ISubject`: `id`, `roles`, `attributes`, and optional `scopedRoles`. It is cached per subject.
 2. **Convert roles to policy.** `rolesToPolicy()` turns every permission of every role into an ABAC rule inside one synthetic policy with `id: '__rbac__'`, `name: 'RBAC Policies'`, and `algorithm: 'allow-overrides'`.

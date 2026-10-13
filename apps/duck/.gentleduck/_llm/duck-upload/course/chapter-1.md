@@ -42,7 +42,76 @@ call as a function).
 
 **Implement the backend contract**
 
-The contract type is `Contracts.Api.Me
+The contract type is `Contracts.Api.Me<M, P, R>`. Two methods are required. Each takes
+call `args` plus a context `ctx` (which carries `ctx.signal`, `ctx.file`, and more). We mock
+them for now.
+
+```typescript title="src/upload.ts"
+const api: Contracts.Api.Me<PhotoIntents, PhotoPurpose, PhotoResult> = {
+  async createIntent({ purpose, contentType, size, filename }, ctx) {
+    // Real apps call the backend for a presigned POST here.
+    console.log(`intent for ${filename} (${size} bytes, ${contentType})`)
+    return {
+      strategy: 'post',
+      fileId: `file-${Date.now()}`,
+      url: 'https://your-bucket.s3.amazonaws.com',
+      fields: { key: `uploads/${filename}`, 'Content-Type': contentType },
+    }
+  },
+  async complete({ fileId }, ctx) {
+    console.log(`completing ${fileId}`)
+    return { fileId, key: `uploads/${fileId}`, url: `https://cdn.example.com/${fileId}` }
+  },
+}
+```
+
+`createIntent` runs when a file enters the pipeline: your backend picks the strategy and
+returns its intent. `complete` runs after the bytes land, to finalize and return the result.
+
+**Register a strategy and build the store**
+
+```typescript title="src/upload.ts"
+import { createUploadStore } from '@gentleduck/upload/core'
+import { PostStrategy, createStrategyRegistry } from '@gentleduck/upload/strategies'
+
+const strategies = createStrategyRegistry<PhotoIntents, PhotoCursors, PhotoPurpose, PhotoResult>()
+strategies.set(PostStrategy())
+
+export const store = createUploadStore<PhotoIntents, PhotoCursors, PhotoPurpose, PhotoResult>({
+  api,
+  strategies,
+})
+```
+
+`createStrategyRegistry()` returns an empty registry; `.set(PostStrategy())` adds the POST
+strategy. Omitting `transport` installs the XHR transport automatically.
+
+**Add a file and start**
+
+```typescript title="src/main.ts"
+import { store } from './upload'
+
+store.on('upload.progress', ({ pct, uploadedBytes, totalBytes }) => {
+  console.log(`progress: ${pct.toFixed(1)}% (${uploadedBytes}/${totalBytes})`)
+})
+store.on('upload.completed', ({ localId, result }) => {
+  console.log(`completed ${localId}`, result)
+})
+store.on('upload.error', ({ localId, error }) => {
+  console.log(`failed ${localId}: ${error.message}`)
+})
+
+const file = new File(['hello world'], 'photo.jpg', { type: 'image/jpeg' })
+store.dispatch({ type: 'addFiles', files: [file], purpose: 'photo' })
+store.dispatch({ type: 'startAll' })
+```
+
+`dispatch` is the single entry point for commands. `addFiles` registers files; `startAll`
+queues every `ready` item.
+
+## The phase machine
+
+Each item flows through a sequence of **phases** that say what the engine is doing:
 
 | Phase | Meaning |
 | --- | --- |

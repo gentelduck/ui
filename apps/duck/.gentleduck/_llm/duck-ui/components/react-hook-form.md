@@ -1,4 +1,4 @@
-In this guide, we will take a look at building forms with React Hook Form. We'll cover building forms with the `` component, adding schema validation using Zod, error handling, accessibility, and more.
+In this guide, we will take a look at building forms with React Hook Form. We'll cover building forms with the `<Field />` component, adding schema validation using Zod, error handling, accessibility, and more.
 
 ## Demo
 
@@ -105,16 +105,16 @@ export default function FormRHFDemo() {
 
 ## Approach
 
-This form uses React Hook Form for form state and validation. We'll build our form using the `` component, which gives you **full control over the markup and styling**.
+This form uses React Hook Form for form state and validation. We'll build our form using the `<Field />` component, which gives you **full control over the markup and styling**.
 
 * Uses React Hook Form's `useForm` hook for form state management.
-* `` component for controlled inputs.
-* `` components for building accessible forms.
+* `<Controller />` component for controlled inputs.
+* `<Field />` components for building accessible forms.
 * Client-side validation using Zod with `zodResolver`.
 
 ## Anatomy
 
-Here's a basic example of a form using the `` component from React Hook Form and the `` component.
+Here's a basic example of a form using the `<Controller />` component from React Hook Form and the `<Field />` component.
 
 ```tsx showLineNumbers {5-18}
 <Controller
@@ -203,7 +203,7 @@ export function BugReportForm() {
 
 ### Build the form
 
-We can now build the form using the `` component from React Hook Form and the `` component.
+We can now build the form using the `<Controller />` component from React Hook Form and the `<Field />` component.
 
 ### Done
 
@@ -259,10 +259,10 @@ const form = useForm<z.infer<typeof formSchema>>({
 
 ## Displaying Errors
 
-Display errors next to the field using ``. For styling and accessibility:
+Display errors next to the field using `<FieldError />`. For styling and accessibility:
 
-* Add the `data-invalid` prop to the `` component.
-* Add the `aria-invalid` prop to the form control such as ``, ``, ``, etc.
+* Add the `data-invalid` prop to the `<Field />` component.
+* Add the `aria-invalid` prop to the form control such as `<Input />`, `<SelectTrigger />`, `<Checkbox />`, etc.
 
 ```tsx showLineNumbers title="form.tsx" {5,11,13}
 <Controller
@@ -287,8 +287,8 @@ Display errors next to the field using ``. For styling and accessibility:
 
 ### Input
 
-* For input fields, spread the `field` object onto the `` component.
-* To show errors, add the `aria-invalid` prop to the `` component and the `data-invalid` prop to the `` component.
+* For input fields, spread the `field` object onto the `<Input />` component.
+* To show errors, add the `aria-invalid` prop to the `<Input />` component and the `data-invalid` prop to the `<Field />` component.
 
 ```tsx title="components/form-rhf-input.tsx"
 // import from your project: import Demo from '@/components/form-rhf-input'
@@ -299,8 +299,8 @@ export { default } from '../input/input-7'
 
 ### Textarea
 
-* For textarea fields, spread the `field` object onto the `` component.
-* To show errors, add the `aria-invalid` prop to the `` component and the `data-invalid` prop to the `` component.
+* For textarea fields, spread the `field` object onto the `<Textarea />` component.
+* To show errors, add the `aria-invalid` prop to the `<Textarea />` component and the `data-invalid` prop to the `<Field />` component.
 
 ```tsx title="components/form-rhf-textarea.tsx"
 // import from your project: import Demo from '@/components/form-rhf-textarea'
@@ -311,8 +311,8 @@ export { default } from '../textarea/textarea-7'
 
 ### Select
 
-* For select components, use `field.value` and `field.onChange` on the `` component.
-* To show errors, add the `aria-invalid` prop to the `` component and the `data-invalid` prop to the `` component.
+* For select components, use `field.value` and `field.onChange` on the `<Select />` component.
+* To show errors, add the `aria-invalid` prop to the `<SelectTrigger />` component and the `data-invalid` prop to the `<Field />` component.
 
 ```tsx title="components/form-rhf-select.tsx"
 // import from your project: import Demo from '@/components/form-rhf-select'
@@ -324,8 +324,8 @@ export { default } from '../select/select-3'
 ### Checkbox
 
 * For checkbox arrays, use `field.value` and `field.onChange` with array manipulation.
-* To show errors, add the `aria-invalid` prop to the `` component and the `data-invalid` prop to the `` component.
-* Remember to add `data-slot="checkbox-group"` to the `` component for proper styling and spacing.
+* To show errors, add the `aria-invalid` prop to the `<Checkbox />` component and the `data-invalid` prop to the `<Field />` component.
+* Remember to add `data-slot="checkbox-group"` to the `<FieldGroup />` component for proper styling and spacing.
 
 ```tsx title="components/form-rhf-checkbox.tsx"
 // import from your project: import Demo from '@/components/form-rhf-checkbox'
@@ -336,8 +336,8 @@ export { default } from '../checkbox/checkbox-8'
 
 ### Radio Group
 
-* For radio groups, use `field.value` and `field.onChange` on the `` component.
-* To show errors, add the `aria-invalid` prop to the `` component and the `data-invalid` prop to the `` component.
+* For radio groups, use `field.value` and `field.onChange` on the `<RadioGroup />` component.
+* To show errors, add the `aria-invalid` prop to the `<RadioGroupItem />` component and the `data-invalid` prop to the `<Field />` component.
 
 ```tsx title="components/form-rhf-radiogroup.tsx"
 // import from your project: import Demo from '@/components/form-rhf-radiogroup'
@@ -348,8 +348,8 @@ export { default } from '../radio-group/radio-group-2'
 
 ### Switch
 
-* For switches, use `field.value` and `field.onChange` on the `` component.
-* To show errors, add the `aria-invalid` prop to the `` component and the `data-invalid` prop to the `` component.
+* For switches, use `field.value` and `field.onChange` on the `<Switch />` component.
+* To show errors, add the `aria-invalid` prop to the `<Switch />` component and the `data-invalid` prop to the `<Field />` component.
 
 ```tsx title="components/form-rhf-switch.tsx"
 // import from your project: import Demo from '@/components/form-rhf-switch'

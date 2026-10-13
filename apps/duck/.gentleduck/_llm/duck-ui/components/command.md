@@ -66,7 +66,23 @@ Command palettes are the power user's best friend  -  they surface every action 
 
 This component is built on top of the [@gentleduck/primitives](https://github.com/gentleeduck/gentleduck/tree/master/packages/duck-primitives) command primitive, following the same Radix-style context/collection pattern used by Select and other primitives. The registry-layer components are thin styling wrappers around the primitives.
 
-Direction (`dir`) is resolved once at the root `Command` primitive via `useDirection` and stored in context. Every child primitive  -  `CommandInput`, `CommandList`, `CommandItem`, `CommandGroup`, `CommandEmpty`, and `CommandSeparator`  -  reads `dir` from context and applies it to its DOM element automatically. Set the direction once with `DirectionProvider` (or `
+Direction (`dir`) is resolved once at the root `Command` primitive via `useDirection` and stored in context. Every child primitive  -  `CommandInput`, `CommandList`, `CommandItem`, `CommandGroup`, `CommandEmpty`, and `CommandSeparator`  -  reads `dir` from context and applies it to its DOM element automatically. Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the command follows.
+
+**Features:**
+
+* **Searchable Command Dialog:** Command palette with search and real-time filtering.
+* **Groupable Command List:** Organize commands into logical groups with optional headings.
+* **Selectable Items:** Items support click actions, focus-based highlighting, and selection via Enter/Space.
+* **Keyboard Navigation:** Full keyboard support with arrow keys, Enter, Space, and vim-style bindings (gg/G).
+* **Typeahead Search:** Type printable characters to jump to matching items in the list.
+* **Custom Shortcuts:** Optional shortcut labels shown beside each command item.
+* **Empty State Handling:** Automatically displays a fallback when no items match the query.
+* **RTL Support:** Follows the direction set once with `DirectionProvider` or `<html dir="rtl">`.
+* **Accessible & Composable:** ARIA roles (`listbox`, `option`, `combobox`, `status`) and headless architecture for complete flexibility.
+* **Responsive Design:** Adapts gracefully to different screen sizes and containers.
+* **Dialog or Inline Support:** Can be used as a floating dialog or embedded inline.
+
+## How It's Built
 
 ## Installation
 
@@ -217,7 +233,7 @@ export default function Demo() {
 }
 ```
 
-To show the command menu in a dialog, use the `` component, or use the `` component with the `command` variant.
+To show the command menu in a dialog, use the `<CommandDialog />` component, or use the `<Button/>` component with the `command` variant.
 
 ```tsx
 import { useKeyCommands } from '@gentleduck/vim/react'
@@ -256,6 +272,16 @@ export function CommandMenu() {
     </CommandDialog>
   )
 }
+```
+
+A screen reader announces the dialog by its `title` and `description`, which are hidden on screen. The defaults describe a command palette, so a dialog that does something narrower names itself, in the user's language:
+
+```tsx
+<CommandDialog
+  title="Search events"
+  description="Find an event or jump to a date."
+  open={open}
+  onOpenChange={setOpen}>
 ```
 
 ## Component Composition
@@ -488,9 +514,12 @@ export default function Demo() {
 
 Handles search filtering internally: items are hidden/shown based on the current search query. Groups and separators with no visible items are automatically hidden. The empty state element is toggled based on whether all items are filtered out.
 
+The list sits in a `ScrollArea` whose viewport is capped at `max-h-75` (300px) and does the scrolling. Wheel and touch scrolling stop at the list, so it still scrolls inside a modal `Dialog` or `Sheet`.
+
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `className` | `string` | - | Additional CSS classes applied to the list |
+| `className` | `string` | - | Additional CSS classes applied to the scrolling viewport. Override the height here, e.g. `max-h-96` |
+| `scrollRef` | `React.Ref<HTMLDivElement>` | - | Ref to the scrolling viewport, e.g. for a virtualizer |
 | `children` | `React.ReactNode` | - | `CommandGroup`, `CommandItem`, `CommandEmpty`, and `CommandSeparator` elements |
 | `...props` | `React.HTMLProps<HTMLUListElement>` | - | Additional props to spread to the ul element (`role="listbox"`) |
 
@@ -546,6 +575,8 @@ Renders a `div` with `role="separator"` and `aria-hidden`. Visibility is automat
 | `children` | `React.ReactNode` | - | Command content rendered inside the dialog (typically `CommandInput`, `CommandList`, etc.) |
 | `shouldFilter` | `boolean` | - | Whether the command primitive should filter items internally |
 | `contentClassName` | `string` | - | Additional CSS classes applied to the inner `DialogContent`, useful for controlling dialog size |
+| `title` | `string` | `'Command palette'` | Dialog title, read by screen readers and hidden on screen |
+| `description` | `string` | `'Search for commands and navigation items'` | Dialog description, read by screen readers and hidden on screen |
 | `...props` | `React.ComponentPropsWithRef<typeof Dialog>` | - | Additional props inherited from `Dialog`. |
 
 ### MotionCommandItem

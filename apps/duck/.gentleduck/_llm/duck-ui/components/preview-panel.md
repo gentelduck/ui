@@ -8,7 +8,7 @@ export default function Demo() {
       <div className="flex flex-col items-center gap-4 p-8">
         <div className="size-24 rounded-full bg-primary/20" />
         <h3 className="font-semibold text-lg">Pan & Zoom</h3>
-        <p className="text-muted-foreground text-sm">Drag to pan, scroll to zoom, or use the controls.</p>
+        <p className="text-muted-foreground text-sm">Unlock the view to drag and scroll, or use the controls.</p>
       </div>
     </PreviewPanel>
   )
@@ -17,7 +17,8 @@ export default function Demo() {
 
 ## About
 
-* **Pan & zoom** via drag, scroll wheel, and pinch-to-zoom gestures
+* **Pan & zoom** via drag, scroll wheel, and pinch-to-zoom gestures, behind a **lock** so the page scrolls past the panel until the user unlocks it
+* An **`actions`** slot for your own buttons beside the zoom controls
 * Built-in **zoom controls** with percentage badge
 * **Zero re-renders** during continuous interactions (ref-based transforms)
 * `unsafeHtml` prop for rendering raw HTML/SVG content directly (caller-sanitized; XSS sink)
@@ -59,6 +60,26 @@ import { PreviewPanel } from '@/components/ui/preview-panel'
 
 ```tsx
 <PreviewPanel maxHeight="400px">
+  <YourContent />
+</PreviewPanel>
+```
+
+### Locking
+
+Drag, wheel and pinch start locked, so scrolling a page past the panel scrolls the page. The lock button in the controls turns them on, and the zoom buttons work either way. Start unlocked where the panel is the page's main content:
+
+```tsx
+<PreviewPanel defaultLocked={false} maxHeight="400px">
+  <YourContent />
+</PreviewPanel>
+```
+
+### With actions
+
+`actions` renders in the toolbar before the zoom controls, and still renders with `showControls={false}`.
+
+```tsx
+<PreviewPanel actions={<Button size="icon-sm" icon={<Copy />} aria-label="Copy" />}>
   <YourContent />
 </PreviewPanel>
 ```
@@ -106,7 +127,7 @@ export default function Demo() {
 
 ### Dialog with synced zoom
 
-Open the content in a fullscreen dialog. Zoom and position sync between both panels.
+Open the content in a fullscreen dialog. Zoom and position sync between both panels, and the fullscreen panel starts unlocked.
 
 ```tsx title="components/preview-panel-3.tsx"
 // import from your project: import Demo from '@/components/preview-panel-3'
@@ -160,7 +181,7 @@ export default function Demo() {
 
 ## RTL Support
 
-Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the panel follows: the zoom controls move to the top-left corner and lay out RTL. Use `zoomInText`, `zoomOutText`, and `resetText` to translate the control labels.
+Set the direction once with `DirectionProvider` (or `<html dir="rtl">`) and the panel follows: the zoom controls move to the top-left corner and lay out RTL. Use `zoomInText`, `zoomOutText`, `resetText`, `lockText`, and `unlockText` to translate the control labels.
 
 ```tsx title="components/preview-panel-5.tsx"
 // import from your project: import Demo from '@/components/preview-panel-5'
@@ -172,14 +193,16 @@ export default function Demo() {
     <DirectionProvider dir="rtl">
       <PreviewPanel
         className="rounded-lg border bg-card"
+        lockText="قفل العرض"
         maxHeight="400px"
         resetText="إعادة الضبط"
+        unlockText="فتح قفل العرض"
         zoomInText="تكبير"
         zoomOutText="تصغير">
         <div className="flex flex-col items-center gap-4 p-8">
           <div className="size-24 rounded-full bg-primary/20" />
           <h3 className="font-semibold text-lg">تحريك وتكبير</h3>
-          <p className="text-muted-foreground text-sm">اسحب للتحريك، ومرِّر للتكبير، أو استخدم أدوات التحكم.</p>
+          <p className="text-muted-foreground text-sm">افتح قفل العرض للسحب والتمرير، أو استخدم أدوات التحكم.</p>
         </div>
       </PreviewPanel>
     </DirectionProvider>
@@ -206,7 +229,7 @@ export default function Demo() {
       <div className="flex flex-col items-center gap-4 p-8">
         <div className="size-24 rounded-full bg-primary/20" />
         <h3 className="font-semibold text-lg">Pan & Zoom</h3>
-        <p className="text-muted-foreground text-sm">Drag to pan, scroll to zoom, or use the controls.</p>
+        <p className="text-muted-foreground text-sm">Unlock the view to drag and scroll, or use the controls.</p>
       </div>
     </MotionPreviewPanel>
   )
@@ -230,6 +253,8 @@ The core pan-zoom container.
 | `maxZoom` | `number` | `4` | Maximum zoom level |
 | `initialZoom` | `number` | `1` | Starting zoom level |
 | `showControls` | `boolean` | `true` | Whether to show the zoom controls overlay |
+| `defaultLocked` | `boolean` | `true` | Whether drag, wheel and pinch start locked, so the wheel scrolls the page. The zoom buttons work either way |
+| `actions` | `React.ReactNode` | `--` | Rendered in the toolbar before the zoom controls |
 | `unsafeHtml` | `string` | `--` | Raw HTML string rendered verbatim via `dangerouslySetInnerHTML`. Takes priority over `children`. Not sanitized: pass only HTML you fully trust, never user-, CMS-, or URL-derived markup |
 | `children` | `React.ReactNode` | `--` | Content to render inside the panel |
 | `className` | `string` | `--` | Additional CSS classes for the outer container |
@@ -239,6 +264,8 @@ The core pan-zoom container.
 | `zoomInText` | `string` | `'Zoom in'` | Label and tooltip for the zoom-in control |
 | `zoomOutText` | `string` | `'Zoom out'` | Label and tooltip for the zoom-out control |
 | `resetText` | `string` | `'Reset view'` | Label and tooltip for the reset control |
+| `lockText` | `string` | `'Lock the view'` | Label and tooltip for the lock control while the view is unlocked |
+| `unlockText` | `string` | `'Unlock the view'` | Label and tooltip for the lock control while the view is locked |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
 
 ### MotionPreviewPanel
@@ -251,7 +278,7 @@ The core pan-zoom container.
 
 ### PreviewPanelDialog
 
-Combines an inline `PreviewPanel` with a fullscreen `Dialog`. Includes an expand button in the bottom inline-end corner (bottom-left in RTL).
+Combines an inline `PreviewPanel` with a fullscreen `Dialog`. The expand button sits in the inline panel's toolbar, before the zoom controls. The inline panel starts locked and the fullscreen one unlocked.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -264,11 +291,14 @@ Combines an inline `PreviewPanel` with a fullscreen `Dialog`. Includes an expand
 | `maxZoom` | `number` | `4` | Maximum zoom level |
 | `initialZoom` | `number` | `1` | Starting zoom level |
 | `showControls` | `boolean` | `true` | Whether to show zoom controls |
+| `defaultLocked` | `boolean` | `true` | Whether the inline panel starts locked. The fullscreen panel starts unlocked |
 | `syncPanels` | `boolean` | `true` | Whether to sync zoom and position between inline and dialog panels |
 | `fullscreenText` | `string` | `'Open fullscreen'` | Label and tooltip for the expand button |
 | `zoomInText` | `string` | `'Zoom in'` | Label and tooltip for the zoom-in control |
 | `zoomOutText` | `string` | `'Zoom out'` | Label and tooltip for the zoom-out control |
 | `resetText` | `string` | `'Reset view'` | Label and tooltip for the reset control |
+| `lockText` | `string` | `'Lock the view'` | Label and tooltip for the lock control while the view is unlocked |
+| `unlockText` | `string` | `'Unlock the view'` | Label and tooltip for the lock control while the view is locked |
 
 ### PreviewPanelState
 

@@ -4,7 +4,45 @@ duck-iam is one access-control engine with two authoring models. Roles (RBAC) ar
 
 The two models converge before anything is evaluated, so a role grant and a policy rule are the same kind of object by the time a decision is made.
 
-`rolesToPolicy()` turns every permission of every role into one allow rule guarded by a `subject.roles contains 
+`rolesToPolicy()` turns every permission of every role into one allow rule guarded by a `subject.roles contains <roleId>` condition, and, when the permission or the role that *declared* it sets a scope that is neither `undefined` nor `'*'`, a `scope` condition. The result is a policy with `id: '__rbac__'` and `algorithm: 'allow-overrides'`. That policy is prepended to the policies your adapter returns, and from there nothing in the evaluator knows or cares which grant came from a role.
+
+`explain()` output and `IDecision.policy` will name `__rbac__` for any decision that came from a role. You never author that policy; the engine materialises it from your role definitions and caches it until roles change.
+
+## The vocabulary
+
+Use these words, and these exported type names. Every page in the duck-iam docs uses them the same way.
+
+| Term | Exported type | What it is |
+| --- | --- | --- |
+| subject | `IamRequest.ISubject` | Who is asking. Id, effective roles, scoped roles, attributes. |
+| action | plain `string` | The operation, e.g. `read`, `posts:publish`. No verbs are built in. |
+| resource | `IamRequest.IResource` | What is being acted on. Type, optional id, attributes. |
+| scope | plain `string` | Multi-tenant namespace on the request, on a scoped role assignment, on a role, or on a permission. |
+| environment | `IamRequest.IEnvironment` | Request-time context: ip, user agent, timestamp, `now`, custom fields. |
+| request | `IamRequest.IAccessRequest` | The five above assembled into one object. |
+| role | `AccessControl.IRole` | Named set of permissions, optionally inheriting from other roles. |
+| permission | `AccessControl.IPermission` | One action + resource (+ optional scope, conditions) inside a role. |
+| policy | `AccessControl.IPolicy` | Named set of rules with a combining algorithm and optional targets. |
+| rule | `AccessControl.IRule` | One statement: effect, actions, resources, priority, conditions. |
+| target | `IPolicy['targets']` | Coarse gate on a whole policy: actions, resources, roles. |
+| condition | `AccessControl.ICondition` | One field / operator / value comparison. |
+| condition group | `AccessControl.IConditionGroup` | `all` / `any` / `none` tree of conditions. |
+| effect | `AccessControl.Effect` | `'allow'` or `'deny'`. |
+| combining algorithm | `AccessControl.CombiningAlgorithm` | How rules inside one policy are folded. |
+| cross-policy combine | `AccessControl.PolicyCombine` | How per-policy verdicts are merged. |
+| decision | `AccessControl.IDecision` | The result object in `development` mode. |
+| mode | `AccessControl.Mode` | `'development'` or `'production'`; defaults to `'production'`. |
+| explain trace | `Explain.IResult` | The read-only debugging trace from `engine.explain()`. |
+
+Every one of these is re-exported from `@gentleduck/iam` and `@gentleduck/iam/core`.
+
+```ts
+import type { AccessControl, IamPrimitives, IamRequest } from '@gentleduck/iam'
+```
+
+## Which page do I need
+
+The core section splits along the shape of the question you are asking.
 
 | Page | Covers |
 | --- | --- |

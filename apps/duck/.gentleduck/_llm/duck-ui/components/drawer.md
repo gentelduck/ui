@@ -863,7 +863,7 @@ export default function Demo() {
 * **Snap Points**: Defines percentage or pixel values for drawer screen coverage.
 * **Fade Effect**: Applies a fade effect from a specific snap point.
 * **Modal Control**: Allows interaction with elements outside the drawer (default: true).
-* **Handle-Only Dragging**: Restricts drawer dragging to `` (default: false).
+* **Handle-Only Dragging**: Restricts drawer dragging to `<Drawer.Handle />` (default: false).
 * **Directional Control**: Opens drawer from top, bottom, left, or right (default: bottom).
 * **Scroll Restoration Prevention**: Avoids restoring scroll after navigation within the drawer (default: true).
 * **Disable Scroll Prevention**: Disables scroll prevention to fix autofocus issues (default: true).

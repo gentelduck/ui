@@ -1,6 +1,8 @@
 ## The adapter pattern
 
-The `Adapter.IDateAdapter
+The `Adapter.IDateAdapter<TDate>` interface abstracts all date operations. The engine never calls `new Date()` or `date.getMonth()` directly - everything goes through the adapter.
+
+This means you can swap `Date` for dayjs, date-fns, Luxon, or a non-Gregorian calendar without changing any calendar logic.
 
 ***
 

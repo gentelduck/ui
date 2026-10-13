@@ -145,7 +145,68 @@ const engine = new IamEngine({
 
 Keep label cardinality in mind. `action` and `resource` come from the caller's declared unions, so their joint cardinality is `|actions| x |resources|` - fine at tens, expensive at thousands. `subjectId` is unbounded and is a customer identifier heading for a store with long retention; never label with it. The event carries `resource.type` and never `resource.id` for the same reason.
 
-The one other label operators reach for is the Redis invalidator's `onMessageDropped` `reason`. Every inbound reason is a fixed string from the module itself, but the outbound `publish failed (
+The one other label operators reach for is the Redis invalidator's `onMessageDropped` `reason`. Every inbound reason is a fixed string from the module itself, but the outbound `publish failed (<message>)` reason interpolates the driver's own error text and is therefore unbounded. Collapse that row to a constant before it becomes a label:
+
+```ts
+onMessageDropped: (reason, _channel, suppressed) => {
+  const label = reason.startsWith('publish failed') ? 'publish failed' : reason
+  drops.inc({ reason: label }, 1 + suppressed)
+}
+```
+
+### Windowed export
+
+For a pull-based sink that wants per-interval numbers rather than since-boot totals, snapshot and reset on the interval. Read before you reset - `reset()` returns nothing.
+
+```ts
+setInterval(() => {
+  const s = metrics.snapshot()
+  statsd.gauge('iam.p95', s.p95)
+  statsd.gauge('iam.p99', s.p99)
+  statsd.increment('iam.allow', s.allow)
+  statsd.increment('iam.deny', s.deny)
+  statsd.increment('iam.fail_open', s.failOpen)
+  metrics.reset()
+}, 60_000)
+```
+
+`reset()` zeroes all four counters and empties the window, but keeps the `Float64Array` allocated - the next `record` reuses the same memory. Percentiles after a reset are computed only from post-reset samples.
+
+### Multiple aggregators
+
+The hook is one function, so any split you want is a branch inside it:
+
+```ts
+const allowMetrics = iamCreateMetricsAggregator()
+const denyMetrics = iamCreateMetricsAggregator()
+
+const engine = new IamEngine({
+  adapter,
+  hooks: {
+    onMetrics: (event) => {
+      ;(event.allowed ? allowMetrics : denyMetrics).record(event)
+    },
+  },
+})
+```
+
+The same shape gives per-resource or per-action aggregators keyed out of a `Map`. Budget memory accordingly - each aggregator carries its own buffer.
+
+### Batch checks opt out
+
+`engine.permissions(subjectId, checks)` emits one metrics event per check in the batch. A permission map built for a UI can be dozens of checks in one call, so `permissions()` accepts `{ telemetry: false }` to skip `onMetrics` entirely for hot gates - roughly double the throughput. Those checks then contribute nothing to `total`, which is worth knowing before you compare `total` against your request count.
+
+```ts
+const map = await engine.permissions(userId, checks, undefined, { telemetry: false })
+```
+
+### Hook errors are swallowed
+
+If your `onMetrics` hook throws, the engine catches it, logs `onMetrics hook threw - swallowed to preserve decision` via `console.error`, and returns the decision unchanged. A broken sink degrades observability, never authorization. The aggregator's own `record` has no throwing path once construction succeeded.
+
+## The rolling window and `sampleSize`
+
+Durations live in a `Float64Array` of exactly `sampleSize` slots, written at a moving head that wraps modulo the capacity. Once full, each write overwrites the oldest sample. There is no growth and no allocation after construction.
 
 `metrics.test.ts` pins the wrap behaviour precisely: with `sampleSize: 4` and durations `40, 30, 20, 10`, `max` is `40`; recording a fifth duration of `5` overwrites slot 0, the window becomes `5, 30, 20, 10`, and `max` drops to `30`. Snapshotting in between does not disturb the ring - the sort runs on a copy.
 

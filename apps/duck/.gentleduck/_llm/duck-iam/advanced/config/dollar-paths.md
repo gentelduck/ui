@@ -8,9 +8,32 @@ export type DollarPaths<TContext> = `$${DotPaths<TContext>}`
 export type FlexibleDollarPaths<TContext> = DollarPaths<TContext> | (string & {})
 ```
 
-`DollarPaths` prefixes every member of `DotPath.DotPaths
+`DollarPaths` prefixes every member of `DotPath.DotPaths<TContext>` with `$`. For a context of `{ a: string; b: { c: number } }` it is `'$a' | '$b' | '$b.c'`, which the type-level test pins exactly.
 
-`resolveValue` is the whole mechanism: if the value is a string that starts with `` cannot be expressed - it will always be treated as a reference.
+`FlexibleDollarPaths` is the one the builders use. The `(string & {})` arm is what keeps the literal suggestions visible: a bare `string` in a union swallows the literals and the IDE shows nothing, while `string & {}` is treated as a distinct branch so the editor still lists `$subject.id`, `$resource.attributes.ownerId`, and the rest. It is spliced directly into each method signature rather than nested inside a computed type, because TypeScript only surfaces the literals when the union is visible at the signature site.
+
+```ts
+access
+  .definePolicy('owner-only')
+  .rule('deny-non-owner', (r) =>
+    r
+      .deny()
+      .on('update', 'delete')
+      .of('post')
+      .when((w) =>
+        w
+          .resourceAttr('ownerId', 'neq', '$subject.id')
+          .attr('department', 'eq', '$resource.attributes.department'),
+      ),
+  )
+  .build()
+```
+
+## Build time versus evaluation time
+
+Nothing about a `$`-reference is resolved while you build a policy. The string is stored verbatim in `ICondition.value` and serialises to JSON unchanged, which is why a policy loaded from a database behaves identically to one built in code.
+
+`resolveValue` is the whole mechanism: if the value is a string that starts with `$`, it calls `resolve(request, value.slice(1))`; otherwise it returns the value untouched. That means a literal value beginning with `$` cannot be expressed - it will always be treated as a reference.
 
 ## What resolve() will and will not reach
 
@@ -18,7 +41,7 @@ export type FlexibleDollarPaths<TContext> = DollarPaths<TContext> | (string & {}
 
 Three consequences follow from that diagram:
 
-* **Only five roots exist.** `subject`, `resource`, and `environment` are the object roots; `action` and `scope` are shorthands handled before the root check. `request.headers` resolve to `null`.
+* **Only five roots exist.** `subject`, `resource`, and `environment` are the object roots; `action` and `scope` are shorthands handled before the root check. `$policy.id` or `$request.headers` resolve to `null`.
 * **Prototype segments are refused, twice over.** The walk reads **own properties only**, so nothing on the prototype chain is reachable at all; on top of that `__proto__`, `constructor` and `prototype` are rejected at parse time so the path is refused once and memoised as invalid rather than walked per request. Own-property reads also fixed a subtler bug: every `Object.prototype` member resolved to a function on any object, so an `exists`-gated allow fired against a subject with no attributes.
 * **A miss is `null`, not an error.** A typo in a `$`-path makes the comparison run against `null`, which for `eq` and `neq` is a silent wrong answer rather than a failure. This is exactly the class of bug a typed context prevents.
 * **A value outside the attribute contract also resolves to `null`.** `resolve` narrows what it found rather than asserting it: scalars, arrays of scalars, and plain objects whose values are scalars pass; a `Date`, a nested object, or a function does not. Adapters deserialise JSON and hand the result straight through, so those genuinely reach here, and `null` is NotApplicable rather than a guess.
@@ -27,7 +50,9 @@ Three consequences follow from that diagram:
 
 ## Where `$`-references are accepted
 
-The value parameter of a builder method is typed `... | DotPath.FlexibleDollarPaths` resolved at runtime | Notes |
+The value parameter of a builder method is typed `... | DotPath.FlexibleDollarPaths<TContext>` on exactly six methods. Everything else takes a narrower type, which is where the type surface and the runtime diverge.
+
+| Method | `$` in the type | `$` resolved at runtime | Notes |
 |---|---|---|---|
 | `check(field, op, value)` | yes | yes | The general escape hatch; any operator, any path |
 | `eq(field, value)` | yes | yes | |
@@ -43,9 +68,9 @@ The value parameter of a builder method is typed `... | DotPath.FlexibleDollarPa
 | `role` / `roles` / `scope` / `scopes` | no - constrained to `TRole` / `TScope` | n/a | These emit fixed field paths |
 | `isOwner(ownerField?)` | argument is the *field*, not the value | yes | Always emits `value: '$subject.id'` |
 
-`evalCondition` short-circuits to `false` whenever the operator is `matches` and the value is a `` pattern were resolved, anyone who could write a subject, resource, or environment attribute could plant a catastrophic regex and stall the evaluation thread. The refusal is unconditional - it does not matter where the attribute came from. Regex patterns must be literals in the policy, and they are additionally capped at `MAX_REGEX_LENGTH` (128 characters) with the subject string capped at 2048.
+`evalCondition` short-circuits to `false` whenever the operator is `matches` and the value is a `$`-prefixed string. If a `$` pattern were resolved, anyone who could write a subject, resource, or environment attribute could plant a catastrophic regex and stall the evaluation thread. The refusal is unconditional - it does not matter where the attribute came from. Regex patterns must be literals in the policy, and they are additionally capped at `MAX_REGEX_LENGTH` (128 characters) with the subject string capped at 2048.
 
-`in(field, values)` types its array elements as `FieldValue | FlexibleDollarPaths`, so `w.in('subject.attributes.tier', ['resource.attributes.tier`. Use `check(field, 'eq', '$path')` for a dynamic single value, or keep `in` arrays literal.
+`in(field, values)` types its array elements as `FieldValue | FlexibleDollarPaths`, so `w.in('subject.attributes.tier', ['$resource.attributes.tier'])` compiles. At runtime `resolveValue` only inspects the value when it is a string, and the value here is an array - so each element is compared literally and the check asks whether the tier equals the literal text `$resource.attributes.tier`. Use `check(field, 'eq', '$path')` for a dynamic single value, or keep `in` arrays literal.
 
 ## Common patterns
 

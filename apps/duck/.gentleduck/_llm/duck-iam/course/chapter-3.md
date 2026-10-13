@@ -11,16 +11,6 @@ Roles answer "is Bob an editor". They cannot answer "may Bob update *this* docum
 
 ## Where policies sit
 
-allow-overridesfrom roles"]
-  REQ --> P1["document-ownershipdeny-overrides"]
-  REQ --> P2["document-lifecycledeny-overrides"]
-  RBAC --> C{"policyCombine: and"}
-  P1 --> C
-  P2 --> C
-  C --> |"every applicable policy allows"| A["ALLOW"]
-  C --> |"any applicable policy denies"| D["DENY"]`}
-/>
-
 Each policy decides on its own, using its own combining algorithm over its own rules. The engine then merges those verdicts with `policyCombine`, which defaults to `'and'`: every applicable policy must allow. A policy that has nothing to say is marked not applicable and skipped rather than counted as a deny.
 
 ## Writing the policies
@@ -182,13 +172,6 @@ A policy is skipped entirely - `applicable: false` - in exactly two cases: its `
 
 ## How a condition works
 
-resource.attributes.ownerId"] --> RES["resolve(request, path)"]
-  V["value$subject.id"] --> RESV["resolveValueleading dollar means resolve too"]
-  RES --> |"'alice'"| OP["operator neq"]
-  RESV --> |"'bob'"| OP
-  OP --> R["true - the deny rule'scondition group holds"]`}
-/>
-
 ```ts
 interface ICondition {
   readonly field: string
@@ -203,7 +186,90 @@ interface ICondition {
 | --- | --- |
 | `subject.id` | The subject ID |
 | `subject.roles` | The effective role array |
-| `subject.attributes.
+| `subject.attributes.<name>` | A subject attribute |
+| `resource.type` | The resource type string |
+| `resource.id` | The resource instance ID |
+| `resource.attributes.<name>` | A resource attribute |
+| `environment.<name>` | Anything you passed as the `environment` argument |
+| `action` | Whole-path shorthand for the action string |
+| `scope` | Whole-path shorthand for the scope string, `null` when unscoped |
+
+A path must start with `subject`, `resource`, or `environment` - or be exactly `action` or `scope`. Anything else resolves to `null`. The segments `__proto__`, `constructor`, and `prototype` are refused at parse time, so a condition cannot walk into the prototype chain. `validatePolicy` reports either shape as an `UNRESOLVABLE_FIELD` warning, which is worth failing your build on: a path that always resolves to `null` is a rule that can never fire, and on a deny rule that is a hole. Parsed paths are memoised, per engine when you thread a cache through, otherwise in a process-wide map.
+
+A missing field resolves to `null`, and `null` flows into the operator like any other value. That is why `neq` against an absent `ownerId` is `true` and the deny fires: omitting data cannot buy you access.
+
+## Every operator
+
+Nineteen of them. Read the two right-hand columns together: the *field* is whatever the request happened to carry, so a wrong-typed field is an ordinary miss, while the *value* you wrote in the policy is screened before the operator runs and a wrong-typed one throws.
+
+| Operator | Holds when | Field absent | Field wrong type |
+| --- | --- | --- | --- |
+| `eq` | strict `===` | `false` | `false` |
+| `neq` | strict `!==` | **`true`** | **`true`** |
+| `gt`, `gte`, `lt`, `lte` | both operands are numbers and compare | `false` | `false` |
+| `in` | array field shares an element with the value, or the value array includes a scalar field | `false` | `false` |
+| `nin` | the negation of `in` | **`true`** | **`true`** |
+| `contains` | the field is an array that includes the value | `false` | `false` |
+| `not_contains` | the field is an array that does not include the value | **`true`** | `false` |
+| `starts_with`, `ends_with` | both are strings and the prefix or suffix matches | `false` | `false` |
+| `matches` | field string matches the regex in `value` | `false` | `false` |
+| `exists` | field is neither `null` nor `undefined` | `false` | `true` |
+| `not_exists` | field is `null` or `undefined` | **`true`** | `false` |
+| `subset_of` | both are arrays and every field element is in the value | `false` | `false` |
+| `superset_of` | both are arrays and every value element is in the field | `false` | `false` |
+| `before`, `after` | both coerce to a finite epoch and compare | `false` | `false` |
+
+The numeric, string, and array operators refuse to coerce. `gt` on a string field is `false`, not a lexicographic comparison, so a stringly-typed attribute can never accidentally satisfy a threshold. `contains` is array membership and nothing else: a CSV string arriving where a list was expected fails `contains` *and* `not_contains`, so the same type confusion cannot bypass one in each direction.
+
+The four bolded `true`s are the whole risk surface for a missing attribute. `allow when subject.attributes.tier neq 'banned'` grants to a subject with no `tier` at all. Pair a negated operator with an `exists` guard: `w.exists('subject.attributes.tier').attr('tier', 'neq', 'banned')`.
+
+`in`, `nin`, `subset_of` and `superset_of` require an array of scalars as the `value`; the comparison operators require a number; `matches` requires a literal string. Anything else - including a `$`-reference that resolved to nothing - throws the coded `IamError` `IAM_CONDITION_OPERAND_TYPE` (`meta: { field, operator, detail }`) before the operator runs. That is deliberate: a `false` retires a deny rule, and inside a `none` group it turns into a grant, so anything the evaluator cannot answer throws and the caller decides the vote.
+
+Every refusal here throws the coded `IamError`, never a dedicated error class - catch with `hasIamErrorCode(err, '<code>')` and read `metaOf(err, '<code>')`, not `err.name`: a pattern over 128 characters or one the ReDoS detector rejects (`(a+)+`, `(a|aa)+`, `a{1,2000}`) throws `IAM_CONDITION_PATTERN_REFUSED`; a field longer than 2048 characters throws `IAM_CONDITION_REGEX_INPUT_TOO_LARGE`; a `value` that is a `$`-path throws `IAM_CONDITION_USER_SOURCED_PATTERN`, because a subject-supplied regex is never compiled. A throw makes the *policy* indeterminate, not absent: the engine fires `onPolicyError` and casts a deny if that policy carries any deny rule, otherwise its `defaultEffect` vote. Compiled patterns are cached in a 256-entry LRU.
+
+### `$`-variables
+
+A string value that starts with `$` is resolved as a path against the same request, at evaluation time:
+
+```ts
+w.resourceAttr('ownerId', 'eq', '$subject.id')       // owner is the caller
+w.check('resource.attributes.teamId', 'eq', '$scope') // resource belongs to the active scope
+w.check('resource.attributes.expiresAt', 'after', '$environment.now')
+```
+
+Anything without a leading `$` is a literal. `'published'` is the string; `'$subject.id'` is a lookup.
+
+Before evaluation the engine defaults `environment.now` to the current epoch milliseconds, unless a `beforeEvaluate` hook already pinned one. That makes `before`/`after` comparisons against `'$environment.now'` work without the caller passing a clock, and lets tests pin time deterministically.
+
+## The When builder
+
+`.when(fn)` and `.whenAny(fn)` hand you a `When` instance. Every method returns `this`.
+
+| Method | Emits |
+| --- | --- |
+| `.check(field, op, value?)` | the raw condition; everything else is sugar over it |
+| `.eq`, `.neq`, `.in`, `.contains`, `.exists`, `.gt`, `.gte`, `.lt`, `.lte`, `.matches` | that operator on the given full path |
+| `.attr(path, op, value?)` | `subject.attributes.<path>` |
+| `.resourceAttr(path, op, value?)` | `resource.attributes.<path>` |
+| `.env(path, op, value?)` | `environment.<path>` |
+| `.isOwner(field?)` | `<field> eq '$subject.id'`, defaulting to `resource.attributes.ownerId` |
+| `.role(id)` | `subject.roles contains id` |
+| `.roles(...ids)` | `subject.roles in ids` |
+| `.scope(id)` / `.scopes(...ids)` | `scope eq id` / `scope in ids` |
+| `.resourceType(...types)` | `resource.type in types` |
+| `.and(fn)` / `.or(fn)` / `.not(fn)` | a nested `all` / `any` / `none` group |
+| `.buildAll()` / `.buildAny()` / `.buildNone()` | the finished group, for standalone use |
+
+The standalone `when()` factory builds groups outside a rule:
+
+```ts
+import { when } from '@gentleduck/iam'
+
+const adminOrOwner = when().role('admin').isOwner().buildAny()
+const notArchived = when().resourceAttr('status', 'eq', 'archived').buildNone()
+```
+
+## Grouping conditions
 
 ```ts
 // AND (the default for .when)
@@ -269,12 +335,6 @@ definePolicy('example').rule('my-rule', (r) =>
 `targets.resources` uses the plain matcher, not the dot-aware hierarchical one that rule resources use. A target of `['document']` will not cover `document.draft`.
 
 ## Combining algorithms
-
-else defaultEffect"]
-  A --> |"allow-overrides"| D2["first allow, else first deny,else defaultEffect"]
-  A --> |"first-match"| D3["highest priority match,ties by source order"]
-  A --> |"highest-priority"| D4["highest priority match"]`}
-/>
 
 | Algorithm | Use it for |
 | --- | --- |

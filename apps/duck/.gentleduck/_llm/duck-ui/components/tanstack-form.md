@@ -1,4 +1,4 @@
-This guide explores how to build forms using TanStack Form. You'll learn to create forms with the `` component, implement schema validation with Zod, handle errors, and ensure accessibility.
+This guide explores how to build forms using TanStack Form. You'll learn to create forms with the `<Field />` component, implement schema validation with Zod, handle errors, and ensure accessibility.
 
 ## Demo
 
@@ -136,17 +136,17 @@ export default function FormTanStackDemo() {
 
 ## Approach
 
-This form uses TanStack Form for headless form handling. We'll build our form using the `` component, which gives you **full control over the markup and styling**.
+This form uses TanStack Form for headless form handling. We'll build our form using the `<Field />` component, which gives you **full control over the markup and styling**.
 
 * Uses TanStack Form's `useForm` hook for form state management.
 * `form.Field` component with render prop pattern for controlled inputs.
-* `` components for building accessible forms.
+* `<Field />` components for building accessible forms.
 * Client-side validation using Zod.
 * Real-time validation feedback.
 
 ## Anatomy
 
-Here's a basic example of a form using TanStack Form with the `` component.
+Here's a basic example of a form using TanStack Form with the `<Field />` component.
 
 ```tsx showLineNumbers {1-14,29-45}
 function toFieldErrors(errors: unknown[]) {
@@ -206,7 +206,7 @@ function toFieldErrors(errors: unknown[]) {
 </form>
 ```
 
-The `toFieldErrors` helper normalizes TanStack Form's error format (which can be strings or objects) into the `{ message: string }` format expected by the `` component.
+The `toFieldErrors` helper normalizes TanStack Form's error format (which can be strings or objects) into the `{ message: string }` format expected by the `<FieldError />` component.
 
 ## Form
 
@@ -274,7 +274,7 @@ We are using `onSubmit` to validate the form data here. TanStack Form supports o
 
 ### Build the form
 
-We can now build the form using the `form.Field` component from TanStack Form and the `` component.
+We can now build the form using the `form.Field` component from TanStack Form and the `<Field />` component.
 
 ### Done
 
@@ -339,10 +339,10 @@ const form = useForm({
 
 ## Displaying Errors
 
-Display errors next to the field using ``. For styling and accessibility:
+Display errors next to the field using `<FieldError />`. For styling and accessibility:
 
-* Add the `data-invalid` prop to the `` component.
-* Add the `aria-invalid` prop to the form control such as ``, ``, ``, etc.
+* Add the `data-invalid` prop to the `<Field />` component.
+* Add the `aria-invalid` prop to the form control such as `<Input />`, `<SelectTrigger />`, `<Checkbox />`, etc.
 
 ```tsx showLineNumbers title="form.tsx" {4,18-20}
 <form.Field
@@ -375,8 +375,8 @@ Display errors next to the field using ``. For styling and accessibility:
 
 ### Input
 
-* For input fields, use `field.state.value` and `field.handleChange` on the `` component.
-* To show errors, add the `aria-invalid` prop to the `` component and the `data-invalid` prop to the `` component.
+* For input fields, use `field.state.value` and `field.handleChange` on the `<Input />` component.
+* To show errors, add the `aria-invalid` prop to the `<Input />` component and the `data-invalid` prop to the `<Field />` component.
 
 ```tsx title="components/form-tanstack-input.tsx"
 // import from your project: import Demo from '@/components/form-tanstack-input'
@@ -477,8 +477,8 @@ export default function FormTanStackInput() {
 
 ### Textarea
 
-* For textarea fields, use `field.state.value` and `field.handleChange` on the `` component.
-* To show errors, add the `aria-invalid` prop to the `` component and the `data-invalid` prop to the `` component.
+* For textarea fields, use `field.state.value` and `field.handleChange` on the `<Textarea />` component.
+* To show errors, add the `aria-invalid` prop to the `<Textarea />` component and the `data-invalid` prop to the `<Field />` component.
 
 ```tsx title="components/form-tanstack-textarea.tsx"
 // import from your project: import Demo from '@/components/form-tanstack-textarea'
@@ -574,8 +574,8 @@ export default function FormTanStackTextarea() {
 
 ### Select
 
-* For select components, use `field.state.value` and `field.handleChange` on the `` component.
-* To show errors, add the `aria-invalid` prop to the `` component and the `data-invalid` prop to the `` component.
+* For select components, use `field.state.value` and `field.handleChange` on the `<Select />` component.
+* To show errors, add the `aria-invalid` prop to the `<SelectTrigger />` component and the `data-invalid` prop to the `<Field />` component.
 
 ```tsx title="components/form-tanstack-select.tsx"
 // import from your project: import Demo from '@/components/form-tanstack-select'
@@ -699,10 +699,10 @@ export default function FormTanStackSelect() {
 
 ### Checkbox
 
-* For checkbox, use `field.state.value` and `field.handleChange` on the `` component.
-* To show errors, add the `aria-invalid` prop to the `` component and the `data-invalid` prop to the `` component.
-* For checkbox arrays, use `mode="array"` on the `` component and TanStack Form's array helpers.
-* Remember to add `data-slot="checkbox-group"` to the `` component for proper styling and spacing.
+* For checkbox, use `field.state.value` and `field.handleChange` on the `<Checkbox />` component.
+* To show errors, add the `aria-invalid` prop to the `<Checkbox />` component and the `data-invalid` prop to the `<Field />` component.
+* For checkbox arrays, use `mode="array"` on the `<form.Field />` component and TanStack Form's array helpers.
+* Remember to add `data-slot="checkbox-group"` to the `<FieldGroup />` component for proper styling and spacing.
 
 ```tsx title="components/form-tanstack-checkbox.tsx"
 // import from your project: import Demo from '@/components/form-tanstack-checkbox'
@@ -825,8 +825,8 @@ export default function FormTanStackCheckbox() {
 
 ### Radio Group
 
-* For radio groups, use `field.state.value` and `field.handleChange` on the `` component.
-* To show errors, add the `aria-invalid` prop to the `` component and the `data-invalid` prop to the `` component.
+* For radio groups, use `field.state.value` and `field.handleChange` on the `<RadioGroup />` component.
+* To show errors, add the `aria-invalid` prop to the `<RadioGroupItem />` component and the `data-invalid` prop to the `<Field />` component.
 
 ```tsx title="components/form-tanstack-radiogroup.tsx"
 // import from your project: import Demo from '@/components/form-tanstack-radiogroup'
@@ -964,8 +964,8 @@ export default function FormTanStackRadioGroup() {
 
 ### Switch
 
-* For switches, use `field.state.value` and `field.handleChange` on the `` component.
-* To show errors, add the `aria-invalid` prop to the `` component and the `data-invalid` prop to the `` component.
+* For switches, use `field.state.value` and `field.handleChange` on the `<Switch />` component.
+* To show errors, add the `aria-invalid` prop to the `<Switch />` component and the `data-invalid` prop to the `<Field />` component.
 
 ```tsx title="components/form-tanstack-switch.tsx"
 // import from your project: import Demo from '@/components/form-tanstack-switch'
