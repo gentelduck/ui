@@ -1,5 +1,23 @@
 # @gentleduck/registry-ui
 
+## 0.8.0
+
+### Minor Changes
+
+- 0c295e1: `CommandDialog` takes `title` and `description` for its screen-reader title and description, so they can be translated. They default to the English text it hard-coded before, `Command palette` and `Search for commands and navigation items`.
+- 9075a3d: `PreviewPanel` and `MotionPreviewPanel` start locked: the wheel over a panel scrolls the page it sits in instead of zooming, and drag and pinch do nothing until the user presses the new lock button beside the zoom controls. The zoom buttons work either way. Pass `defaultLocked={false}` where the panel is the page's main content, and `lockText` and `unlockText` to translate the button. A new `actions` prop renders your own buttons in the toolbar before the zoom controls, and still renders with `showControls={false}`.
+
+  `PreviewPanelDialog` puts its fullscreen button in that toolbar instead of over the bottom corner of the content, takes the same `defaultLocked`, `lockText` and `unlockText` for its inline panel, and opens the fullscreen panel unlocked.
+
+  If a panel relied on the wheel zooming straight away, add `defaultLocked={false}`.
+
+### Patch Changes
+
+- 0f9c5b2: `Breadcrumb` keeps an `aria-label` you pass instead of overwriting it with `breadcrumb`, which stays the default. Its type drops the `separator` prop, which the component never read; if you passed one, remove it and pass `BreadcrumbSeparator` children as before.
+- 4d66971: The `Button` and `MotionButton` loading spinner holds still when the user has asked for reduced motion (`motion-reduce:animate-none`).
+- 678e0d2: `CommandList` caps the box that scrolls. The `max-h-75` limit and your `className` sat on the list inside the scroll area, so a long list spilled past the cap instead of scrolling; both now go on the viewport. The list also scrolls with the wheel and touch when it is portalled out of a modal, such as a combobox inside a dialog, where the modal's scroll lock used to swallow the gesture.
+- 60d564c: `Input` is `h-9`, the height of the `Select` trigger, `Button` and `InputGroup` it sits beside in a form row or a button group; it was `h-8`. `Input`, `Textarea`, the `Select` and `MotionSelect` triggers and the default `Button` share one `shadow-xs`, where the select and button used `shadow-sm` and the input and textarea had none.
+
 ## 0.7.0
 
 ### Minor Changes
