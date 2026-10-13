@@ -11,6 +11,7 @@ describe('registry-ui button', () => {
     expect(classes).toContain('inline-flex')
     expect(classes).toContain('bg-primary')
     expect(classes).toContain('h-9')
+    expect(classes).toContain('shadow-xs')
   })
 
   test('buttonVariants applies explicit variant and size overrides', () => {
