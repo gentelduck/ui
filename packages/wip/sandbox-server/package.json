@@ -61,7 +61,7 @@
     "express-validator": "^7.2.1",
     "hotscript": "^1.0.13",
     "jsdoc": "^4.0.4",
-    "nodemailer": "^8.0.2",
+    "nodemailer": "^10.1.0",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
