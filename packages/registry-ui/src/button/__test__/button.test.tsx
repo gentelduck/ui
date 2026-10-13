@@ -33,7 +33,7 @@ describe('registry-ui button', () => {
     expect(html).toContain('type="button"')
     expect(html).toContain('aria-busy="true"')
     expect(html).toContain('disabled=""')
-    expect(html).toContain('animate-spin')
+    expect(html).toContain('animate-spin motion-reduce:animate-none')
     expect(html).toContain('Save')
   })
 

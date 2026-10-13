@@ -85,7 +85,7 @@ const MotionButton = React.forwardRef<
           <AnimatePresence mode="wait" initial={false}>
             {loading ? (
               <m.span key="loader" {...spinIn} transition={contentTransition} className="inline-flex">
-                <Loader aria-hidden="true" className="animate-spin" />
+                <Loader aria-hidden="true" className="animate-spin motion-reduce:animate-none" />
               </m.span>
             ) : icon ? (
               <m.span key="icon" {...spinIn} transition={contentTransition} className="inline-flex">

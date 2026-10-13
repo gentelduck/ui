@@ -51,7 +51,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={Boolean(loading) || disabled}
         ref={ref}
         type={type}>
-        {loading ? <Loader aria-hidden="true" className="animate-spin" /> : icon}
+        {loading ? <Loader aria-hidden="true" className="animate-spin motion-reduce:animate-none" /> : icon}
         <Slottable>{!isCollapsed && children}</Slottable>
         {!isCollapsed && secondIcon && secondIcon}
       </button>
