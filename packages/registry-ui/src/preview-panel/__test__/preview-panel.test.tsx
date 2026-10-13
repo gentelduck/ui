@@ -81,4 +81,43 @@ describe('registry-ui preview-panel', () => {
       expect(html).toContain('aria-label="إعادة الضبط"')
     }
   })
+
+  test('starts locked, so the wheel over it scrolls the page', () => {
+    for (const html of [renderToStaticMarkup(<PreviewPanel />), renderToStaticMarkup(<MotionPreviewPanel />)]) {
+      expect(html).toContain('aria-label="Unlock the view"')
+      expect(html).toContain('aria-pressed="true"')
+      expect(html).toContain('cursor:default;touch-action:auto')
+    }
+  })
+
+  test('`defaultLocked={false}` starts unlocked for drag, wheel and pinch', () => {
+    for (const html of [
+      renderToStaticMarkup(<PreviewPanel defaultLocked={false} />),
+      renderToStaticMarkup(<MotionPreviewPanel defaultLocked={false} />),
+    ]) {
+      expect(html).toContain('aria-label="Lock the view"')
+      expect(html).toContain('aria-pressed="false"')
+      expect(html).toContain('cursor:grab;touch-action:none')
+    }
+  })
+
+  test('`actions` render in the toolbar before the zoom controls, and alone when they are hidden', () => {
+    const actions = <button type="button">Copy</button>
+    for (const html of [
+      renderToStaticMarkup(<PreviewPanel actions={actions} />),
+      renderToStaticMarkup(<MotionPreviewPanel actions={actions} />),
+    ]) {
+      expect(html).toMatch(/data-slot="preview-panel-toolbar"[\s\S]*Copy[\s\S]*data-slot="preview-panel-controls"/)
+    }
+    expect(renderToStaticMarkup(<PreviewPanel actions={actions} showControls={false} />)).toMatch(
+      /data-slot="preview-panel-toolbar"[^>]*><button type="button">Copy<\/button><\/div>/,
+    )
+    expect(renderToStaticMarkup(<PreviewPanel showControls={false} />)).not.toContain('preview-panel-toolbar')
+  })
+
+  test('the dialog keeps its fullscreen button in the toolbar, off the content', () => {
+    const html = renderToStaticMarkup(<PreviewPanelDialog showControls={false} />)
+    expect(html).toMatch(/data-slot="preview-panel-toolbar"[\s\S]*aria-label="Open fullscreen"/)
+    expect(renderToStaticMarkup(<PreviewPanelDialog />)).toContain('aria-label="Unlock the view"')
+  })
 })
