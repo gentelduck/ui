@@ -241,7 +241,7 @@ Alternatively, you can set the `asChild` parameter and nest the link component.
   description="loading button"
 />
 
-When `loading` is `true`, `Button` renders a `lucide-react` `<Loader />` with `animate-spin`, disables interaction, and replaces the leading `icon` until loading completes.
+When `loading` is `true`, `Button` renders a `lucide-react` `<Loader />` with `animate-spin`, disables interaction, and replaces the leading `icon` until loading completes. The spinner holds still when the user has asked for reduced motion.
 
 ### With Second Icon
 
@@ -303,7 +303,7 @@ Requires the `motion` package. Use `MotionButton` instead of `Button`. Same prop
 | `size` | `'default' \| 'sm' \| 'lg' \| 'icon' \| 'icon-sm' \| 'icon-lg'` | `'default'` | Size of the button |
 | `border` | `'default' \| 'primary' \| 'secondary' \| 'destructive' \| 'warning'` | `'default'` | Border style variant |
 | `asChild` | `boolean` | `-` | If `true`, renders using a custom child element via `Slot` (e.g. a `Link`) |
-| `loading` | `boolean` | `-` | If `true`, renders `<Loader className="animate-spin" />`, disables the button, and temporarily overrides `icon` |
+| `loading` | `boolean` | `-` | If `true`, renders `<Loader className="animate-spin motion-reduce:animate-none" />`, disables the button, and temporarily overrides `icon` |
 | `disabled` | `boolean` | `-` | Disables the button manually |
 | `icon` | `React.ReactNode` | `-` | Primary icon displayed before the content (or centered if collapsed) |
 | `secondIcon` | `React.ReactNode` | `-` | Secondary icon displayed after the content |

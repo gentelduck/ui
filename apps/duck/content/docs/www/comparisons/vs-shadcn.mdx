@@ -292,7 +292,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={loading || props.disabled}
         ref={ref}
         {...props}>
-        {loading ? <Loader className="animate-spin" /> : icon}
+        {loading ? <Loader className="animate-spin motion-reduce:animate-none" /> : icon}
         <Slottable>{children}</Slottable>
       </Comp>
     )
