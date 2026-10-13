@@ -21,6 +21,9 @@ const PreviewPanelDialog = React.forwardRef<HTMLDivElement, IPreviewPanelDialogP
       maxZoom = 4,
       initialZoom = 1,
       showControls = true,
+      defaultLocked = true,
+      lockText,
+      unlockText,
       syncPanels = true,
       fullscreenText = 'Open fullscreen',
       zoomInText,
@@ -56,56 +59,63 @@ const PreviewPanelDialog = React.forwardRef<HTMLDivElement, IPreviewPanelDialogP
 
     return (
       <div ref={ref} className={cn('group relative', className)}>
-        <div className="relative overflow-hidden rounded-lg border bg-card">
-          <PreviewPanel
-            {...contentProps}
-            maxHeight={maxHeight}
-            minZoom={minZoom}
-            maxZoom={maxZoom}
-            initialZoom={initialZoom}
-            showControls={showControls}
-            className={panelClassName}
-            onStateChange={handleStateChange}
-            resetText={resetText}
-            syncState={syncPanels ? sharedState : undefined}
-            zoomInText={zoomInText}
-            zoomOutText={zoomOutText}
-          />
-
-          <TooltipProvider>
-            <Dialog>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      icon={<Maximize2 aria-hidden="true" />}
-                      aria-label={fullscreenText}
-                      className="absolute end-3 bottom-3 z-10 border bg-background/80 backdrop-blur-sm"
-                    />
-                  </DialogTrigger>
-                </TooltipTrigger>
-                <TooltipContent>{fullscreenText}</TooltipContent>
-              </Tooltip>
-              <DialogContent className="max-h-[85vh] max-w-[90vw] overflow-auto p-0">
-                <PreviewPanel
-                  {...contentProps}
-                  minZoom={minZoom}
-                  maxZoom={maxZoom}
-                  initialZoom={initialZoom}
-                  showControls={showControls}
-                  className={dialogPanelClassName}
-                  onStateChange={handleStateChange}
-                  resetText={resetText}
-                  syncState={syncPanels ? sharedState : undefined}
-                  zoomInText={zoomInText}
-                  zoomOutText={zoomOutText}
-                />
-              </DialogContent>
-            </Dialog>
-          </TooltipProvider>
-        </div>
+        <TooltipProvider>
+          <Dialog>
+            <div className="relative overflow-hidden rounded-lg border bg-card">
+              <PreviewPanel
+                {...contentProps}
+                maxHeight={maxHeight}
+                minZoom={minZoom}
+                maxZoom={maxZoom}
+                initialZoom={initialZoom}
+                showControls={showControls}
+                defaultLocked={defaultLocked}
+                lockText={lockText}
+                unlockText={unlockText}
+                className={panelClassName}
+                onStateChange={handleStateChange}
+                resetText={resetText}
+                syncState={syncPanels ? sharedState : undefined}
+                zoomInText={zoomInText}
+                zoomOutText={zoomOutText}
+                actions={
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          icon={<Maximize2 aria-hidden="true" />}
+                          aria-label={fullscreenText}
+                          className="rounded-md border bg-background/80 backdrop-blur-sm"
+                        />
+                      </DialogTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>{fullscreenText}</TooltipContent>
+                  </Tooltip>
+                }
+              />
+            </div>
+            <DialogContent className="max-h-[85vh] max-w-[90vw] overflow-auto p-0">
+              <PreviewPanel
+                {...contentProps}
+                minZoom={minZoom}
+                maxZoom={maxZoom}
+                initialZoom={initialZoom}
+                showControls={showControls}
+                defaultLocked={false}
+                lockText={lockText}
+                unlockText={unlockText}
+                className={dialogPanelClassName}
+                onStateChange={handleStateChange}
+                resetText={resetText}
+                syncState={syncPanels ? sharedState : undefined}
+                zoomInText={zoomInText}
+                zoomOutText={zoomOutText}
+              />
+            </DialogContent>
+          </Dialog>
+        </TooltipProvider>
       </div>
     )
   },

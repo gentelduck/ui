@@ -7,7 +7,7 @@ import { scaleIn } from '@gentleduck/motion/presets/scale-in'
 import { springBouncy } from '@gentleduck/motion/transitions/springs'
 import type { IDirection } from '@gentleduck/primitives/direction'
 import { useDirection } from '@gentleduck/primitives/direction'
-import { Minus, Plus, RotateCcw } from 'lucide-react'
+import { Lock, LockOpen, Minus, Plus, RotateCcw } from 'lucide-react'
 import { LazyMotion, m } from 'motion/react'
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { MotionBadge } from '../badge'
@@ -31,17 +31,25 @@ const MotionZoomControls = memo(function MotionZoomControls({
   onZoomOut,
   onReset,
   zoom,
+  onToggleLock,
+  locked = false,
   zoomInText = 'Zoom in',
   zoomOutText = 'Zoom out',
   resetText = 'Reset view',
+  lockText = 'Lock the view',
+  unlockText = 'Unlock the view',
 }: {
   onZoomIn: () => void
   onZoomOut: () => void
   onReset: () => void
   zoom: number
+  onToggleLock?: () => void
+  locked?: boolean
   zoomInText?: string
   zoomOutText?: string
   resetText?: string
+  lockText?: string
+  unlockText?: string
 }) {
   return (
     <TooltipProvider>
@@ -90,6 +98,24 @@ const MotionZoomControls = memo(function MotionZoomControls({
           </TooltipTrigger>
           <MotionTooltipContent>{resetText}</MotionTooltipContent>
         </MotionTooltip>
+        {onToggleLock && (
+          <>
+            <MotionSeparator orientation="vertical" />
+            <MotionTooltip>
+              <TooltipTrigger asChild>
+                <MotionButton
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={onToggleLock}
+                  icon={locked ? <Lock aria-hidden="true" /> : <LockOpen aria-hidden="true" />}
+                  aria-label={locked ? unlockText : lockText}
+                  aria-pressed={locked}
+                />
+              </TooltipTrigger>
+              <MotionTooltipContent>{locked ? unlockText : lockText}</MotionTooltipContent>
+            </MotionTooltip>
+          </>
+        )}
       </MotionButtonGroup>
     </TooltipProvider>
   )
@@ -106,6 +132,10 @@ const MotionPreviewPanel = React.forwardRef<
       maxZoom = 4,
       initialZoom = 1,
       showControls = true,
+      defaultLocked = true,
+      lockText,
+      unlockText,
+      actions,
       unsafeHtml,
       children,
       className,
@@ -138,6 +168,12 @@ const MotionPreviewPanel = React.forwardRef<
     })
 
     const [displayZoom, setDisplayZoom] = useState(initialZoom)
+    const [locked, setLocked] = useState(defaultLocked)
+    const toggleLock = useCallback(() => setLocked((was) => !was), [])
+
+    // Ref-shadow so a toggle never re-subscribes the gesture listeners
+    const lockedRef = useRef(locked)
+    lockedRef.current = locked
     const onStateChangeRef = useRef(onStateChange)
     onStateChangeRef.current = onStateChange
 
@@ -219,8 +255,8 @@ const MotionPreviewPanel = React.forwardRef<
       const el = containerRef.current
       if (!el) return
       const onDown = (e: PointerEvent) => {
-        if (e.button !== 0) return
-        if ((e.target as HTMLElement).closest('[data-slot="preview-panel-controls"]')) return
+        if (lockedRef.current || e.button !== 0) return
+        if ((e.target as HTMLElement).closest('[data-slot="preview-panel-toolbar"]')) return
         e.preventDefault()
         el.setPointerCapture(e.pointerId)
         s.current.dragging = true
@@ -264,6 +300,7 @@ const MotionPreviewPanel = React.forwardRef<
       const el = containerRef.current
       if (!el) return
       const onWheel = (e: WheelEvent) => {
+        if (lockedRef.current) return
         e.preventDefault()
         e.stopPropagation()
         const delta = e.deltaY > 0 ? -ZOOM_STEP_WHEEL : ZOOM_STEP_WHEEL
@@ -285,14 +322,14 @@ const MotionPreviewPanel = React.forwardRef<
         return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY)
       }
       const onTouchStart = (e: TouchEvent) => {
-        if (e.touches.length === 2) {
+        if (!lockedRef.current && e.touches.length === 2) {
           e.preventDefault()
           s.current.pinchDist = dist(e)
           s.current.pinchZoom = s.current.zoom
         }
       }
       const onTouchMove = (e: TouchEvent) => {
-        if (e.touches.length === 2) {
+        if (!lockedRef.current && e.touches.length === 2) {
           e.preventDefault()
           const scale = dist(e) / s.current.pinchDist
           s.current.zoom = clamp(s.current.pinchZoom * scale, minZoom, maxZoom)
@@ -322,8 +359,8 @@ const MotionPreviewPanel = React.forwardRef<
       [unsafeHtml, children],
     )
     const containerStyle = useMemo(
-      () => ({ maxHeight, cursor: 'grab' as const, touchAction: 'none' as const }),
-      [maxHeight],
+      () => ({ maxHeight, cursor: locked ? 'default' : 'grab', touchAction: locked ? 'auto' : 'none' }) as const,
+      [maxHeight, locked],
     )
     const direction = useDirection(dir as IDirection.Kind)
 
@@ -339,14 +376,21 @@ const MotionPreviewPanel = React.forwardRef<
           animate={content.animate}
           transition={content.transition}
           {...rest}>
-          {showControls && (
-            <div className="absolute end-3 top-3 z-10">
-              <MotionZoomControls
+          {(showControls || actions) && (
+            <div className="absolute end-3 top-3 z-10 flex items-center gap-2" data-slot="preview-panel-toolbar">
+              {actions}
+              {showControls && (
+                <MotionZoomControls
+                lockText={lockText}
+                locked={locked}
+                onReset={handleReset}
+                onToggleLock={toggleLock}
                 onZoomIn={handleZoomIn}
                 onZoomOut={handleZoomOut}
-                onReset={handleReset}
+                unlockText={unlockText}
                 zoom={displayZoom}
-              />
+                />
+              )}
             </div>
           )}
           <div

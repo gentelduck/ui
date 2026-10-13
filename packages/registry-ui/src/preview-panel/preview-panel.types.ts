@@ -19,6 +19,17 @@ export interface IPreviewPanelProps extends React.HTMLProps<HTMLDivElement> {
   /** Whether to show zoom controls. Default true. */
   showControls?: boolean
   /**
+   * Whether drag, wheel and pinch start locked, so the wheel scrolls the page the panel sits in.
+   * The zoom buttons work either way. Default true.
+   */
+  defaultLocked?: boolean
+  /** Label for the lock control while the view is unlocked. Default 'Lock the view'. */
+  lockText?: string
+  /** Label for the lock control while the view is locked. Default 'Unlock the view'. */
+  unlockText?: string
+  /** Rendered in the toolbar before the zoom controls. */
+  actions?: React.ReactNode
+  /**
    * Raw HTML string rendered verbatim via `dangerouslySetInnerHTML`. Takes
    * priority over children.
    *
@@ -65,6 +76,12 @@ export interface IPreviewPanelDialogProps {
   initialZoom?: number
   /** Whether to show zoom controls. Default true. */
   showControls?: boolean
+  /** Whether the inline panel starts locked. The fullscreen panel starts unlocked. Default true. */
+  defaultLocked?: boolean
+  /** Label for the lock control while the view is unlocked. Default 'Lock the view'. */
+  lockText?: string
+  /** Label for the lock control while the view is locked. Default 'Unlock the view'. */
+  unlockText?: string
   /** Whether to sync zoom and position between inline and dialog panels. Default true. */
   syncPanels?: boolean
   /** Label for the zoom-in control. Default 'Zoom in'. */

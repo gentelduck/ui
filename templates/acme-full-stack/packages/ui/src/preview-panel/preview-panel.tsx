@@ -3,7 +3,7 @@
 import { cn } from '@gentleduck/libs/cn'
 import type { IDirection } from '@gentleduck/primitives/direction'
 import { useDirection } from '@gentleduck/primitives/direction'
-import { Minus, Plus, RotateCcw } from 'lucide-react'
+import { Lock, LockOpen, Minus, Plus, RotateCcw } from 'lucide-react'
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Badge } from '../badge'
 import { Button } from '../button'
@@ -26,17 +26,25 @@ const ZoomControls = memo(function ZoomControls({
   onZoomOut,
   onReset,
   zoom,
+  onToggleLock,
+  locked = false,
   zoomInText = 'Zoom in',
   zoomOutText = 'Zoom out',
   resetText = 'Reset view',
+  lockText = 'Lock the view',
+  unlockText = 'Unlock the view',
 }: {
   onZoomIn: () => void
   onZoomOut: () => void
   onReset: () => void
   zoom: number
+  onToggleLock?: () => void
+  locked?: boolean
   zoomInText?: string
   zoomOutText?: string
   resetText?: string
+  lockText?: string
+  unlockText?: string
 }) {
   return (
     <TooltipProvider>
@@ -83,6 +91,24 @@ const ZoomControls = memo(function ZoomControls({
           </TooltipTrigger>
           <TooltipContent>{resetText}</TooltipContent>
         </Tooltip>
+        {onToggleLock && (
+          <>
+            <Separator orientation="vertical" />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={onToggleLock}
+                  icon={locked ? <Lock aria-hidden="true" /> : <LockOpen aria-hidden="true" />}
+                  aria-label={locked ? unlockText : lockText}
+                  aria-pressed={locked}
+                />
+              </TooltipTrigger>
+              <TooltipContent>{locked ? unlockText : lockText}</TooltipContent>
+            </Tooltip>
+          </>
+        )}
       </ButtonGroup>
     </TooltipProvider>
   )
@@ -100,6 +126,10 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, IPreviewPanelProps>(
       maxZoom = 4,
       initialZoom = 1,
       showControls = true,
+      defaultLocked = true,
+      lockText,
+      unlockText,
+      actions,
       unsafeHtml,
       children,
       className,
@@ -131,8 +161,14 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, IPreviewPanelProps>(
       willChangeTimer: 0,
     })
 
-    // The only React state — the zoom label percentage
+    // The only React state: the zoom label percentage and the lock
     const [displayZoom, setDisplayZoom] = useState(initialZoom)
+    const [locked, setLocked] = useState(defaultLocked)
+    const toggleLock = useCallback(() => setLocked((was) => !was), [])
+
+    // Ref-shadow so a toggle never re-subscribes the gesture listeners
+    const lockedRef = useRef(locked)
+    lockedRef.current = locked
 
     // Ref-shadow so effects never re-subscribe when the callback identity changes
     const onStateChangeRef = useRef(onStateChange)
@@ -228,8 +264,8 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, IPreviewPanelProps>(
       if (!el) return
 
       const onDown = (e: PointerEvent) => {
-        if (e.button !== 0) return
-        if ((e.target as HTMLElement).closest('[data-slot="preview-panel-controls"]')) return
+        if (lockedRef.current || e.button !== 0) return
+        if ((e.target as HTMLElement).closest('[data-slot="preview-panel-toolbar"]')) return
         e.preventDefault()
         el.setPointerCapture(e.pointerId)
         s.current.dragging = true
@@ -279,6 +315,7 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, IPreviewPanelProps>(
       if (!el) return
 
       const onWheel = (e: WheelEvent) => {
+        if (lockedRef.current) return
         e.preventDefault()
         e.stopPropagation()
         const delta = e.deltaY > 0 ? -ZOOM_STEP_WHEEL : ZOOM_STEP_WHEEL
@@ -303,7 +340,7 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, IPreviewPanelProps>(
       }
 
       const onTouchStart = (e: TouchEvent) => {
-        if (e.touches.length === 2) {
+        if (!lockedRef.current && e.touches.length === 2) {
           e.preventDefault()
           s.current.pinchDist = dist(e)
           s.current.pinchZoom = s.current.zoom
@@ -311,7 +348,7 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, IPreviewPanelProps>(
       }
 
       const onTouchMove = (e: TouchEvent) => {
-        if (e.touches.length === 2) {
+        if (!lockedRef.current && e.touches.length === 2) {
           e.preventDefault()
           const scale = dist(e) / s.current.pinchDist
           s.current.zoom = clamp(s.current.pinchZoom * scale, minZoom, maxZoom)
@@ -343,8 +380,8 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, IPreviewPanelProps>(
     )
 
     const containerStyle = useMemo(
-      () => ({ maxHeight, cursor: 'grab' as const, touchAction: 'none' as const }),
-      [maxHeight],
+      () => ({ maxHeight, cursor: locked ? 'default' : 'grab', touchAction: locked ? 'auto' : 'none' }) as const,
+      [maxHeight, locked],
     )
     const direction = useDirection(dir as IDirection.Kind)
 
@@ -356,9 +393,21 @@ const PreviewPanel = React.forwardRef<HTMLDivElement, IPreviewPanelProps>(
         dir={direction}
         style={style}
         {...rest}>
-        {showControls && (
-          <div className="absolute end-3 top-3 z-10">
-            <ZoomControls onZoomIn={handleZoomIn} onZoomOut={handleZoomOut} onReset={handleReset} zoom={displayZoom} />
+        {(showControls || actions) && (
+          <div className="absolute end-3 top-3 z-10 flex items-center gap-2" data-slot="preview-panel-toolbar">
+            {actions}
+            {showControls && (
+              <ZoomControls
+              lockText={lockText}
+              locked={locked}
+              onReset={handleReset}
+              onToggleLock={toggleLock}
+              onZoomIn={handleZoomIn}
+              onZoomOut={handleZoomOut}
+              unlockText={unlockText}
+              zoom={displayZoom}
+              />
+            )}
           </div>
         )}
         <div
