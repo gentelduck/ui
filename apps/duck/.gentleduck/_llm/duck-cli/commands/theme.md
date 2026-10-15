@@ -41,7 +41,7 @@ Available themes (15):
   yellow      Yellow
   zinc        Zinc
 
-Apply one with: @gentleduck/cli theme add <name>
+Apply one with: npx @gentleduck/cli theme add <name>
 ```
 
 | Flag | Description |
