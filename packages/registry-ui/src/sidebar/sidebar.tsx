@@ -187,7 +187,7 @@ const Sidebar = React.forwardRef<HTMLDivElement, ISidebarProps>(
           data-slot="sidebar-container"
           data-side={side}
           className={cn(
-            'fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-(--gentleduck-motion-ease) data-[side=left]:start-0 data-[side=right]:end-0 data-[side=left]:group-data-[collapsible=offcanvas]:start-[calc(var(--sidebar-width)*-1)] data-[side=right]:group-data-[collapsible=offcanvas]:end-[calc(var(--sidebar-width)*-1)] md:flex',
+            'fixed inset-y-0 z-5 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-(--gentleduck-motion-ease) data-[side=left]:start-0 data-[side=right]:end-0 data-[side=left]:group-data-[collapsible=offcanvas]:start-[calc(var(--sidebar-width)*-1)] data-[side=right]:group-data-[collapsible=offcanvas]:end-[calc(var(--sidebar-width)*-1)] md:flex',
             variant === 'floating' || variant === 'inset'
               ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
               : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=right]:border-s group-data-[side=left]:border-e',
@@ -279,7 +279,7 @@ const SidebarInset = React.forwardRef<HTMLElement, React.ComponentPropsWithoutRe
         data-slot="sidebar-inset"
         dir={direction}
         className={cn(
-          'relative flex w-full flex-1 flex-col bg-background md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ms-2 md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ms-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm',
+          'relative flex w-full min-w-0 flex-1 flex-col bg-background md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ms-2 md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ms-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm',
           className,
         )}
         {...props}
@@ -416,7 +416,7 @@ const SidebarGroupLabel = React.forwardRef<
       data-sidebar="group-label"
       dir={direction}
       className={cn(
-        'flex h-8 shrink-0 items-center rounded-md px-2 font-medium text-sidebar-foreground/70 text-xs outline-hidden ring-sidebar-ring transition-[margin,opacity] duration-200 ease-(--gentleduck-motion-ease) focus-visible:ring-2 group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0 [&>svg:not([class*=size-])]:size-4 [&>svg]:shrink-0',
+        'flex h-8 shrink-0 items-center rounded-md px-2 font-medium text-sidebar-foreground/70 text-xs outline-hidden ring-sidebar-ring transition-[margin,opacity] duration-200 ease-(--gentleduck-motion-ease) focus-visible:ring-2 group-data-[collapsible=icon]:pointer-events-none group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0 [&>svg:not([class*=size-])]:size-4 [&>svg]:shrink-0',
         className,
       )}
       {...props}

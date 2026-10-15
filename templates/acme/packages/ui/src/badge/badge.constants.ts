@@ -20,7 +20,7 @@ export const badgeVariants = cva(
         default: 'px-2.5 py-0.5 text-sm',
         icon: 'size-[1.6rem] items-center justify-center rounded-full p-0 [&_*]:size-[.9rem]',
         lg: 'px-3.5 py-0.9 text-lg',
-        sm: 'px-1.5 py-0.5 text-[.7rem]',
+        sm: 'px-1.5 py-0.5 text-[.75rem]',
       },
       variant: {
         nothing: '!px-0 text-accent-foreground',
