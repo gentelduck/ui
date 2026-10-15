@@ -136,8 +136,8 @@ const FieldDescription = React.forwardRef<HTMLParagraphElement, React.ComponentP
       <p
         ref={ref}
         className={cn(
-          'font-normal text-muted-foreground text-sm leading-normal group-has-[[data-orientation=horizontal]]/field:text-balance',
-          'nth-last-2:-mt-1 last:mt-0 [[data-variant=legend]+&]:-mt-1.5',
+          'font-normal text-muted-foreground text-xs leading-normal group-has-[[data-orientation=horizontal]]/field:text-balance',
+          '[[data-slot=field][data-orientation=vertical]>*+&]:-mt-1.5 [[data-variant=legend]+&]:-mt-1.5',
           '[&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4',
           className,
         )}
@@ -186,18 +186,17 @@ const FieldError = React.forwardRef<
       return children
     }
 
-    if (!errors) {
-      return null
-    }
-
-    if (errors?.length === 1 && errors[0]?.message) {
-      return errors[0].message
+    const messages = errors?.flatMap((error) => (error?.message ? [error.message] : [])) ?? []
+    if (messages.length < 2) {
+      return messages[0]
     }
 
     return (
       <ul className="ms-4 flex list-disc flex-col gap-1">
-        {/* biome-ignore lint/suspicious/noArrayIndexKey: error messages have no stable unique id */}
-        {errors.map((error, index) => error?.message && <li key={index}>{error.message}</li>)}
+        {messages.map((message, index) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: error messages have no stable unique id
+          <li key={index}>{message}</li>
+        ))}
       </ul>
     )
   }, [children, errors])
@@ -209,7 +208,10 @@ const FieldError = React.forwardRef<
   return (
     <div
       ref={ref}
-      className={cn('font-normal text-destructive text-sm', className)}
+      className={cn(
+        'font-normal text-destructive text-sm [[data-slot=field][data-orientation=vertical]>*+&]:-mt-1.5',
+        className,
+      )}
       data-slot="field-error"
       role="alert"
       {...props}>
