@@ -32,7 +32,7 @@ export async function themeListAction(opts: ThemeOptions) {
         const label = theme.label ?? theme.name
         console.log(`  ${highlighter.info(theme.name)}  ${label}`)
       }
-      console.log(`\nApply one with: ${highlighter.info('@gentleduck/cli theme add <name>')}\n`)
+      console.log(`\nApply one with: ${highlighter.info('npx @gentleduck/cli theme add <name>')}\n`)
     }
 
     process.exit(0)
@@ -49,7 +49,7 @@ export async function themeInfoAction(name: string | undefined, opts: ThemeOptio
   const options = themeOptionsSchema.parse(opts)
 
   if (!name) {
-    console.error(highlighter.error('Theme name required. Usage: @gentleduck/cli theme info <name>'))
+    console.error(highlighter.error('Theme name required. Usage: npx @gentleduck/cli theme info <name>'))
     process.exit(1)
   }
 
@@ -93,7 +93,7 @@ export async function themeAddAction(name: string | undefined, opts: ThemeOption
   const options = themeOptionsSchema.parse(opts)
 
   if (!name) {
-    console.error(highlighter.error('Theme name required. Usage: @gentleduck/cli theme add <name>'))
+    console.error(highlighter.error('Theme name required. Usage: npx @gentleduck/cli theme add <name>'))
     process.exit(1)
   }
 

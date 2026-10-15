@@ -36,7 +36,7 @@ export async function getDuckuiConfig(cwd: string, spinner: Ora) {
     const configRoot = findDuckuiRootCwd(cwd)
     if (!configRoot) {
       spinner.fail(
-        `No ${highlighter.info('duck-ui.config.json')} found here or in a parent folder.\nCreate one with ${highlighter.info('@gentleduck/cli init')}, run through your package manager, for example ${highlighter.info('bunx @gentleduck/cli init')} or ${highlighter.info('npx @gentleduck/cli init')}.\nRun ${highlighter.info('@gentleduck/cli --help')} for every command. Having issues? ${highlighter.info('https://github.com/gentleeduck/duck-ui/issues')}`,
+        `No ${highlighter.info('duck-ui.config.json')} found here or in a parent folder.\nCreate one with ${highlighter.info('npx @gentleduck/cli init')} (or ${highlighter.info('bunx @gentleduck/cli init')}).\nRun ${highlighter.info('npx @gentleduck/cli --help')} for every command. Having issues? ${highlighter.info('https://github.com/gentleeduck/duck-ui/issues')}`,
       )
       process.exit(1)
     }
@@ -60,7 +60,7 @@ export async function getDuckuiConfig(cwd: string, spinner: Ora) {
         spinner.fail(
           `Legacy ${highlighter.info('duck-ui.config.json')} detected (missing ${highlighter.info(
             'workspace',
-          )}). Re-run ${highlighter.info('@gentleduck/cli init')} to migrate.`,
+          )}). Re-run ${highlighter.info('npx @gentleduck/cli init')} to migrate.`,
         )
         process.exit(1)
       }
