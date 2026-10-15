@@ -1019,7 +1019,7 @@ Renders a title with label styling inside `FieldContent`.
 
 ### FieldDescription
 
-Helper text slot that automatically balances long lines in horizontal layouts.
+Helper text in small muted type (`text-xs`) that balances long lines in horizontal layouts. Directly under a label or control in a vertical field it tucks up against it.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -1048,7 +1048,7 @@ Accessible error container that accepts children or an `errors` array (e.g., fro
 | `className` | `string` | `--` | Additional CSS classes |
 | `...props` | `React.HTMLProps<HTMLDivElement>` | - | Additional props to spread to the content div |
 
-When the `errors` array contains multiple messages, the component renders a list automatically.
+Entries without a `message` are skipped. One message renders as plain text, several render as a list, and none renders nothing.
 
 ### MotionField
 
