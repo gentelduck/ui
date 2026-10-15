@@ -338,7 +338,7 @@ export function useMergeWorkflow(options: {
     [diffTask, installed, writePath],
   )
 
-  // Auto-pick the component named on the CLI so `duck-cli merge button` skips the picker.
+  // Auto-pick the component named on the CLI so `@gentleduck/cli merge button` skips the picker.
   useEffect(() => {
     const initialArg = initialArgs[0]
     if (initialArg && installed.length > 0 && step === 'select' && !autoSelected) {

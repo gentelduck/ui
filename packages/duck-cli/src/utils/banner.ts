@@ -1,9 +1,13 @@
 import kleur from 'kleur'
 import pkg from '../../package.json'
 
+export function bannerLines(version: string = pkg.version): [string, string] {
+  const title = ` 🦆 @gentleduck/cli ${version}`
+  return [title, '─'.repeat(title.length)]
+}
+
 export function printBanner() {
-  const text = `\n 🦆 duck-cli ${pkg.version}`
-  const line = '\u2500'.repeat(text.length)
-  console.log(kleur.white(text))
-  console.log(kleur.bold().green(line))
+  const [title, rule] = bannerLines()
+  console.log(`\n${kleur.white(title)}`)
+  console.log(kleur.bold().green(rule))
 }
