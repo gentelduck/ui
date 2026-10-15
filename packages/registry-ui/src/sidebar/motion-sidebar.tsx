@@ -114,7 +114,7 @@ const MotionSidebar = React.forwardRef<HTMLDivElement, ISidebarProps>(
             }}
             transition={springBouncy}
             className={cn(
-              'fixed inset-y-0 z-10 hidden h-svh md:flex',
+              'fixed inset-y-0 z-5 hidden h-svh md:flex',
               physicalSide === 'right' ? 'right-0' : 'left-0',
               variant === 'floating' || variant === 'inset'
                 ? 'p-2'

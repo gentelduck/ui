@@ -162,7 +162,7 @@ function ChartTooltipContent({
   return (
     <div
       className={cn(
-        'grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl',
+        'grid min-w-32 items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl',
         className,
       )}
       data-slot="tooltip-content"
@@ -177,7 +177,7 @@ function ChartTooltipContent({
           return (
             <div
               className={cn(
-                'flex w-full flex-wrap items-stretch gap-2 [&>svg]:size-2.5 [&>svg]:text-muted-foreground',
+                'flex w-full flex-wrap items-stretch gap-2 [&>svg:not([class*=size-])]:size-2.5 [&>svg]:text-muted-foreground',
                 indicator === 'dot' && 'items-center',
               )}
               data-slot="tooltip-item"
@@ -191,7 +191,7 @@ function ChartTooltipContent({
                   ) : (
                     !hideIndicator && (
                       <div
-                        className={cn('shrink-0 rounded-[2px] border-[var(--color-border)] bg-[var(--color-bg)]', {
+                        className={cn('shrink-0 rounded-xs border-(--color-border) bg-(--color-bg)', {
                           'size-2.5': indicator === 'dot',
                           'my-0.5': nestLabel && indicator === 'dashed',
                           'w-0 border-[1.5px] border-dashed bg-transparent': indicator === 'dashed',
@@ -260,14 +260,14 @@ function ChartLegendContent({
 
         return (
           <div
-            className={cn('flex items-center gap-1.5 [&>svg]:size-3 [&>svg]:text-muted-foreground')}
+            className={cn('flex items-center gap-1.5 [&>svg:not([class*=size-])]:size-3 [&>svg]:text-muted-foreground')}
             data-slot="legend-item"
             key={item.value}>
             {itemConfig?.icon && !hideIcon ? (
               <itemConfig.icon />
             ) : (
               <div
-                className="size-2 shrink-0 rounded-[2px]"
+                className="size-2 shrink-0 rounded-xs"
                 style={{
                   backgroundColor: item.color,
                 }}
