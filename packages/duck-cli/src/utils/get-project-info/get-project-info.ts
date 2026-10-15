@@ -31,12 +31,12 @@ export function getPackageJson(): PackageJson | null {
 
 export async function getDuckuiConfig(cwd: string, spinner: Ora) {
   try {
-    spinner.text = `Getting ${highlighter.info('duckui')} configs...`
+    spinner.text = `Reading ${highlighter.info('duck-ui.config.json')}...`
 
     const configRoot = findDuckuiRootCwd(cwd)
     if (!configRoot) {
       spinner.fail(
-        `No ${highlighter.info('duckui')} configs found \nPlease run ${highlighter.info('@gentleduck/cli init')} to create one\nNotice you gonna add your package manager executer\ncommand at the beginning or the CLI command!\nLike ${highlighter.info('bunx @gentleduck/cli init')}\nIf you need any info run the help command,\nHaving issues?   ${highlighter.info('https://github.com/gentleeduck/gentleduck/issues')}.`,
+        `No ${highlighter.info('duck-ui.config.json')} found here or in a parent folder.\nCreate one with ${highlighter.info('@gentleduck/cli init')}, run through your package manager, for example ${highlighter.info('bunx @gentleduck/cli init')} or ${highlighter.info('npx @gentleduck/cli init')}.\nRun ${highlighter.info('@gentleduck/cli --help')} for every command. Having issues? ${highlighter.info('https://github.com/gentleeduck/duck-ui/issues')}`,
       )
       process.exit(1)
     }
@@ -67,16 +67,18 @@ export async function getDuckuiConfig(cwd: string, spinner: Ora) {
 
       spinner.stop()
       console.dir(duckuiParsedConfig.error, { depth: null })
-      spinner.fail(`${highlighter.info('duckui')} invalid configs found`)
+      spinner.fail(
+        `${highlighter.info('duck-ui.config.json')} does not match the expected shape; the issues are listed above.`,
+      )
       process.exit(1)
     }
 
     return duckuiParsedConfig.data
   } catch (error) {
     if (error instanceof ZodError) {
-      spinner.fail(`Failed to get ${highlighter.info('duckui')} configs: ${error.message}`)
+      spinner.fail(`Could not read ${highlighter.info('duck-ui.config.json')}: ${error.message}`)
     } else {
-      spinner.fail(`Failed to get ${highlighter.info('duckui')} configs: ${error}`)
+      spinner.fail(`Could not read ${highlighter.info('duck-ui.config.json')}: ${error}`)
     }
 
     process.exit(1)
@@ -94,7 +96,7 @@ export async function getTsConfig(cwd: string, spinner: Ora) {
     })
 
     if (!files.length) {
-      spinner.fail(`No ${highlighter.info('ts')} configs found`)
+      spinner.fail(`No ${highlighter.info('tsconfig.json')} found in this folder.`)
       process.exit(1)
     }
 
@@ -104,7 +106,7 @@ export async function getTsConfig(cwd: string, spinner: Ora) {
 
     return tsConfig
   } catch (error) {
-    spinner.fail(`Failed to get ${highlighter.info('ts')} configs: ${error}`)
+    spinner.fail(`Could not read ${highlighter.info('tsconfig.json')}: ${error}`)
     process.exit(1)
   }
 }
