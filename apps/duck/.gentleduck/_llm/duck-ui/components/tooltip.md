@@ -339,7 +339,7 @@ export default function Demo() {
 | --- | --- | --- | --- |
 | `width` | `number` | `14` | Arrow width in px |
 | `height` | `number` | `7` | Arrow height in px |
-| `className` | `string` | - | Merges with `fill-popover` |
+| `className` | `string` | - | Additional CSS classes. The arrow fills with `--popover` and draws a 1px outline in `--tooltip-border-color` |
 | `style` | `CSSProperties` | - | Override `--tooltip-border-color` here to change stroke color |
 
 ### MotionTooltip
