@@ -93,19 +93,21 @@ const DropdownMenuArrow = React.forwardRef<
     asChild
     width={14}
     height={7}
-    className={cn('fill-popover', className)}
+    className={cn(className)}
     {...props}
     overflow="visible"
     style={style}>
     <g>
+      {/* Fill before the outline, so the 1px line sits on the curve like the content border. */}
+      <path d="M 0,-2 L 30,-2 L 30,0 C 24,0 16.5,10 15,10 C 13.5,10 6,0 0,0 Z" fill="var(--popover)" />
+      {/* non-scaling-stroke keeps it 1px under the uneven 30x10 to 14x7 scale. */}
       <path
         d="M 0,0 C 6,0 13.5,10 15,10 C 16.5,10 24,0 30,0"
         fill="none"
         stroke="var(--dropdown-menu-border-color)"
-        strokeWidth="2"
+        strokeWidth="1"
         vectorEffect="non-scaling-stroke"
       />
-      <path d="M 0,-2 L 30,-2 L 30,0 C 24,0 16.5,10 15,10 C 13.5,10 6,0 0,0 Z" />
     </g>
   </DropdownMenuPrimitive.Arrow>
 ))
