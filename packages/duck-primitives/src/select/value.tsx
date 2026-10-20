@@ -18,6 +18,7 @@ export const SelectValue = React.forwardRef<SelectValueElement, ISelect.IValuePr
     const { onValueNodeHasChildrenChange } = context
     const hasChildren = children !== undefined
     const composedRefs = useComposedRefs(forwardedRef, context.onValueNodeChange)
+    const content = shouldShowPlaceholder(context.value) ? placeholder : children
 
     useLayoutEffect(() => {
       onValueNodeHasChildrenChange(hasChildren)
@@ -32,7 +33,8 @@ export const SelectValue = React.forwardRef<SelectValueElement, ISelect.IValuePr
         // we don't want events from the portalled `SelectValue` children to bubble
         // through the item they came from
         style={{ pointerEvents: 'none' }}>
-        {shouldShowPlaceholder(context.value) ? placeholder : children}
+        {/* biome-ignore lint/complexity/noUselessFragments: the picked item's text is portalled into this span, where React would write a lone string child over it, so the string needs a text node of its own */}
+        {React.isValidElement(content) ? content : <>{content}</>}
       </Primitive.span>
     )
   },
