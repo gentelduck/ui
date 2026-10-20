@@ -1,7 +1,26 @@
 import { describe, expect, it, mock } from 'bun:test'
 import { fireEvent, render } from '@testing-library/react'
 import * as React from 'react'
-import { Select, SelectContent, SelectItem, SelectPortal, SelectTrigger, SelectValue } from '../index'
+import { Select, SelectContent, SelectItem, SelectItemText, SelectPortal, SelectTrigger, SelectValue } from '../index'
+
+function ControlledSelect({ value, items, children }: { value: string; items: string[]; children?: string }) {
+  return (
+    <Select value={value}>
+      <SelectTrigger>
+        <SelectValue placeholder="Choose">{children}</SelectValue>
+      </SelectTrigger>
+      <SelectPortal>
+        <SelectContent>
+          {items.map((item) => (
+            <SelectItem key={item} value={item.toLowerCase()}>
+              <SelectItemText>{item}</SelectItemText>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </SelectPortal>
+    </Select>
+  )
+}
 
 function renderSelect(props: Record<string, unknown> = {}) {
   return render(
@@ -146,5 +165,55 @@ describe('Select', () => {
   it('required select has aria-required', () => {
     const { container } = renderSelect({ required: true })
     expect(container.querySelector('[data-slot="select-trigger"]')?.getAttribute('aria-required')).toBe('true')
+  })
+
+  it('shows the placeholder when the value clears', () => {
+    const { container, rerender } = render(<ControlledSelect value="apple" items={['Apple', 'Banana']} />)
+    const value = container.querySelector('[data-slot="select-value"]')
+    expect(value?.textContent).toBe('Apple')
+
+    rerender(<ControlledSelect value="" items={['Apple', 'Banana']} />)
+
+    expect(value?.textContent).toBe('Choose')
+  })
+
+  it('shows the placeholder when the picked item leaves in the update that clears the value', () => {
+    const { container, rerender } = render(<ControlledSelect value="apple" items={['Apple', 'Banana']} />)
+    const value = container.querySelector('[data-slot="select-value"]')
+    expect(value?.textContent).toBe('Apple')
+
+    rerender(<ControlledSelect value="" items={['Banana']} />)
+
+    expect(value?.textContent).toBe('Choose')
+  })
+
+  it('shows string children given while the picked item text is shown', () => {
+    const { container, rerender } = render(<ControlledSelect value="apple" items={['Apple', 'Banana']} />)
+    const value = container.querySelector('[data-slot="select-value"]')
+    expect(value?.textContent).toBe('Apple')
+
+    rerender(
+      <ControlledSelect value="apple" items={['Apple', 'Banana']}>
+        Green apple
+      </ControlledSelect>,
+    )
+
+    expect(value?.textContent).toBe('Green apple')
+  })
+
+  it('slots an element child with asChild', () => {
+    const { container } = render(
+      <Select value="apple">
+        <SelectTrigger>
+          <SelectValue asChild>
+            <b>Green apple</b>
+          </SelectValue>
+        </SelectTrigger>
+      </Select>,
+    )
+
+    const value = container.querySelector('[data-slot="select-value"]')
+    expect(value?.tagName).toBe('B')
+    expect(value?.textContent).toBe('Green apple')
   })
 })
